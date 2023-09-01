@@ -1,5 +1,5 @@
-#ifndef DND_SRC_UTIL_MATHUTIL_H_
-#define DND_SRC_UTIL_MATHUTIL_H_
+#ifndef MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
+#define MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 
 template <typename T>
 T** get_2D_array(int x, int y) {
@@ -16,4 +16,4 @@ void delete_2D_array(T** arr, int y) {
   }
   delete arr;
 }
-#endif  //DND_SRC_UTIL_MATHUTIL_H_
+#endif  //MAGE_QUEST_SRC_UTIL_MATHUTIL_H_

@@ -1,5 +1,5 @@
-#ifndef DND_SRC_UI_HOTBAR_H_
-#define DND_SRC_UI_HOTBAR_H_
+#ifndef MAGE_QUEST_SRC_UI_HOTBAR_H_
+#define MAGE_QUEST_SRC_UI_HOTBAR_H_
 
 class HotBar {
  public:
@@ -29,4 +29,4 @@ class HotBar {
   void update() noexcept {}
 };
 
-#endif  //DND_SRC_UI_HOTBAR_H_
+#endif  //MAGE_QUEST_SRC_UI_HOTBAR_H_

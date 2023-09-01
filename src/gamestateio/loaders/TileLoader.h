@@ -1,23 +1,36 @@
-#ifndef DUNGEONM_SRC_GRAPHICS_TILEMANAGER_H_
-#define DUNGEONM_SRC_GRAPHICS_TILEMANAGER_H_
+#ifndef MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
+#define MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
 
 #include <thread>
 #include "cxutil/cxtime.h"
 
-struct TileManager {
+struct TileLoader {
+  static constexpr int TEXTURE_COUNT = 5589;
+  static std::vector<Image> images;
 
-  static void load_tiles(){
-    load_texture_span(0,5589);
+  static void load() {
+    load_texture_span(0, TEXTURE_COUNT);
 
+    load_tile_collision();
+  }
+  static void load_to_vram() {
+    for (uint_fast32_t i = 0; i < TEXTURE_COUNT; i++) {
+      TEXTURES[i] = LoadTextureFromImage(images[i]);
+      UnloadImage(images[i]);
+    }
+    images.clear();
+    images.shrink_to_fit();
   }
 
+ private:
   static void load_texture_span(int start, int end) {
     for (uint_fast32_t i = start; i < end; ++i) {
-      TEXTURES[i] = LoadTexture(("res/textures/" + std::to_string(i) + ".png").c_str());
+      images.push_back(LoadImage(("res/textures/" + std::to_string(i) + ".png").c_str()));
     }
   }
-/*
-  static void load_tile_collision(){
+
+  static void load_tile_collision() {
+    /*
         setupCollision(1093);
         setupCollision(1079);
         setupCollision(1080);
@@ -838,6 +851,8 @@ struct TileManager {
         setupCollision(2949);
       }
       */
+  }
 };
+std::vector<Image> TileLoader::images{};
 
-#endif  //DUNGEONM_SRC_GRAPHICS_TILEMANAGER_H_
+#endif  //MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_

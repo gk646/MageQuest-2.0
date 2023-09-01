@@ -1,18 +1,14 @@
-#ifndef DUNGEONM_SRC_UI_UIMANAGER_H_
-#define DUNGEONM_SRC_UI_UIMANAGER_H_
+#ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
+#define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
 #include "menus/GameMenu.h"
 #include "menus/MainMenu.h"
 #include "menus/SettingsMenu.h"
 
 #include "game/LoadingScreen.h"
-
 #include "player/PlayerUI.h"
 
-#include "../util/Colors.h"
-
 struct UIManager {
-
   LoadingScreen loading_screen;
   PlayerUI player_ui;
   SettingsMenu settings_menu;
@@ -27,14 +23,17 @@ struct UIManager {
       game_menu.draw();
     } else if (GAME_STATE == GameState::MainMenu) {
       main_menu.draw();
-    }else if(GAME_STATE == GameState::Loading){
+    } else if (GAME_STATE == GameState::Loading) {
+      if (GameLoader::finished_cpu_loading) {
+        GameLoader::finish_loading();
+      }
       loading_screen.draw();
     }
     if (settings_menu.showFPS) {
       DrawFPS(25, 25);
     }
   }
-  void ui_update() {
+  void ui_update() const {
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH) {
         SCREEN_WIDTH = GetScreenWidth();
@@ -53,6 +52,5 @@ struct UIManager {
       }
     }
   }
-  void drawMenus() {}
 };
-#endif  //DUNGEONM_SRC_UI_UIMANAGER_H_
+#endif  //MAGE_QUEST_SRC_UI_UIMANAGER_H_

@@ -1,5 +1,5 @@
-#ifndef DND_SRC_UI_GAMEMENU_H_
-#define DND_SRC_UI_GAMEMENU_H_
+#ifndef MAGE_QUEST_SRC_UI_GAMEMENU_H_
+#define MAGE_QUEST_SRC_UI_GAMEMENU_H_
 
 #include "SettingsMenu.h"
 
@@ -40,4 +40,4 @@ struct GameMenu {
     }
   }
 };
-#endif  //DND_SRC_UI_GAMEMENU_H_
+#endif  //MAGE_QUEST_SRC_UI_GAMEMENU_H_

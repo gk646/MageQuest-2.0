@@ -1,5 +1,5 @@
-#ifndef DND_SRC_UI_SERVERBROWSER_H_
-#define DND_SRC_UI_SERVERBROWSER_H_
+#ifndef MAGE_QUEST_SRC_UI_SERVERBROWSER_H_
+#define MAGE_QUEST_SRC_UI_SERVERBROWSER_H_
 
 #include <raylib.h>
 #include <SFML/Network.hpp>
@@ -77,4 +77,4 @@ struct ServerBrowser {
     }
   }
 };
-#endif  //DND_SRC_UI_SERVERBROWSER_H_
+#endif  //MAGE_QUEST_SRC_UI_SERVERBROWSER_H_

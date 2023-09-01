@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_GRAPHICS_WORLDRENDER_H_
-#define DUNGEONM_SRC_GRAPHICS_WORLDRENDER_H_
+#ifndef MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
+#define MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
 
 struct WorldRender {
   static void draw() noexcept {
@@ -90,4 +90,4 @@ struct WorldRender {
     }
   }
 };
-#endif  //DUNGEONM_SRC_GRAPHICS_WORLDRENDER_H_
+#endif  //MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_

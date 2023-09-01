@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_GRAPHICS_MAPS_MAP_H_
-#define DUNGEONM_SRC_GRAPHICS_MAPS_MAP_H_
+#ifndef MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_
+#define MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_
 
 #include <cstdint>
 #include <fstream>
@@ -54,4 +54,4 @@ struct Map {
     return arr;
   }
 };
-#endif  //DUNGEONM_SRC_GRAPHICS_MAPS_MAP_H_
+#endif  //MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_

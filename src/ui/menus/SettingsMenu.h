@@ -1,5 +1,5 @@
-#ifndef DND_SRC_UI_SETTINGSMENU_H_
-#define DND_SRC_UI_SETTINGSMENU_H_
+#ifndef MAGE_QUEST_SRC_UI_SETTINGSMENU_H_
+#define MAGE_QUEST_SRC_UI_SETTINGSMENU_H_
 
 struct SettingsMenu {
   int targetFPS =  120;
@@ -13,7 +13,6 @@ struct SettingsMenu {
   int offsetX = 70;
   int offsetY = 40;
   bool fps_checkbox = false;
-  ~SettingsMenu() { delete resolutions; }
   void draw() noexcept {
     // Draw Background Rectangle
     DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0, ColorAlpha(GRAY, 0.7));
@@ -102,4 +101,4 @@ struct SettingsMenu {
     SetWindowPosition(0, 30);
   }
 };
-#endif  //DND_SRC_UI_SETTINGSMENU_H_
+#endif  //MAGE_QUEST_SRC_UI_SETTINGSMENU_H_

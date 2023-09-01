@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_UI_GAME_HEALTHBAR_H_
-#define DUNGEONM_SRC_UI_GAME_HEALTHBAR_H_
+#ifndef MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
+#define MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
 
 #include "../../gameobjects/entities/attributes/Stats.h"
 #include "../../system/GlobalVariables.h"
@@ -34,4 +34,4 @@ struct HealthBar {
     show = true;
   }
 };
-#endif  //DUNGEONM_SRC_UI_GAME_HEALTHBAR_H_
+#endif  //MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_

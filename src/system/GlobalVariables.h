@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_UTIL_GLOBALVARIABLES_H_
-#define DUNGEONM_SRC_UTIL_GLOBALVARIABLES_H_
+#ifndef MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_
+#define MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_
 
 #include <cstdint>
 #include <string>
@@ -40,4 +40,4 @@ inline std::vector<Map> MAPS{};
 inline int PERF_FRAMES = 0;
 inline long long PERF_TIME = 0;
 
-#endif  //DUNGEONM_SRC_UTIL_GLOBALVARIABLES_H_
+#endif  //MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_

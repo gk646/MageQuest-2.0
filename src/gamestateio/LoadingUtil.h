@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_LOADING_LOADINGUTIL_H_
-#define DUNGEONM_SRC_LOADING_LOADINGUTIL_H_
+#ifndef MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
+#define MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 
 Image load_icon(std::string file_name) {
  return LoadImage(file_name.c_str());
@@ -7,4 +7,4 @@ Image load_icon(std::string file_name) {
 
 
 
-#endif  //DUNGEONM_SRC_LOADING_LOADINGUTIL_H_
+#endif  //MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
