@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-enum class GameState { MainMenu, GameMenu, Game };
+enum class GameState { MainMenu, GameMenu, Game, Loading };
 enum class MenuState { Main, Settings, ServerBrowser, HostGame };
 
 enum class Class {
@@ -21,8 +21,12 @@ enum class Class {
   WIZARD
 };
 
-enum ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
-enum class DamageType { FIRE, POISON, ICE, EARTH, LIGHTNING };
+enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
+enum class MagicType { FIRE, POISON, ICE, EARTH, LIGHTNING };
+enum class DamageType { PHYSICAL, MAGICAL };
+enum class ProjectileType { CONTINUOS, ONE_HIT };
+
+
 inline static std::unordered_map<Class, std::string> classToString = {
     {Class::BARBARIAN, "Barbarian"}, {Class::BARD, "Bard"},       {Class::CLERIC, "Cleric"},
     {Class::DRUID, "Druid"},         {Class::FIGHTER, "Fighter"}, {Class::MONK, "Monk"},

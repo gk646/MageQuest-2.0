@@ -2,33 +2,27 @@
 #define DND_SRC_UI_MAINMENU_H_
 
 #include <thread>
-#include "../../enums/Enums.h"
-#include "../Component.h"
+#include "../../util/Enums.h"
 #include "ServerBrowser.h"
 #include "SettingsMenu.h"
 
-struct MainMenu : public Component {
-
+struct MainMenu {
   ServerBrowser server_browser{};
-  SettingsMenu settings_menu;
+  SettingsMenu& settings_menu;
   MenuState menu_state = MenuState::Main;
-  GameState* game_state;
 
-  MainMenu(int* screen_width, int* screen_height, float* ui_scale, GameState* game_state,
-           int* targetFPS, bool* showFPS)
-      : settings_menu(screen_width, screen_height, ui_scale, targetFPS, showFPS),
-        game_state(game_state) {}
-  void draw(float ui_scale, int screen_width, int screen_height) final {
-    const float scaled_width = 110 * ui_scale;
-    const float scaled_height = 30 * ui_scale;
-    const float vertical_gap = 10 * ui_scale;  // Adding vertical gap using ui_scale
-    const float xOffset = static_cast<float>(screen_width / 2.0) - (scaled_width / 2.0);
+  MainMenu(SettingsMenu& settings_menu) : settings_menu(settings_menu) {}
+  void draw() noexcept {
+    const float scaled_width = 110 * UI_SCALE;
+    const float scaled_height = 30 * UI_SCALE;
+    const float vertical_gap = 10 * UI_SCALE;
+    const float xOffset = SCREEN_WIDTH / 2.0 - (scaled_width / 2.0);
     const float baseYOffset =
-        static_cast<float>(screen_height / 2.0) - (3 * scaled_height) - (4 * vertical_gap);
+        static_cast<float>(SCREEN_HEIGHT / 2.0) - (3 * scaled_height) - (4 * vertical_gap);
 
     if (menu_state == MenuState::Main) {
       if (GuiButton({xOffset, baseYOffset, scaled_width, scaled_height}, "Play Game")) {
-        *game_state = GameState::Game;
+        GAME_STATE = GameState::Game;
       }
       if (GuiButton(
               {xOffset, baseYOffset + (scaled_height + vertical_gap), scaled_width, scaled_height},
@@ -52,15 +46,14 @@ struct MainMenu : public Component {
         exit(EXIT_SUCCESS);
       }
     } else if (menu_state == MenuState::Settings) {
-      settings_menu.draw(ui_scale, screen_width, screen_height);
+      settings_menu.draw();
     } else if (menu_state == MenuState::ServerBrowser) {
-      server_browser.draw(ui_scale, screen_width, screen_height);
+      server_browser.draw();
     } else if (menu_state == MenuState::HostGame) {
     }
     if (IsKeyPressed(KEY_ESCAPE)) {
       menu_state = MenuState::Main;
     }
   }
-  ~MainMenu() {}
 };
 #endif  //DND_SRC_UI_MAINMENU_H_

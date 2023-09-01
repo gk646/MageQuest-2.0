@@ -5,14 +5,14 @@
 #include <SFML/Network.hpp>
 #include <string>
 #include <vector>
-#include "../Component.h"
 
-struct ServerBrowser : public Component {
-  int PORT = 25696;
-  int SERVER_ENTRY_HEIGHT = 50;
-  int BUTTON_WIDTH = 80;
-  int BUTTON_HEIGHT = 30;
-  int MANUAL_JOIN_HEIGHT = 50;
+struct ServerBrowser {
+  const int PORT = 25696;
+  const float SERVER_ENTRY_HEIGHT = 50;
+  const float BUTTON_WIDTH = 80;
+  const float BUTTON_HEIGHT = 30;
+  const float MANUAL_JOIN_HEIGHT = 50;
+  const int WINDOW_WIDTH = 400;
 
   std::vector<std::string> hostingIps{};
 
@@ -33,43 +33,48 @@ struct ServerBrowser : public Component {
       }
     }
   }
-  void draw(float ui, int screen_width, int screen_height) final {
-    int windowWidth = 400;
-    int windowHeight = hostingIps.size() * (SERVER_ENTRY_HEIGHT + 15) + MANUAL_JOIN_HEIGHT * 2;
+  void draw() noexcept {
+    const int windowHeight =
+        hostingIps.size() * (SERVER_ENTRY_HEIGHT + 15) + MANUAL_JOIN_HEIGHT * 2;
 
-    int x = (screen_width - windowWidth) / 2;
-    int y = (screen_height - windowHeight) / 2;
+    const int x = (SCREEN_WIDTH - WINDOW_WIDTH) / 2;
+    const int y = (SCREEN_HEIGHT - windowHeight) / 2;
 
-    GuiPanel(Rectangle{(float)x, (float)y, (float)windowWidth, (float)windowHeight},
+    GuiPanel(Rectangle{(float)x, (float)y, (float)WINDOW_WIDTH, (float)windowHeight},
              "Game Browser");
 
     int yOffset = 35;
+
+    // Draw Server List
     for (const auto& ip : hostingIps) {
-
-      GuiGroupBox(Rectangle{(float)x, (float)y + yOffset, (float)windowWidth, SERVER_ENTRY_HEIGHT},
-                  ("IP: " + ip + " Port: " + std::to_string(PORT)).c_str());
-
-      // Drawing the 'Join' button for this server
-      int buttonX = x + windowWidth - BUTTON_WIDTH - 10;
-      int buttonY = y + yOffset + (SERVER_ENTRY_HEIGHT - BUTTON_HEIGHT) / 2;
-      if (GuiButton(Rectangle{(float)buttonX, (float)buttonY, BUTTON_WIDTH, BUTTON_HEIGHT},
-                    "Join")) {
-        // Handle the join event for this IP here
-      }
-
+      drawServerEntry(x, y, yOffset, ip, PORT);
       yOffset += SERVER_ENTRY_HEIGHT + 15;
     }
 
-    // Manual Join Section
-    int manualY = y + yOffset;
-    GuiLabel(Rectangle{(float)x + 10, (float)manualY + 15, 40, 20}, "IP:");
-    static char ipInput[64] = {
-        0};  // This should persist outside of function, made static for simplicity
-    GuiTextBox(Rectangle{(float)x + 50, (float)manualY + 10, 200, 30}, ipInput, 64, true);
+    drawManualJoin(x, y, yOffset);
+  }
 
-    int joinButtonX = x + windowWidth - BUTTON_WIDTH - 10;
-    if (GuiButton(Rectangle{(float)joinButtonX, (float)manualY + 10, BUTTON_WIDTH, BUTTON_HEIGHT},
-                  "Join")) {}
+  void drawServerEntry(int x, int y, int yOffset, const std::string& ip, int port) {
+    GuiGroupBox(Rectangle{(float)x, (float)y + yOffset, (float)WINDOW_WIDTH, SERVER_ENTRY_HEIGHT},
+                ("IP: " + ip + " Port: " + std::to_string(port)).c_str());
+
+    const int buttonX = x + WINDOW_WIDTH - BUTTON_WIDTH - 10;
+    const int buttonY = y + yOffset + (SERVER_ENTRY_HEIGHT - BUTTON_HEIGHT) / 2;
+    if (GuiButton(Rectangle{(float)buttonX, (float)buttonY, BUTTON_WIDTH, BUTTON_HEIGHT}, "Join")) {
+      // Handle join event
+    }
+  }
+  void drawManualJoin(int x, int y, int yOffset) {
+    GuiLabel(Rectangle{(float)x + 10, (float)y + yOffset + 15, 40, 20}, "IP:");
+
+    static char ipInput[64] = {0};  // Made static to persist outside function
+    GuiTextBox(Rectangle{(float)x + 50, (float)y + yOffset + 10, 200, 30}, ipInput, 64, true);
+
+    const int buttonX = x + WINDOW_WIDTH - BUTTON_WIDTH - 10;
+    if (GuiButton(Rectangle{(float)buttonX, (float)y + yOffset + 10, BUTTON_WIDTH, BUTTON_HEIGHT},
+                  "Join")) {
+      // Handle manual join event
+    }
   }
 };
 #endif  //DND_SRC_UI_SERVERBROWSER_H_

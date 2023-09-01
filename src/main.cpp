@@ -1,7 +1,7 @@
 #include "Game.h"
 
 int main() {
-  Game game;
-  game.start();
+  auto game = new Game();
+  game->start();
   return 0;
 }
