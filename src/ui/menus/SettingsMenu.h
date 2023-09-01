@@ -41,12 +41,13 @@ struct SettingsMenu {
     startY += verticalSpacing;
     bool fullscreen = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE}, "Fullscreen", IsWindowFullscreen());
     if (fullscreen != IsWindowFullscreen()) {
-      ToggleFullscreen();
       if (fullscreen) {
         SCREEN_WIDTH = GetMonitorWidth(0);
-        SCREEN_HEIGHT = 1080;
+        SCREEN_HEIGHT = GetMonitorHeight(0);
         SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        ToggleFullscreen();
       } else {
+        ToggleFullscreen();
         setResolution(selectedResolution);
       }
     }
@@ -99,6 +100,12 @@ struct SettingsMenu {
         break;
     }
     SetWindowPosition(0, 30);
+  }
+  static void set_full_screen() {
+    SCREEN_WIDTH = GetMonitorWidth(0);
+    SCREEN_HEIGHT = GetMonitorHeight(0);
+    SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    ToggleFullscreen();
   }
 };
 #endif  //MAGE_QUEST_SRC_UI_SETTINGSMENU_H_

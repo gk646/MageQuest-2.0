@@ -21,7 +21,7 @@
 #include "util/Util.h"
 
 #include "graphics/WorldRender.h"
-#include "ui/StyleSheet.h"
+
 
 #include <thread>
 #include <vector>
@@ -33,16 +33,11 @@ class Game {
   bool logic_thread_running = true;
   bool multiplayer = false;
 
-  std::vector<Player> other_players;
-  std::vector<Projectile> projectiles;
-  std::vector<Player> npcs;
-  std::vector<Monster> monsters;
-
   std::thread logic_thread;
 
-  UIManager ui_manager{};
-
   Player player;
+
+  UIManager ui_manager{};
 
   void render() noexcept {
     while (!(WindowShouldClose() && !IsKeyDown(KEY_ESCAPE))) {
@@ -76,23 +71,25 @@ class Game {
   }
 
   inline void game_tick() noexcept {
-    erase_if(projectiles, [&](const auto& item) { return item.dead; });
-    erase_if(monsters, [&](const auto& monster) { return monster.dead; });
+    erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
+    erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
 
     if (GAME_STATE == GameState::Game) {
-      player.update(&projectiles);
+      player.update();
     }
 
     PLAYER_TILE_X = (player.pos.x() + player.size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (player.pos.y() + player.size.y() / 2) / TILE_SIZE;
 
-    for (auto& monster : monsters) {
+    ui_manager.update();
+
+    for (auto& monster : MONSTERS) {
       monster.update();
     }
 
-    for (auto& projectile : projectiles) {
+    for (auto& projectile : PROJECTILES) {
       projectile.update();
-      for (auto& monster : monsters) {
+      for (auto& monster : MONSTERS) {
         if (!projectile.dead && !monster.dead && projectile.intersects(monster)) {
           monster.hit(projectile.damage_stats, &projectile.dead);
         }
@@ -104,28 +101,20 @@ class Game {
     CAMERA_Y = SCREEN_HEIGHT / 2;
     WorldRender::draw();
 
-    for (auto& projectile : projectiles) {
+    for (auto& projectile : PROJECTILES) {
       projectile.draw();
     }
-    for (auto& npc : npcs) {
+    for (auto& npc : NPCS) {
       npc.draw();
     }
-    for (auto& monster : monsters) {
+    for (auto& monster : MONSTERS) {
       monster.draw();
     }
-    for (auto players : other_players) {
+    for (auto players : OTHER_PLAYERS) {
       players.draw();
     }
     player.draw();
     WorldRender::draw_fore_ground();
-  }
-
-  void loadResources() {
-    Image icon = LoadImage((ASSET_PATH + "dnd_logo.png").c_str());
-    SetWindowIcon(icon);
-    UnloadImage(icon);
-
-    GameLoader::load();
   }
 
  public:
@@ -134,12 +123,8 @@ class Game {
     SetTargetFPS(targetFPS);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
 
-    loadResources();
-    player = Player(Class::DRUID, {500, 500}, {25, 25}, ShapeType::CIRCLE);
-    other_players.push_back(Player(Class::DRUID, {500, 500}));
-    monsters.push_back(
-        Monster({200, 200}, EntityStats({}, {1, 2, 100, 4}), {50, 50}, ShapeType::RECT));
-    GuiLoadStyleCyber();
+    player = Player(Class::DRUID, {200, 200}, {25, 25}, ShapeType::CIRCLE);
+    //SettingsMenu::set_full_screen();
   }
   ~Game() {
     for (uint_fast32_t i = 0; i < 5589; i++) {
@@ -150,6 +135,7 @@ class Game {
     CloseWindow();
   }
   void start() {
+    GameLoader::load();
     logic_thread = std::thread(&Game::game_logic, this);
     render();
   }

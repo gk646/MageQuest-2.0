@@ -6,6 +6,7 @@
 
 #include "Definitions.h"
 
+
 #include "../graphics/maps/Map.h"
 #include "../util/Colors.h"
 #include "../util/Enums.h"
@@ -32,7 +33,18 @@ inline int16_t** CURRENT_FORE_GROUND;
 inline int CURRENT_MAP_SIZE = 100;
 
 inline Texture2D TEXTURES[6000];
-inline uint8_t COLLISIONS[6000];
+inline int COLLISIONS[6000];
+
+
+//Entities
+#include "../gameobjects/entities/types/Monster.h"
+#include "../gameobjects/entities/types/NPC.h"
+#include "../gameobjects/entities/types/Player.h"
+
+std::vector<Player> OTHER_PLAYERS;
+std::vector<Projectile> PROJECTILES;
+std::vector<NPC> NPCS;
+std::vector<Monster> MONSTERS;
 
 inline std::vector<Map> MAPS{};
 

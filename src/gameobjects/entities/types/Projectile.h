@@ -1,9 +1,9 @@
 #ifndef MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
+#include "../../../gameplay/Stats.h"
 #include "../../../util/Enums.h"
 #include "../Entity.h"
-#include "../attributes/Stats.h"
 
 struct Projectile : public Entity {
   Point move_vector;
