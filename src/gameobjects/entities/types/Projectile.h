@@ -1,7 +1,7 @@
 #ifndef DUNGEONM_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 #define DUNGEONM_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
-#include "../../../enums/Enums.h"
+#include "../../../util/Enums.h"
 #include "../Entity.h"
 #include "../attributes/Stats.h"
 
@@ -14,14 +14,15 @@ struct Projectile : public Entity {
   int life_span;
   DamageStats damage_stats;
 
-  Projectile(Point pos, Point size, ShapeType shape_type, Point origin, Vector2 destination,
-             int life_span, float speed, DamageStats damage_stats = {})
+  Projectile() {}
+  Projectile(Point pos, Point size, ShapeType shape_type, Vector2 destination, int life_span,
+             float speed, DamageStats damage_stats = {})
       : Entity(pos, size, shape_type),
         dead{},
         life_span(life_span),
         speed(speed),
         damage_stats(damage_stats) {
-    move_vector = get_move_vector(origin, destination);
+    move_vector = get_move_vector(destination);
   }
   Projectile(const Projectile& p)
       : Entity(p),
@@ -47,19 +48,21 @@ struct Projectile : public Entity {
 
     return *this;
   }
-
-  Point get_move_vector(Point origin, Vector2 mouse_pos) {
-    float angle =
-        std::atan2(mouse_pos.y - origin.y() - size.y(), mouse_pos.x - origin.x() - size.x());
+  Point get_move_vector(Vector2 mouse_pos) {
+    float angle = std::atan2(mouse_pos.y - (pos.y() - PLAYER_Y + CAMERA_Y),
+                             mouse_pos.x -(pos.x() - PLAYER_X + CAMERA_X));
     return {std::cos(angle), std::sin(angle)};
   }
   void draw() override {
     switch (shape_type) {
-      case RECT:
-        DrawRectanglePro({pos.x(), pos.y(), size.x(), size.y()}, {0, 0}, 0, PURPLE);
+      case ShapeType::RECT:
+        DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
+                         size.y(), {0, 0}, 0, PURPLE);
         break;
-      case CIRCLE:
-        DrawCircleSector({pos.x(), pos.y()},size.x(), 0,360,50,PURPLE);
+      case ShapeType::CIRCLE:
+        DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0,
+                         360, 56, PURPLE);
+        break;
     }
   }
   void update() override {

@@ -1,8 +1,8 @@
 #ifndef DND_SRC_ENTITIES_MONSTER_H_
 #define DND_SRC_ENTITIES_MONSTER_H_
 
+#include "../../../system/GlobalVariables.h"
 #include "../../../ui/game/HealthBar.h"
-#include "../../../util/GlobalVariables.h"
 #include "../Entity.h"
 
 struct Monster : public Entity {
@@ -14,8 +14,9 @@ struct Monster : public Entity {
   HealthBar health_bar;
 
   Monster() : Entity(), stats{}, pov(0), health_bar(0, 0) {}
-  Monster(const Point& pos, EntityStats stats, const Point& size = {50, 50})
-      : Entity(pos, size, ShapeType::RECT), pov(0), health_bar(size.x(), 15), stats(stats) {}
+  Monster(const Point& pos, EntityStats stats, const Point& size = {50, 50},
+          ShapeType shape_type = ShapeType::RECT)
+      : Entity(pos, size, shape_type), pov(0), health_bar(size.x(), 15), stats(stats) {}
   explicit Monster(const Point& pos, Point size = {50, 50}, ShapeType shape_type = ShapeType::RECT,
                    float pov = 0, std::string name = "", EntityStats stats = {})
       : Entity(pos, size, shape_type),
@@ -44,13 +45,14 @@ struct Monster : public Entity {
     return *this;
   }
   void draw() final {
-    if (health_bar.show) {
-      DrawRectanglePro({pos.x(), pos.y(), size.x(), size.y()}, {0, 0}, pov, BLUE);
-      health_bar.draw(pos.x(), pos.y(), stats);
-      return;
+    if (shape_type == ShapeType::CIRCLE) {
+      DrawCircleSector(pos.x()-PLAYER_X+CAMERA_X, pos.y()-PLAYER_Y+CAMERA_Y, size.x(), 0, 360, 50, RED);
+    } else {
+      DrawRectanglePro(pos.x()-PLAYER_X+CAMERA_X, pos.y()-PLAYER_Y+CAMERA_Y, size.x(),size.y(),{0, 0}, pov, RED);
     }
-    DrawRectanglePro({pos.x(), pos.y(), size.x(), size.y()}, {0, 0}, pov, RED);
-
+    if (health_bar.show) {
+      health_bar.draw(pos.x()-PLAYER_X+CAMERA_X, pos.y()-PLAYER_Y+CAMERA_Y, stats);
+    }
   }
   void update() final {
     if (stats.general.health <= 0) {
@@ -58,10 +60,12 @@ struct Monster : public Entity {
     }
     health_bar.update();
   }
-  void hit(DamageStats damage_stats) {
-    std::cout<< "hey" << std::endl;
+  void hit(DamageStats damage_stats, bool* other_dead) {
     health_bar.hit();
-    stats.general.health -= damage_stats.damage;
+    stats.general.health -= stats.armour_stats.get_damage(damage_stats);
+    if (damage_stats.projectile_type == ProjectileType::ONE_HIT) {
+      *other_dead = true;
+    }
   }
 };
 #endif  //DND_SRC_ENTITIES_MONSTER_H_

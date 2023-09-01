@@ -1,44 +1,39 @@
 #ifndef DND_SRC_UI_GAMEMENU_H_
 #define DND_SRC_UI_GAMEMENU_H_
 
-#include "../Component.h"
 #include "SettingsMenu.h"
 
-struct GameMenu : public Component {
+struct GameMenu {
   MenuState menu_state = MenuState::Main;
-  GameState* game_state;
-  SettingsMenu settings_menu;
+  SettingsMenu& settings_menu;
 
-  GameMenu(int* screen_width, int* screen_height, float* ui_scale, GameState* game_state,
-           int* targetFPS, bool* showFPS)
-      : settings_menu(screen_width, screen_height, ui_scale, targetFPS, showFPS),
-        game_state(game_state) {}
-  void draw(float ui_scale, int screen_width, int screen_height) final {
-    DrawRectangle(0, 0, screen_width, screen_height, ColorAlpha(GRAY, 0.7));
-    const float scaled_width = 110 * ui_scale;
-    const float scaled_height = 30 * ui_scale;
-    const float vertical_gap = 10 * ui_scale;
-    const float xOffset = (screen_width / 2.0f) - (scaled_width / 2.0f);
+  explicit GameMenu(SettingsMenu& settings_menu) : settings_menu(settings_menu) {}
+  void draw() noexcept {
+    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, ColorAlpha(GRAY, 0.7));
+    const float scaled_width = 110 * UI_SCALE;
+    const float scaled_height = 30 * UI_SCALE;
+    const float vertical_gap = 10 * UI_SCALE;
+    const float xOffset = (SCREEN_WIDTH / 2.0f) - (scaled_width / 2.0f);
 
     if (menu_state == MenuState::Main) {
-      if (GuiButton({xOffset, (screen_height / 2.0f) - (3 * scaled_height) - (2 * vertical_gap),
+      if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - (3 * scaled_height) - (2 * vertical_gap),
                      scaled_width, scaled_height},
                     "Resume")) {
-        *game_state = GameState::Game;
+        GAME_STATE = GameState::Game;
         menu_state = MenuState::Main;
       }
-      if (GuiButton({xOffset, (screen_height / 2.0f) - (2 * scaled_height) - vertical_gap,
+      if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - (2 * scaled_height) - vertical_gap,
                      scaled_width, scaled_height},
                     "Settings")) {
         menu_state = MenuState::Settings;
       }
-      if (GuiButton({xOffset, (screen_height / 2.0f) - scaled_height, scaled_width, scaled_height},
+      if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - scaled_height, scaled_width, scaled_height},
                     "Back to MainMenu")) {
-        *game_state = GameState::MainMenu;
+        GAME_STATE = GameState::MainMenu;
         menu_state = MenuState::Main;
       }
     } else if (menu_state == MenuState::Settings) {
-      settings_menu.draw(ui_scale, screen_width, screen_height);
+      settings_menu.draw();
     }
     if (IsKeyPressed(KEY_ESCAPE)) {
       menu_state = MenuState::Main;

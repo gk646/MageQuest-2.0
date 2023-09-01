@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 
-#include "../../enums/Enums.h"
+#include "../../util/Enums.h"
 #include "attributes/Stats.h"
 #include "cxstructs/Geometry.h"
 
@@ -33,39 +33,33 @@ struct Entity {
   virtual ~Entity() {}
   virtual void draw(){};
   [[nodiscard]] bool intersects(const Entity& o) const {
-    switch (o.shape_type) {
-      case RECT:
-        switch (shape_type) {
-          case RECT: {
-            return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
-                    pos.y() < o.pos.y() + o.size.y() && pos.y() + size.y() > o.pos.y());
-          }
-          case CIRCLE: {
-            const float closestX = std::clamp(o.pos.x(), pos.x(), pos.x() + size.x());
-            const float closestY = std::clamp(o.pos.y(), pos.y(), pos.y() + size.y());
+    if(shape_type == ShapeType::RECT){
+      if(o.shape_type == ShapeType::RECT){
+        return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
+                pos.y() < o.pos.y() + o.size.y() && pos.y() + size.y() > o.pos.y());
+      }else if(o.shape_type == ShapeType::CIRCLE){
+        const float closestX = std::clamp(o.pos.x(), pos.x(), pos.x() + size.x());
+        const float closestY = std::clamp(o.pos.y(), pos.y(), pos.y() + size.y());
 
-            const float dx = closestX - o.pos.x();
-            const float dy = closestY - o.pos.y();
+        const float dx = closestX - o.pos.x();
+        const float dy = closestY - o.pos.y();
 
-            return (dx * dx + dy * dy) <= (o.size.x() * o.size.x());
-          }
+        return (dx * dx + dy * dy) <= (o.size.x() * o.size.x());
+      }
+    }else if (shape_type == ShapeType::CIRCLE){
+      if(o.shape_type == ShapeType::RECT){
+        const float closestX = std::clamp(pos.x(), o.pos.x(), o.pos.x() + o.size.x());
+        const float closestY = std::clamp(pos.y(), o.pos.y(), o.pos.y() + o.size.y());
 
-        }
-        break;
-      case CIRCLE:
-        switch (shape_type) {
-          case RECT: {
-            return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
-                    pos.y() < o.pos.y() + o.size.y() && pos.y() + size.y() > o.pos.y());
-          }
-          case CIRCLE: {
-            const float closestX = std::clamp(o.pos.x(), pos.x(), pos.x() + size.x());
-            const float closestY = std::clamp(o.pos.y(), pos.y(), pos.y() + size.y());
+        const float dx = closestX - pos.x();
+        const float dy = closestY - pos.y();
 
-            return ((closestX - o.pos.x()) * (closestX - o.pos.x()) +
-                    (closestY - o.pos.y()) * (closestY - o.pos.y())) <= (o.size.x() * o.size.x());
-          }
-        }
+        return (dx * dx + dy * dy) <= (size.x() * size.x());
+      }else if (o.shape_type == ShapeType::CIRCLE){
+        return (pos.x() - o.pos.x()) * (pos.x() - o.pos.x()) +
+                   (pos.y() - o.pos.y()) * (pos.y() - o.pos.y()) <=
+               (size.x() + o.size.x()) * (size.x() + o.size.x());
+      }
     }
   }
   virtual void draw_hitbox(){};

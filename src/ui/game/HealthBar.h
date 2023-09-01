@@ -2,25 +2,23 @@
 #define DUNGEONM_SRC_UI_GAME_HEALTHBAR_H_
 
 #include "../../gameobjects/entities/attributes/Stats.h"
-#include "../../util/GlobalVariables.h"
-#include "../Component.h"
+#include "../../system/GlobalVariables.h"
 
 struct HealthBar {
   int delay = 300;
-  int active_ticks;
+  int active_ticks = 0;
   bool show = false;
 
   int width;
   int height;
 
   HealthBar(int width, int height) : width(width), height(height) {}
-  void draw(int x, int y, const EntityStats& stats) const {
+  void draw(int x, int y, const EntityStats& stats) const noexcept {
     DrawRectangleLines(x - (width * UI_SCALE - width) / 2, y - height * UI_SCALE, width * UI_SCALE,
                        height * UI_SCALE, BLUE);
-    DrawRectanglePro(
-        {x - (width * UI_SCALE - width) / 2, y - height * UI_SCALE,
-         (stats.general.health / stats.general.max_health) * width * UI_SCALE, height * UI_SCALE},
-        {0, 0}, 0, BLACK);
+    DrawRectanglePro(x - (width * UI_SCALE - width) / 2, y - height * UI_SCALE,
+                     (stats.general.health / stats.general.max_health) * width * UI_SCALE,
+                     height * UI_SCALE, {0, 0}, 0, BLACK);
   }
   void update() {
     if (show) {

@@ -2,24 +2,26 @@
 #define DND_SRC_GAME_H_
 
 #define RAYLIB_IMPLEMENTATION
-#include "raylib.h"
+#include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
+#include "system/GlobalVariables.h"
+
 #include "cxstructs/Geometry.h"
 #include "cxstructs/vec.h"
+#include "cxutil/cxtime.h."
 
-#include "enums/Enums.h"
 #include "gameobjects/entities/types/Monster.h"
 #include "gameobjects/entities/types/Player.h"
 #include "gameobjects/entities/types/Projectile.h"
-#include "graphics/BattleMap.h"
-#include "ui/Component.h"
-#include "ui/menus/GameMenu.h"
-#include "ui/menus/MainMenu.h"
-#include "util/MathUtil.h"
+#include "gamestateio/GameLoader.h"
+#include "ui/UIManager.h"
+#include "util/Enums.h"
+#include "util/Util.h"
 
-#include "util/GlobalVariables.h"
+#include "graphics/WorldRender.h"
+#include "ui/StyleSheet.h"
 
 #include <thread>
 #include <vector>
@@ -27,16 +29,11 @@
 using namespace std::chrono_literals;
 
 class Game {
-
-  bool drawFPS = false;
   int targetFPS = 120;
   bool logic_thread_running = true;
   bool multiplayer = false;
 
-  GameState game_state = GameState::MainMenu;
   Texture2D main_menu_background;
-
-  Player player;
 
   std::vector<Player> other_players;
   std::vector<Projectile> projectiles;
@@ -45,82 +42,74 @@ class Game {
 
   std::thread logic_thread;
 
-  Point camera_pos = {0, 0};
+  UIManager ui_manager{};
 
-  GameMenu* game_menu =
-      new GameMenu(&SCREEN_WIDTH, &SCREEN_HEIGHT, &UI_SCALE, &game_state, &targetFPS, &drawFPS);
-  MainMenu* main_menu =
-      new MainMenu(&SCREEN_WIDTH, &SCREEN_HEIGHT, &UI_SCALE, &game_state, &targetFPS, &drawFPS);
+  Player player;
+  MapManager map_loader;
 
   void render() {
     while (!(WindowShouldClose() && !IsKeyDown(KEY_ESCAPE))) {
       BeginDrawing();
       ClearBackground(WHITE);
-      if (game_state == GameState::Game || game_state == GameState::GameMenu) {
+      if (GAME_STATE == GameState::Game || GAME_STATE == GameState::GameMenu) {
         drawGame();
       }
-      drawMenus();
+      ui_manager.draw();
       EndDrawing();
     }
     CloseWindow();
   }
-  void game_logic() {
+
+  inline void game_logic() noexcept {
+    auto nextUpdate = std::chrono::high_resolution_clock::now();
+    auto targetDuration = std::chrono::milliseconds(16);
+
     while (logic_thread_running) {
-      PollInputEvents();
+      auto currentTime = std::chrono::high_resolution_clock::now();
 
-      if(game_state == GameState::Game){
-        player.update(&projectiles);
+      if (currentTime >= nextUpdate) {
+        game_tick();
+        nextUpdate = nextUpdate + targetDuration;
+
+        while (nextUpdate < std::chrono::high_resolution_clock::now()) {
+          nextUpdate = nextUpdate + targetDuration;
+        }
+      } else {
+        std::this_thread::sleep_until(nextUpdate);
       }
+    }
+  }
+  inline void game_tick() noexcept {
+    erase_if(projectiles, [&](const auto& item) { return item.dead; });
+    erase_if(monsters, [&](const auto& monster) { return monster.dead; });
 
-      for (auto& projectile : projectiles) {
-        projectile.update();
-        for (auto& monster : monsters) {
-          if (!monster.dead && projectile.intersects(monster)) {
-            monster.hit(projectile.damage_stats);
-          }
+    if (GAME_STATE == GameState::Game) {
+      player.update(&projectiles);
+    }
+
+    PLAYER_TILE_X = (player.pos.x() + player.size.x() / 2) / TILE_SIZE;
+    PLAYER_TILE_Y = (player.pos.y() + player.size.y() / 2) / TILE_SIZE;
+
+    for (auto& monster : monsters) {
+      monster.update();
+    }
+
+    for (auto& projectile : projectiles) {
+      projectile.update();
+      for (auto& monster : monsters) {
+        if (!projectile.dead && !monster.dead && projectile.intersects(monster)) {
+          monster.hit(projectile.damage_stats, &projectile.dead);
         }
       }
-      for (auto& monster : monsters) {
-        monster.update();
-      }
-      erase_if(projectiles, [&](const auto& item) { return item.dead; });
-      erase_if(monsters, [&](const auto& monster) { return monster.dead; });
-      std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
   }
-  void drawMenus() {
-    if (!IsWindowFullscreen()) {
-      if (GetScreenWidth() != SCREEN_WIDTH) {
-        SCREEN_WIDTH = GetScreenWidth();
-      }
-      if (GetScreenHeight() != SCREEN_HEIGHT) {
-        SCREEN_HEIGHT = GetScreenHeight();
-      }
-    }
-    if (IsKeyPressed(KEY_ESCAPE)) {
-      if (game_state == GameState::GameMenu && game_menu->menu_state == MenuState::Main) {
-        game_state = GameState::Game;
-      } else if (game_state == GameState::Game) {
-        game_state = GameState::GameMenu;
-      }
-    }
-    if (game_state == GameState::MainMenu) {
-      DrawTexture(main_menu_background, 0, 0, WHITE);
-      main_menu->draw(UI_SCALE, SCREEN_WIDTH, SCREEN_HEIGHT);
-    } else if (game_state == GameState::Game || game_state == GameState::GameMenu) {
+  inline void drawGame() noexcept {
+    CAMERA_X = SCREEN_WIDTH / 2;
+    CAMERA_Y = SCREEN_HEIGHT / 2;
+    WorldRender::draw();
 
-      if (game_state == GameState::GameMenu) {
-        game_menu->draw(UI_SCALE, SCREEN_WIDTH, SCREEN_HEIGHT);
-      }
-    }
-    if (drawFPS) {
-      DrawFPS(25, 25);
-    }
-  }
-  void drawGame() {
-    //map.draw(SCREEN_WIDTH, SCREEN_HEIGHT, camera_pos);
-    for (auto& projectiles : projectiles) {
-      projectiles.draw();
+    for (auto& projectile : projectiles) {
+      projectile.draw();
     }
     for (auto& npc : npcs) {
       npc.draw();
@@ -132,30 +121,33 @@ class Game {
       players.draw();
     }
     player.draw();
+    WorldRender::draw_fore_ground();
   }
-
   void loadResources() {
     Image image = LoadImage("res/main_menu.png");
     ImageResize(&image, GetMonitorWidth(0), GetMonitorHeight(0));
     main_menu_background = LoadTextureFromImage(image);
     UnloadImage(image);
 
-    Image icon = LoadImage("res/dnd_logo.png");
+    Image icon = LoadImage((ASSET_PATH + "dnd_logo.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
+
+    GameLoader::load();
   }
 
  public:
   Game() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "DnD - 2D Adventure");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
 
     loadResources();
-    player = Player(Class::DRUID, {500, 500});
+    player = Player(Class::DRUID, {500, 500}, {25, 25}, ShapeType::CIRCLE);
     other_players.push_back(Player(Class::DRUID, {500, 500}));
-    monsters.push_back(Monster({200, 200}, EntityStats({}, {1, 2, 1000, 4})));
-    //other_players.push_back(Player(Class::BARBARIAN, {200, 200}, {50, 50}, 0, "Jana"));
+    monsters.push_back(
+        Monster({200, 200}, EntityStats({}, {1, 2, 100, 4}), {50, 50}, ShapeType::RECT));
+    GuiLoadStyleCyber();
   }
   ~Game() {
     UnloadTexture(main_menu_background);

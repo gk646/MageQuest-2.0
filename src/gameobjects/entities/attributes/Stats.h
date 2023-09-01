@@ -2,15 +2,40 @@
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
 #include <cstdint>
-#include "../../../enums/Enums.h"
+#include "../../../util/Enums.h"
 
 struct DamageStats {
   DamageType damage_type;
+  MagicType magic_type;
+  ProjectileType projectile_type;
   float damage;
 
-  DamageStats() : damage_type(DamageType{}), damage(1) {}
+  DamageStats()
+      : damage_type(DamageType::PHYSICAL),
+        magic_type(MagicType::FIRE),
+        damage(1),
+        projectile_type(ProjectileType::ONE_HIT) {}
 
-  DamageStats(DamageType damage_type, float damage) : damage_type(damage_type), damage(damage) {}
+  DamageStats(DamageType damage_type, MagicType magic_type, ProjectileType projectile_type,
+              float damage)
+      : damage_type(damage_type),
+        magic_type(magic_type),
+        projectile_type(projectile_type),
+        damage(damage) {}
+};
+struct ArmourStats {
+  float physical_armour;
+  float magical_armour;
+
+  ArmourStats() : physical_armour(0), magical_armour(0) {}
+  ArmourStats(float physical_armour, float magical_armour)
+      : physical_armour(physical_armour), magical_armour(magical_armour) {}
+
+  float get_damage(DamageStats stats) {
+    if (stats.damage_type == DamageType::MAGICAL) {
+      return stats.damage * (1 - magical_armour / 100);
+    }
+  }
 };
 
 struct Abilities {
@@ -41,9 +66,9 @@ struct GeneralStats {
   float max_health;
   float speed;
 
-  GeneralStats() : mana(0), concentration(0), health(10), max_health(10), speed(1) {}
+  GeneralStats() : mana(0), concentration(0), health(10), max_health(10), speed(5) {}
 
-  GeneralStats(float mana, float concentration, float health, float speed = 1)
+  GeneralStats(float mana, float concentration, float health, float speed = 5)
       : mana(mana),
         concentration(concentration),
         health(health),
@@ -52,6 +77,7 @@ struct GeneralStats {
 };
 
 struct EntityStats {
+  ArmourStats armour_stats;
   Abilities abilities;
   GeneralStats general;
 
