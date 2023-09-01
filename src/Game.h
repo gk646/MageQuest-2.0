@@ -1,5 +1,5 @@
-#ifndef DND_SRC_GAME_H_
-#define DND_SRC_GAME_H_
+#ifndef MAGE_QUEST_SRC_GAME_H_
+#define MAGE_QUEST_SRC_GAME_H_
 
 #define RAYLIB_IMPLEMENTATION
 #include <raylib.h>
@@ -33,8 +33,6 @@ class Game {
   bool logic_thread_running = true;
   bool multiplayer = false;
 
-  Texture2D main_menu_background;
-
   std::vector<Player> other_players;
   std::vector<Projectile> projectiles;
   std::vector<Player> npcs;
@@ -45,9 +43,8 @@ class Game {
   UIManager ui_manager{};
 
   Player player;
-  MapManager map_loader;
 
-  void render() {
+  void render() noexcept {
     while (!(WindowShouldClose() && !IsKeyDown(KEY_ESCAPE))) {
       BeginDrawing();
       ClearBackground(WHITE);
@@ -57,10 +54,8 @@ class Game {
       ui_manager.draw();
       EndDrawing();
     }
-    CloseWindow();
   }
-
-  inline void game_logic() noexcept {
+  void game_logic() noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
     auto targetDuration = std::chrono::milliseconds(16);
 
@@ -79,6 +74,7 @@ class Game {
       }
     }
   }
+
   inline void game_tick() noexcept {
     erase_if(projectiles, [&](const auto& item) { return item.dead; });
     erase_if(monsters, [&](const auto& monster) { return monster.dead; });
@@ -123,12 +119,8 @@ class Game {
     player.draw();
     WorldRender::draw_fore_ground();
   }
-  void loadResources() {
-    Image image = LoadImage("res/main_menu.png");
-    ImageResize(&image, GetMonitorWidth(0), GetMonitorHeight(0));
-    main_menu_background = LoadTextureFromImage(image);
-    UnloadImage(image);
 
+  void loadResources() {
     Image icon = LoadImage((ASSET_PATH + "dnd_logo.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
@@ -150,13 +142,16 @@ class Game {
     GuiLoadStyleCyber();
   }
   ~Game() {
-    UnloadTexture(main_menu_background);
+    for (uint_fast32_t i = 0; i < 5589; i++) {
+      UnloadTexture(TEXTURES[i]);
+    }
     logic_thread_running = false;
     logic_thread.join();
+    CloseWindow();
   }
   void start() {
     logic_thread = std::thread(&Game::game_logic, this);
     render();
   }
 };
-#endif  //DND_SRC_GAME_H_
+#endif  //MAGE_QUEST_SRC_GAME_H_

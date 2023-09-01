@@ -1,19 +1,32 @@
-#ifndef DUNGEONM_SRC_LOADING_STARTUPLOADER_H_
-#define DUNGEONM_SRC_LOADING_STARTUPLOADER_H_
+#ifndef MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_
+#define MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_
 
 #include "../graphics/MapManager.h"
-#include "../graphics/TileManager.h"
+#include "loaders/TileLoader.h"
 
 struct GameLoader {
+  static std::atomic_bool finished_cpu_loading;
 
   static void load() {
-    cxstructs::now();
+    std::thread worker(load_game);
+    worker.detach();
+  }
 
-    TileManager::load_texture_span(0, 5589);
+  static void load_game() {
+
+    TileLoader::load();
     MapManager::load_maps();
     MapManager::load_map();
+    finished_cpu_loading = true;
 
-    cxstructs::printTime();
+  }
+
+  static void finish_loading() {
+    if (finished_cpu_loading) {
+      TileLoader::load_to_vram();
+      GAME_STATE = GameState::MainMenu;
+    }
   }
 };
-#endif  //DUNGEONM_SRC_LOADING_STARTUPLOADER_H_
+std::atomic_bool GameLoader::finished_cpu_loading{false};
+#endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

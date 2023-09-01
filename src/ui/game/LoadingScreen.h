@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_LOADING_LOADINGSCREEN_H_
-#define DUNGEONM_SRC_LOADING_LOADINGSCREEN_H_
+#ifndef MAGE_QUEST_SRC_LOADING_LOADINGSCREEN_H_
+#define MAGE_QUEST_SRC_LOADING_LOADINGSCREEN_H_
 
 #include "../../gamestateio/GameLoader.h"
 #include "../../gamestateio/LoadingUtil.h"
@@ -28,4 +28,4 @@ struct LoadingScreen {
 };
 
 float LoadingScreen::progress = 0.0f;
-#endif  //DUNGEONM_SRC_LOADING_LOADINGSCREEN_H_
+#endif  //MAGE_QUEST_SRC_LOADING_LOADINGSCREEN_H_

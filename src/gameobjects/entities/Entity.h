@@ -1,5 +1,5 @@
-#ifndef DND_SRC_ENTITY_H_
-#define DND_SRC_ENTITY_H_
+#ifndef MAGE_QUEST_SRC_ENTITY_H_
+#define MAGE_QUEST_SRC_ENTITY_H_
 
 #include <string>
 #include <utility>
@@ -67,4 +67,4 @@ struct Entity {
 
   };
 };
-#endif  //DND_SRC_ENTITY_H_
+#endif  //MAGE_QUEST_SRC_ENTITY_H_

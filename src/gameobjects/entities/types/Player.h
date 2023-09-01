@@ -1,5 +1,5 @@
-#ifndef DND_SRC_ENTITIES_PLAYER_H_
-#define DND_SRC_ENTITIES_PLAYER_H_
+#ifndef MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
+#define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 
 #include "../../../system/GlobalVariables.h"
 #include "../../../ui/player/HotBar.h"
@@ -85,4 +85,4 @@ struct Player : public Entity {
   void menu_control() {}
   void hit(DamageStats stats) {}
 };
-#endif  //DND_SRC_ENTITIES_PLAYER_H_
+#endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

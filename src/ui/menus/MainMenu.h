@@ -1,5 +1,5 @@
-#ifndef DND_SRC_UI_MAINMENU_H_
-#define DND_SRC_UI_MAINMENU_H_
+#ifndef MAGE_QUEST_SRC_UI_MAINMENU_H_
+#define MAGE_QUEST_SRC_UI_MAINMENU_H_
 
 #include <thread>
 #include "../../util/Enums.h"
@@ -42,8 +42,7 @@ struct MainMenu {
       if (GuiButton({xOffset, baseYOffset + 4 * (scaled_height + vertical_gap), scaled_width,
                      scaled_height},
                     "Exit")) {
-        CloseWindow();
-        exit(EXIT_SUCCESS);
+        SetWindowCloseFlag(true);
       }
     } else if (menu_state == MenuState::Settings) {
       settings_menu.draw();
@@ -56,4 +55,4 @@ struct MainMenu {
     }
   }
 };
-#endif  //DND_SRC_UI_MAINMENU_H_
+#endif  //MAGE_QUEST_SRC_UI_MAINMENU_H_

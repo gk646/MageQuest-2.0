@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_UTIL_COLORS_H_
-#define DUNGEONM_SRC_UTIL_COLORS_H_
+#ifndef MAGE_QUEST_SRC_UTIL_COLORS_H_
+#define MAGE_QUEST_SRC_UTIL_COLORS_H_
 
 namespace Colors {
 // QUALITIES
@@ -50,4 +50,4 @@ inline const Color poison_green = {105, 215, 44, 255};
 // MISC
 inline const Color transparent = {0, 0, 0, 76};  // Alpha 0.3 * 255 = 76
 }  // namespace Colors
-#endif  //DUNGEONM_SRC_UTIL_COLORS_H_
+#endif  //MAGE_QUEST_SRC_UTIL_COLORS_H_

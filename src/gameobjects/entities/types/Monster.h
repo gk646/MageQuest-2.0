@@ -1,5 +1,5 @@
-#ifndef DND_SRC_ENTITIES_MONSTER_H_
-#define DND_SRC_ENTITIES_MONSTER_H_
+#ifndef MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
+#define MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 
 #include "../../../system/GlobalVariables.h"
 #include "../../../ui/game/HealthBar.h"
@@ -68,4 +68,4 @@ struct Monster : public Entity {
     }
   }
 };
-#endif  //DND_SRC_ENTITIES_MONSTER_H_
+#endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

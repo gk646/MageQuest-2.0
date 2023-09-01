@@ -1,5 +1,5 @@
-#ifndef DUNGEONM_SRC_UI_STYLES_CYBER_H_
-#define DUNGEONM_SRC_UI_STYLES_CYBER_H_
+#ifndef MAGE_QUEST_SRC_UI_STYLES_CYBER_H_
+#define MAGE_QUEST_SRC_UI_STYLES_CYBER_H_
 //////////////////////////////////////////////////////////////////////////////////
 //                                                                              //
 // StyleAsCode exporter v1.2 - Style data exported as a values array            //
@@ -345,4 +345,4 @@ static void GuiLoadStyleCyber(void)
   // TODO: Custom user style setup: Set specific properties here (if required)
   // i.e. Controls specific BORDER_WIDTH, TEXT_PADDING, TEXT_ALIGNMENT
 }
-#endif  //DUNGEONM_SRC_UI_STYLES_CYBER_H_
+#endif  //MAGE_QUEST_SRC_UI_STYLES_CYBER_H_
