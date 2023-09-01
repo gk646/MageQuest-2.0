@@ -14,11 +14,9 @@ struct Player : public Entity {
   std::string name;
 
   float pov;
-
   Class class_;
-  HotBar hotbar{10, 2};
 
-  Player() : Entity(), stats{}, pov(0) {}
+  Player() : Entity(), stats{}, pov(0), class_(Class::DRUID) {}
   Player(Class a_class, Point pos, Point size = {25, 25}, ShapeType shape_type = ShapeType::RECT,
          float pov = 0, std::string name = "", EntityStats stats = {})
       : Entity(pos, size, shape_type),
@@ -31,8 +29,7 @@ struct Player : public Entity {
         stats(other.stats),
         name(other.name),
         pov(other.pov),
-        class_(other.class_),
-        hotbar(other.hotbar) {}
+        class_(other.class_){}
   Player& operator=(const Player& other) {
     if (this == &other) {
       return *this;
@@ -44,45 +41,33 @@ struct Player : public Entity {
     name = other.name;
     pov = other.pov;
     class_ = other.class_;
-    hotbar = other.hotbar;
 
     return *this;
   }
   void draw() final {
-    DrawRectanglePro(CAMERA_X + size.x() / 2, CAMERA_Y + size.y() / 2, size.x(), size.y(), {0, 0},
+    DrawRectanglePro(CAMERA_X - size.x() / 2, CAMERA_Y - size.y() / 2, size.x(), size.y(), {0, 0},
                      pov, BLUE);
-    hotbar.draw();
   }
-  void update(std::vector<Projectile>* projectiles) {
+  void update() final{
     movement();
-    abilities(projectiles);
-    hotbar.update();
   }
   void movement() {
-    if (IsKeyDown(KEY_W)) {
+    if (IsKeyDown(KEY_W) && !tile_collision_up(stats.general.speed)) {
       pos.y() -= stats.general.speed;
     }
-    if (IsKeyDown(KEY_S)) {
+    if (IsKeyDown(KEY_S) && !tile_collision_down(stats.general.speed)) {
       pos.y() += stats.general.speed;
     }
-    if (IsKeyDown(KEY_A)) {
+    if (IsKeyDown(KEY_A) && !tile_collision_left(stats.general.speed)) {
       pos.x() -= stats.general.speed;
     }
-    if (IsKeyDown(KEY_D)) {
+    if (IsKeyDown(KEY_D) && !tile_collision_right(stats.general.speed)) {
       pos.x() += stats.general.speed;
     }
+
     PLAYER_X = pos.x();
     PLAYER_Y = pos.y();
   }
-  void abilities(std::vector<Projectile>* projectiles) {
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      projectiles->push_back(PoisonBall(pos, GetMousePosition()));
-    }
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-      projectiles->push_back(FireBall(pos, GetMousePosition()));
-    }
-  }
-  void menu_control() {}
-  void hit(DamageStats stats) {}
+  void hit(DamageStats damage_stats) {}
 };
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

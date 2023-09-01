@@ -1,10 +1,11 @@
 #ifndef MAGE_QUEST_SRC_UI_HOTBAR_H_
 #define MAGE_QUEST_SRC_UI_HOTBAR_H_
 
-class HotBar {
- public:
-  int columns = 10;
-  int rows = 2;
+struct HotBar {
+
+  int columns = 5;
+  int rows = 1;
+
 
   HotBar(int columns, int rows) : columns(columns), rows(rows) {}
   void draw() const noexcept {
@@ -21,12 +22,13 @@ class HotBar {
       for (int col = 0; col < columns; col++) {
         float slotX = startX + col * (slotSize + slotSpacing);
         float slotY = startY + row * (slotSize + slotSpacing);
-
-        DrawRectangleLines(slotX, slotY, slotSize, slotSize, GRAY);
+        DrawRectangleLinesEx({slotX, slotY, slotSize, slotSize}, 3, GRAY);
       }
     }
   }
-  void update() noexcept {}
+  void update() noexcept {
+
+  }
 };
 
 #endif  //MAGE_QUEST_SRC_UI_HOTBAR_H_

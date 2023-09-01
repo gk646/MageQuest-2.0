@@ -4,8 +4,8 @@
 #include <string>
 #include <utility>
 
+#include "../../gameplay/Stats.h"
 #include "../../util/Enums.h"
-#include "attributes/Stats.h"
 #include "cxstructs/Geometry.h"
 
 using namespace cxstructs;
@@ -33,11 +33,11 @@ struct Entity {
   virtual ~Entity() {}
   virtual void draw(){};
   [[nodiscard]] bool intersects(const Entity& o) const {
-    if(shape_type == ShapeType::RECT){
-      if(o.shape_type == ShapeType::RECT){
+    if (shape_type == ShapeType::RECT) {
+      if (o.shape_type == ShapeType::RECT) {
         return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
                 pos.y() < o.pos.y() + o.size.y() && pos.y() + size.y() > o.pos.y());
-      }else if(o.shape_type == ShapeType::CIRCLE){
+      } else if (o.shape_type == ShapeType::CIRCLE) {
         const float closestX = std::clamp(o.pos.x(), pos.x(), pos.x() + size.x());
         const float closestY = std::clamp(o.pos.y(), pos.y(), pos.y() + size.y());
 
@@ -46,8 +46,8 @@ struct Entity {
 
         return (dx * dx + dy * dy) <= (o.size.x() * o.size.x());
       }
-    }else if (shape_type == ShapeType::CIRCLE){
-      if(o.shape_type == ShapeType::RECT){
+    } else if (shape_type == ShapeType::CIRCLE) {
+      if (o.shape_type == ShapeType::RECT) {
         const float closestX = std::clamp(pos.x(), o.pos.x(), o.pos.x() + o.size.x());
         const float closestY = std::clamp(pos.y(), o.pos.y(), o.pos.y() + o.size.y());
 
@@ -55,7 +55,7 @@ struct Entity {
         const float dy = closestY - pos.y();
 
         return (dx * dx + dy * dy) <= (size.x() * size.x());
-      }else if (o.shape_type == ShapeType::CIRCLE){
+      } else if (o.shape_type == ShapeType::CIRCLE) {
         return (pos.x() - o.pos.x()) * (pos.x() - o.pos.x()) +
                    (pos.y() - o.pos.y()) * (pos.y() - o.pos.y()) <=
                (size.x() + o.size.x()) * (size.x() + o.size.x());
@@ -63,6 +63,31 @@ struct Entity {
     }
   }
   virtual void draw_hitbox(){};
+
+  bool tile_collision_left(float speed) {
+    int entX = (pos.x() + size.x() / 2 - speed) / TILE_SIZE;
+    int entY = (pos.y() + size.y() / 2) / TILE_SIZE;
+    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
+           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+  }
+  bool tile_collision_right(float speed) {
+    int entX = (pos.x() + size.x() / 2 + speed) / TILE_SIZE;
+    int entY = (pos.y() + size.y() / 2) / TILE_SIZE;
+    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
+           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+  }
+  bool tile_collision_down(float speed) {
+    int entX = (pos.x() + size.x() / 2) / TILE_SIZE;
+    int entY = (pos.y() + size.y() / 2 + speed) / TILE_SIZE;
+    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
+           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+  }
+  bool tile_collision_up(float speed) {
+    int entX = (pos.x() + size.x() / 2) / TILE_SIZE;
+    int entY = (pos.y() + size.y() / 2 - speed) / TILE_SIZE;
+    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
+           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+  }
   virtual void update(){
 
   };

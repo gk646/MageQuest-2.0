@@ -1,11 +1,12 @@
 #ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
+#include "game/LoadingScreen.h"
+
 #include "menus/GameMenu.h"
 #include "menus/MainMenu.h"
-#include "menus/SettingsMenu.h"
 
-#include "game/LoadingScreen.h"
+#include "menus/SettingsMenu.h"
 #include "player/PlayerUI.h"
 
 struct UIManager {
@@ -51,6 +52,10 @@ struct UIManager {
         GAME_STATE = GameState::GameMenu;
       }
     }
+  }
+
+  void update(){
+    player_ui.update();
   }
 };
 #endif  //MAGE_QUEST_SRC_UI_UIMANAGER_H_

@@ -13,7 +13,6 @@ struct Monster : public Entity {
   float pov;
   HealthBar health_bar;
 
-  Monster() : Entity(), stats{}, pov(0), health_bar(0, 0) {}
   Monster(const Point& pos, EntityStats stats, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)
       : Entity(pos, size, shape_type), pov(0), health_bar(size.x(), 15), stats(stats) {}

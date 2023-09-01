@@ -1,7 +1,7 @@
 #ifndef MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
 #define MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
 
-#include "../../gameobjects/entities/attributes/Stats.h"
+#include "../../gameplay/Stats.h"
 #include "../../system/GlobalVariables.h"
 
 struct HealthBar {
