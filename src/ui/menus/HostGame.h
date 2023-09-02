@@ -1,9 +1,8 @@
 #ifndef MAGE_QUEST_SRC_UI_MENUS_HOSTGAME_H_
 #define MAGE_QUEST_SRC_UI_MENUS_HOSTGAME_H_
 
-#include "../Component.h"
 
-class HostGame: public Component{
+class HostGame{
   
 
   void draw(float ui_scale, int x, int y) override{

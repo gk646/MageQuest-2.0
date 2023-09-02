@@ -1,14 +1,8 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_
 #define MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_
 
-#include <cstdint>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
 
-#include "../../util/Util.h"
+
 
 struct Map {
   int16_t** map_back_ground;

@@ -1,8 +1,6 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
-#include <cstdint>
-#include "../util/Enums.h"
 
 struct SkillStats {
   int cool_down = 0;
@@ -78,7 +76,7 @@ struct GeneralStats {
   float base_max_mana = 20;
   float base_max_concentration = 10;
 
-  inline void get_damage(DamageStats stats) {
+  inline void take_damage(DamageStats stats) {
     if (stats.damage_type == SourceType::MAGICAL) {
       health -= stats.damage * (1 - armour_stats.magical_armour / 100);
     } else if (stats.damage_type == SourceType::PHYSICAL) {

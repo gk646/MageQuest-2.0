@@ -1,29 +1,7 @@
 #ifndef MAGE_QUEST_SRC_GAME_H_
 #define MAGE_QUEST_SRC_GAME_H_
 
-#define RAYLIB_IMPLEMENTATION
-#include <raylib.h>
-#define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
 
-#include "system/GlobalVariables.h"
-
-#include "cxstructs/Geometry.h"
-#include "cxstructs/vec.h"
-#include "cxutil/cxtime.h."
-
-#include "gameobjects/entities/types/Monster.h"
-#include "gameobjects/entities/types/Player.h"
-#include "gameobjects/entities/types/Projectile.h"
-#include "gamestateio/GameLoader.h"
-#include "ui/UIManager.h"
-#include "util/Enums.h"
-#include "util/Util.h"
-
-#include "graphics/WorldRender.h"
-
-#include <thread>
-#include <vector>
 
 using namespace std::chrono_literals;
 
@@ -33,8 +11,6 @@ class Game {
   bool multiplayer = false;
 
   std::thread logic_thread;
-
-  Player player;
 
   UIManager ui_manager{};
 
@@ -48,7 +24,7 @@ class Game {
       }
       ui_manager.draw();
       EndDrawing();
-      FRAME_TIME = cxstructs::getTime(0);
+      FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);
     }
   }
   void game_logic() noexcept {
@@ -77,7 +53,7 @@ class Game {
     erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
 
     if (GAME_STATE == GameState::Game) {
-      player.update();
+      PLAYER.update();
     }
     ui_manager.update();
 
@@ -89,11 +65,11 @@ class Game {
       projectile.update();
       for (auto& monster : MONSTERS) {
         if (!projectile.dead && !monster.dead && projectile.intersects(monster)) {
-           monster.hit(projectile);
+          monster.hit(projectile);
         }
       }
-      if (projectile.intersects(player)) {
-        player.hit(projectile);
+      if (projectile.intersects(PLAYER)) {
+        PLAYER.hit(projectile);
       }
     }
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
@@ -115,12 +91,13 @@ class Game {
     for (auto players : OTHER_PLAYERS) {
       players.draw();
     }
-    player.draw();
+    PLAYER.draw();
     WorldRender::draw_fore_ground();
+    BenchMark::draw_stats();
   }
 
  public:
-  Game() : player(Class::DRUID, {200, 200}, {25, 25}, ShapeType::CIRCLE) {
+  Game() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");

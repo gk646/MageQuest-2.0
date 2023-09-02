@@ -1,8 +1,6 @@
 #ifndef MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 #define MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 
-#include <unordered_map>
-
 enum class GameState { MainMenu, GameMenu, Game, Loading };
 enum class MenuState { Main, Settings, ServerBrowser, HostGame };
 

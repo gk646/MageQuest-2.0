@@ -1,11 +1,9 @@
 #ifndef MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
-#include "../../../gameplay/Stats.h"
-#include "../../../util/Enums.h"
 #include "../Entity.h"
 
-struct Projectile : public Entity {
+struct Projectile final : public Entity {
   bool from_player;
   float speed = 1;
   int life_span_ticks = 0;
@@ -14,7 +12,7 @@ struct Projectile : public Entity {
   DamageStats damage_stats;
   Point move_vector;
   std::vector<StatusEffect*> status_effects;
-  Projectile(bool from_player, Point pos, Point size, ShapeType shape_type, Vector2 destination,
+  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type, Vector2 destination,
              int life_span, float speed, DamageStats damage_stats, ProjectileType type)
       : Entity(pos, size, shape_type),
         life_span(life_span),
@@ -30,8 +28,8 @@ struct Projectile : public Entity {
         speed(p.speed),
         life_span(p.life_span),
         life_span_ticks(p.life_span_ticks),
-        damage_stats(p.damage_stats) {}
-  ~Projectile(){
+        damage_stats(p.damage_stats), from_player(p.from_player) {}
+  ~Projectile() final{
     for(auto ptr : status_effects){
       delete ptr;
     }

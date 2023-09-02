@@ -15,8 +15,8 @@ struct HotBar {
     const float hotbarWidth = columns * slotSize + (columns - 1) * slotSpacing;
     const float hotbarHeight = rows * slotSize + (rows - 1) * slotSpacing;
 
-    const float startX = (SCREEN_WIDTH - hotbarWidth) / 2.0;
-    const float startY = SCREEN_HEIGHT - (SCREEN_HEIGHT - hotbarHeight) / 8.0;
+    const float startX = (SCREEN_WIDTH - hotbarWidth) / 2.0F;
+    const float startY = SCREEN_HEIGHT - (SCREEN_HEIGHT - hotbarHeight) / 8.0F;
 
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < columns; col++) {

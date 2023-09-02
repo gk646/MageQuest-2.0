@@ -1,9 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECT_H_
 #define MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECT_H_
 
-#include <cxutil/cxtime.h>
-#include "Stats.h"
-
 struct StatusEffect {
   StatusEffectType effect_type;
   SourceType source_type;
