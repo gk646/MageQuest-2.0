@@ -6,10 +6,10 @@
 
 struct Ability {
   DamageStats damage_stats;
-  AbilityStats ability_stats;
+  SkillStats ability_stats;
   float cool_down_ticks = 0;
 
-  Ability(AbilityStats ability_stats, DamageStats damage_stats)
+  Ability(SkillStats ability_stats, DamageStats damage_stats)
       : damage_stats(damage_stats), ability_stats(ability_stats) {}
   virtual void activate() = 0;
   virtual void update() = 0;

@@ -4,107 +4,106 @@
 #include <cstdint>
 #include "../util/Enums.h"
 
-
-struct AbilityStats{
-  int cool_down;
-  float mana_cost;
-  float health_cost;
+struct SkillStats {
+  int cool_down = 0;
+  float mana_cost = 1;
+  float health_cost = 0;
 };
 
 struct DamageStats {
-  DamageType damage_type;
-  MagicType magic_type;
-  ProjectileType projectile_type;
-  float damage;
-
-  DamageStats()
-      : damage_type(DamageType::PHYSICAL),
-        magic_type(MagicType::FIRE),
-        damage(1),
-        projectile_type(ProjectileType::ONE_HIT) {}
-
-  DamageStats(DamageType damage_type, MagicType magic_type, ProjectileType projectile_type,
-              float damage)
-      : damage_type(damage_type),
-        magic_type(magic_type),
-        projectile_type(projectile_type),
-        damage(damage) {}
+  SourceType damage_type = SourceType::MAGICAL;
+  MagicType magic_type = MagicType::FIRE;
+  float damage = 1;
+  inline bool operator==(const DamageStats& d) const {
+    return damage_type == d.damage_type && magic_type == d.magic_type && damage == d.damage;
+  }
 };
+
 struct ArmourStats {
-  float physical_armour;
-  float magical_armour;
+  float physical_armour = 0;
+  float magical_armour = 0;
 
-  ArmourStats() : physical_armour(0), magical_armour(0) {}
-  ArmourStats(float physical_armour, float magical_armour)
-      : physical_armour(physical_armour), magical_armour(magical_armour) {}
+  float base_physical_armour = 0;
+  float base_magical_armour = 0;
 
-   float get_damage(DamageStats stats) const {
-    if (stats.damage_type == DamageType::MAGICAL) {
-      return stats.damage * (1 - magical_armour / 100);
-    }else if(stats.damage_type == DamageType::PHYSICAL){
-      return stats.damage * (1 - physical_armour / 100);
-    }
+  inline void reset_to_base() {
+    physical_armour = base_physical_armour;
+    magical_armour = base_magical_armour;
   }
 };
 
 //Percent Values
-struct CombatStats{
-  float cooldown_reduction;
-
+struct CombatStats {
+  int16_t cooldown_reduction = 0;
 };
 
 struct Abilities {
-  int8_t strength;
-  int8_t wisdom;
-  int8_t dexterity;
-  int8_t intelligence;
-  int8_t charisma;
-  int8_t constitution;
+  int8_t strength = 0;
+  int8_t wisdom = 0;
+  int8_t dexterity = 0;
+  int8_t intelligence = 0;
+  int8_t charisma = 0;
+  int8_t constitution = 0;
 
-  Abilities()
-      : strength(0), wisdom(0), dexterity(0), intelligence(0), charisma(0), constitution(0) {}
+  int8_t base_strength = 0;
+  int8_t base_wisdom = 0;
+  int8_t base_dexterity = 0;
+  int8_t base_intelligence = 0;
+  int8_t base_charisma = 0;
+  int8_t base_constitution = 0;
 
-  Abilities(int8_t strength, int8_t wisdom, int8_t dexterity, int8_t intelligence, int8_t charisma,
-            int8_t constitution)
-      : strength(strength),
-        wisdom(wisdom),
-        dexterity(dexterity),
-        intelligence(intelligence),
-        charisma(charisma),
-        constitution(constitution) {}
+  inline void reset_to_base() noexcept {
+    strength = base_strength;
+    wisdom = base_wisdom;
+    dexterity = base_dexterity;
+    intelligence = base_intelligence;
+    charisma = base_charisma;
+    constitution = base_constitution;
+  }
 };
 
 struct GeneralStats {
-  float mana;
-  float concentration;
-  float health;
-  float speed;
+  ArmourStats armour_stats;
+  float mana = 20;
+  float concentration = 10;
+  float health = 10;
 
-  float base_speed;
-  float max_health;
-  float max_mana;
-  float max_concentration;
+  float speed = 3;
+  float max_health = 10;
+  float max_mana = 20;
+  float max_concentration = 10;
 
-  GeneralStats() : mana(0), concentration(0), health(10), max_health(10), speed(5) {}
+  float base_speed = 3;
+  float base_max_health = 10;
+  float base_max_mana = 20;
+  float base_max_concentration = 10;
 
-  GeneralStats(float mana, float concentration, float health, float speed = 5)
-      : mana(mana),
-        concentration(concentration),
-        health(health),
-        max_health(health),
-        speed(speed) {}
+  inline void get_damage(DamageStats stats) {
+    if (stats.damage_type == SourceType::MAGICAL) {
+      health -= stats.damage * (1 - armour_stats.magical_armour / 100);
+    } else if (stats.damage_type == SourceType::PHYSICAL) {
+      health -= stats.damage * (1 - armour_stats.physical_armour / 100);
+    }
+  }
+  inline void reset_to_base() {
+    armour_stats.reset_to_base();
+
+    speed = base_speed;
+    max_health = base_max_health;
+    max_mana = base_max_mana;
+    max_concentration = base_max_concentration;
+  }
 };
 
 struct EntityStats {
-  ArmourStats armour_stats;
   Abilities abilities;
   GeneralStats general;
   CombatStats combat_stats;
 
-  EntityStats() : abilities{}, general{} {}
-
-  EntityStats(const Abilities& abilities, const GeneralStats& general)
-      : abilities(abilities), general(general) {}
+  inline void reset_to_base() {
+    abilities.reset_to_base();
+    general.reset_to_base();
+  }
 };
 
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
