@@ -6,7 +6,7 @@
 struct FireStrike : Ability {
 
   FireStrike()
-      : Ability({400, 20, 0}, {DamageType::MAGICAL, MagicType::FIRE, ProjectileType::ONE_HIT, 10}) {
+      : Ability({400, 20, 0}, {SourceType::MAGICAL, MagicType::FIRE, ProjectileType::ONE_HIT, 10}) {
   }
 
   void activate() final {

@@ -4,12 +4,12 @@
 #include "../../../system/GlobalVariables.h"
 #include "../../../ui/game/HealthBar.h"
 #include "../Entity.h"
+#include "Projectile.h"
 
 struct Monster : public Entity {
   EntityStats stats;
   std::string name;
 
-  bool dead = false;
   float pov;
   HealthBar health_bar;
 
@@ -59,12 +59,10 @@ struct Monster : public Entity {
     }
     health_bar.update();
   }
-  void hit(DamageStats damage_stats, bool* other_dead) {
+  void hit(Projectile& p) {
     health_bar.hit();
-    stats.general.health -= stats.armour_stats.get_damage(damage_stats);
-    if (damage_stats.projectile_type == ProjectileType::ONE_HIT) {
-      *other_dead = true;
-    }
+    stats.general.get_damage(p.damage_stats);
+
   }
 };
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

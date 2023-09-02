@@ -22,7 +22,6 @@
 
 #include "graphics/WorldRender.h"
 
-
 #include <thread>
 #include <vector>
 
@@ -41,6 +40,7 @@ class Game {
 
   void render() noexcept {
     while (!(WindowShouldClose() && !IsKeyDown(KEY_ESCAPE))) {
+      cxstructs::now(0);
       BeginDrawing();
       ClearBackground(WHITE);
       if (GAME_STATE == GameState::Game || GAME_STATE == GameState::GameMenu) {
@@ -48,6 +48,7 @@ class Game {
       }
       ui_manager.draw();
       EndDrawing();
+      FRAME_TIME = cxstructs::getTime(0);
     }
   }
   void game_logic() noexcept {
@@ -71,16 +72,13 @@ class Game {
   }
 
   inline void game_tick() noexcept {
+    cxstructs::now();
     erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
     erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
 
     if (GAME_STATE == GameState::Game) {
       player.update();
     }
-
-    PLAYER_TILE_X = (player.pos.x() + player.size.x() / 2) / TILE_SIZE;
-    PLAYER_TILE_Y = (player.pos.y() + player.size.y() / 2) / TILE_SIZE;
-
     ui_manager.update();
 
     for (auto& monster : MONSTERS) {
@@ -91,10 +89,14 @@ class Game {
       projectile.update();
       for (auto& monster : MONSTERS) {
         if (!projectile.dead && !monster.dead && projectile.intersects(monster)) {
-          monster.hit(projectile.damage_stats, &projectile.dead);
+           monster.hit(projectile);
         }
       }
+      if (projectile.intersects(player)) {
+        player.hit(projectile);
+      }
     }
+    GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
   }
   inline void drawGame() noexcept {
     CAMERA_X = SCREEN_WIDTH / 2;
@@ -118,12 +120,11 @@ class Game {
   }
 
  public:
-  Game() {
+  Game() : player(Class::DRUID, {200, 200}, {25, 25}, ShapeType::CIRCLE) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
 
-    player = Player(Class::DRUID, {200, 200}, {25, 25}, ShapeType::CIRCLE);
     //SettingsMenu::set_full_screen();
   }
   ~Game() {

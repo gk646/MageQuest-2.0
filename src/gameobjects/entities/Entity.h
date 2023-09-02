@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "../../gameplay/Stats.h"
+#include "../../gameplay/StatusEffect.h"
 #include "../../util/Enums.h"
 #include "cxstructs/Geometry.h"
 
@@ -15,6 +16,7 @@ struct Entity {
 
   Point pos;
   Point size;
+  bool dead = false;
   Entity() : pos{}, size{}, shape_type(ShapeType::RECT) {}
   Entity(const Point& pos, const Point& size, ShapeType shape_type)
       : pos(pos), size(size), shape_type(shape_type) {}
@@ -31,8 +33,12 @@ struct Entity {
     return *this;
   }
   virtual ~Entity() {}
-  virtual void draw(){};
+  virtual void update() = 0;
+  virtual void draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const {
+    if (dead || o.dead) {
+      return false;
+    }
     if (shape_type == ShapeType::RECT) {
       if (o.shape_type == ShapeType::RECT) {
         return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
@@ -63,7 +69,6 @@ struct Entity {
     }
   }
   virtual void draw_hitbox(){};
-
   bool tile_collision_left(float speed) {
     int entX = (pos.x() + size.x() / 2 - speed) / TILE_SIZE;
     int entY = (pos.y() + size.y() / 2) / TILE_SIZE;
@@ -88,8 +93,5 @@ struct Entity {
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
-  virtual void update(){
-
-  };
 };
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

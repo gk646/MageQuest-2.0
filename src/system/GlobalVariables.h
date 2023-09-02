@@ -6,7 +6,6 @@
 
 #include "Definitions.h"
 
-
 #include "../graphics/maps/Map.h"
 #include "../util/Colors.h"
 #include "../util/Enums.h"
@@ -35,6 +34,7 @@ inline int CURRENT_MAP_SIZE = 100;
 inline Texture2D TEXTURES[6000];
 inline int COLLISIONS[6000];
 
+inline Difficulty GAME_DIFFICULTY;
 
 //Entities
 #include "../gameobjects/entities/types/Monster.h"
@@ -51,5 +51,9 @@ inline std::vector<Map> MAPS{};
 //BENCHMARK
 inline int PERF_FRAMES = 0;
 inline long long PERF_TIME = 0;
+
+
+inline long long GAME_TICK_TIME = 0;
+inline long long FRAME_TIME = 0;
 
 #endif  //MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_
