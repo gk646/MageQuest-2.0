@@ -3,9 +3,13 @@
 
 struct PlayerUI {
 
-  HotBar hot_bar_{5, 1};
-  void draw() const { hot_bar_.draw(); }
+  void draw() const {
+    PLAYER.status_effects.draw();
+    PLAYER.hot_bar.draw();
+  }
 
-  void update() { hot_bar_.update(); }
+  void update() {
+
+  }
 };
 #endif  //MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_

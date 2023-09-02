@@ -1,13 +1,8 @@
 #ifndef MAGE_QUEST_SRC_ENTITY_H_
 #define MAGE_QUEST_SRC_ENTITY_H_
 
-#include <string>
-#include <utility>
 
-#include "../../gameplay/Stats.h"
-#include "../../gameplay/StatusEffect.h"
-#include "../../util/Enums.h"
-#include "cxstructs/Geometry.h"
+#include "../../gameplay/StatusEffectHandler.h"
 
 using namespace cxstructs;
 
@@ -17,6 +12,7 @@ struct Entity {
   Point pos;
   Point size;
   bool dead = false;
+
   Entity() : pos{}, size{}, shape_type(ShapeType::RECT) {}
   Entity(const Point& pos, const Point& size, ShapeType shape_type)
       : pos(pos), size(size), shape_type(shape_type) {}

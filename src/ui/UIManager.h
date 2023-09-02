@@ -21,6 +21,7 @@ struct UIManager {
     if (GAME_STATE == GameState::Game) {
       player_ui.draw();
     } else if (GAME_STATE == GameState::GameMenu) {
+      player_ui.draw();
       game_menu.draw();
     } else if (GAME_STATE == GameState::MainMenu) {
       main_menu.draw();
@@ -45,6 +46,9 @@ struct UIManager {
         CAMERA_Y = SCREEN_HEIGHT / 2;
       }
     }
+  }
+
+  void update() {
     if (IsKeyPressed(KEY_ESCAPE)) {
       if (GAME_STATE == GameState::GameMenu && game_menu.menu_state == MenuState::Main) {
         GAME_STATE = GameState::Game;
@@ -52,10 +56,9 @@ struct UIManager {
         GAME_STATE = GameState::GameMenu;
       }
     }
-  }
-
-  void update(){
-    player_ui.update();
+    if (GAME_STATE == GameState::Game) {
+      player_ui.update();
+    }
   }
 };
 #endif  //MAGE_QUEST_SRC_UI_UIMANAGER_H_

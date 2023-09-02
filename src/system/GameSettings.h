@@ -1,0 +1,8 @@
+#ifndef MAGEQUEST_SRC_SYSTEM_SETTINGS_H_
+#define MAGEQUEST_SRC_SYSTEM_SETTINGS_H_
+
+struct GameSettings {
+
+  void
+};
+#endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

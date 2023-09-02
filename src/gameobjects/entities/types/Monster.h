@@ -1,17 +1,17 @@
 #ifndef MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 #define MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 
+#include "../Entity.h"
 #include "../../../system/GlobalVariables.h"
 #include "../../../ui/game/HealthBar.h"
-#include "../Entity.h"
 #include "Projectile.h"
 
 struct Monster : public Entity {
   EntityStats stats;
-  std::string name;
-
   float pov;
   HealthBar health_bar;
+  StatusEffectHandler status_effects{stats};
+  std::string name;
 
   Monster(const Point& pos, EntityStats stats, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)
@@ -61,7 +61,7 @@ struct Monster : public Entity {
   }
   void hit(Projectile& p) {
     health_bar.hit();
-    stats.general.get_damage(p.damage_stats);
+    stats.general.take_damage(p.damage_stats);
 
   }
 };

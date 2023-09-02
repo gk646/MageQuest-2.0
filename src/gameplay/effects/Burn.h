@@ -2,17 +2,19 @@
 #define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_BURN_H_
 #include "../StatusEffect.h"
 
-struct Burn : StatusEffect {
-
-  Burn(float value, float cadence, int duration)
-      : StatusEffect(EffectStats{StatusEffectType::DE_BUFF, SourceType::MAGICAL, 0, duration},
-                     DamageStats{SourceType::MAGICAL, MagicType::ICE, value}) {}
-
+struct Burn final: StatusEffect {
+  DamageStats damage_stats;
+  Burn(DamageStats damage_stats, int duration, int tick_speed)
+      : StatusEffect(StatusEffectType::DE_BUFF, SourceType::MAGICAL, tick_speed, duration, false),
+        damage_stats(damage_stats) {}
+  StatusEffect* clone() const override { return new Burn(*this); }
+  void activate(EntityStats& stats) const final {}
   void tick(EntityStats& stats) final {
     if (is_damage_tick()) {
-      stats.get_damage(damage_stats);
+      stats.general.take_damage(damage_stats);
     }
-    current_ticks++;
+    duration--;
   }
+  void deactivate(EntityStats& stats) const final {}
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_BURN_H_

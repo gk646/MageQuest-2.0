@@ -1,14 +1,11 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECTHANDLER_H_
 #define MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECTHANDLER_H_
 
-#include "../gameobjects/entities/types/Projectile.h"
-
-struct StatusEffectComponent {
+struct StatusEffectHandler {
   EntityStats& stats;
-  std::vector<StatusEffect*> status_effects;
+  std::vector<StatusEffect*> status_effects{};
   bool effects_changed = false;
-  explicit StatusEffectComponent(EntityStats& stats) : stats(stats) {}
-
+  explicit StatusEffectHandler(EntityStats& stats) : stats(stats) {}
   void add_effects(const std::vector<StatusEffect*>& o) {
     for (const auto& new_effect : o) {
       bool is_new = true;
@@ -30,7 +27,7 @@ struct StatusEffectComponent {
   void update() noexcept {
     if (effects_changed) {
       stats.reset_to_base();
-      for(const auto& effect : status_effects){
+      for (const auto& effect : status_effects) {
         effect->activate(stats);
       }
       effects_changed = false;
