@@ -47,6 +47,7 @@ class Game {
 
   inline void game_tick() noexcept {
     cxstructs::now();
+    PlaySound(sound::intro);
     std::unique_lock<std::shared_mutex> lock(rwLock);
     erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
     erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
@@ -100,6 +101,7 @@ class Game {
   Game() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
+    InitAudioDevice();
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     for (uint_fast32_t i = 0; i < 100; i++) {
@@ -113,6 +115,7 @@ class Game {
     }
     logic_thread_running = false;
     logic_thread.join();
+    CloseAudioDevice();
     CloseWindow();
   }
   void start() {

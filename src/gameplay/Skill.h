@@ -70,5 +70,6 @@ struct Skill {
 };
 
 #include "abilities/FireStrike.h"
+#include "abilities/FireBall.h"
 #include "abilities/Dummy.h"
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

@@ -4,12 +4,11 @@
 using namespace cxstructs;
 
 struct Entity {
-  ShapeType shape_type;
-
+  bool dead = false;
+  float pov;
   Point pos;
   Point size;
-  bool dead = false;
-
+  ShapeType shape_type;
   Entity() : pos{}, size{}, shape_type(ShapeType::RECT) {}
   Entity(const Point& pos, const Point& size, ShapeType shape_type)
       : pos(pos), size(size), shape_type(shape_type) {}
@@ -32,39 +31,41 @@ struct Entity {
     if (dead || o.dead) {
       return false;
     }
-    if (shape_type == ShapeType::RECT) {
-      if (o.shape_type == ShapeType::RECT) {
-        return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
-                pos.y() < o.pos.y() + o.size.y() && pos.y() + size.y() > o.pos.y());
-      } else if (o.shape_type == ShapeType::CIRCLE) {
-        const float closestX = std::clamp(o.pos.x(), pos.x(), pos.x() + size.x());
-        const float closestY = std::clamp(o.pos.y(), pos.y(), pos.y() + size.y());
+    if (pov == 0) {
+      if (shape_type == ShapeType::RECT) {
+        if (o.shape_type == ShapeType::RECT) {
+          return (pos.x() < o.pos.x() + o.size.x() && pos.x() + size.x() > o.pos.x() &&
+                  pos.y() < o.pos.y() + o.size.y() && pos.y() + size.y() > o.pos.y());
+        } else if (o.shape_type == ShapeType::CIRCLE) {
+          float other_radius_sq = o.size.x() * o.size.x();
+          const float closestX = std::clamp(o.pos.x(), pos.x(), pos.x() + size.x());
+          const float closestY = std::clamp(o.pos.y(), pos.y(), pos.y() + size.y());
 
-        const float dx = closestX - o.pos.x();
-        const float dy = closestY - o.pos.y();
+          return ((closestX - o.pos.x()) * (closestX - o.pos.x()) +
+                  (closestY - o.pos.y()) * (closestY - o.pos.y())) <= other_radius_sq;
+        }
+      } else if (shape_type == ShapeType::CIRCLE) {
+        float radius_sq = size.x() * size.x();
+        if (o.shape_type == ShapeType::RECT) {
+          const float closestX = std::clamp(pos.x(), o.pos.x(), o.pos.x() + o.size.x());
+          const float closestY = std::clamp(pos.y(), o.pos.y(), o.pos.y() + o.size.y());
 
-        return (dx * dx + dy * dy) <= (o.size.x() * o.size.x());
+          return ((closestX - pos.x()) * (closestX - pos.x()) +
+                  (closestY - pos.y()) * (closestY - pos.y())) <= radius_sq;
+        } else if (o.shape_type == ShapeType::CIRCLE) {
+          float other_radius_sq = o.size.x() * o.size.x();
+          return ((pos.x() - o.pos.x()) * (pos.x() - o.pos.x()) +
+                  (pos.y() - o.pos.y()) * (pos.y() - o.pos.y())) <= (radius_sq + other_radius_sq);
+        }
       }
-    } else if (shape_type == ShapeType::CIRCLE) {
-      if (o.shape_type == ShapeType::RECT) {
-        const float closestX = std::clamp(pos.x(), o.pos.x(), o.pos.x() + o.size.x());
-        const float closestY = std::clamp(pos.y(), o.pos.y(), o.pos.y() + o.size.y());
-
-        const float dx = closestX - pos.x();
-        const float dy = closestY - pos.y();
-
-        return (dx * dx + dy * dy) <= (size.x() * size.x());
-      } else if (o.shape_type == ShapeType::CIRCLE) {
-        return (pos.x() - o.pos.x()) * (pos.x() - o.pos.x()) +
-                   (pos.y() - o.pos.y()) * (pos.y() - o.pos.y()) <=
-               (size.x() + o.size.x()) * (size.x() + o.size.x());
-      }
+    } else {
+      return false;
     }
   }
-  void draw_hitbox(){
-      if(shape_type== ShapeType::RECT){
-      DrawRectangleLinesEx({pos.x(), pos.y(), size.x(), size.y()}, 3,RED);
-      }
+  void draw_hitbox() {
+    if (shape_type == ShapeType::RECT) {
+      DrawRectangleLinesEx({pos.x(), pos.y(), size.x(), size.y()}, 3, RED);
+    }
   };
   bool tile_collision_left(float speed) {
     int entX = (pos.x() + size.x() / 2 - speed) / TILE_SIZE;

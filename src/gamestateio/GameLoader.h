@@ -9,6 +9,7 @@ struct GameLoader {
   }
 
   static void load_game() {
+    load_step(SoundLoader::load);
     load_step(load_window_icon);
     load_step(TileLoader::load);
     load_step(MapManager::load_maps);
@@ -20,6 +21,8 @@ struct GameLoader {
     if (finished_cpu_loading) {
       load_step(GuiLoadStyleCyber);
       load_step(TileLoader::load_to_vram);
+
+      //PlaySound(sound::intro);
       GAME_STATE = GameState::MainMenu;
       LoadingScreen::progress = 0;
       finished_cpu_loading = false;

@@ -1,8 +1,6 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
 
-
-
 struct TileLoader {
   static constexpr int TEXTURE_COUNT = 5589;
   static std::vector<Image> images;
