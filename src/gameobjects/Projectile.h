@@ -1,25 +1,24 @@
 #ifndef MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
-#include "../Entity.h"
-
-struct Projectile final : public Entity {
+struct Projectile : public Entity {
   bool from_player;
-  float speed = 1;
-  int life_span_ticks = 0;
+  float speed;
   int life_span;
   ProjectileType projectile_type = ProjectileType::ONE_HIT;
   DamageStats damage_stats;
   Point move_vector;
-  std::vector<StatusEffect*> status_effects;
-  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type, Vector2 destination,
-             int life_span, float speed, DamageStats damage_stats, ProjectileType type)
+  std::vector<StatusEffect*> status_effects{};
+  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
+             Vector2 destination, int life_span, float speed, DamageStats damage_stats,
+             ProjectileType type, const std::vector<StatusEffect*>& effects)
       : Entity(pos, size, shape_type),
         life_span(life_span),
         speed(speed),
         damage_stats(damage_stats),
         from_player(from_player),
-        projectile_type(type) {
+        projectile_type(type),
+        status_effects(effects) {  // Initialize status_effects
     move_vector = get_move_vector(destination);
   }
   Projectile(const Projectile& p)
@@ -27,11 +26,11 @@ struct Projectile final : public Entity {
         move_vector(p.move_vector),
         speed(p.speed),
         life_span(p.life_span),
-        life_span_ticks(p.life_span_ticks),
-        damage_stats(p.damage_stats), from_player(p.from_player) {}
-  ~Projectile() final{
-    for(auto ptr : status_effects){
-      delete ptr;
+        damage_stats(p.damage_stats),
+        from_player(p.from_player),
+        projectile_type(p.projectile_type) {
+    for (const auto& effect : p.status_effects) {
+      status_effects.push_back(effect->clone());
     }
   }
   Projectile& operator=(const Projectile& other) {
@@ -41,14 +40,30 @@ struct Projectile final : public Entity {
 
     Entity::operator=(other);
 
+    // Clean up existing status_effects
+    for (auto ptr : status_effects) {
+      delete ptr;
+    }
+    status_effects.clear();
+
+    // Deep copy other's status_effects
+    for (const auto& effect : other.status_effects) {
+      status_effects.push_back(effect->clone());
+    }
+
     move_vector = other.move_vector;
-    dead = other.dead;
     speed = other.speed;
     life_span = other.life_span;
-    life_span_ticks = other.life_span_ticks;
     damage_stats = other.damage_stats;
+    from_player = other.from_player;
+    projectile_type = other.projectile_type;
 
     return *this;
+  }
+  ~Projectile() {
+    for (auto ptr : status_effects) {
+      delete ptr;
+    }
   }
   Point get_move_vector(Vector2 mouse_pos) {
     float angle = std::atan2(mouse_pos.y - (pos.y() - PLAYER_Y + CAMERA_Y),
@@ -70,10 +85,13 @@ struct Projectile final : public Entity {
   void update() override {
     pos.x() += move_vector.x() * speed;
     pos.y() += move_vector.y() * speed;
-    life_span_ticks += 1;
-    if (life_span_ticks >= life_span) {
+    life_span--;
+    if (life_span <= 0) {
       dead = true;
     }
   }
 };
+
+#include "projectiles/FireBall.h"
+#include "projectiles/PoisonBall.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

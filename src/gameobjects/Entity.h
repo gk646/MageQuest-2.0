@@ -1,9 +1,6 @@
 #ifndef MAGE_QUEST_SRC_ENTITY_H_
 #define MAGE_QUEST_SRC_ENTITY_H_
 
-
-#include "../../gameplay/StatusEffectHandler.h"
-
 using namespace cxstructs;
 
 struct Entity {
@@ -64,7 +61,11 @@ struct Entity {
       }
     }
   }
-  virtual void draw_hitbox(){};
+  void draw_hitbox(){
+      if(shape_type== ShapeType::RECT){
+      DrawRectangleLinesEx({pos.x(), pos.y(), size.x(), size.y()}, 3,RED);
+      }
+  };
   bool tile_collision_left(float speed) {
     int entX = (pos.x() + size.x() / 2 - speed) / TILE_SIZE;
     int entY = (pos.y() + size.y() / 2) / TILE_SIZE;

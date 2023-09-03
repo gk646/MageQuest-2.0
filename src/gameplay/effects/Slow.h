@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_EFFECTS_SLOW_H_
 #define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_SLOW_H_
 
-#include "../StatusEffect.h"
 
 struct Slow : StatusEffect {
   float slow_percent;

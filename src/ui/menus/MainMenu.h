@@ -1,10 +1,7 @@
 #ifndef MAGE_QUEST_SRC_UI_MAINMENU_H_
 #define MAGE_QUEST_SRC_UI_MAINMENU_H_
 
-#include <thread>
-#include "../../system/Enums.h"
 #include "ServerBrowser.h"
-#include "SettingsMenu.h"
 
 struct MainMenu {
   ServerBrowser server_browser{};

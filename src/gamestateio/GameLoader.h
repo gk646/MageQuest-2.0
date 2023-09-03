@@ -1,12 +1,6 @@
 #ifndef MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_
 #define MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_
 
-#include "../graphics/MapManager.h"
-#include "../ui/StyleSheet.h"
-#include "../ui/game/LoadingScreen.h"
-#include "LoadingUtil.h"
-#include "loaders/TileLoader.h"
-
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
   static void load() {

@@ -1,8 +1,6 @@
 #ifndef MAGE_QUEST_SRC_GAME_H_
 #define MAGE_QUEST_SRC_GAME_H_
 
-
-
 using namespace std::chrono_literals;
 
 class Game {
@@ -49,6 +47,7 @@ class Game {
 
   inline void game_tick() noexcept {
     cxstructs::now();
+    std::unique_lock<std::shared_mutex> lock(rwLock);
     erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
     erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
 
@@ -56,6 +55,7 @@ class Game {
       PLAYER.update();
     }
     ui_manager.update();
+    lock.unlock();
 
     for (auto& monster : MONSTERS) {
       monster.update();
@@ -78,7 +78,7 @@ class Game {
     CAMERA_X = SCREEN_WIDTH / 2;
     CAMERA_Y = SCREEN_HEIGHT / 2;
     WorldRender::draw();
-
+    std::shared_lock<std::shared_mutex> lock(rwLock);
     for (auto& projectile : PROJECTILES) {
       projectile.draw();
     }
@@ -101,7 +101,9 @@ class Game {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
-
+    for (uint_fast32_t i = 0; i < 100; i++) {
+      //MONSTERS.push_back(Monster({500,150},{50,50}));
+    }
     //SettingsMenu::set_full_screen();
   }
   ~Game() {

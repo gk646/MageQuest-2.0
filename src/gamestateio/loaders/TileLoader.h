@@ -1,8 +1,7 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
 
-#include <thread>
-#include "cxutil/cxtime.h"
+
 
 struct TileLoader {
   static constexpr int TEXTURE_COUNT = 5589;
