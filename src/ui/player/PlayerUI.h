@@ -8,6 +8,8 @@ struct PlayerUI {
     PLAYER_HOTBAR.draw();
   }
 
-  void update() {}
+  void update() {
+
+  }
 };
 #endif  //MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_

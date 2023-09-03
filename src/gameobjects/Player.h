@@ -39,10 +39,10 @@ struct Player : public Entity {
     }
   }
   void update() final {
-    abilities();
-    status_effects.update();
     movement();
     PLAYER_HOTBAR.update();
+    abilities();
+    status_effects.update();
     PLAYER_TILE_X = (pos.x() + size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (pos.y() + size.y() / 2) / TILE_SIZE;
   }

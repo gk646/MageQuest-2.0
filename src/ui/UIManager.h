@@ -40,9 +40,6 @@ struct UIManager {
         CAMERA_Y = SCREEN_HEIGHT / 2;
       }
     }
-  }
-
-  void update() {
     if (IsKeyPressed(KEY_ESCAPE)) {
       if (GAME_STATE == GameState::GameMenu && game_menu.menu_state == MenuState::Main) {
         GAME_STATE = GameState::Game;
@@ -50,7 +47,10 @@ struct UIManager {
         GAME_STATE = GameState::GameMenu;
       }
     }
-    if (GAME_STATE == GameState::Game) {
+  }
+
+  void update() {
+    if (GAME_STATE == GameState::Game || GAME_STATE == GameState::GameMenu) {
       player_ui.update();
     }
   }

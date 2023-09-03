@@ -6,7 +6,7 @@
 struct HotBar {
   int columns = 5;
   int rows = 1;
-  std::array<Skill*, 5> skills{};
+  std::array<Skill*, 5> skills{new Dummy(),new Dummy(),new Dummy(),new Dummy(),new Dummy()};
   HotBar(int columns, int rows) : columns(columns), rows(rows) {}
   void draw() const noexcept {
     const float slotSize = 30 * UI_SCALE;
@@ -22,7 +22,7 @@ struct HotBar {
       for (int col = 0; col < columns; col++) {
         float slotX = startX + col * (slotSize + slotSpacing);
         float slotY = startY + row * (slotSize + slotSpacing);
-        skills[columns]->draw(slotX, slotY, slotSize);
+        skills[1]->draw(slotX, slotY, slotSize);
       }
     }
   }
@@ -44,9 +44,7 @@ struct HotBar {
     }
 
     for (const auto& skill : skills) {
-      if (skill) {
-        skill->update();
-      }
+      skill->update();
     }
   }
 };

@@ -28,9 +28,6 @@ struct FireStrike final : public Skill {
                                        {new Burn{1, 1, 1}}, {x_component, y_component}));
     }
   }
-  inline void update() final {
-    std::cout << cool_down_ticks << std::endl;
-    cool_down_ticks++;
-  }
+  inline void update() final { cool_down_ticks++; }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ABILITIES_FIRESTRIKE_H_

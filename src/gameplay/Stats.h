@@ -5,6 +5,8 @@ struct SkillStats {
   float cool_down = 0;
   float mana_cost = 1;
   float health_cost = 0;
+
+  inline float get_cd(float cd_percent) const { return cool_down - cool_down * (cd_percent / 100); }
 };
 
 struct DamageStats {
