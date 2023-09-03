@@ -1,9 +1,7 @@
 #ifndef MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 #define MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 
-#include <array>
-#include <functional>
-#include <thread>
+
 
 namespace load_util {
 const std::array<float, 6> weights{2, 10, 4, 1, 1, 1};

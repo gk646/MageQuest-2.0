@@ -1,11 +1,6 @@
 #ifndef MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 #define MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 
-#include "../Entity.h"
-#include "../../../system/GlobalVariables.h"
-#include "../../../ui/game/HealthBar.h"
-#include "Projectile.h"
-
 struct Monster : public Entity {
   EntityStats stats;
   float pov;
@@ -45,12 +40,14 @@ struct Monster : public Entity {
   }
   void draw() final {
     if (shape_type == ShapeType::CIRCLE) {
-      DrawCircleSector(pos.x()-PLAYER_X+CAMERA_X, pos.y()-PLAYER_Y+CAMERA_Y, size.x(), 0, 360, 50, RED);
+      DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0,
+                       360, 50, RED);
     } else {
-      DrawRectanglePro(pos.x()-PLAYER_X+CAMERA_X, pos.y()-PLAYER_Y+CAMERA_Y, size.x(),size.y(),{0, 0}, pov, RED);
+      DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
+                       size.y(), {0, 0}, pov, RED);
     }
     if (health_bar.show) {
-      health_bar.draw(pos.x()-PLAYER_X+CAMERA_X, pos.y()-PLAYER_Y+CAMERA_Y, stats);
+      health_bar.draw(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, stats);
     }
   }
   void update() final {
@@ -62,7 +59,8 @@ struct Monster : public Entity {
   void hit(Projectile& p) {
     health_bar.hit();
     stats.general.take_damage(p.damage_stats);
-
   }
 };
+
+#include "monsters/SkeletonWarrior.h"
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

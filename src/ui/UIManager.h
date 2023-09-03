@@ -1,13 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
-#include "game/LoadingScreen.h"
-
-#include "menus/GameMenu.h"
-#include "menus/MainMenu.h"
-
-#include "menus/SettingsMenu.h"
-#include "player/PlayerUI.h"
 
 struct UIManager {
   LoadingScreen loading_screen;
@@ -18,6 +11,7 @@ struct UIManager {
 
   void draw() noexcept {
     ui_update();
+    std::shared_lock<std::shared_mutex> lock(rwLock);
     if (GAME_STATE == GameState::Game) {
       player_ui.draw();
     } else if (GAME_STATE == GameState::GameMenu) {

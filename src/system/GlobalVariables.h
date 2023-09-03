@@ -1,12 +1,12 @@
 #ifndef MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_
 #define MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_
 
-
 //SYSTEM
 inline float SCREEN_WIDTH = 1280;
 inline float SCREEN_HEIGHT = 960;
 inline GameState GAME_STATE = GameState::Loading;
 inline std::string ASSET_PATH = "res/";
+inline std::shared_mutex rwLock;
 
 //PLAYER
 inline float UI_SCALE = 1;
@@ -30,13 +30,19 @@ inline Texture2D TEXTURES[6000];
 inline Difficulty GAME_DIFFICULTY;
 
 //Entities
-#include "../gameobjects/entities/types/Monster.h"
-#include "../gameobjects/entities/types/NPC.h"
-#include "../gameobjects/entities/types/Player.h"
+#include "../gameobjects/Entity.h"
+
+#include "../gameobjects/Projectile.h"
+#include "../ui/game/HealthBar.h"
+#include "../ui/player/HotBar.h"
+
+#include "../gameobjects/Monster.h"
+#include "../gameobjects/NPC.h"
+std::vector<Projectile> PROJECTILES;
+#include "../gameobjects/Player.h"
 
 inline Player PLAYER{{150, 150}, {25, 25}};
 std::vector<Player> OTHER_PLAYERS;
-std::vector<Projectile> PROJECTILES;
 std::vector<NPC> NPCS;
 std::vector<Monster> MONSTERS;
 

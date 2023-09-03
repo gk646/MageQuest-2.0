@@ -23,7 +23,6 @@ struct StatusEffectHandler {
       }
     }
   }
-
   void update() noexcept {
     if (effects_changed) {
       stats.reset_to_base();
@@ -45,7 +44,6 @@ struct StatusEffectHandler {
       }
     }
   }
-
   void draw() const {
     int buff_start = 500;
     int debuff_start = 700;

@@ -1,7 +1,7 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
 
-#include "maps/Map.h"
+
 
 struct MapManager {
 

@@ -1,8 +1,7 @@
 #ifndef MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
 #define MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
 
-#include "../../gameplay/Stats.h"
-#include "../../system/GlobalVariables.h"
+
 
 struct HealthBar {
   int delay = 300;

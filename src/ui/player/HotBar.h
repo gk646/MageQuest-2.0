@@ -6,7 +6,6 @@ struct HotBar {
   int columns = 5;
   int rows = 1;
 
-
   HotBar(int columns, int rows) : columns(columns), rows(rows) {}
   void draw() const noexcept {
     const float slotSize = 30 * UI_SCALE;    // Size of each slot

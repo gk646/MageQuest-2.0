@@ -1,10 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UI_SERVERBROWSER_H_
 #define MAGE_QUEST_SRC_UI_SERVERBROWSER_H_
 
-#include <raylib.h>
-#include <SFML/Network.hpp>
-#include <string>
-#include <vector>
 
 struct ServerBrowser {
   const int PORT = 25696;

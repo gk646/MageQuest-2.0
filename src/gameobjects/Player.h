@@ -1,27 +1,14 @@
 #ifndef MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 #define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 
-#include "../../../gameplay/StatusEffectHandler.h"
-#include "../../../gameplay/effects/Slow.h"
-#include "../../../system/Enums.h"
-#include "../../../system/GlobalVariables.h"
-#include "../../../ui/player/HotBar.h"
-#include "../Entity.h"
-#include "../types/Projectile.h"
-#include "projectiles/FireBall.h"
-#include "projectiles/PoisonBall.h"
-
 struct Player : public Entity {
   EntityStats stats;
   std::string name;
   float pov;
-  HotBar hot_bar{5,1};
+  HotBar hot_bar{5, 1};
   StatusEffectHandler status_effects{stats};
-  explicit Player(const Point& pos,const Point& size = {25, 25})
-      : Entity(pos, size, ShapeType::RECT),
-        pov(0),
-        name("New Player"),
-        stats({}){}
+  explicit Player(const Point& pos, const Point& size = {25, 25})
+      : Entity(pos, size, ShapeType::RECT), pov(0), name("New Player"), stats({}) {}
   Player(const Player& other)
       : Entity(other), stats(other.stats), name(other.name), pov(other.pov) {}
   Player& operator=(const Player& other) {
@@ -49,6 +36,9 @@ struct Player : public Entity {
   void abilities() {
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
       status_effects.add_effects({new Slow(50, 120)});
+    }
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      PROJECTILES.push_back(FireBall(pos, {25, 25}, true, 4, 5));
     }
   }
   void update() final {
