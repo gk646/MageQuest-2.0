@@ -39,7 +39,7 @@ inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #include "../gameobjects/NPC.h"
 
 inline EntityStats PLAYER_STATS;
-inline std::vector<Projectile> PROJECTILES;
+inline std::list<Projectile> PROJECTILES;
 #include "../ui/player/HotBar.h"
 inline HotBar PLAYER_HOTBAR{5, 1};
 

@@ -50,11 +50,11 @@ class Game {
     std::unique_lock<std::shared_mutex> lock(rwLock);
     erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
     erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
-
     if (GAME_STATE == GameState::Game) {
       PLAYER.update();
     }
     ui_manager.update();
+
     lock.unlock();
 
     for (auto& monster : MONSTERS) {
@@ -64,7 +64,7 @@ class Game {
     for (auto& projectile : PROJECTILES) {
       projectile.update();
       for (auto& monster : MONSTERS) {
-        if (!projectile.dead && !monster.dead && projectile.intersects(monster)) {
+        if (projectile.intersects(monster)) {
           monster.hit(projectile);
         }
       }
