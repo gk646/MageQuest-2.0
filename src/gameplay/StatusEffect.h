@@ -41,4 +41,6 @@ struct StatusEffect {
   inline bool is_damage_tick() const noexcept { return duration > 0 && duration % cadence == 0; }
 };
 
+#include "effects/Burn.h"
+#include "effects/Slow.h"
 #endif  //MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECT_H_

@@ -8,6 +8,7 @@ struct Projectile : public Entity {
   ProjectileType projectile_type = ProjectileType::ONE_HIT;
   DamageStats damage_stats;
   Point move_vector;
+  //Texture2D  texture;
   std::vector<StatusEffect*> status_effects{};
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              Vector2 destination, int life_span, float speed, DamageStats damage_stats,
@@ -18,9 +19,20 @@ struct Projectile : public Entity {
         damage_stats(damage_stats),
         from_player(from_player),
         projectile_type(type),
-        status_effects(effects) {  // Initialize status_effects
+        status_effects(effects) {
     move_vector = get_move_vector(destination);
   }
+  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
+             int life_span, float speed, DamageStats damage_stats, ProjectileType type,
+             const std::vector<StatusEffect*>& effects, const Point& move_vector)
+      : Entity(pos, size, shape_type),
+        life_span(life_span),
+        speed(speed),
+        damage_stats(damage_stats),
+        from_player(from_player),
+        projectile_type(type),
+        status_effects(effects),
+        move_vector(move_vector) {}
   Projectile(const Projectile& p)
       : Entity(p),
         move_vector(p.move_vector),
@@ -60,7 +72,7 @@ struct Projectile : public Entity {
 
     return *this;
   }
-  ~Projectile() {
+  ~Projectile() override {
     for (auto ptr : status_effects) {
       delete ptr;
     }

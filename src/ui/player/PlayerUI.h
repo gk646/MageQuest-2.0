@@ -5,11 +5,9 @@ struct PlayerUI {
 
   void draw() const {
     PLAYER.status_effects.draw();
-    PLAYER.hot_bar.draw();
+    PLAYER_HOTBAR.draw();
   }
 
-  void update() {
-
-  }
+  void update() {}
 };
 #endif  //MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_

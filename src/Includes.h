@@ -8,13 +8,13 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <shared_mutex>
 #include <sstream>
 #include <string>
 #include <thread>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <shared_mutex>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -42,9 +42,6 @@
 
 #include "gameplay/StatusEffect.h"
 
-#include "gameplay/effects/Burn.h"
-#include "gameplay/effects/Slow.h"
-
 #include "gameplay/StatusEffectHandler.h"
 
 #include "system/GlobalVariables.h"
@@ -69,7 +66,5 @@
 #include "ui/UIManager.h"
 
 #include "Game.h"
-
-
 
 #endif  //MAGEQUEST_SRC_INCLUDES_H_

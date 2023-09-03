@@ -1,8 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_EFFECTS_SLOW_H_
 #define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_SLOW_H_
 
-
-struct Slow : StatusEffect {
+struct Slow final : StatusEffect {
   float slow_percent;
   Slow(float value, int duration)
       : StatusEffect(StatusEffectType::DE_BUFF, SourceType::MAGICAL, 0, duration, false),

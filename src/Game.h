@@ -101,6 +101,7 @@ class Game {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
+    PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     for (uint_fast32_t i = 0; i < 100; i++) {
       //MONSTERS.push_back(Monster({500,150},{50,50}));
     }
