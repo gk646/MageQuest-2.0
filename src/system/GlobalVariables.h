@@ -27,24 +27,28 @@ inline int CURRENT_MAP_SIZE = 100;
 
 inline Texture2D TEXTURES[6000];
 
-inline Difficulty GAME_DIFFICULTY;
+inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 
 //Entities
 #include "../gameobjects/Entity.h"
 
 #include "../gameobjects/Projectile.h"
 #include "../ui/game/HealthBar.h"
-#include "../ui/player/HotBar.h"
 
 #include "../gameobjects/Monster.h"
 #include "../gameobjects/NPC.h"
-std::vector<Projectile> PROJECTILES;
-#include "../gameobjects/Player.h"
 
+inline EntityStats PLAYER_STATS;
+inline std::vector<Projectile> PROJECTILES;
+#include "../ui/player/HotBar.h"
+inline HotBar PLAYER_HOTBAR{5, 1};
+
+#include "../gameobjects/Player.h"
 inline Player PLAYER{{150, 150}, {25, 25}};
-std::vector<Player> OTHER_PLAYERS;
-std::vector<NPC> NPCS;
-std::vector<Monster> MONSTERS;
+
+inline std::vector<Player> OTHER_PLAYERS;
+inline std::vector<NPC> NPCS;
+inline std::vector<Monster> MONSTERS;
 
 inline std::vector<Map> MAPS{};
 

@@ -2,22 +2,19 @@
 #define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 
 struct Player : public Entity {
-  EntityStats stats;
   std::string name;
   float pov;
-  HotBar hot_bar{5, 1};
-  StatusEffectHandler status_effects{stats};
+  StatusEffectHandler status_effects{PLAYER_STATS};
   explicit Player(const Point& pos, const Point& size = {25, 25})
-      : Entity(pos, size, ShapeType::RECT), pov(0), name("New Player"), stats({}) {}
+      : Entity(pos, size, ShapeType::RECT), pov(0), name("New Player") {}
   Player(const Player& other)
-      : Entity(other), stats(other.stats), name(other.name), pov(other.pov) {}
+      : Entity(other), name(other.name), pov(other.pov) {}
   Player& operator=(const Player& other) {
     if (this == &other) {
       return *this;
     }
     Entity::operator=(other);
 
-    stats = other.stats;
     name = other.name;
     pov = other.pov;
     return *this;
@@ -29,7 +26,7 @@ struct Player : public Entity {
   void hit(Projectile& p) {
     if (!p.from_player) {
       status_effects.add_effects(p.status_effects);
-      stats.general.take_damage(p.damage_stats);
+      PLAYER_STATS.general.take_damage(p.damage_stats);
       p.dead = p.projectile_type == ProjectileType::ONE_HIT;
     }
   }
@@ -38,28 +35,29 @@ struct Player : public Entity {
       status_effects.add_effects({new Slow(50, 120)});
     }
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      PROJECTILES.push_back(FireBall(pos, {25, 25}, true, 4, 5));
+      PROJECTILES.push_back(FireBall(pos,  true));
     }
   }
   void update() final {
+    abilities();
     status_effects.update();
     movement();
-    abilities();
+    PLAYER_HOTBAR.update();
     PLAYER_TILE_X = (pos.x() + size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (pos.y() + size.y() / 2) / TILE_SIZE;
   }
   void movement() {
-    if (IsKeyDown(KEY_W) && !tile_collision_up(stats.general.speed)) {
-      pos.y() -= stats.general.speed;
+    if (IsKeyDown(KEY_W) && !tile_collision_up(PLAYER_STATS.general.speed)) {
+      pos.y() -= PLAYER_STATS.general.speed;
     }
-    if (IsKeyDown(KEY_S) && !tile_collision_down(stats.general.speed)) {
-      pos.y() += stats.general.speed;
+    if (IsKeyDown(KEY_S) && !tile_collision_down(PLAYER_STATS.general.speed)) {
+      pos.y() += PLAYER_STATS.general.speed;
     }
-    if (IsKeyDown(KEY_A) && !tile_collision_left(stats.general.speed)) {
-      pos.x() -= stats.general.speed;
+    if (IsKeyDown(KEY_A) && !tile_collision_left(PLAYER_STATS.general.speed)) {
+      pos.x() -= PLAYER_STATS.general.speed;
     }
-    if (IsKeyDown(KEY_D) && !tile_collision_right(stats.general.speed)) {
-      pos.x() += stats.general.speed;
+    if (IsKeyDown(KEY_D) && !tile_collision_right(PLAYER_STATS.general.speed)) {
+      pos.x() += PLAYER_STATS.general.speed;
     }
 
     PLAYER_X = pos.x();

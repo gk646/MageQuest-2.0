@@ -1,9 +1,8 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
-
 struct SkillStats {
-  int cool_down = 0;
+  float cool_down = 0;
   float mana_cost = 1;
   float health_cost = 0;
 };
@@ -30,8 +29,8 @@ struct ArmourStats {
   }
 };
 
-//Percent Values
 struct CombatStats {
+  //Percent Values
   int16_t cooldown_reduction = 0;
 };
 
