@@ -47,7 +47,6 @@ class Game {
 
   inline void game_tick() noexcept {
     cxstructs::now();
-    PlaySound(sound::intro);
     std::unique_lock<std::shared_mutex> lock(rwLock);
     erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
     erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });

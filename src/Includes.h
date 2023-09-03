@@ -16,6 +16,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <filesystem>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -35,8 +36,6 @@
 #include "system/Colors.h"
 #include "system/Definitions.h"
 #include "system/Enums.h"
-#include "system/TextureStorage.h"
-#include "system/SoundStorage.h"
 #include "system/Util.h"
 #include "ui/StyleSheet.h"
 
@@ -51,19 +50,18 @@
 #include "system/GlobalVariables.h"
 
 //after global variables
-#include "gamestateio/loading/loaders/TileLoader.h"
-#include "gamestateio/loading/loaders/SoundLoader.h"
-#include "graphics/MapManager.h"
+#include "gamestateio/loading/EntityResources.h"
+#include "graphics/WorldManager.h"
 #include "graphics/WorldRender.h"
 #include "system/BenchMark.h"
+#include "system/SoundStorage.h"
+#include "system/TextureStorage.h"
 #include "ui/game/LoadingScreen.h"
 #include "ui/menus/ServerBrowser.h"
 #include "ui/menus/SettingsMenu.h"
 #include "ui/player/PlayerUI.h"
 
 #include "gamestateio/loading/LoadingUtil.h"
-
-#include "gamestateio/loading/EntityResources.h"
 
 #include "gamestateio/GameLoader.h"
 
