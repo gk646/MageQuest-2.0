@@ -10,10 +10,10 @@ T** get_2D_array(int x, int y) {
   return ptr;
 }
 template <typename T>
-void delete_2D_array(T** arr, int y) {
-  for (uint_fast32_t i = 0; i < y; i++) {
+void delete_2D_array(T** arr, int rows) {
+  for (uint_fast32_t i = 0; i < rows; i++) {
     delete[] arr[i];
   }
-  delete arr;
+  delete[] arr;
 }
 #endif  //MAGE_QUEST_SRC_UTIL_MATHUTIL_H_

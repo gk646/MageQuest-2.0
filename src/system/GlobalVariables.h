@@ -7,6 +7,7 @@ inline float SCREEN_HEIGHT = 960;
 inline GameState GAME_STATE = GameState::Loading;
 inline std::string ASSET_PATH = "res/";
 inline std::shared_mutex rwLock;
+inline std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 
 //PLAYER
 inline float CAMERA_X = SCREEN_WIDTH / 2;
@@ -49,7 +50,7 @@ inline std::vector<Player> OTHER_PLAYERS;
 inline std::vector<NPC> NPCS;
 inline std::list<Monster> MONSTERS;
 
-inline std::vector<Map> MAPS{};
+inline std::vector<Map> MAPS;
 
 //BENCHMARK
 inline int PERF_FRAMES = 0;

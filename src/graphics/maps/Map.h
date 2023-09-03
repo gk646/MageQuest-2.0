@@ -1,17 +1,15 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_
 #define MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_
 
-
-
-
 struct Map {
+  Zone zone;
   int16_t** map_back_ground;
   int16_t** map_middle_ground;
   int16_t** map_fore_ground;
 
   int16_t map_size;
 
-  Map(std::string name, int size) : map_size(size) {
+  Map(std::string name, int size, Zone zone) : map_size(size), zone(zone) {
     map_back_ground = load_map_data(name + "/" + name + "_BG");
     map_middle_ground = load_map_data(name + "/" + name + "_BG1");
     map_fore_ground = load_map_data(name + "/" + name + "_FG");
