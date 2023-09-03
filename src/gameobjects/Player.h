@@ -3,12 +3,11 @@
 
 struct Player : public Entity {
   std::string name;
-  float pov;
   StatusEffectHandler status_effects{PLAYER_STATS};
   explicit Player(const Point& pos, const Point& size = {25, 25})
-      : Entity(pos, size, ShapeType::RECT), pov(0), name("New Player") {}
+      : Entity(pos, size, ShapeType::RECT), name("New Player") {}
   Player(const Player& other)
-      : Entity(other), name(other.name), pov(other.pov) {}
+      : Entity(other), name(other.name) {}
   Player& operator=(const Player& other) {
     if (this == &other) {
       return *this;
@@ -34,14 +33,11 @@ struct Player : public Entity {
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
       status_effects.add_effects({new Slow(50, 120)});
     }
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      PROJECTILES.push_back(FireBall(pos,  true));
-    }
+
   }
   void update() final {
     movement();
     PLAYER_HOTBAR.update();
-    abilities();
     status_effects.update();
     PLAYER_TILE_X = (pos.x() + size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (pos.y() + size.y() / 2) / TILE_SIZE;

@@ -1,10 +1,8 @@
 #ifndef MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 #define MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 
-
-
 namespace load_util {
-const std::array<float, 6> weights{2, 10, 4, 1, 1, 1};
+const std::array<float, 7> weights{4, 2, 10, 4, 1, 1, 1};
 int current_step = 0;
 }  // namespace load_util
 

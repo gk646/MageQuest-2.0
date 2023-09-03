@@ -1,0 +1,7 @@
+#ifndef MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
+#define MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
+
+namespace sound{
+inline Sound intro;
+}
+#endif  //MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_

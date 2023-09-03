@@ -1,8 +1,5 @@
 #ifndef MAGEQUEST_SRC_SYSTEM_SETTINGS_H_
 #define MAGEQUEST_SRC_SYSTEM_SETTINGS_H_
 
-struct GameSettings {
-
-  void
-};
+inline float UI_SCALE = 1;
 #endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

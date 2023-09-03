@@ -9,7 +9,6 @@ inline std::string ASSET_PATH = "res/";
 inline std::shared_mutex rwLock;
 
 //PLAYER
-inline float UI_SCALE = 1;
 inline float CAMERA_X = SCREEN_WIDTH / 2;
 inline float CAMERA_Y = SCREEN_HEIGHT / 2;
 inline float PLAYER_X = 0;
@@ -48,7 +47,7 @@ inline Player PLAYER{{150, 150}, {25, 25}};
 
 inline std::vector<Player> OTHER_PLAYERS;
 inline std::vector<NPC> NPCS;
-inline std::vector<Monster> MONSTERS;
+inline std::list<Monster> MONSTERS;
 
 inline std::vector<Map> MAPS{};
 
