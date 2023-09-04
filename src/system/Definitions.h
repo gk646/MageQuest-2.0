@@ -14,4 +14,7 @@
 #define DOWN 2
 #define UP 3
 
+
+#define DRAW_HITBOXES
+
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_

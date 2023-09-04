@@ -35,13 +35,11 @@ struct WorldRender {
         float y_base = b * TILE_SIZE - playerY + screenY;
 
         int num1 = CURRENT_BACK_GROUND[i][b];
-        DrawTexturePro(TEXTURES[num1], {0, 0, TILE_SIZE, TILE_SIZE},
-                       {x_base, y_base, TILE_SIZE, TILE_SIZE}, {0, 0}, 0, WHITE);
+        DrawTextureProFast(TEXTURES[num1],x_base,y_base,0,WHITE);
 
         int num2 = CURRENT_MIDDLE_GROUND[i][b];
         if (num2 != -1) {
-          DrawTexturePro(TEXTURES[num2], {0, 0, TILE_SIZE, TILE_SIZE},
-                         {x_base, y_base, TILE_SIZE, TILE_SIZE}, {0, 0}, 0, WHITE);
+          DrawTextureProFast(TEXTURES[num2],x_base,y_base,0,WHITE);
         }
       }
     }
@@ -82,8 +80,7 @@ struct WorldRender {
 
         int num1 = CURRENT_FORE_GROUND[i][b];
         if(num1 != -1){
-          DrawTexturePro(TEXTURES[num1], {0, 0, TILE_SIZE, TILE_SIZE},
-                         {x_base, y_base, TILE_SIZE, TILE_SIZE}, {0, 0}, 0, WHITE);
+          DrawTextureProFast(TEXTURES[num1],x_base,y_base,0,WHITE);
         }
 
       }

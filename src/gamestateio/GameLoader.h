@@ -5,6 +5,7 @@
 #include "loading/loaders/MapLoader.h"
 #include "loading/loaders/SoundLoader.h"
 #include "loading/loaders/TileLoader.h"
+#include "loading/loaders/TextureLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -37,6 +38,6 @@ struct GameLoader {
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
 std::vector<std::function<void()>> GameLoader::load_functions = {
-    EntityLoader::load, GuiLoadStyleCyber, TileLoader::load_to_vram};
+    EntityLoader::load, GuiLoadStyleCyber, TileLoader::load_to_vram, TextureLoader::load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

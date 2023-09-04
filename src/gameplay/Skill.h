@@ -5,9 +5,10 @@ struct Skill {
   DamageStats damage_stats;
   SkillStats ability_stats;
   float cool_down_ticks = 0;
+  bool from_player;
   // Texture2D texture;
-  Skill(SkillStats ability_stats, DamageStats damage_stats)
-      : damage_stats(damage_stats), ability_stats(ability_stats) {
+  Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player)
+      : damage_stats(damage_stats), ability_stats(ability_stats), from_player(from_player) {
     cool_down_ticks = ability_stats.cool_down;
   }
   inline virtual void activate() = 0;
@@ -69,7 +70,7 @@ struct Skill {
   }
 };
 
-#include "abilities/FireStrike.h"
-#include "abilities/FireBall.h"
-#include "abilities/Dummy.h"
+#include "skills/FireStrike.h"
+#include "skills/FireBall.h"
+#include "skills/Dummy.h"
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

@@ -104,6 +104,7 @@ class Game {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 55);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
+    PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 100; i++) {
       //MONSTERS.push_back(Monster({500,150},{50,50}));
     }

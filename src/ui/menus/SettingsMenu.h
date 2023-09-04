@@ -62,7 +62,7 @@ struct SettingsMenu {
     // Draw FPS Target slider
     startY += verticalSpacing;
     targetFPS = static_cast<int>(GuiSlider({startX, startY, scaledWidth, scaledHeight}, "FPS Target", nullptr,
-                                           static_cast<float>(targetFPS), 60, 240));
+                                           static_cast<float>(targetFPS), 60, 10000));
     SetTargetFPS(targetFPS);
   }
   void setResolution(int resolution) const {
