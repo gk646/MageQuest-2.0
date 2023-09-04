@@ -20,10 +20,10 @@ struct UIManager {
     } else if (GAME_STATE == GameState::MainMenu) {
       main_menu.draw();
     } else if (GAME_STATE == GameState::Loading) {
+      loading_screen.draw();
       if (GameLoader::finished_cpu_loading) {
         GameLoader::finish_loading();
       }
-      loading_screen.draw();
     }
     if (settings_menu.showFPS) {
       DrawFPS(25, 25);

@@ -1,6 +1,9 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
+struct EffectStats {
+  float effects[50] = {0};
+};
 struct SkillStats {
   float cool_down = 0;
   float mana_cost = 0;
@@ -34,6 +37,8 @@ struct ArmourStats {
 struct CombatStats {
   //Percent Values
   int16_t cooldown_reduction = 0;
+  int16_t health_cost_reduction = 0;
+  int16_t mana_cost_reduction = 0;
 };
 
 struct Abilities {
@@ -67,17 +72,21 @@ struct GeneralStats {
   float concentration = 10;
   float health = 10;
 
-  float speed = 3;
+  float speed = 3;  //pixel per tick
   float max_health = 10;
   float max_mana = 20;
   float max_concentration = 10;
+  float health_regen = 0.2;  //per second
+  float mana_regen = 1;      //per second
 
   float base_speed = 3;
   float base_max_health = 10;
   float base_max_mana = 20;
   float base_max_concentration = 10;
+  float base_health_regen = 0.2;  //per second
+  float base_mana_regen = 1;      //per second
 
-  inline void take_damage(DamageStats stats) {
+  inline void take_damage(const DamageStats& stats) {
     if (stats.damage_type == SourceType::MAGICAL) {
       health -= stats.damage * (1 - armour_stats.magical_armour / 100);
     } else if (stats.damage_type == SourceType::PHYSICAL) {
@@ -92,17 +101,35 @@ struct GeneralStats {
     max_mana = base_max_mana;
     max_concentration = base_max_concentration;
   }
+  inline void update() {
+    if (mana < max_mana) {
+      mana += mana_regen / 60;
+    }
+    if (health < max_health) {
+      health += health_regen / 60;
+    }
+  }
 };
 
 struct EntityStats {
   Abilities abilities;
   GeneralStats general;
   CombatStats combat_stats;
-
+  int level = 1;
   inline void reset_to_base() {
     abilities.reset_to_base();
     general.reset_to_base();
   }
+  inline bool skill_useable(const SkillStats& stats) const noexcept {
+    return stats.health_cost * (1 - combat_stats.health_cost_reduction / 100.0F) <=
+               general.health &&
+           stats.mana_cost * (1 - combat_stats.mana_cost_reduction / 100.0F) <= general.mana;
+  }
+  inline void use_skill(const SkillStats& stats) noexcept {
+    general.mana -= (stats.mana_cost * (1 - combat_stats.mana_cost_reduction / 100.0F));
+    general.health -= (stats.health_cost * (1 - combat_stats.health_cost_reduction / 100.0F));
+  }
+  inline void apply_flat(const EffectStats& stats) {}
 };
 
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_

@@ -19,6 +19,7 @@ struct Player : public Entity {
     return *this;
   }
   void draw() final {
+
     DrawRectanglePro(CAMERA_X - size.x() / 2, CAMERA_Y - size.y() / 2, size.x(), size.y(), {0, 0},
                      pov, BLUE);
   }
@@ -31,6 +32,7 @@ struct Player : public Entity {
   }
   void update() final {
     movement();
+    PLAYER_STATS.general.update();
     status_effects.update();
     PLAYER_TILE_X = (pos.x() + size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (pos.y() + size.y() / 2) / TILE_SIZE;
@@ -48,7 +50,6 @@ struct Player : public Entity {
     if (IsKeyDown(KEY_D) && !tile_collision_right(PLAYER_STATS.general.speed)) {
       pos.x() += PLAYER_STATS.general.speed;
     }
-
     PLAYER_X = pos.x();
     PLAYER_Y = pos.y();
   }

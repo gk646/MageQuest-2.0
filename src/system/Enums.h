@@ -24,7 +24,9 @@ enum class MagicType { FIRE, POISON, ICE, EARTH, LIGHTNING, DARK };
 enum class SourceType { PHYSICAL, MAGICAL };
 enum class ProjectileType { CONTINUOUS, ONE_HIT };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
-enum Zone {
+enum class ItemType{HEAD, CHEST, PANTS, BOOTS, AMULET, RING, RELIC, ONE_HAND, TWO_HAND, OFF_HAND, BAG};
+enum class ItemRarity{NORMAL, RARE, EPIC, LEGENDARY, SET_ITEM, UNIQUE};
+enum class Zone {
   Woodland_Edge,
   EtherRealm,
   DeadPlains,
@@ -40,20 +42,22 @@ enum Zone {
   Hillcrest_Hermit_Cave
 };
 
-std::unordered_map<std::string, Zone> zoneMap = {
-    {"Woodland Edge", Woodland_Edge},
-    {"EtherRealm", EtherRealm},
-    {"DeadPlains", DeadPlains},
-    {"GrassLands", GrassLands},
-    {"City1", City1},
-    {"Ruin Dungeon", Ruin_Dungeon},
-    {"Hillcrest", Hillcrest},
-    {"Treasure Cave", Treasure_Cave},
-    {"Hillcrest Mountain Cave", Hillcrest_Mountain_Cave},
-    {"The Grove", The_Grove},
-    {"TestRoom", TestRoom},
-    {"Goblin Cave", Goblin_Cave},
-    {"Hillcrest Hermit Cave", Hillcrest_Hermit_Cave}};
+inline static std::unordered_map<Zone, std::string> zoneMap = {
+    {Zone::Woodland_Edge, "Woodland Edge"},
+    {Zone::EtherRealm, "EtherRealm"},
+    {Zone::DeadPlains, "DeadPlains"},
+    {Zone::GrassLands, "GrassLands"},
+    {Zone::City1, "City1"},
+    {Zone::Ruin_Dungeon, "Ruin Dungeon"},
+    {Zone::Hillcrest, "Hillcrest"},
+    {Zone::Treasure_Cave, "Treasure Cave"},
+    {Zone::Hillcrest_Mountain_Cave, "Hillcrest Mountain Cave"},
+    {Zone::The_Grove, "The Grove"},
+    {Zone::TestRoom, "TestRoom"},
+    {Zone::Goblin_Cave, "Goblin Cave"},
+    {Zone::Hillcrest_Hermit_Cave, "Hillcrest Hermit Cave"}
+};
+
 inline static std::unordered_map<Class, std::string> classToString = {
     {Class::BARBARIAN, "Barbarian"}, {Class::BARD, "Bard"},       {Class::CLERIC, "Cleric"},
     {Class::DRUID, "Druid"},         {Class::FIGHTER, "Fighter"}, {Class::MONK, "Monk"},

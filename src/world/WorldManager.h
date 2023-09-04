@@ -8,6 +8,7 @@ struct WorldManager {
         CURRENT_BACK_GROUND = map.map_back_ground;
         CURRENT_MIDDLE_GROUND = map.map_middle_ground;
         CURRENT_FORE_GROUND = map.map_fore_ground;
+        CURRENT_ZONE = zone;
         PLAYER.pos = pos * 48;
       }
     }

@@ -16,7 +16,7 @@ struct MainMenu {
     const float xOffset = SCREEN_WIDTH / 2.0 - (scaled_width / 2.0);
     const float baseYOffset =
         static_cast<float>(SCREEN_HEIGHT / 2.0) - (3 * scaled_height) - (4 * vertical_gap);
-
+    DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0, Colors::LightGrey);
     if (menu_state == MenuState::Main) {
       if (GuiButton({xOffset, baseYOffset, scaled_width, scaled_height}, "Play Game")) {
         GAME_STATE = GameState::Game;

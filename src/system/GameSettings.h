@@ -2,4 +2,5 @@
 #define MAGEQUEST_SRC_SYSTEM_SETTINGS_H_
 
 inline float UI_SCALE = 1;
+inline int TARGET_FPS = 120;
 #endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

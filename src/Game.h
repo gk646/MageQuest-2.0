@@ -10,7 +10,7 @@ class Game {
 
   std::thread logic_thread;
 
-  UIManager ui_manager{};
+  UIManager ui_manager;
 
   void render() noexcept {
     while (!(WindowShouldClose() && !IsKeyDown(KEY_ESCAPE))) {
@@ -98,11 +98,7 @@ class Game {
 
  public:
   Game() {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    SetTargetFPS(targetFPS);
-    InitAudioDevice();
-    GuiSetStyle(DEFAULT, TEXT_SIZE, 55);
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
+    RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 100; i++) {

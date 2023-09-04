@@ -33,7 +33,7 @@
 #include "cxutil/cxtime.h."
 
 //Mage Quest
-#include "system/Colors.h"
+#include "resources/Colors.h"
 #include "system/Definitions.h"
 #include "system/Enums.h"
 #include "system/Util.h"
@@ -44,14 +44,19 @@
 #include "gameplay/Talent.h"
 #include "world/maps/Map.h"
 
+#include "gameplay/Item.h"
 #include "gameplay/StatusEffect.h"
 
-#include "gameplay/StatusEffectHandler.h"
+#include "gameplay/handlers/StatusEffectHandler.h"
+#include "graphics/GifDrawer.h"
 
 #include "system/GameSettings.h"
 #include "system/GlobalVariables.h"
 
 //after global variables
+#include "resources/FontStorage.h"
+#include "resources/SoundStorage.h"
+
 #include "ui/Window.h"
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
@@ -59,9 +64,8 @@
 #include "gamestateio/loading/EntityResources.h"
 #include "gamestateio/loading/LoadingUtil.h"
 #include "graphics/WorldRender.h"
+#include "resources/TextureStorage.h"
 #include "system/BenchMark.h"
-#include "system/SoundStorage.h"
-#include "system/TextureStorage.h"
 #include "ui/game/MiniMap.h"
 
 #include "ui/menus/ServerBrowser.h"

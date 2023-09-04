@@ -8,6 +8,7 @@ inline GameState GAME_STATE = GameState::Loading;
 inline std::string ASSET_PATH = "res/";
 inline std::shared_mutex rwLock;
 inline std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
+inline GifDrawer* RAYLIB_LOGO;
 
 //PLAYER
 inline float CAMERA_X = SCREEN_WIDTH / 2;
@@ -16,15 +17,18 @@ inline float PLAYER_X = 0;
 inline float PLAYER_Y = 0;
 inline int PLAYER_TILE_X = 0;
 inline int PLAYER_TILE_Y = 0;
-inline std::vector<Item> PLAYER_ITEMS;
+inline std::vector<Item> EQUIPPED_ITEMS;
+inline std::vector<Item> PLAYER_INVENTORY;
 
 //WORLD
 inline int16_t** CURRENT_BACK_GROUND;
 inline int16_t** CURRENT_MIDDLE_GROUND;
 inline int16_t** CURRENT_FORE_GROUND;
+inline Zone CURRENT_ZONE = Zone::Hillcrest;
 inline int CURRENT_MAP_SIZE = 100;
 inline int COLLISIONS[6000];
 inline Texture2D TEXTURES[6000];
+inline std::vector<Item> ITEMS;
 
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 

@@ -2,7 +2,7 @@
 #define MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 
 namespace load_util {
-inline const std::array<float, 9> weights{4, 1, 10, 15, 1, 5, 1, 2,3};
+inline const std::array<float, 9> weights{4, 1, 10, 15, 1, 5, 1, 6, 5};
 inline int cpu_steps = 4;
 inline int current_step = 0;
 }  // namespace load_util
@@ -19,7 +19,7 @@ void load_step(const std::function<void()>& func) {
   load_util::current_step++;
 }
 void load_window_icon() {
-  Image icon = LoadImage((ASSET_PATH + "dnd_logo.png").c_str());
+  Image icon = LoadImage((ASSET_PATH + "Icons/icon2.png").c_str());
   SetWindowIcon(icon);
   UnloadImage(icon);
 }

@@ -21,7 +21,7 @@ struct FireStrike final : public Skill {
 
       PROJECTILES.push_back(Projectile(from_player, pos, {25, 25}, ShapeType::RECT, 300, 4,
                                        damage_stats, ProjectileType::CONTINUOUS,
-                                       {new Burn{1, 1, 1}}, {x_component, y_component}));
+                                       {new Burn{1, 1, 1}}, {x_component, y_component},angle_rad * (180.0f / M_PI)));
     }
   }
   inline void update() final { cool_down_ticks++; }

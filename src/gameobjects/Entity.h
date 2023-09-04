@@ -5,14 +5,14 @@ using namespace cxstructs;
 
 struct Entity {
   bool dead = false;
-  float pov;
+  float pov = 0;
   Point pos;
   Point size;
   ShapeType shape_type;
   Entity() : pos{}, size{}, shape_type(ShapeType::RECT) {}
-  Entity(const Point& pos, const Point& size, ShapeType shape_type)
-      : pos(pos), size(size), shape_type(shape_type) {}
-  Entity(const Entity& o) : pos(o.pos), size(o.size), shape_type(o.shape_type) {}
+  Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0)
+      : pos(pos), size(size), shape_type(shape_type), pov(pov) {}
+  Entity(const Entity& o) : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov) {}
   Entity& operator=(const Entity& other) {
     if (this == &other) {
       return *this;
@@ -21,6 +21,7 @@ struct Entity {
     pos = other.pos;
     size = other.size;
     shape_type = other.shape_type;
+    pov = other.pov;
 
     return *this;
   }

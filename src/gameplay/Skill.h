@@ -18,8 +18,8 @@ struct Skill {
     int side1, side2, side3, side4, side5;
     float coolDownCoefficient;
     if (cool_down_ticks <= ability_stats.cool_down) {
-      coolDownCoefficient = cool_down_ticks * (size*4 / ability_stats.cool_down);
-      side1 = size/2;
+      coolDownCoefficient = cool_down_ticks * (size * 4 / ability_stats.cool_down);
+      side1 = size / 2;
       side2 = 0;
       side3 = 0;
       side4 = 0;
@@ -34,43 +34,42 @@ struct Skill {
     }
     if (coolDownCoefficient > 0)
       side1 += static_cast<int>(coolDownCoefficient);
-    if (coolDownCoefficient > size/2)
-      side2 += static_cast<int>(coolDownCoefficient - size/2);
-    if (coolDownCoefficient > size*1.5F)
-      side3 += static_cast<int>(coolDownCoefficient - size*1.5F);
-    if (coolDownCoefficient > size*2.5F)
-      side4 += static_cast<int>(coolDownCoefficient - size*2.5F);
-    if (coolDownCoefficient > size*3.5F)
-      side5 += static_cast<int>(coolDownCoefficient - size*3.5F);
+    if (coolDownCoefficient > size / 2)
+      side2 += static_cast<int>(coolDownCoefficient - size / 2);
+    if (coolDownCoefficient > size * 1.5F)
+      side3 += static_cast<int>(coolDownCoefficient - size * 1.5F);
+    if (coolDownCoefficient > size * 2.5F)
+      side4 += static_cast<int>(coolDownCoefficient - size * 2.5F);
+    if (coolDownCoefficient > size * 3.5F)
+      side5 += static_cast<int>(coolDownCoefficient - size * 3.5F);
 
     for (int i = side1; i <= size; i++) {
-      DrawLine(x + size/2, y + size/2, x + i, y, Colors::mediumVeryLight);
+      DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumVeryLight);
     }
     for (int i = side2; i <= size; i++) {
-      DrawLine(x + size/2, y + size/2, x + size, y + i, Colors::mediumVeryLight);
+      DrawLine(x + size / 2, y + size / 2, x + size, y + i, Colors::mediumVeryLight);
     }
     for (int i = side3; i <= size; i++) {
-      DrawLine(x + size/2, y + size/2, x + size - i, y + size, Colors::mediumVeryLight);
+      DrawLine(x + size / 2, y + size / 2, x + size - i, y + size, Colors::mediumVeryLight);
     }
     for (int i = side4; i <= size; i++) {
-      DrawLine(x + size/2, y + size/2, x, y + size - i, Colors::mediumVeryLight);
+      DrawLine(x + size / 2, y + size / 2, x, y + size - i, Colors::mediumVeryLight);
     }
-    for (int i = side5; i <= size/2; i++) {
-      DrawLine(x + size/2, y + size/2, x + i, y, Colors::mediumVeryLight);
+    for (int i = side5; i <= size / 2; i++) {
+      DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumVeryLight);
     }
   }
   inline bool use_able() const {
     return cool_down_ticks >= ability_stats.get_cd(PLAYER_STATS.combat_stats.cooldown_reduction) &&
-           PLAYER_STATS.general.health >= ability_stats.health_cost &&
-           PLAYER_STATS.general.mana >= ability_stats.mana_cost;
+           PLAYER_STATS.skill_useable(ability_stats);
   }
   inline void use() noexcept {
     cool_down_ticks = 0;
-    //PLAYER_STATS.general.mana -= ability_stats.mana_cost;
+    PLAYER_STATS.use_skill(ability_stats);
   }
 };
 
-#include "skills/FireStrike.h"
-#include "skills/FireBall.h"
 #include "skills/Dummy.h"
+#include "skills/FireBall.h"
+#include "skills/FireStrike.h"
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_
