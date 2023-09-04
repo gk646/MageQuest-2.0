@@ -5,6 +5,7 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -16,7 +17,6 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <filesystem>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -39,8 +39,10 @@
 #include "system/Util.h"
 #include "ui/StyleSheet.h"
 
+#include "gameplay/Item.h"
 #include "gameplay/Stats.h"
-#include "graphics/maps/Map.h"
+#include "gameplay/Talent.h"
+#include "world/maps/Map.h"
 
 #include "gameplay/StatusEffect.h"
 
@@ -50,20 +52,24 @@
 #include "system/GlobalVariables.h"
 
 //after global variables
+#include "ui/Window.h"
+#include "ui/game/LoadingScreen.h"
+#include "ui/player/CharacterPanel.h"
+
 #include "gamestateio/loading/EntityResources.h"
-#include "graphics/WorldManager.h"
+#include "gamestateio/loading/LoadingUtil.h"
 #include "graphics/WorldRender.h"
 #include "system/BenchMark.h"
 #include "system/SoundStorage.h"
 #include "system/TextureStorage.h"
-#include "ui/game/LoadingScreen.h"
+#include "ui/game/MiniMap.h"
+
 #include "ui/menus/ServerBrowser.h"
 #include "ui/menus/SettingsMenu.h"
-#include "ui/player/PlayerUI.h"
-
-#include "gamestateio/loading/LoadingUtil.h"
+#include "world/WorldManager.h"
 
 #include "gamestateio/GameLoader.h"
+#include "ui/player/PlayerUI.h"
 
 #include "ui/menus/GameMenu.h"
 #include "ui/menus/MainMenu.h"

@@ -21,6 +21,7 @@ class Game {
         drawGame();
       }
       ui_manager.draw();
+      BenchMark::draw_stats();
       EndDrawing();
       FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);
     }
@@ -93,7 +94,6 @@ class Game {
     }
     PLAYER.draw();
     WorldRender::draw_fore_ground();
-    BenchMark::draw_stats();
   }
 
  public:
@@ -101,6 +101,7 @@ class Game {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTargetFPS(targetFPS);
     InitAudioDevice();
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 55);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     for (uint_fast32_t i = 0; i < 100; i++) {

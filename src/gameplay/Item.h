@@ -1,0 +1,8 @@
+#ifndef MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
+#define MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
+
+struct Item{
+
+
+};
+#endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
