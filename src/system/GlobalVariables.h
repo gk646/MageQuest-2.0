@@ -16,15 +16,14 @@ inline float PLAYER_X = 0;
 inline float PLAYER_Y = 0;
 inline int PLAYER_TILE_X = 0;
 inline int PLAYER_TILE_Y = 0;
-
-inline int COLLISIONS[6000];
+inline std::vector<Item> PLAYER_ITEMS;
 
 //WORLD
 inline int16_t** CURRENT_BACK_GROUND;
 inline int16_t** CURRENT_MIDDLE_GROUND;
 inline int16_t** CURRENT_FORE_GROUND;
 inline int CURRENT_MAP_SIZE = 100;
-
+inline int COLLISIONS[6000];
 inline Texture2D TEXTURES[6000];
 
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;

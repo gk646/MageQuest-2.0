@@ -29,15 +29,8 @@ struct Player : public Entity {
       p.dead = p.projectile_type == ProjectileType::ONE_HIT;
     }
   }
-  void abilities() {
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-      status_effects.add_effects({new Slow(50, 120)});
-    }
-
-  }
   void update() final {
     movement();
-    PLAYER_HOTBAR.update();
     status_effects.update();
     PLAYER_TILE_X = (pos.x() + size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (pos.y() + size.y() / 2) / TILE_SIZE;
