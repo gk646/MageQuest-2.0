@@ -24,8 +24,8 @@ struct Projectile : public Entity {
   }
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, DamageStats damage_stats, ProjectileType type,
-             const std::vector<StatusEffect*>& effects, const Point& move_vector)
-      : Entity(pos, size, shape_type),
+             const std::vector<StatusEffect*>& effects, const Point& move_vector, float pov)
+      : Entity(pos, size, shape_type,pov),
         life_span(life_span),
         speed(speed),
         damage_stats(damage_stats),
@@ -80,13 +80,14 @@ struct Projectile : public Entity {
   Point get_move_vector(Vector2 mouse_pos) {
     float angle = std::atan2(mouse_pos.y - (pos.y() - PLAYER_Y + CAMERA_Y),
                              mouse_pos.x - (pos.x() - PLAYER_X + CAMERA_X));
+    pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
   void draw() override {
     switch (shape_type) {
       case ShapeType::RECT:
         DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
-                         size.y(), {0, 0}, 0, PURPLE);
+                         size.y(), {0, 0}, pov, PURPLE);
         break;
       case ShapeType::CIRCLE:
         DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0,

@@ -16,6 +16,7 @@ struct PlayerUI {
   }
 
   void update() noexcept {
+    mini_map.update();
     status_bar.update();
     char_panel.update();
     PLAYER_HOTBAR.update();
