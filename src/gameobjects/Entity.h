@@ -63,8 +63,15 @@ struct Entity {
     }
   }
   void draw_hitbox() {
-    if (shape_type == ShapeType::RECT) {
-      DrawRectangleLinesEx({pos.x(), pos.y(), size.x(), size.y()}, 3, RED);
+    switch (shape_type) {
+      case ShapeType::RECT:
+        DrawRectangleOutlinePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
+                         size.y(), {0, 0}, pov,5, RED);
+        break;
+      case ShapeType::CIRCLE:
+        DrawCircleSectorLines({pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y},size.x(), 0,
+                         360, 50, RED);
+        break;
     }
   };
   bool tile_collision_left(float speed) {

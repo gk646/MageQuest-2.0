@@ -93,6 +93,9 @@ struct Projectile : public Entity {
                          360, 56, PURPLE);
         break;
     }
+#ifdef DRAW_HITBOXES
+    draw_hitbox();
+#endif
   }
   void update() override {
     pos.x() += move_vector.x() * speed;

@@ -39,16 +39,14 @@ inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 
 inline EntityStats PLAYER_STATS;
 inline std::list<Projectile> PROJECTILES;
-#include "../ui/player/HotBar.h"
-inline HotBar PLAYER_HOTBAR{5, 1};
-
 #include "../gameobjects/Player.h"
 inline Player PLAYER{{150, 150}, {25, 25}};
+#include "../ui/player/HotBar.h"
+inline HotBar PLAYER_HOTBAR{6, 1};
 
 inline std::vector<Player> OTHER_PLAYERS;
 inline std::vector<NPC> NPCS;
 inline std::list<Monster> MONSTERS;
-
 inline std::vector<Map> MAPS;
 
 //BENCHMARK

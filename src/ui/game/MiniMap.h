@@ -19,13 +19,14 @@ struct MiniMap {
             DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
                              Colors::mediumLightGreyTransparent);
           } else {
-            if(tile_x+i == PLAYER_TILE_X && tile_y+j == PLAYER_TILE_Y){
+            if (tile_x + i == PLAYER_TILE_X && tile_y + j == PLAYER_TILE_Y) {
               DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
                                Colors::blue_npc);
-              continue;
+
+            } else {
+              DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
+                               Colors::map_green);
             }
-            DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
-                             Colors::map_green);
           }
         } else {
           DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
