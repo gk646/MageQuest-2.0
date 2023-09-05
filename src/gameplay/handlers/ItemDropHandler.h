@@ -3,5 +3,10 @@
 
 struct ItemDropHandler{
 
+
+
+  static Item getRandomItem(int level){
+
+  }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_

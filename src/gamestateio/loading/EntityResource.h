@@ -1,7 +1,7 @@
-#ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCES_H_
-#define MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCES_H_
+#ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_
+#define MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_
 
-struct MonsterResources {
+struct MonsterResource {
   std::vector<Texture> attack1{};
   std::vector<Texture> attack2{};
   std::vector<Texture> attack3{};
@@ -23,7 +23,7 @@ struct MonsterResources {
     load_textures(name);
     load_sound(name);
   }
-
+ private:
   void load_textures(const std::string& name) {
     const std::array<std::string, 14> folder_names = {
         "attack1/",
@@ -73,4 +73,4 @@ struct MonsterResources {
 };
 
 struct ProjectileResources {};
-#endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCES_H_
+#endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_

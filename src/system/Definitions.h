@@ -14,7 +14,14 @@
 #define DOWN 2
 #define UP 3
 
+//UI
+#define SLOT_SIZE 45
 
-#define DRAW_HITBOXES
+#define SCALE(val) ((val)*UI_SCALE)
+#define SCALE_RECT(rect) \
+  { SCALE((rect).x), SCALE((rect).y), SCALE((rect).width), SCALE((rect).height) }
+#define SCALE_TEXT_SIZE(size) (SCALE(size))
+
+//#define DRAW_HITBOXES
 
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_

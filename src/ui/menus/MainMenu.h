@@ -1,10 +1,10 @@
 #ifndef MAGE_QUEST_SRC_UI_MAINMENU_H_
 #define MAGE_QUEST_SRC_UI_MAINMENU_H_
 
-#include "ServerBrowser.h"
+//#include "ServerBrowser.h"
 
 struct MainMenu {
-  ServerBrowser server_browser{};
+  //ServerBrowser server_browser{};
   SettingsMenu& settings_menu;
   MenuState menu_state = MenuState::Main;
 
@@ -34,8 +34,8 @@ struct MainMenu {
                      scaled_height},
                     "Join Game")) {
         menu_state = MenuState::ServerBrowser;
-        std::thread myThread(&ServerBrowser::scanNetwork, &server_browser);
-        myThread.detach();
+        //std::thread myThread(&ServerBrowser::scanNetwork, &server_browser);
+        //myThread.detach();
       }
       if (GuiButton({xOffset, baseYOffset + 3 * (scaled_height + vertical_gap), scaled_width,
                      scaled_height},
@@ -50,7 +50,7 @@ struct MainMenu {
     } else if (menu_state == MenuState::Settings) {
       settings_menu.draw();
     } else if (menu_state == MenuState::ServerBrowser) {
-      server_browser.draw();
+      //server_browser.draw();
     } else if (menu_state == MenuState::HostGame) {
     }
 

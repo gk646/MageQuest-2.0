@@ -24,6 +24,19 @@ struct TextureLoader {
         textures::TALENT_MID_GREEN = LoadTexture((ASSET_PATH+"ui/talents/"+"talent_mid_green.png").c_str());
         textures::TALENT_MID_PURPLE = LoadTexture((ASSET_PATH+"ui/talents/"+"talent_mid_purple.png").c_str());
         textures::TALENTNODE = LoadTexture((ASSET_PATH+"ui/talents/"+"talentnode.png").c_str());
+
+
+        textures::amulet = LoadTexture((ASSET_PATH + "ui/inventory/" + "amulet.png").c_str());
+        textures::bag = LoadTexture((ASSET_PATH + "ui/inventory/" + "bag.png").c_str());
+        textures::boots = LoadTexture((ASSET_PATH + "ui/inventory/" + "boots.png").c_str());
+        textures::chest = LoadTexture((ASSET_PATH + "ui/inventory/" + "chest.png").c_str());
+        textures::helm = LoadTexture((ASSET_PATH + "ui/inventory/" + "helm.png").c_str());
+        textures::offhand = LoadTexture((ASSET_PATH + "ui/inventory/" + "offhand.png").c_str());
+        textures::pants = LoadTexture((ASSET_PATH + "ui/inventory/" + "pants.png").c_str());
+        textures::relic = LoadTexture((ASSET_PATH + "ui/inventory/" + "relic.png").c_str());
+        textures::ring = LoadTexture((ASSET_PATH + "ui/inventory/" + "ring.png").c_str());
+        textures::weapon = LoadTexture((ASSET_PATH + "ui/inventory/" + "weapon.png").c_str());
+
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_

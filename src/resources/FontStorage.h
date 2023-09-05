@@ -5,4 +5,6 @@
 inline Font ANT_PARTY;
 inline Font VARNISHED;
 inline Font MINECRAFT_BOLD;
+
+
 #endif  //MAGEQUEST_SRC_RESOURCES_FONTSTORAGE_H_

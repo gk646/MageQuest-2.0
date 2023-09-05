@@ -4,46 +4,8 @@
 using namespace std::chrono_literals;
 
 class Game {
-  int targetFPS = 120;
   bool logic_thread_running = true;
-  bool multiplayer = false;
-
   std::thread logic_thread;
-  UIManager ui_manager;
-
-  void render() noexcept {
-    while (!(WindowShouldClose() && !IsKeyDown(KEY_ESCAPE))) {
-      cxstructs::now(0);
-      BeginDrawing();
-      ClearBackground(WHITE);
-      if (GAME_STATE == GameState::Game || GAME_STATE == GameState::GameMenu) {
-        drawGame();
-      }
-      ui_manager.draw();
-      BenchMark::draw_stats();
-      EndDrawing();
-      FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);
-    }
-  }
-  void game_logic() noexcept {
-    auto nextUpdate = std::chrono::high_resolution_clock::now();
-    auto targetDuration = std::chrono::milliseconds(16);
-
-    while (logic_thread_running) {
-      auto currentTime = std::chrono::high_resolution_clock::now();
-
-      if (currentTime >= nextUpdate) {
-        game_tick();
-        nextUpdate = nextUpdate + targetDuration;
-
-        while (nextUpdate < std::chrono::high_resolution_clock::now()) {
-          nextUpdate = nextUpdate + targetDuration;
-        }
-      } else {
-        std::this_thread::sleep_until(nextUpdate);
-      }
-    }
-  }
 
 #define UPDATE_AND_COLLISION()                                      \
   for (auto monster : MONSTERS) {                                   \
@@ -73,15 +35,33 @@ class Game {
       ++it;                                                         \
     }                                                               \
   }
+  void logic_loop() const noexcept {
+    auto nextUpdate = std::chrono::high_resolution_clock::now();
+    auto targetDuration = std::chrono::milliseconds(16);
 
-  inline void game_tick() noexcept {
+    while (logic_thread_running) {
+      auto currentTime = std::chrono::high_resolution_clock::now();
+
+      if (currentTime >= nextUpdate) {
+        game_tick();
+        nextUpdate = nextUpdate + targetDuration;
+
+        while (nextUpdate < std::chrono::high_resolution_clock::now()) {
+          nextUpdate += targetDuration;
+        }
+      } else {
+        std::this_thread::sleep_until(nextUpdate);
+      }
+    }
+  }
+  static inline void game_tick() noexcept {
     cxstructs::now();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
       }
       case GameState::Game: {
-        ui_manager.update();
+        UI_MANAGER.update();
         PLAYER_EFFECTS.update();
         PLAYER_STATS.general.update();
         PLAYER_HOTBAR.update();
@@ -91,7 +71,7 @@ class Game {
         break;
       }
       case GameState::GameMenu: {
-        ui_manager.update();
+        UI_MANAGER.update();
         PLAYER_EFFECTS.update();
         PLAYER_STATS.general.update();
         PLAYER_HOTBAR.update();
@@ -104,38 +84,98 @@ class Game {
     }
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
   }
-  static inline void drawGame() noexcept {
-    CAMERA_X = SCREEN_WIDTH / 2;
-    CAMERA_Y = SCREEN_HEIGHT / 2;
-    WorldRender::draw();
-    std::shared_lock<std::shared_mutex> lock(rwLock);
-    for (auto& projectile : PROJECTILES) {
-      projectile->draw();
+
+#define RESET_CAMERA()         \
+  CAMERA_X = SCREEN_WIDTH / 2; \
+  CAMERA_Y = SCREEN_HEIGHT / 2;
+
+#define DRAW_ENTITIES()                             \
+  std::shared_lock<std::shared_mutex> lock(rwLock); \
+  for (auto projectile : PROJECTILES) {             \
+    projectile->draw();                             \
+  }                                                 \
+  for (auto monster : MONSTERS) {                   \
+    monster->draw();                                \
+  }                                                 \
+  for (auto npc : NPCS) {                           \
+    npc->draw();                                    \
+  }                                                 \
+  for (auto players : OTHER_PLAYERS) {              \
+    players.draw();                                 \
+  }                                                 \
+  lock.unlock();                                    \
+  PLAYER.draw();
+
+#define DRAW_GAME_UI()         \
+  UI_MANAGER.player_ui.draw(); \
+  UI_MANAGER.game_menu.draw();
+
+#define DRAW_LOADING()                    \
+  LoadingScreen::draw();                  \
+  if (GameLoader::finished_cpu_loading) { \
+    GameLoader::finish_loading();         \
+  }
+
+  static void render_loop() noexcept {
+    while (!WindowShouldClose()) {
+      BeginDrawing();
+      ClearBackground(WHITE);
+
+      draw_frame();
+
+      BenchMark::draw_stats();
+      EndDrawing();
     }
-    for (auto& npc : NPCS) {
-      npc->draw();
+  }
+  static inline void draw_frame() noexcept {
+    cxstructs::now(0);
+    RESET_CAMERA()
+    UI_MANAGER.ui_update();
+    switch (GAME_STATE) {
+      case GameState::MainMenu: {
+        UI_MANAGER.main_menu.draw();
+        break;
+      }
+      case GameState::Game: {
+        WorldRender::draw();
+        DRAW_ENTITIES()
+        WorldRender::draw_fore_ground();
+        UI_MANAGER.player_ui.draw();
+        break;
+      }
+      case GameState::GameMenu: {
+        WorldRender::draw();
+        DRAW_ENTITIES()
+        WorldRender::draw_fore_ground();
+        DRAW_GAME_UI()
+        break;
+      }
+      case GameState::Loading: {
+        DRAW_LOADING()
+        break;
+      }
     }
-    for (auto& monster : MONSTERS) {
-      monster->draw();
+    if (UI_MANAGER.settings_menu.showFPS) {
+      DrawFPS(25, 25);
     }
-    for (auto players : OTHER_PLAYERS) {
-      players.draw();
-    }
-    PLAYER.draw();
-    WorldRender::draw_fore_ground();
+    FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);
   }
 
  public:
-  Game() {
+  Game() noexcept{
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
+    Image icon = LoadImage((ASSET_PATH + "Icons/icon2.png").c_str());
+    SetWindowIcon(icon);
+    UnloadImage(icon);
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 100; i++) {
-      MONSTERS.push_back(new SkeletonWarrior({250+i*50,150},10));
+      MONSTERS.push_back(new SkeletonWarrior({250 + i * 50, 150}, 10));
     }
     //SettingsMenu::set_full_screen();
   }
-  ~Game() {
+  ~Game()noexcept {
     for (uint_fast32_t i = 0; i < 5589; i++) {
       UnloadTexture(TEXTURES[i]);
     }
@@ -144,10 +184,10 @@ class Game {
     CloseAudioDevice();
     CloseWindow();
   }
-  void start() {
+  void start()noexcept {
     GameLoader::load();
-    logic_thread = std::thread(&Game::game_logic, this);
-    render();
+    logic_thread = std::thread(&Game::logic_loop, this);
+    render_loop();
   }
 };
 #endif  //MAGE_QUEST_SRC_GAME_H_

@@ -1,34 +1,15 @@
 #ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
+#include "PlayerUI.h"
+
 struct UIManager {
-  LoadingScreen loading_screen;
   PlayerUI player_ui;
   SettingsMenu settings_menu;
   GameMenu game_menu{settings_menu};
   MainMenu main_menu{settings_menu};
 
-  void draw() noexcept {
-    ui_update();
-    std::shared_lock<std::shared_mutex> lock(rwLock);
-    if (GAME_STATE == GameState::Game) {
-      player_ui.draw();
-    } else if (GAME_STATE == GameState::GameMenu) {
-      player_ui.draw();
-      game_menu.draw();
-    } else if (GAME_STATE == GameState::MainMenu) {
-      main_menu.draw();
-    } else if (GAME_STATE == GameState::Loading) {
-      loading_screen.draw();
-      if (GameLoader::finished_cpu_loading) {
-        GameLoader::finish_loading();
-      }
-    }
-    if (settings_menu.showFPS) {
-      DrawFPS(25, 25);
-    }
-  }
-  void ui_update() const {
+  void ui_update() noexcept {
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH) {
         SCREEN_WIDTH = GetScreenWidth();
@@ -39,15 +20,22 @@ struct UIManager {
         CAMERA_Y = SCREEN_HEIGHT / 2;
       }
     }
+
     if (IsKeyPressed(KEY_ESCAPE)) {
-      if (GAME_STATE == GameState::GameMenu && game_menu.menu_state == MenuState::Main) {
+      if (GAME_STATE == GameState::GameMenu &&
+          game_menu.menu_state == MenuState::Main) {
         GAME_STATE = GameState::Game;
       } else if (GAME_STATE == GameState::Game) {
-        GAME_STATE = GameState::GameMenu;
+        if (!player_ui.window_closeable()) {
+          GAME_STATE = GameState::GameMenu;
+        }
       }
     }
   }
 
-  void update() { player_ui.update(); }
+  inline void update() noexcept { player_ui.update(); }
 };
+
+inline UIManager UI_MANAGER{};
+
 #endif  //MAGE_QUEST_SRC_UI_UIMANAGER_H_

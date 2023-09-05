@@ -21,6 +21,8 @@ inline const Color LightGrey = {192, 203, 220, 255};
 // INTERFACE
 inline const Color mediumVeryLight = {172, 180, 205, 255};
 inline const Color mediumLightGrey = {155, 169, 194, 255};
+inline const Color mediumLightGreyBitDarker = {135, 149, 174, 255};
+inline const Color mediumLightGreyDarker = {115, 129, 154, 255};
 inline const Color Red = {255, 0, 68, 255};
 inline const Color button = {77, 19, 2, 229};                    // 0.9 * 255
 inline const Color lightGreyMiddleAlpha = {192, 203, 220, 153};  // 0.6 * 255

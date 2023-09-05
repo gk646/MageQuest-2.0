@@ -6,7 +6,7 @@ struct Monster : public Entity {
   float pov = 0;
   HealthBar health_bar{50, 10};
   StatusEffectHandler status_effects{stats};
-  MonsterResources* entity_resource = nullptr;
+  MonsterResource entity_resource;
   std::string name;
   Monster(const Point& pos, const EntityStats& stats, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)

@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_INCLUDES_H_
 #define MAGEQUEST_SRC_INCLUDES_H_
 
-
 //stdlib
 #include <array>
 #include <chrono>
@@ -18,6 +17,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <mutex>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -26,12 +26,14 @@
 #include "raygui.h"
 
 //SFML
-#include <SFML/Network.hpp>
+//#include <SFML/Network.hpp>
+
+inline std::string ASSET_PATH = "res/";
 
 //cxstructs
 #include "cxstructs/Geometry.h"
 #include "cxstructs/vec.h"
-#include "cxutil/cxtime.h."
+#include "cxutil/cxtime.h"
 using namespace cxstructs;
 //Mage Quest
 #include "resources/Colors.h"
@@ -40,14 +42,20 @@ using namespace cxstructs;
 #include "system/Util.h"
 #include "ui/StyleSheet.h"
 
-#include "gameplay/Item.h"
+
 #include "gameplay/Stats.h"
 #include "gameplay/Talent.h"
 #include "world/maps/Map.h"
 
+#include "gamestateio/loading/EntityResource.h"
+#include "resources/TextureStorage.h"
+#include "resources/FontStorage.h"
+#include "resources/SoundStorage.h"
+
 #include "gameplay/Item.h"
 #include "gameplay/StatusEffect.h"
 
+#include "gameplay/handlers/ItemDropHandler.h"
 #include "gameplay/handlers/StatusEffectHandler.h"
 #include "graphics/GifDrawer.h"
 
@@ -55,26 +63,20 @@ using namespace cxstructs;
 #include "system/GlobalVariables.h"
 
 //after global variables
-#include "resources/FontStorage.h"
-#include "resources/SoundStorage.h"
-
 #include "ui/Window.h"
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
 
-
 #include "gamestateio/loading/LoadingUtil.h"
 #include "graphics/WorldRender.h"
-#include "resources/TextureStorage.h"
 #include "system/BenchMark.h"
 #include "ui/game/MiniMap.h"
 
-#include "ui/menus/ServerBrowser.h"
 #include "ui/menus/SettingsMenu.h"
 #include "world/WorldManager.h"
 
 #include "gamestateio/GameLoader.h"
-#include "ui/player/PlayerUI.h"
+#include "ui/PlayerUI.h"
 
 #include "ui/menus/GameMenu.h"
 #include "ui/menus/MainMenu.h"

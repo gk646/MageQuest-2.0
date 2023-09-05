@@ -8,8 +8,8 @@ struct Projectile : public Entity {
   ProjectileType projectile_type = ProjectileType::ONE_HIT;
   DamageStats damage_stats;
   Point move_vector;
-  //Texture2D  texture;
   std::vector<StatusEffect*> status_effects{};
+  ProjectileResources resources;
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
             const Vector2& destination, int life_span, float speed,const DamageStats& damage_stats,
              ProjectileType type, const std::vector<StatusEffect*>& effects)

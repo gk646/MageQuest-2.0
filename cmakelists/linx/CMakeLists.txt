@@ -8,7 +8,7 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 set(OPENGL_VERSION "4.3" CACHE STRING "OpenGL Version to build raylib with")
 
-add_subdirectory(C:/Users/gk646/Documents/Libaries/raylib-4.5.0 raylib)
+add_subdirectory(/mnt/c/Users/gk646/Documents/Libaries/raylib-4.5.0 ../../raylib)
 
 file(GLOB_RECURSE PROJECT_SOURCES
         "src/*.cpp"
@@ -18,19 +18,20 @@ file(GLOB_RECURSE PROJECT_SOURCES
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 include_directories(${PROJECT_NAME} PUBLIC
-        C:/Users/gk646/Documents/Libaries/raygui-3.6/src
-        C:/Users/gk646/Documents/Libaries/raylib-4.5.0/src
-        #C:/Users/gk646/Documents/Libaries/SFML-2.6.0/include
-        C:/Users/gk646/Documents/CodingProjects/C++/cxstructs/src
+        /mnt/c/Users/gk646/Documents/Libaries/raygui-3.6/src
+        /mnt/c/Users/gk646/Documents/Libaries/raylib-4.5.0/src
+        #/mnt/c/Users/gk646/Documents/Libaries/SFML-2.6.0/include
+        /mnt/c/Users/gk646/Documents/CodingProjects/C++/cxstructs/src
 )
+
 target_link_directories(${PROJECT_NAME} PRIVATE
-        C:/Users/gk646/Documents/Libaries/raylib-4.5.0/src
-        C:/Users/gk646/Documents/Libaries/raygui-3.6/src
-       # C:/Users/gk646/Documents/Libaries/SFML-2.6.0/lib
+        /mnt/c/Users/gk646/Documents/Libaries/raylib-4.5.0/src
+        /mnt/c/Users/gk646/Documents/Libaries/raygui-3.6/src
+        #/mnt/c/Users/gk646/Documents/Libaries/SFML-2.6.0/lib
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-        raylib
+        ../../raylib
         #sfml-system
         #sfml-network
         #winmm
