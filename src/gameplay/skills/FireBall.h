@@ -8,7 +8,7 @@ struct FireBall final : public Skill {
 
   void activate() final {
     use();
-    PROJECTILES.emplace_back(FireBall_P(PLAYER.pos, true));
+    PROJECTILES.push_back(new FireBall_P({PLAYER_X,PLAYER_Y}, true));
   }
   inline void update() final { cool_down_ticks++; }
 };

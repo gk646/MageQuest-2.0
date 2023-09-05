@@ -8,7 +8,7 @@ struct PlayerUI {
   CharacterPanel char_panel{};
   StatusBar status_bar{};
   void draw() {
-    PLAYER.status_effects.draw();
+    PLAYER_EFFECTS.draw();
     PLAYER_HOTBAR.draw();
     status_bar.draw();
     mini_map.draw();
@@ -19,7 +19,6 @@ struct PlayerUI {
     mini_map.update();
     status_bar.update();
     char_panel.update();
-    PLAYER_HOTBAR.update();
   }
 };
 #endif  //MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_

@@ -11,7 +11,7 @@ struct Projectile : public Entity {
   //Texture2D  texture;
   std::vector<StatusEffect*> status_effects{};
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             Vector2 destination, int life_span, float speed, DamageStats damage_stats,
+            const Vector2& destination, int life_span, float speed,const DamageStats& damage_stats,
              ProjectileType type, const std::vector<StatusEffect*>& effects)
       : Entity(pos, size, shape_type),
         life_span(life_span),
@@ -23,7 +23,7 @@ struct Projectile : public Entity {
     move_vector = get_move_vector(destination);
   }
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             int life_span, float speed, DamageStats damage_stats, ProjectileType type,
+             int life_span, float speed,const DamageStats& damage_stats, ProjectileType type,
              const std::vector<StatusEffect*>& effects, const Point& move_vector, float pov)
       : Entity(pos, size, shape_type,pov),
         life_span(life_span),
@@ -77,10 +77,10 @@ struct Projectile : public Entity {
       delete ptr;
     }
   }
-  Point get_move_vector(Vector2 mouse_pos) {
+  Point get_move_vector(const Vector2& mouse_pos) {
     float angle = std::atan2(mouse_pos.y - (pos.y() - PLAYER_Y + CAMERA_Y),
                              mouse_pos.x - (pos.x() - PLAYER_X + CAMERA_X));
-    pov =  angle * (180.0f / M_PI);
+    //pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
   void draw() override {
@@ -108,6 +108,6 @@ struct Projectile : public Entity {
   }
 };
 
-#include "projectiles/FireBall.h"
+#include "projectiles/FireBall_P.h"
 #include "projectiles/PoisonBall.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

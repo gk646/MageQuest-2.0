@@ -9,7 +9,6 @@ class Game {
   bool multiplayer = false;
 
   std::thread logic_thread;
-
   UIManager ui_manager;
 
   void render() noexcept {
@@ -46,48 +45,78 @@ class Game {
     }
   }
 
+#define UPDATE_AND_COLLISION()                                      \
+  for (auto monster : MONSTERS) {                                   \
+    monster->update();                                              \
+  }                                                                 \
+  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {   \
+    (*it)->update();                                                \
+                                                                    \
+    if ((*it)->dead) {                                              \
+      delete *it;                                                   \
+      it = PROJECTILES.erase(it);                                   \
+    } else {                                                        \
+      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) { \
+        if ((*m_it)->dead) {                                        \
+          delete *m_it;                                             \
+          m_it = MONSTERS.erase(m_it);                              \
+        } else {                                                    \
+          if ((*it)->intersects(**m_it)) {                          \
+            (*m_it)->hit(**it);                                     \
+          }                                                         \
+          ++m_it;                                                   \
+        }                                                           \
+      }                                                             \
+      if ((*it)->intersects(PLAYER)) {                              \
+        PLAYER.hit(**it);                                           \
+      }                                                             \
+      ++it;                                                         \
+    }                                                               \
+  }
+
   inline void game_tick() noexcept {
     cxstructs::now();
-    std::unique_lock<std::shared_mutex> lock(rwLock);
-    erase_if(PROJECTILES, [&](const auto& item) { return item.dead; });
-    erase_if(MONSTERS, [&](const auto& monster) { return monster.dead; });
-    if (GAME_STATE == GameState::Game) {
-      PLAYER.update();
-    }
-    ui_manager.update();
-
-    lock.unlock();
-
-    for (auto& monster : MONSTERS) {
-      monster.update();
-    }
-
-    for (auto& projectile : PROJECTILES) {
-      projectile.update();
-      for (auto& monster : MONSTERS) {
-        if (projectile.intersects(monster)) {
-          monster.hit(projectile);
-        }
+    switch (GAME_STATE) {
+      case GameState::MainMenu: {
+        break;
       }
-      if (projectile.intersects(PLAYER)) {
-        PLAYER.hit(projectile);
+      case GameState::Game: {
+        ui_manager.update();
+        PLAYER_EFFECTS.update();
+        PLAYER_STATS.general.update();
+        PLAYER_HOTBAR.update();
+        PLAYER.movement();
+        std::unique_lock<std::shared_mutex> lock(rwLock);
+        UPDATE_AND_COLLISION()
+        break;
+      }
+      case GameState::GameMenu: {
+        ui_manager.update();
+        PLAYER_EFFECTS.update();
+        PLAYER_STATS.general.update();
+        PLAYER_HOTBAR.update();
+        std::unique_lock<std::shared_mutex> lock(rwLock);
+        UPDATE_AND_COLLISION()
+        break;
+      }
+      case GameState::Loading: {
       }
     }
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
   }
-  inline void drawGame() noexcept {
+  static inline void drawGame() noexcept {
     CAMERA_X = SCREEN_WIDTH / 2;
     CAMERA_Y = SCREEN_HEIGHT / 2;
     WorldRender::draw();
     std::shared_lock<std::shared_mutex> lock(rwLock);
     for (auto& projectile : PROJECTILES) {
-      projectile.draw();
+      projectile->draw();
     }
     for (auto& npc : NPCS) {
-      npc.draw();
+      npc->draw();
     }
     for (auto& monster : MONSTERS) {
-      monster.draw();
+      monster->draw();
     }
     for (auto players : OTHER_PLAYERS) {
       players.draw();
@@ -102,7 +131,7 @@ class Game {
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 100; i++) {
-      //MONSTERS.push_back(Monster({500,150},{50,50}));
+      MONSTERS.push_back(new SkeletonWarrior({250+i*50,150},10));
     }
     //SettingsMenu::set_full_screen();
   }

@@ -28,26 +28,28 @@ struct HotBar {
   }
 
   void update() noexcept {
-    if (IsKeyDown(KEY_ONE) && skills[0]->use_able()) {
-      skills[0]->activate();
-    }
-    if (IsKeyDown(KEY_TWO) && skills[1]->use_able()) {
-      skills[1]->activate();
-    }
-    if (IsKeyDown(KEY_THREE) && skills[2]->use_able()) {
-      skills[2]->activate();
-    }
-    if (IsKeyDown(KEY_FOUR) && skills[3]->use_able()) {
-      skills[3]->activate();
-    }
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && skills[4]->use_able()) {
-      skills[4]->activate();
-    }
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && skills[5]->use_able()) {
-      skills[5]->activate();
-    }
     for (const auto& skill : skills) {
       skill->update();
+    }
+    if(GAME_STATE != GameState::GameMenu){
+      if (IsKeyDown(KEY_ONE) && skills[0]->use_able()) {
+        skills[0]->activate();
+      }
+      if (IsKeyDown(KEY_TWO) && skills[1]->use_able()) {
+        skills[1]->activate();
+      }
+      if (IsKeyDown(KEY_THREE) && skills[2]->use_able()) {
+        skills[2]->activate();
+      }
+      if (IsKeyDown(KEY_FOUR) && skills[3]->use_able()) {
+        skills[3]->activate();
+      }
+      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && skills[4]->use_able() &&!WINDOW_FOCUSED) {
+        skills[4]->activate();
+      }
+      if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && skills[5]->use_able() &&!WINDOW_FOCUSED) {
+        skills[5]->activate();
+      }
     }
   }
 };

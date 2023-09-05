@@ -1,8 +1,6 @@
 #ifndef MAGE_QUEST_SRC_ENTITY_H_
 #define MAGE_QUEST_SRC_ENTITY_H_
 
-using namespace cxstructs;
-
 struct Entity {
   bool dead = false;
   float pov = 0;
