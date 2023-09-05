@@ -3,64 +3,91 @@
 
 struct Window {
   Rectangle whole_window;
-#define SCALE(val) ((val) * UI_SCALE)
-#define SCALE_RECT(rect) { SCALE((rect).x), SCALE((rect).y), SCALE((rect).width), SCALE((rect).height) }
-#define SCALE_TEXT_SIZE(size) (SCALE(size))
   Rectangle header_bar;
+  Vector2 lastMousePos = {0};
   bool isDragging = false;
-  Vector2 lastMousePos;
-  int open_key;
-  bool open = false;
   const char* header_text;
+  int open_key;
   int font_size = 17;
-  Window(int width, int height, int header_height, const char* header_text, int open_key)
-      : whole_window(100, 100, width, height),
-        header_bar(100, 100, width, header_height),
+  bool open = false;
+  bool header_hover = false;
+  Vector2 base_pos;
+  Window(int startx, int starty,int width, int height, int header_height, const char* header_text, int open_key)
+      : whole_window(startx, starty, width, height),
+        header_bar(startx, starty+2, width, header_height),
         header_text(header_text),
-        open_key(open_key) {}
-  void draw_window() {
-    if (IsKeyPressed(open_key)) {
-      open = !open;
-      isDragging = false;
-    }
-    if (!open) {
-      return;
-    }
+        open_key(open_key),
+        base_pos(startx,starty) {}
 
+#define OPEN_CLOSE()            \
+  if (IsKeyPressed(open_key)) { \
+    open = !open;               \
+    isDragging = false;         \
+  }                             \
+                                \
+  if (!open) {                  \
+    return;                     \
+  }
+#define DRAG_WINDOW()                                               \
+  if (isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {         \
+    auto mouse_pos = GetMousePosition();                            \
+    auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
+    auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
+    whole_window.x += delta_x;                                      \
+    whole_window.y += delta_y;                                      \
+    header_bar.x += delta_x;                                        \
+    header_bar.y += delta_y;                                        \
+    lastMousePos = mouse_pos;                                       \
+  } else {                                                          \
+    isDragging = false;                                             \
+  }
+
+  void draw_window() const noexcept {
     Rectangle scaled_whole = SCALE_RECT(whole_window);
     Rectangle scaled_head = SCALE_RECT(header_bar);
+
     DrawRectangleRounded(scaled_whole, 0.1F, 25, Colors::LightGrey);
-    DrawRectangleRoundedLines(scaled_whole, 0.1F, 25, 4, Colors::mediumLightGrey);
-    DrawRectangleRoundedLines(scaled_head, 1.1F, 30, 4, Colors::mediumLightGrey);
-    DrawText(header_text, scaled_whole.x + scaled_whole.width / 2 - GetTextWidth(header_text,font_size*UI_SCALE) / 2,
-             scaled_whole.y + (header_bar.height *UI_SCALE) / 4, font_size*UI_SCALE, Colors::mediumLightGrey);
+
+    DrawRectangleRounded(scaled_head, 0.6F, 20,
+                         header_hover ? isDragging ? Colors::mediumLightGreyDarker
+                                                   : Colors::mediumLightGreyBitDarker
+                                      : Colors::mediumLightGrey);
+
+    DrawRectangleRoundedLines(scaled_whole, 0.1F, 25, 3, Colors::darkBackground);
+    DrawRectangleRoundedLines(scaled_head, 1.5F, 15, 2, Colors::darkBackground);
+
+    DrawTextEx(ANT_PARTY, header_text,
+               {scaled_whole.x + scaled_whole.width / 2 -
+                    GetTextWidth(header_text, font_size * UI_SCALE) / 2,
+                scaled_whole.y + scaled_head.height / 4},
+               font_size * UI_SCALE, 1, Colors::darkBackground);
   }
-  void update_window() {
+  void update_window() noexcept {
     if (!open) {
       return;
     }
-    Vector2 mousePos = GetMousePosition();
-    if (CheckCollisionPointRec(mousePos, SCALE_RECT(header_bar))) {
+    header_hover = false;
+    if (CheckCollisionPointRec(GetMousePosition(), SCALE_RECT(header_bar))&&!DRAGGED_ITEM) {
+      header_hover = true;
       if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
         if (!isDragging) {
           isDragging = true;
-          lastMousePos = mousePos;
+          lastMousePos = GetMousePosition();
         }
       }
     }
 
-    if (isDragging) {
-      if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-        whole_window.x += (mousePos.x - lastMousePos.x)*(1/UI_SCALE);
-        whole_window.y += (mousePos.y - lastMousePos.y)*(1/UI_SCALE);
-        header_bar.x = whole_window.x;
-        header_bar.y = whole_window.y;
-
-        lastMousePos = mousePos;
-      } else {
-        isDragging = false;
-      }
+    if (!WINDOW_FOCUSED) {
+      WINDOW_FOCUSED = isDragging || CheckCollisionPointRec(GetMousePosition(),
+                                                            SCALE_RECT(whole_window));
     }
+  }
+  inline void reset_pos() noexcept {
+    whole_window.x = base_pos.x;
+    whole_window.y = base_pos.y;
+
+    header_bar.x = base_pos.x;
+    header_bar.y = base_pos.y+2;
   }
 };
 #endif  //MAGEQUEST_SRC_UI_WINDOW_H_

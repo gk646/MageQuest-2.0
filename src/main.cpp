@@ -8,6 +8,7 @@ int main() {
   GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
   InitAudioDevice();
+  SetExitKey(0);
   auto game = new Game();
   game->start();
   delete game;

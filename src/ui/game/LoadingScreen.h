@@ -10,7 +10,7 @@ struct LoadingScreen {
   static constexpr float vertical_gap = 0.0020;
   static constexpr float horizontal_gap = 0.0012;
   static float progress;
-   void draw() const noexcept {
+   static void draw() noexcept {
     DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0, Colors::LightGrey);
 
     DrawRectangleLines(SCREEN_WIDTH * beginX, SCREEN_HEIGHT * beginY, SCREEN_WIDTH * width,

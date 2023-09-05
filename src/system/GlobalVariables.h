@@ -5,13 +5,13 @@
 inline float SCREEN_WIDTH = 1280;
 inline float SCREEN_HEIGHT = 960;
 inline GameState GAME_STATE = GameState::Loading;
-inline std::string ASSET_PATH = "res/";
 inline std::shared_mutex rwLock;
 inline std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 inline GifDrawer* RAYLIB_LOGO;
 
 //UI
 inline bool WINDOW_FOCUSED = false;
+inline Item* DRAGGED_ITEM;
 
 //PLAYER
 inline float CAMERA_X = SCREEN_WIDTH / 2;
@@ -29,14 +29,13 @@ inline int16_t** CURRENT_MIDDLE_GROUND;
 inline int16_t** CURRENT_FORE_GROUND;
 inline Zone CURRENT_ZONE = Zone::Hillcrest;
 inline int CURRENT_MAP_SIZE = 100;
-inline int COLLISIONS[6000];
+inline int8_t COLLISIONS[6000];
 inline Texture2D TEXTURES[6000];
 inline std::vector<Item> ITEMS;
 
 
 //Entities
 #include "../gameobjects/Entity.h"
-#include "../gamestateio/loading/EntityResources.h"
 
 #include "../gameobjects/Projectile.h"
 #include "../ui/game/HealthBar.h"

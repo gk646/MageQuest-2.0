@@ -3,6 +3,7 @@
 
 struct Player : public Entity {
   std::string name;
+  MonsterResource resource;
   explicit Player(const Point& pos, const Point& size = {25, 25})
       : Entity(pos, size, ShapeType::RECT), name("New Player") {}
   Player(const Player& other) : Entity(other), name(other.name) {}

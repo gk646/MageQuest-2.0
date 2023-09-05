@@ -18,7 +18,7 @@ enum class Class {
   WIZARD
 };
 enum class StatusEffectType { BUFF, DE_BUFF };
-enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
+enum class ShapeType { CIRCLE , RECT, TRIANGLE, POLYGON };
 enum class MagicType { FIRE, POISON, ICE, EARTH, LIGHTNING, DARK };
 enum class SourceType { PHYSICAL, MAGICAL };
 enum class ProjectileType { CONTINUOUS, ONE_HIT };
@@ -41,6 +41,7 @@ enum class ItemType {
   TWO_HAND,
   OFF_HAND,
   BAG
+  ,EMPTY
 };
 enum class ItemRarity { NORMAL, RARE, EPIC, LEGENDARY, SET_ITEM, UNIQUE };
 enum class Zone {
