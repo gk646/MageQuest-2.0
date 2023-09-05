@@ -1,6 +1,7 @@
 #ifndef MAGEQUEST_SRC_INCLUDES_H_
 #define MAGEQUEST_SRC_INCLUDES_H_
 
+
 //stdlib
 #include <array>
 #include <chrono>
@@ -31,7 +32,7 @@
 #include "cxstructs/Geometry.h"
 #include "cxstructs/vec.h"
 #include "cxutil/cxtime.h."
-
+using namespace cxstructs;
 //Mage Quest
 #include "resources/Colors.h"
 #include "system/Definitions.h"
@@ -61,7 +62,7 @@
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
 
-#include "gamestateio/loading/EntityResources.h"
+
 #include "gamestateio/loading/LoadingUtil.h"
 #include "graphics/WorldRender.h"
 #include "resources/TextureStorage.h"

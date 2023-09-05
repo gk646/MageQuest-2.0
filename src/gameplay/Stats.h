@@ -85,7 +85,6 @@ struct GeneralStats {
   float base_max_concentration = 10;
   float base_health_regen = 0.2;  //per second
   float base_mana_regen = 1;      //per second
-
   inline void take_damage(const DamageStats& stats) {
     if (stats.damage_type == SourceType::MAGICAL) {
       health -= stats.damage * (1 - armour_stats.magical_armour / 100);
@@ -109,6 +108,11 @@ struct GeneralStats {
       health += health_regen / 60;
     }
   }
+  inline void apply_monster_scaling(int level) {
+    max_health *= std::pow(1.2F, level);
+    max_health* DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
+    health = max_health;
+  }
 };
 
 struct EntityStats {
@@ -116,6 +120,11 @@ struct EntityStats {
   GeneralStats general;
   CombatStats combat_stats;
   int level = 1;
+  EntityStats() = default;
+  EntityStats(float base_health, int level) : level(level) {
+    general.max_health = base_health;
+    general.apply_monster_scaling(level);
+  }
   inline void reset_to_base() {
     abilities.reset_to_base();
     general.reset_to_base();

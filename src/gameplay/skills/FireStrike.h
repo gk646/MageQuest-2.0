@@ -19,7 +19,7 @@ struct FireStrike final : public Skill {
       float x_component = std::cos(angle_rad);
       float y_component = std::sin(angle_rad);
 
-      PROJECTILES.push_back(Projectile(from_player, pos, {25, 25}, ShapeType::RECT, 300, 4,
+      PROJECTILES.push_back(new Projectile(from_player, pos, {25, 25}, ShapeType::RECT, 300, 4,
                                        damage_stats, ProjectileType::CONTINUOUS,
                                        {new Burn{1, 1, 1}}, {x_component, y_component},angle_rad * (180.0f / M_PI)));
     }

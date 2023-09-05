@@ -1,7 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
-
 struct UIManager {
   LoadingScreen loading_screen;
   PlayerUI player_ui;
@@ -49,10 +48,6 @@ struct UIManager {
     }
   }
 
-  void update() {
-    if (GAME_STATE == GameState::Game || GAME_STATE == GameState::GameMenu) {
-      player_ui.update();
-    }
-  }
+  void update() { player_ui.update(); }
 };
 #endif  //MAGE_QUEST_SRC_UI_UIMANAGER_H_
