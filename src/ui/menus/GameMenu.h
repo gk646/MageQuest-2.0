@@ -6,7 +6,7 @@ struct GameMenu {
   MenuState menu_state = MenuState::Main;
   SettingsMenu& settings_menu;
 
-  explicit GameMenu(SettingsMenu& settings_menu) : settings_menu(settings_menu) {}
+  explicit GameMenu(SettingsMenu& settings_menu) noexcept : settings_menu(settings_menu) {}
   void draw() noexcept {
     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, ColorAlpha(GRAY, 0.7));
     const float scaled_width = 110 * UI_SCALE;

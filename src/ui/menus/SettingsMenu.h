@@ -2,7 +2,7 @@
 #define MAGE_QUEST_SRC_UI_SETTINGSMENU_H_
 
 struct SettingsMenu {
-  int targetFPS =  120;
+  int targetFPS = 120;
   bool showFPS = false;
 
   int selectedResolution = 0;
@@ -12,34 +12,33 @@ struct SettingsMenu {
   int baseHeight = 30;
   int offsetX = 70;
   int offsetY = 40;
-  bool fps_checkbox = false;
   void draw() noexcept {
-    // Draw Background Rectangle
-    DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0, ColorAlpha(GRAY, 0.7));
+    DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0,
+                     ColorAlpha(GRAY, 0.7));
 
-    // Initialize UI scaling and position
     float scaledWidth = baseWidth * UI_SCALE;
     float scaledHeight = baseHeight * UI_SCALE;
     float startX = SCREEN_WIDTH / 2 - scaledWidth / 2;
     float startY = SCREEN_HEIGHT / 2 - scaledHeight * 3;
     float verticalSpacing = 35 * UI_SCALE;
 
-    // Draw Window size combo box
     Rectangle resolutionBounds = {startX, startY, scaledWidth, scaledHeight};
-    int newSelectedResolution = GuiComboBox(resolutionBounds, resolutions, selectedResolution,
-                                            IsWindowFullscreen() ? STATE_DISABLED : STATE_NORMAL);
+    int newSelectedResolution =
+        GuiComboBox(resolutionBounds, resolutions, selectedResolution,
+                    IsWindowFullscreen() ? STATE_DISABLED : STATE_NORMAL);
     if (newSelectedResolution != selectedResolution) {
       selectedResolution = newSelectedResolution;
       setResolution(selectedResolution);
     }
 
-    // Draw UI scale slider
     startY += verticalSpacing;
-    UI_SCALE = GuiSlider({startX, startY, scaledWidth, scaledHeight}, "UI Scale", nullptr, UI_SCALE, 0.7f, 2.0f);
+    UI_SCALE = GuiSlider({startX, startY, scaledWidth, scaledHeight},
+                         "UI Scale", nullptr, UI_SCALE, 0.7f, 2.0f);
 
-    // Draw Fullscreen checkbox
     startY += verticalSpacing;
-    bool fullscreen = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE}, "Fullscreen", IsWindowFullscreen());
+    bool fullscreen =
+        GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
+                    "Fullscreen", IsWindowFullscreen());
     if (fullscreen != IsWindowFullscreen()) {
       if (fullscreen) {
         SCREEN_WIDTH = GetMonitorWidth(0);
@@ -55,17 +54,17 @@ struct SettingsMenu {
     CAMERA_X = SCREEN_WIDTH / 2;
     CAMERA_Y = SCREEN_HEIGHT / 2;
 
-    // Draw FPS controls
     startY += verticalSpacing;
-    showFPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE}, "Show FPS", showFPS);
+    showFPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
+                          "Show FPS", showFPS);
 
-    // Draw FPS Target slider
     startY += verticalSpacing;
-    targetFPS = static_cast<int>(GuiSlider({startX, startY, scaledWidth, scaledHeight}, "FPS Target", nullptr,
-                                           static_cast<float>(targetFPS), 60, 10000));
+    targetFPS = static_cast<int>(
+        GuiSlider({startX, startY, scaledWidth, scaledHeight}, "FPS Target",
+                  nullptr, static_cast<float>(targetFPS), 60, 10000));
     SetTargetFPS(targetFPS);
   }
-  void setResolution(int resolution) const {
+  static void setResolution(int resolution) noexcept {
     switch (resolution) {
       case 0:
         SetWindowSize(800, 600);

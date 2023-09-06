@@ -10,9 +10,10 @@ struct Projectile : public Entity {
   Point move_vector;
   std::vector<StatusEffect*> status_effects{};
   ProjectileResources resources;
-  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-            const Vector2& destination, int life_span, float speed,const DamageStats& damage_stats,
-             ProjectileType type, const std::vector<StatusEffect*>& effects)
+  Projectile(bool from_player, const Point& pos, const Point& size,
+             ShapeType shape_type, const Vector2& destination, int life_span,
+             float speed, const DamageStats& damage_stats, ProjectileType type,
+             const std::vector<StatusEffect*>& effects) noexcept
       : Entity(pos, size, shape_type),
         life_span(life_span),
         speed(speed),
@@ -22,10 +23,12 @@ struct Projectile : public Entity {
         status_effects(effects) {
     move_vector = get_move_vector(destination);
   }
-  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             int life_span, float speed,const DamageStats& damage_stats, ProjectileType type,
-             const std::vector<StatusEffect*>& effects, const Point& move_vector, float pov)
-      : Entity(pos, size, shape_type,pov),
+  Projectile(bool from_player, const Point& pos, const Point& size,
+             ShapeType shape_type, int life_span, float speed,
+             const DamageStats& damage_stats, ProjectileType type,
+             const std::vector<StatusEffect*>& effects,
+             const Point& move_vector, float pov) noexcept
+      : Entity(pos, size, shape_type, pov),
         life_span(life_span),
         speed(speed),
         damage_stats(damage_stats),
@@ -33,7 +36,7 @@ struct Projectile : public Entity {
         projectile_type(type),
         status_effects(effects),
         move_vector(move_vector) {}
-  Projectile(const Projectile& p)
+  Projectile(const Projectile& p) noexcept
       : Entity(p),
         move_vector(p.move_vector),
         speed(p.speed),
@@ -45,7 +48,7 @@ struct Projectile : public Entity {
       status_effects.push_back(effect->clone());
     }
   }
-  Projectile& operator=(const Projectile& other) {
+  Projectile& operator=(const Projectile& other) noexcept {
     if (this == &other) {
       return *this;
     }
@@ -72,33 +75,35 @@ struct Projectile : public Entity {
 
     return *this;
   }
-  ~Projectile() override {
+  ~Projectile() noexcept override {
     for (auto ptr : status_effects) {
       delete ptr;
     }
   }
-  Point get_move_vector(const Vector2& mouse_pos) {
+  Point get_move_vector(const Vector2& mouse_pos) noexcept {
     float angle = std::atan2(mouse_pos.y - (pos.y() - PLAYER_Y + CAMERA_Y),
                              mouse_pos.x - (pos.x() - PLAYER_X + CAMERA_X));
     //pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
-  void draw() override {
+  void draw() noexcept final {
     switch (shape_type) {
       case ShapeType::RECT:
-        DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
-                         size.y(), {0, 0}, pov, PURPLE);
+        DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X,
+                         pos.y() - PLAYER_Y + CAMERA_Y, size.x(), size.y(),
+                         {0, 0}, pov, PURPLE);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0,
-                         360, 56, PURPLE);
+        DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X,
+                         pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0, 360, 56,
+                         PURPLE);
         break;
     }
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif
   }
-  void update() override {
+  void update() noexcept final {
     pos.x() += move_vector.x() * speed;
     pos.y() += move_vector.y() * speed;
     life_span--;

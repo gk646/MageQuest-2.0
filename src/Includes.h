@@ -18,6 +18,9 @@
 #include <utility>
 #include <vector>
 #include <mutex>
+#include <random>
+#include <iostream>
+#include <csignal>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -28,7 +31,7 @@
 //SFML
 //#include <SFML/Network.hpp>
 
-inline std::string ASSET_PATH = "res/";
+inline std::string ASSET_PATH = "../res/";
 
 //cxstructs
 #include "cxstructs/Geometry.h"
@@ -37,11 +40,15 @@ inline std::string ASSET_PATH = "res/";
 using namespace cxstructs;
 //Mage Quest
 #include "resources/Colors.h"
+#include "resources/FontStorage.h"
+#include "resources/SoundStorage.h"
 #include "system/Definitions.h"
 #include "system/Enums.h"
 #include "system/Util.h"
 #include "ui/StyleSheet.h"
+#include "system/GameSettings.h"
 
+#include "gameplay/Item.h"
 
 #include "gameplay/Stats.h"
 #include "gameplay/Talent.h"
@@ -49,24 +56,21 @@ using namespace cxstructs;
 
 #include "gamestateio/loading/EntityResource.h"
 #include "resources/TextureStorage.h"
-#include "resources/FontStorage.h"
-#include "resources/SoundStorage.h"
 
-#include "gameplay/Item.h"
 #include "gameplay/StatusEffect.h"
 
-#include "gameplay/handlers/ItemDropHandler.h"
 #include "gameplay/handlers/StatusEffectHandler.h"
 #include "graphics/GifDrawer.h"
 
-#include "system/GameSettings.h"
 #include "system/GlobalVariables.h"
 
 //after global variables
+#include "ui/player/elements/InventorySlot.h"
 #include "ui/Window.h"
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
 
+#include "gameplay/handlers/ItemDropHandler.h"
 #include "gamestateio/loading/LoadingUtil.h"
 #include "graphics/WorldRender.h"
 #include "system/BenchMark.h"

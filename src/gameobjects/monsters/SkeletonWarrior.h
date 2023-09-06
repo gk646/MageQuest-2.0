@@ -3,7 +3,7 @@
 
 struct SkeletonWarrior final : public Monster {
   static constexpr int base_health = 10;
-  SkeletonWarrior(const Point& pos, int level) : Monster(pos,EntityStats{base_health, level}){
+  SkeletonWarrior(const Point& pos, int level) noexcept : Monster(pos,EntityStats{base_health, level}){
 
  }
 };

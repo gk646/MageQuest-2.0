@@ -11,12 +11,12 @@ struct HealthBar {
   int width;
   int height;
 
-  HealthBar(int width, int height) : width(width), height(height) {}
+  HealthBar(int width, int height) noexcept : width(width), height(height) {}
   void draw(int x, int y, const EntityStats& stats) const noexcept {
     DrawRectangleLines(x - (width * UI_SCALE - width) / 2, y - height * UI_SCALE, width * UI_SCALE,
                        height * UI_SCALE, BLUE);
     DrawRectanglePro(x - (width * UI_SCALE - width) / 2, y - height * UI_SCALE,
-                     (stats.general.health / stats.general.max_health) * width * UI_SCALE,
+                     (stats.health / stats.get_max_health()) * width * UI_SCALE,
                      height * UI_SCALE, {0, 0}, 0, BLACK);
   }
   void update() {

@@ -4,7 +4,7 @@
 struct FireStrike final : public Skill {
   int num_fireballs;
   FireStrike(bool from_player, float damage, int num_fireballs)
-      : Skill(SkillStats{400, 20, 0}, DamageStats{SourceType::MAGICAL, MagicType::FIRE, damage},
+      : Skill(SkillStats{400, 20, 0}, DamageStats{ DamageType::FIRE, damage},
               from_player),
         num_fireballs(num_fireballs) {}
 

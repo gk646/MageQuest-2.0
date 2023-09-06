@@ -15,7 +15,7 @@ struct CharacterBag final : public Window {
     bag[1].add_item(Item());
   }
 
-  void draw() noexcept {
+   void draw() noexcept {
     OPEN_CLOSE()
     DRAG_WINDOW()
     draw_window();

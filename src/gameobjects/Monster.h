@@ -54,7 +54,7 @@ struct Monster : public Entity {
 #endif
   }
   void update() final {
-    if (stats.general.health <= 0) {
+    if (stats.health <= 0) {
       dead = true;
     }
     health_bar.update();
@@ -63,7 +63,7 @@ struct Monster : public Entity {
     if (p.from_player) {
       health_bar.hit();
       status_effects.add_effects(p.status_effects);
-      stats.general.take_damage(p.damage_stats);
+      stats.take_damage(p.damage_stats);
       p.dead = p.projectile_type == ProjectileType::ONE_HIT;
     }
   }

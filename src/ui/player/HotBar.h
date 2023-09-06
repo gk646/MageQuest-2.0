@@ -8,7 +8,7 @@ struct HotBar {
   int rows = 1;
   std::array<Skill*, 6> skills{new Dummy(), new Dummy(), new Dummy(),
                                new Dummy(), new Dummy(), new Dummy()};
-  HotBar(int columns, int rows) : columns(columns), rows(rows) {}
+  HotBar(int columns, int rows) noexcept : columns(columns), rows(rows) {}
   void draw() const noexcept {
     const float slotSize = 30 * UI_SCALE;
     const float slotSpacing = 5 * UI_SCALE;
@@ -27,7 +27,7 @@ struct HotBar {
     }
   }
 
-  void update() noexcept {
+   void update() noexcept {
     for (const auto& skill : skills) {
       skill->update();
     }

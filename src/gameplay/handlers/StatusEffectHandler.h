@@ -5,7 +5,7 @@ struct StatusEffectHandler {
   EntityStats& stats;
   std::vector<StatusEffect*> status_effects{};
   bool effects_changed = false;
-  explicit StatusEffectHandler(EntityStats& stats) : stats(stats) {}
+  explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
   void add_effects(const std::vector<StatusEffect*>& o) {
     for (const auto& new_effect : o) {
       bool is_new = true;
@@ -23,9 +23,9 @@ struct StatusEffectHandler {
       }
     }
   }
+
   void update() noexcept {
     if (effects_changed) {
-      stats.reset_to_base();
       for (const auto& effect : status_effects) {
         effect->activate(stats);
       }
@@ -44,7 +44,7 @@ struct StatusEffectHandler {
       }
     }
   }
-  void draw() const {
+  void draw() const noexcept {
     int buff_start = 500;
     int debuff_start = 700;
     for (const auto& effect : status_effects) {

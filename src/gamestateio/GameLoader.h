@@ -23,7 +23,7 @@ struct GameLoader {
       load_step(load_functions[load_util::current_step - load_util::cpu_steps]);
     } else if (true) {
       PlaySound(sound::intro);
-      WorldManager::load_map(Zone::Hillcrest, {30, 30});
+      WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
       GAME_STATE = GameState::MainMenu;
       LoadingScreen::progress = 0;
       finished_cpu_loading = false;
