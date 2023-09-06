@@ -290,7 +290,7 @@ static const GlyphInfo ashesFontChars[95] = {
 };
 
 // Style loading function: ashes
-static void GuiLoadStyleAshes(void)
+static void GuiLoadStyleAshes()
 {
   // Load style properties provided
   // NOTE: Default properties are propagated

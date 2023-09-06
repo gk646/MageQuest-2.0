@@ -14,22 +14,22 @@ class Game {
   for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {   \
     (*it)->update();                                                \
                                                                     \
-    if ((*it)->dead) {                                              \
+    if ((*it)->dead) [[unlikely]] {                                 \
       delete *it;                                                   \
       it = PROJECTILES.erase(it);                                   \
     } else {                                                        \
       for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) { \
-        if ((*m_it)->dead) {                                        \
+        if ((*m_it)->dead) [[unlikely]] {                           \
           delete *m_it;                                             \
           m_it = MONSTERS.erase(m_it);                              \
         } else {                                                    \
-          if ((*it)->intersects(**m_it)) {                          \
+          if ((*it)->intersects(**m_it)) [[unlikely]] {             \
             (*m_it)->hit(**it);                                     \
           }                                                         \
           ++m_it;                                                   \
         }                                                           \
       }                                                             \
-      if ((*it)->intersects(PLAYER)) {                              \
+      if ((*it)->intersects(PLAYER)) [[unlikely]] {                 \
         PLAYER.hit(**it);                                           \
       }                                                             \
       ++it;                                                         \
@@ -40,6 +40,7 @@ class Game {
     auto targetDuration = std::chrono::milliseconds(16);
 
     while (logic_thread_running) {
+
       auto currentTime = std::chrono::high_resolution_clock::now();
 
       if (currentTime >= nextUpdate) {
@@ -60,10 +61,10 @@ class Game {
       case GameState::MainMenu: {
         break;
       }
-      case GameState::Game: {
+      [[likely]] case GameState::Game: {
         UI_MANAGER.update();
         PLAYER_EFFECTS.update();
-        PLAYER_STATS.general.update();
+        PLAYER_STATS.update();
         PLAYER_HOTBAR.update();
         PLAYER.movement();
         std::unique_lock<std::shared_mutex> lock(rwLock);
@@ -73,7 +74,7 @@ class Game {
       case GameState::GameMenu: {
         UI_MANAGER.update();
         PLAYER_EFFECTS.update();
-        PLAYER_STATS.general.update();
+        PLAYER_STATS.update();
         PLAYER_HOTBAR.update();
         std::unique_lock<std::shared_mutex> lock(rwLock);
         UPDATE_AND_COLLISION()
@@ -83,6 +84,8 @@ class Game {
       }
     }
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
+    PERF_TIME += GAME_TICK_TIME;
+    PERF_FRAMES++;
   }
 
 #define RESET_CAMERA()         \
@@ -136,7 +139,7 @@ class Game {
         UI_MANAGER.main_menu.draw();
         break;
       }
-      case GameState::Game: {
+      [[likely]] case GameState::Game: {
         WorldRender::draw();
         DRAW_ENTITIES()
         WorldRender::draw_fore_ground();
@@ -159,23 +162,33 @@ class Game {
       DrawFPS(25, 25);
     }
     FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);
+    PERF_TIME += FRAME_TIME;
+    PERF_FRAMES++;
   }
 
  public:
-  Game() noexcept{
+  Game() noexcept {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetTargetFPS(TARGET_FPS);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
+    InitAudioDevice();
+    SetExitKey(0);
+
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImage((ASSET_PATH + "Icons/icon2.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 100; i++) {
       MONSTERS.push_back(new SkeletonWarrior({250 + i * 50, 150}, 10));
     }
-    //SettingsMenu::set_full_screen();
+
+    SettingsMenu::set_full_screen();
   }
-  ~Game()noexcept {
+  ~Game() noexcept {
+    std::cout << PERF_TIME / PERF_FRAMES << std::endl;
     for (uint_fast32_t i = 0; i < 5589; i++) {
       UnloadTexture(TEXTURES[i]);
     }
@@ -184,7 +197,7 @@ class Game {
     CloseAudioDevice();
     CloseWindow();
   }
-  void start()noexcept {
+  void start() noexcept {
     GameLoader::load();
     logic_thread = std::thread(&Game::logic_loop, this);
     render_loop();

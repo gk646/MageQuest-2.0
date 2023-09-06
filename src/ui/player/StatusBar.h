@@ -7,12 +7,12 @@ struct StatusBar {
   static constexpr int beginX = 25;
   static constexpr int beginY = 25;
 
-  void draw() const noexcept {
+  static void draw() noexcept {
     DrawRectanglePro(beginX + 82, beginY + 27,
-                     (PLAYER_STATS.general.health / PLAYER_STATS.general.max_health) * health_width,
+                     (PLAYER_STATS.health / PLAYER_STATS.get_max_health()) * health_width,
                      10, {0, 0}, 0, Colors::Red);
     DrawRectanglePro(beginX + 82, beginY + 57,
-                     (PLAYER_STATS.general.mana / PLAYER_STATS.general.max_mana) * mana_width, 10,
+                     (PLAYER_STATS.mana / PLAYER_STATS.get_max_mana()) * mana_width, 10,
                      {0, 0}, 0, Colors::Blue);
     DrawTextureProFast(textures::STATUS_BAR, beginX, beginY, 0, WHITE);
   }

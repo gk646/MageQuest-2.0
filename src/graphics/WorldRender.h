@@ -18,29 +18,29 @@ struct WorldRender {
 
     if (screenX > playerX) {
       CAMERA_X = screenX = playerX;
-    } else if (playerX + 24 > worldWidth - SCREEN_WIDTH / 2) {
+    } else if (playerX > worldWidth - SCREEN_WIDTH / 2) {
       CAMERA_X = screenX = SCREEN_WIDTH - (worldWidth - playerX);
       worldCol = std::min(std::max(worldCol - 18, 0), CURRENT_MAP_SIZE);
     }
 
     if (screenY > playerY) {
       CAMERA_Y = screenY = playerY;
-    } else if (playerY + 24 > worldWidth - SCREEN_HEIGHT / 2) {
+    } else if (playerY > worldWidth - SCREEN_HEIGHT / 2) {
       CAMERA_Y = screenY = SCREEN_HEIGHT - (worldWidth - playerY);
       worldRow = std::min(std::max(worldRow - 10, 0), CURRENT_MAP_SIZE);
     }
 
-    player_x = playerX;
-    player_y = playerY;
+    player_x = -playerX + screenX;
+    player_y = -playerY + screenY;
 
     float x_base, y_base;
-    for (int i = worldCol; i < maxCol; ++i) {
-      x_base = i * TILE_SIZE - playerX + screenX;
-      for (int b = worldRow; b < maxRow; ++b) {
-        y_base = b * TILE_SIZE - playerY + screenY;
+    for (uint_fast16_t i = worldCol; i < maxCol; ++i) {
+      x_base = i * TILE_SIZE + player_x;
+      for (uint_fast16_t b = worldRow; b < maxRow; ++b) {
+        y_base = b * TILE_SIZE + player_y;
 
-        int num1 = CURRENT_BACK_GROUND[i][b];
-        DrawTextureProFast(TEXTURES[num1], x_base, y_base, 0, WHITE);
+        DrawTextureProFast(TEXTURES[CURRENT_BACK_GROUND[i][b]], x_base, y_base,
+                           0, WHITE);
 
         int num2 = CURRENT_MIDDLE_GROUND[i][b];
         if (num2 != -1) {
@@ -55,16 +55,11 @@ struct WorldRender {
     int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
     int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
 
-    int playerX = player_x;
-    int playerY = player_y;
-    int screenX = CAMERA_X;
-    int screenY = CAMERA_Y;
-
     float x_base, y_base;
-    for (int i = worldCol; i < maxCol; ++i) {
-      x_base = i * TILE_SIZE - playerX + screenX;
-      for (int b = worldRow; b < maxRow; ++b) {
-        y_base = b * TILE_SIZE - playerY + screenY;
+    for (uint_fast16_t i = worldCol; i < maxCol; ++i) {
+      x_base = i * TILE_SIZE + player_x;
+      for (uint_fast16_t b = worldRow; b < maxRow; ++b) {
+        y_base = b * TILE_SIZE + player_y;
 
         int num1 = CURRENT_FORE_GROUND[i][b];
         if (num1 != -1) {

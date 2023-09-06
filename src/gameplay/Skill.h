@@ -3,12 +3,13 @@
 
 struct Skill {
   DamageStats damage_stats;
-  SkillStats ability_stats;
-  float cool_down_ticks = 0;
+  SkillStats skill_stats;
+  int cool_down_ticks = 0;
   bool from_player;
   // Texture2D texture;
-  Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player)
-      : damage_stats(damage_stats), ability_stats(ability_stats), from_player(from_player) {
+  Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player) noexcept
+      : damage_stats(damage_stats),
+        skill_stats(ability_stats), from_player(from_player) {
     cool_down_ticks = ability_stats.cool_down;
   }
   inline virtual void activate() = 0;
@@ -17,8 +18,8 @@ struct Skill {
     DrawRectangle(x, y, size, size, RED);
     int side1, side2, side3, side4, side5;
     float coolDownCoefficient;
-    if (cool_down_ticks <= ability_stats.cool_down) {
-      coolDownCoefficient = cool_down_ticks * (size * 4 / ability_stats.cool_down);
+    if (cool_down_ticks <= skill_stats.cool_down) {
+      coolDownCoefficient = cool_down_ticks * (size * 4 / skill_stats.cool_down);
       side1 = size / 2;
       side2 = 0;
       side3 = 0;
@@ -59,13 +60,12 @@ struct Skill {
       DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumVeryLight);
     }
   }
-  inline bool use_able() const {
-    return cool_down_ticks >= ability_stats.get_cd(PLAYER_STATS.combat_stats.cooldown_reduction) &&
-           PLAYER_STATS.skill_useable(ability_stats);
+  inline bool use_able() const noexcept {
+    return PLAYER_STATS.skill_useable(skill_stats, cool_down_ticks);
   }
   inline void use() noexcept {
     cool_down_ticks = 0;
-    PLAYER_STATS.use_skill(ability_stats);
+    PLAYER_STATS.use_skill(skill_stats);
   }
 };
 

@@ -8,10 +8,13 @@ inline GameState GAME_STATE = GameState::Loading;
 inline std::shared_mutex rwLock;
 inline std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 inline GifDrawer* RAYLIB_LOGO;
+inline std::random_device e;
+inline std::mt19937 RNG_ENGINE(e());
+inline std::uniform_int_distribution<int> ITEM_DIST(1, 80);
+inline std::uniform_int_distribution<int> QUALITY_DIST(70, 100);
 
 //UI
-inline bool WINDOW_FOCUSED = false;
-inline Item* DRAGGED_ITEM;
+
 
 //PLAYER
 inline float CAMERA_X = SCREEN_WIDTH / 2;
@@ -20,8 +23,6 @@ inline float PLAYER_X = 0;
 inline float PLAYER_Y = 0;
 inline int PLAYER_TILE_X = 0;
 inline int PLAYER_TILE_Y = 0;
-inline std::vector<Item> EQUIPPED_ITEMS;
-inline std::vector<Item> PLAYER_INVENTORY;
 
 //WORLD
 inline int16_t** CURRENT_BACK_GROUND;
@@ -32,7 +33,6 @@ inline int CURRENT_MAP_SIZE = 100;
 inline int8_t COLLISIONS[6000];
 inline Texture2D TEXTURES[6000];
 inline std::vector<Item> ITEMS;
-
 
 //Entities
 #include "../gameobjects/Entity.h"

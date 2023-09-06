@@ -1,5 +1,7 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
+class InventrorySlot;
+inline InventrorySlot* DRAGGED_SLOT;
 
 struct InventorySlot {
   static constexpr int tool_tip_delay = 12;
@@ -28,7 +30,6 @@ struct InventorySlot {
     item = new_item;
     filled = true;
   }
-
   inline void draw_inventory_icons() const noexcept {
     switch (item_type) {
       case ItemType::HEAD:
@@ -81,6 +82,29 @@ struct InventorySlot {
         break;
     }
   }
+  void update_player_inv(){
+    hit_box.height = 40 * UI_SCALE;
+    hit_box.width = 40 * UI_SCALE;
+    if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
+      if (filled && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        DRAGGED_ITEM = &item;
+        filled = false;
+        WINDOW_FOCUSED = true;
+        PLAYER_STATS.un_equip_item(item.effects);
+      } else if (DRAGGED_ITEM && !filled &&
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && DRAGGED_ITEM->type == item_type) {
+        item = std::move(*DRAGGED_ITEM);
+        filled = true;
+        DRAGGED_ITEM = nullptr;
+        PLAYER_STATS.equip_item(item.effects);
+      } else if (DRAGGED_ITEM && filled &&
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      }
+      tool_tip_counter++;
+    } else {
+      tool_tip_counter = 0;
+    }
+  }
   void update() noexcept {
     hit_box.height = 40 * UI_SCALE;
     hit_box.width = 40 * UI_SCALE;
@@ -89,12 +113,13 @@ struct InventorySlot {
         DRAGGED_ITEM = &item;
         filled = false;
         WINDOW_FOCUSED = true;
-      } else if (DRAGGED_ITEM && !filled && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-
-          item = std::move(*DRAGGED_ITEM);
-          filled = true;
-
+      } else if (DRAGGED_ITEM && !filled &&
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        item = std::move(*DRAGGED_ITEM);
+        filled = true;
         DRAGGED_ITEM = nullptr;
+      } else if (DRAGGED_ITEM && filled &&
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       }
       tool_tip_counter++;
     } else {

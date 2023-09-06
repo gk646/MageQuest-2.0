@@ -22,6 +22,10 @@
   { SCALE((rect).x), SCALE((rect).y), SCALE((rect).width), SCALE((rect).height) }
 #define SCALE_TEXT_SIZE(size) (SCALE(size))
 
+
+//GAMEPLAY
+#define EFFECT_COUNT 50
+
 //#define DRAW_HITBOXES
 
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_

@@ -1,11 +1,12 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_
 #define MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_
 
-struct ItemDropHandler{
+struct ItemDropHandler {
 
+  static Item get_random_item(int level) {
+    int num = ITEM_DIST(RNG_ENGINE);
 
-
-  static Item getRandomItem(int level){
+    int quality = QUALITY_DIST(RNG_ENGINE);
 
   }
 };

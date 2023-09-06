@@ -6,7 +6,8 @@ struct Player : public Entity {
   MonsterResource resource;
   explicit Player(const Point& pos, const Point& size = {25, 25})
       : Entity(pos, size, ShapeType::RECT), name("New Player") {}
-  Player(const Player& other) : Entity(other), name(other.name) {}
+  Player(const Player& other) noexcept : Entity(other), name(other.name) {
+  }
   Player& operator=(const Player& other) {
     if (this == &other) {
       return *this;
@@ -18,29 +19,30 @@ struct Player : public Entity {
     return *this;
   }
   void draw() final {
-    DrawRectanglePro(CAMERA_X - size.x() / 2, CAMERA_Y - size.y() / 2, size.x(), size.y(), {0, 0},
-                     pov, BLUE);
+    DrawRectanglePro(CAMERA_X - size.x() / 2, CAMERA_Y - size.y() / 2, size.x(),
+                     size.y(), {0, 0}, pov, BLUE);
   }
-  void hit(Projectile& p) {
+  static void hit(Projectile& p) noexcept {
     if (!p.from_player) {
       PLAYER_EFFECTS.add_effects(p.status_effects);
-      PLAYER_STATS.general.take_damage(p.damage_stats);
+      PLAYER_STATS.take_damage(p.damage_stats);
       p.dead = p.projectile_type == ProjectileType::ONE_HIT;
     }
   }
   void update() final {}
   void movement() {
-    if (IsKeyDown(KEY_W) && !tile_collision_up(PLAYER_STATS.general.speed)) {
-      pos.y() -= PLAYER_STATS.general.speed;
+    float speed = PLAYER_STATS.get_speed();
+    if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
+      pos.y() -= speed;
     }
-    if (IsKeyDown(KEY_S) && !tile_collision_down(PLAYER_STATS.general.speed)) {
-      pos.y() += PLAYER_STATS.general.speed;
+    if (IsKeyDown(KEY_S) && !tile_collision_down(speed)) {
+      pos.y() += speed;
     }
-    if (IsKeyDown(KEY_A) && !tile_collision_left(PLAYER_STATS.general.speed)) {
-      pos.x() -= PLAYER_STATS.general.speed;
+    if (IsKeyDown(KEY_A) && !tile_collision_left(speed)) {
+      pos.x() -= speed;
     }
-    if (IsKeyDown(KEY_D) && !tile_collision_right(PLAYER_STATS.general.speed)) {
-      pos.x() += PLAYER_STATS.general.speed;
+    if (IsKeyDown(KEY_D) && !tile_collision_right(speed)) {
+      pos.x() += speed;
     }
     PLAYER_X = pos.x();
     PLAYER_Y = pos.y();

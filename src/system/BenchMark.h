@@ -11,8 +11,8 @@ struct BenchMark {
 
       sprintf(buffer, "Game Tick: %lld", GAME_TICK_TIME);
       DrawText(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.15, 20, GREEN);
-      PLAYER_STATS.general.mana = PLAYER_STATS.general.max_mana;
-      PLAYER_STATS.combat_stats.cooldown_reduction = 100;
+      PLAYER_STATS.mana = PLAYER_STATS.get_max_mana();
+      PLAYER_STATS.effects[CDR_P] = 1;
     }
   }
 };

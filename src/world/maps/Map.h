@@ -9,7 +9,7 @@ struct Map {
 
   int16_t map_size;
 
-  Map(std::string name, int size, Zone zone) : map_size(size), zone(zone) {
+  Map(std::string name, int size, Zone zone) noexcept : map_size(size), zone(zone) {
     map_back_ground = load_map_data(name + "/" + name + "_BG");
     map_middle_ground = load_map_data(name + "/" + name + "_BG1");
     map_fore_ground = load_map_data(name + "/" + name + "_FG");
@@ -20,12 +20,12 @@ struct Map {
     delete_2D_array(map_fore_ground, map_size);
   }
 
-  [[nodiscard]] int16_t** load_map_data(const std::string& name) const {
-    std::string filepath = "res/Maps/" + name + ".csv";
+  [[nodiscard]] int16_t** load_map_data(const std::string& name) const noexcept {
+    std::string filepath = ASSET_PATH+"Maps/" + name + ".csv";
     std::ifstream infile(filepath);
 
     if (!infile.is_open()) {
-      throw std::runtime_error("Could not open file");
+      return nullptr;
     }
 
     auto arr = get_2D_array<int16_t>(map_size, map_size);
