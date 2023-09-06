@@ -15,7 +15,6 @@ inline std::uniform_int_distribution<int> QUALITY_DIST(70, 100);
 
 //UI
 
-
 //PLAYER
 inline float CAMERA_X = SCREEN_WIDTH / 2;
 inline float CAMERA_Y = SCREEN_HEIGHT / 2;
@@ -24,6 +23,10 @@ inline float PLAYER_Y = 0;
 inline int PLAYER_TILE_X = 0;
 inline int PLAYER_TILE_Y = 0;
 
+inline std::vector<InventorySlot> CHAR_BAG;
+#include "../ui/player/CharacterBag.h"
+inline std::vector<InventorySlot> EQUIPPED_ITEMS;
+
 //WORLD
 inline int16_t** CURRENT_BACK_GROUND;
 inline int16_t** CURRENT_MIDDLE_GROUND;
@@ -31,11 +34,12 @@ inline int16_t** CURRENT_FORE_GROUND;
 inline Zone CURRENT_ZONE = Zone::Hillcrest;
 inline int CURRENT_MAP_SIZE = 100;
 inline int8_t COLLISIONS[6000];
-inline Texture2D TEXTURES[6000];
+inline Texture TEXTURES[6000];
 inline std::vector<Item> ITEMS;
 
 //Entities
 #include "../gameobjects/Entity.h"
+#include "../gameobjects/WorldObject.h"
 
 #include "../gameobjects/Projectile.h"
 #include "../ui/game/HealthBar.h"
@@ -43,17 +47,17 @@ inline std::vector<Item> ITEMS;
 #include "../gameobjects/Monster.h"
 #include "../gameobjects/NPC.h"
 
-inline EntityStats PLAYER_STATS;
-inline std::list<Projectile*> PROJECTILES;
+inline std::vector<Projectile*> PROJECTILES;
 #include "../ui/player/HotBar.h"
 inline HotBar PLAYER_HOTBAR{6, 1};
 inline StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 #include "../gameobjects/Player.h"
 inline Player PLAYER{{150, 150}, {25, 25}};
+inline std::vector<WorldObject*> WORLD_OBJECTS;
 
 inline std::vector<Player> OTHER_PLAYERS;
 inline std::vector<NPC*> NPCS;
-inline std::list<Monster*> MONSTERS;
+inline std::vector<Monster*> MONSTERS;
 inline std::vector<Map> MAPS;
 
 //BENCHMARK

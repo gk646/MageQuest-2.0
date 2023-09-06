@@ -6,12 +6,14 @@ struct Item {
   int quality = 70;
   int durability = 100;
   int level = 1;
-  std::string name = "Hello";
-  std::string description{};
+  std::string name;
+  std::string description;
   Texture texture{};
   ItemRarity rarity = ItemRarity::NORMAL;
-  ItemType type = ItemType::HEAD;
+  ItemType type = ItemType::RING;
   Item() { effects[MAX_HEALTH] = 10; }
+  Item(int i) { effects[MAX_MANA] = 10; }
+  Item(std::string name) : name(name) { effects[MAX_MANA] = 10; }
   Item(std::string name, std::string description, ItemRarity rarity,
        ItemType type)
       : name(std::move(name)),
@@ -66,8 +68,7 @@ struct Item {
   }
   void draw(const Rectangle& rect) const noexcept {
     DrawRectangle(rect.x, rect.y, rect.width, rect.height, BLUE);
-    DrawTexturePro(texture, {0, 0, (float)texture.width, (float)texture.height},
-                   rect, {0, 0}, 0, WHITE);
+    DrawTexturePro(texture, {0, 0, (float)texture.width, (float)texture.height},rect, {0, 0}, 0, WHITE);
   }
   void draw_tooltip(const Rectangle& rect) const noexcept {
     int startX = rect.x - 100;

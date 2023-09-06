@@ -4,7 +4,6 @@
 #include "player/elements/ToolTip.h"
 
 #include "game/MiniMap.h"
-#include "player/CharacterBag.h"
 #include "player/CharacterPanel.h"
 #include "player/StatusBar.h"
 
@@ -32,8 +31,13 @@ struct PlayerUI {
     char_panel.update();
     char_bag.update();
     if(DRAGGED_ITEM&&!IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-      std::cout<< "dropped" << std::endl;
-      DRAGGED_ITEM = nullptr;
+      if(WINDOW_FOCUSED){
+        InventorySlot::place_item_back();
+      }else{
+        WORLD_OBJECTS.push_back(new DroppedItem({PLAYER_X+50,PLAYER_Y},DRAGGED_ITEM));
+        DRAGGED_ITEM = nullptr;
+        DRAGGED_SLOT = nullptr;
+      }
     }
   }
 

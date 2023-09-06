@@ -1,16 +1,15 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
-class InventrorySlot;
-inline InventrorySlot* DRAGGED_SLOT;
+class InventorySlot;
+inline InventorySlot* DRAGGED_SLOT;
 
 struct InventorySlot {
   static constexpr int tool_tip_delay = 12;
-  bool filled = false;
   int tool_tip_counter = 0;
   int base_x, base_y = 0;
   Rectangle hit_box = {0};
-  Item item;
-  ItemType item_type;
+  Item* item = nullptr;
+  ItemType item_type = ItemType::EMPTY;
   InventorySlot(int x, int y, ItemType item_type) noexcept
       : hit_box(x, y, 40, 40), base_x(x), base_y(y), item_type(item_type) {}
 
@@ -19,16 +18,29 @@ struct InventorySlot {
     hit_box.y = (y + base_y) * UI_SCALE;
     DrawRectangleRounded(hit_box, 0.4F, 20, Colors::LightGrey);
     DrawRectangleRoundedLines(hit_box, 0.4F, 20, 2, Colors::darkBackground);
-    if (filled) {
-      item.draw(hit_box);
+    if (item) {
+      item->draw(hit_box);
       if (tool_tip_counter > tool_tip_delay) {
-        item.draw_tooltip(hit_box);
+        item->draw_tooltip(hit_box);
       }
     }
   }
-  inline void add_item(const Item& new_item) noexcept {
-    item = new_item;
-    filled = true;
+  static void place_item_back() noexcept{
+    if(DRAGGED_SLOT->item_type == ItemType::EMPTY ){
+      DRAGGED_SLOT->item = DRAGGED_ITEM;
+      DRAGGED_SLOT = nullptr;
+      DRAGGED_ITEM = nullptr;
+    }else if(DRAGGED_SLOT->item_type == ItemType::BAG){
+      //TODO
+      DRAGGED_SLOT->item = DRAGGED_ITEM;
+      DRAGGED_SLOT = nullptr;
+      DRAGGED_ITEM = nullptr;
+    }else{
+      PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
+      DRAGGED_SLOT->item = DRAGGED_ITEM;
+      DRAGGED_SLOT = nullptr;
+      DRAGGED_ITEM = nullptr;
+    }
   }
   inline void draw_inventory_icons() const noexcept {
     switch (item_type) {
@@ -82,23 +94,28 @@ struct InventorySlot {
         break;
     }
   }
-  void update_player_inv(){
+  void update_player_inv() {
     hit_box.height = 40 * UI_SCALE;
     hit_box.width = 40 * UI_SCALE;
     if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
-      if (filled && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        DRAGGED_ITEM = &item;
-        filled = false;
-        WINDOW_FOCUSED = true;
-        PLAYER_STATS.un_equip_item(item.effects);
-      } else if (DRAGGED_ITEM && !filled &&
-                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && DRAGGED_ITEM->type == item_type) {
-        item = std::move(*DRAGGED_ITEM);
-        filled = true;
+      if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        PLAYER_STATS.un_equip_item(item->effects);
+        DRAGGED_ITEM = item;
+        DRAGGED_SLOT = this;
+        item = nullptr;
+      } else if (DRAGGED_ITEM && !item &&
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && item_type == DRAGGED_ITEM->type) {
+        item = DRAGGED_ITEM;
+        PLAYER_STATS.equip_item(item->effects);
+        DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
-        PLAYER_STATS.equip_item(item.effects);
-      } else if (DRAGGED_ITEM && filled &&
-                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      } else if (DRAGGED_ITEM && item &&
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && DRAGGED_SLOT->item_type == item->type) {
+        DRAGGED_SLOT->item = item;
+        item = DRAGGED_ITEM;
+        PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
+        DRAGGED_SLOT = nullptr;
+        DRAGGED_ITEM = nullptr;
       }
       tool_tip_counter++;
     } else {
@@ -109,17 +126,21 @@ struct InventorySlot {
     hit_box.height = 40 * UI_SCALE;
     hit_box.width = 40 * UI_SCALE;
     if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
-      if (filled && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        DRAGGED_ITEM = &item;
-        filled = false;
-        WINDOW_FOCUSED = true;
-      } else if (DRAGGED_ITEM && !filled &&
+      if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        DRAGGED_ITEM = item;
+        DRAGGED_SLOT = this;
+        item = nullptr;
+      } else if (DRAGGED_ITEM && !item &&
                  !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        item = std::move(*DRAGGED_ITEM);
-        filled = true;
+        item = DRAGGED_ITEM;
+        DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
-      } else if (DRAGGED_ITEM && filled &&
+      } else if (DRAGGED_ITEM && item &&
                  !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        DRAGGED_SLOT->item = item;
+        item = DRAGGED_ITEM;
+        DRAGGED_SLOT = nullptr;
+        DRAGGED_ITEM = nullptr;
       }
       tool_tip_counter++;
     } else {
