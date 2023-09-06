@@ -44,7 +44,7 @@ struct HotBar {
       if (IsKeyDown(KEY_FOUR) && skills[3]->use_able()) {
         skills[3]->activate();
       }
-      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && skills[4]->use_able() &&!WINDOW_FOCUSED) {
+      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && skills[4]->use_able() &&!WINDOW_FOCUSED &&!DRAGGED_ITEM) {
         skills[4]->activate();
       }
       if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && skills[5]->use_able() &&!WINDOW_FOCUSED) {

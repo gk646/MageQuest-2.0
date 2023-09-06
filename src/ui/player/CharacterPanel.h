@@ -20,7 +20,7 @@ struct CharacterPanel : public Window {
       InventorySlot(right_x, begin_y, ItemType::AMULET),
       InventorySlot(right_x, begin_y + vertical_gap, ItemType::RING),
       InventorySlot(right_x, begin_y + vertical_gap * 2, ItemType::RING),
-      InventorySlot(right_x, begin_y + vertical_gap * 3, ItemType::RING),
+      InventorySlot(right_x, begin_y + vertical_gap * 3, ItemType::RELIC),
 
       // bottom middle
       InventorySlot(width / 2 - SLOT_SIZE * 1.5F, begin_y + vertical_gap * 4,
@@ -34,7 +34,7 @@ struct CharacterPanel : public Window {
     draw_window();
     for (auto& slot : equip_slots) {
       slot.draw(whole_window.x, whole_window.y);
-      if (!slot.filled) {
+      if (!slot.item) {
         slot.draw_inventory_icons();
       }
     }

@@ -3,6 +3,9 @@
 
 #define TILE_SIZE 48
 
+//SYSTEM
+#define SIMD_PRAGMA _Pragma("omp simd")
+
 //Tile Collision
 #define C_SOLID 1
 #define C_AIR_ONLY 2

@@ -206,5 +206,6 @@ struct EntityStats {
     return speed * (1 + effects[SPEED_MULT_P]);
   }
 };
+inline EntityStats PLAYER_STATS;
 
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_

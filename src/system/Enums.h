@@ -1,7 +1,7 @@
 #ifndef MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 #define MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 
-enum class GameState { MainMenu, GameMenu, Game, Loading };
+enum class GameState { MainMenu, GameMenu, Game, Loading , GameOver};
 enum class MenuState { Main, Settings, ServerBrowser, HostGame };
 enum class Class {
   BARBARIAN,

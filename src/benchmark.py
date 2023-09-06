@@ -33,10 +33,12 @@ def main():
 
     pyautogui.keyUp('h')
     pyautogui.keyUp('2')
+    pyautogui.keyDown('esc')
+    pyautogui.keyUp('esc')
     # Finish
     print("Benchmark completed.")
 
-    proc.terminate()
+    time.sleep(10)
 
 
 if __name__ == '__main__':

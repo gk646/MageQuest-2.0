@@ -59,14 +59,15 @@ using namespace cxstructs;
 
 #include "gameplay/StatusEffect.h"
 
+#include "ui/player/elements/InventorySlot.h"
 #include "gameplay/handlers/StatusEffectHandler.h"
 #include "graphics/GifDrawer.h"
+#include "ui/Window.h"
 
 #include "system/GlobalVariables.h"
 
 //after global variables
-#include "ui/player/elements/InventorySlot.h"
-#include "ui/Window.h"
+
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
 

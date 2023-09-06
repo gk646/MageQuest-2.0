@@ -7,34 +7,48 @@ class Game {
   bool logic_thread_running = true;
   std::thread logic_thread;
 
-#define UPDATE_AND_COLLISION()                                      \
-  for (auto monster : MONSTERS) {                                   \
-    monster->update();                                              \
-  }                                                                 \
-  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {   \
-    (*it)->update();                                                \
-                                                                    \
-    if ((*it)->dead) [[unlikely]] {                                 \
-      delete *it;                                                   \
-      it = PROJECTILES.erase(it);                                   \
-    } else {                                                        \
-      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) { \
-        if ((*m_it)->dead) [[unlikely]] {                           \
-          delete *m_it;                                             \
-          m_it = MONSTERS.erase(m_it);                              \
-        } else {                                                    \
-          if ((*it)->intersects(**m_it)) [[unlikely]] {             \
-            (*m_it)->hit(**it);                                     \
-          }                                                         \
-          ++m_it;                                                   \
-        }                                                           \
-      }                                                             \
-      if ((*it)->intersects(PLAYER)) [[unlikely]] {                 \
-        PLAYER.hit(**it);                                           \
-      }                                                             \
-      ++it;                                                         \
-    }                                                               \
+#define UPDATE_AND_COLLISION()                                        \
+  SIMD_PRAGMA                                                         \
+  for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) { \
+    if ((*it)->dead) {                                                \
+      delete *it;                                                     \
+      it = WORLD_OBJECTS.erase(it);                                   \
+    } else {                                                          \
+      if ((*it)->intersects(PLAYER)) {                                \
+        (*it)->collision();                                           \
+      }                                                               \
+      ++it;                                                           \
+    }                                                                 \
+  }                                                                   \
+  SIMD_PRAGMA                                                         \
+  for (auto monster : MONSTERS) {                                     \
+    monster->update();                                                \
+  }                                                                   \
+  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {     \
+    (*it)->update();                                                  \
+                                                                      \
+    if ((*it)->dead) [[unlikely]] {                                   \
+      delete *it;                                                     \
+      it = PROJECTILES.erase(it);                                     \
+    } else {                                                          \
+      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {   \
+        if ((*m_it)->dead) [[unlikely]] {                             \
+          delete *m_it;                                               \
+          m_it = MONSTERS.erase(m_it);                                \
+        } else {                                                      \
+          if ((*it)->intersects(**m_it)) [[unlikely]] {               \
+            (*m_it)->hit(**it);                                       \
+          }                                                           \
+          ++m_it;                                                     \
+        }                                                             \
+      }                                                               \
+      if ((*it)->intersects(PLAYER)) [[unlikely]] {                   \
+        PLAYER.hit(**it);                                             \
+      }                                                               \
+      ++it;                                                           \
+    }                                                                 \
   }
+
   void logic_loop() const noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
     auto targetDuration = std::chrono::milliseconds(16);
@@ -61,16 +75,17 @@ class Game {
       case GameState::MainMenu: {
         break;
       }
-      [[likely]] case GameState::Game: {
-        UI_MANAGER.update();
-        PLAYER_EFFECTS.update();
-        PLAYER_STATS.update();
-        PLAYER_HOTBAR.update();
-        PLAYER.movement();
-        std::unique_lock<std::shared_mutex> lock(rwLock);
-        UPDATE_AND_COLLISION()
-        break;
-      }
+      case GameState::Game:
+        [[likely]] {
+          UI_MANAGER.update();
+          PLAYER_EFFECTS.update();
+          PLAYER_STATS.update();
+          PLAYER_HOTBAR.update();
+          PLAYER.movement();
+          std::unique_lock<std::shared_mutex> lock(rwLock);
+          UPDATE_AND_COLLISION()
+          break;
+        }
       case GameState::GameMenu: {
         UI_MANAGER.update();
         PLAYER_EFFECTS.update();
@@ -82,6 +97,8 @@ class Game {
       }
       case GameState::Loading: {
       }
+      case GameState::GameOver:
+        break;
     }
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
     PERF_TIME += GAME_TICK_TIME;
@@ -94,6 +111,10 @@ class Game {
 
 #define DRAW_ENTITIES()                             \
   std::shared_lock<std::shared_mutex> lock(rwLock); \
+                                                    \
+  for (auto object : WORLD_OBJECTS) {               \
+    object->draw();                                 \
+  }                                                 \
   for (auto projectile : PROJECTILES) {             \
     projectile->draw();                             \
   }                                                 \
@@ -139,13 +160,14 @@ class Game {
         UI_MANAGER.main_menu.draw();
         break;
       }
-      [[likely]] case GameState::Game: {
-        WorldRender::draw();
-        DRAW_ENTITIES()
-        WorldRender::draw_fore_ground();
-        UI_MANAGER.player_ui.draw();
-        break;
-      }
+      case GameState::Game:
+        [[likely]] {
+          WorldRender::draw();
+          DRAW_ENTITIES()
+          WorldRender::draw_fore_ground();
+          UI_MANAGER.player_ui.draw();
+          break;
+        }
       case GameState::GameMenu: {
         WorldRender::draw();
         DRAW_ENTITIES()
@@ -157,6 +179,8 @@ class Game {
         DRAW_LOADING()
         break;
       }
+      case GameState::GameOver:
+        break;
     }
     if (UI_MANAGER.settings_menu.showFPS) {
       DrawFPS(25, 25);
@@ -168,13 +192,6 @@ class Game {
 
  public:
   Game() noexcept {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    SetTargetFPS(TARGET_FPS);
-    GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest 2");
-    InitAudioDevice();
-    SetExitKey(0);
-
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImage((ASSET_PATH + "Icons/icon2.png").c_str());
     SetWindowIcon(icon);
@@ -185,7 +202,7 @@ class Game {
       MONSTERS.push_back(new SkeletonWarrior({250 + i * 50, 150}, 10));
     }
 
-    SettingsMenu::set_full_screen();
+    //SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
