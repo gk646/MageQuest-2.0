@@ -30,6 +30,9 @@ inline const Color questNameBeige = {228, 166, 114, 255};
 inline const Color bossNamePurple = {114, 69, 144, 255};
 inline const Color questMarkerYellow = {254, 231, 97, 255};
 inline const Color journalBrown = {165, 120, 85, 255};
+inline const Color shield = {98, 210, 245, 182};
+inline const Color milk = {253, 255, 245, 200};
+inline const Color white_smoke = {237, 242, 244, 200};
 
 // MAP
 inline const Color map_green = {99, 199, 77, 255};

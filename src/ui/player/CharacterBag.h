@@ -13,8 +13,6 @@ struct CharacterBag final : public Window {
       : Window(SCREEN_WIDTH * 0.6F, SCREEN_HEIGHT * 0.6F, width, 300, 20,
                "Bags", KEY_B) {
     add_slots(slots);
-    CHAR_BAG[0].item = new Item("hello");
-    CHAR_BAG[1].item = new Item("byebye");
   }
 
   void draw() noexcept {

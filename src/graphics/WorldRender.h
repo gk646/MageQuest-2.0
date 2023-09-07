@@ -10,8 +10,8 @@ struct WorldRender {
     int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
     int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
 
-    int playerX = PLAYER_X;
-    int playerY = PLAYER_Y;
+    int playerX = PLAYER_X = PLAYER.pos.x();
+    int playerY = PLAYER_Y = PLAYER.pos.y();
     int screenX = CAMERA_X;
     int screenY = CAMERA_Y;
     int worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;

@@ -4,12 +4,15 @@
 //stdlib
 #include <array>
 #include <chrono>
+#include <csignal>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <list>
+#include <mutex>
+#include <random>
 #include <shared_mutex>
 #include <sstream>
 #include <string>
@@ -17,10 +20,6 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <mutex>
-#include <random>
-#include <iostream>
-#include <csignal>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -31,6 +30,8 @@
 //SFML
 //#include <SFML/Network.hpp>
 
+//SQlite
+#include <sqlite3.h>
 inline std::string ASSET_PATH = "../res/";
 
 //cxstructs
@@ -44,9 +45,9 @@ using namespace cxstructs;
 #include "resources/SoundStorage.h"
 #include "system/Definitions.h"
 #include "system/Enums.h"
+#include "system/GameSettings.h"
 #include "system/Util.h"
 #include "ui/StyleSheet.h"
-#include "system/GameSettings.h"
 
 #include "gameplay/Item.h"
 
@@ -59,15 +60,15 @@ using namespace cxstructs;
 
 #include "gameplay/StatusEffect.h"
 
-#include "ui/player/elements/InventorySlot.h"
 #include "gameplay/handlers/StatusEffectHandler.h"
 #include "graphics/GifDrawer.h"
 #include "ui/Window.h"
+#include "ui/player/elements/InventorySlot.h"
 
 #include "system/GlobalVariables.h"
 
 //after global variables
-
+#include "gamestateio/DataBaseHandler.h"
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
 
@@ -81,6 +82,8 @@ using namespace cxstructs;
 #include "world/WorldManager.h"
 
 #include "gamestateio/GameLoader.h"
+#include "gamestateio/GameSaver.h"
+
 #include "ui/PlayerUI.h"
 
 #include "ui/menus/GameMenu.h"

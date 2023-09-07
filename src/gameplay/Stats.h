@@ -107,6 +107,7 @@ struct EntityStats {
   float mana = 20;
   float speed = 3;
   int level = 1;
+  float shield;
   bool stunned = false;
   EntityStats() {
     effects[HEALTH_REGEN] = 0.2F;
@@ -134,7 +135,16 @@ struct EntityStats {
     } else {
       health = std::max(health - effects[HEALTH_REGEN] / 60, max_health_value);
     }
+
+    float& max_shield = effects[MAX_SHIELD];
+    if (shield < max_shield && mana > 0) {
+      shield += effects[MANA_REGEN] / 60;
+      mana -= effects[MANA_REGEN]/60;
+    } else if (shield > max_shield) {
+      shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
+    }
   }
+
   inline bool skill_useable(const SkillStats& stats,
                             float ticks_done) const noexcept {
     return !stunned && ticks_done >= stats.cool_down * (1 - effects[CDR_P]) &&
@@ -171,16 +181,9 @@ struct EntityStats {
         return effects[WEAPON_DAMAGE];
     }
   }
-  inline float get_max_health() const noexcept {
-    return effects[MAX_HEALTH] * (1 + effects[HEALTH_MULT_P]);
-  }
-  inline float get_max_mana() const noexcept {
-    return effects[MAX_MANA] * (1 + effects[MANA_MULT_P]);
-  }
   inline void take_damage(const DamageStats& stats) {
     float& armour = effects[ARMOUR];
     float& armour_mult = effects[ARMOUR_MULT_P];
-    float& shield = effects[SHIELD];
 
     float total_damage = stats.damage;
 
@@ -201,8 +204,15 @@ struct EntityStats {
   inline void refill_stats() noexcept {
     mana = get_max_mana();
     health = get_max_health();
+    shield = effects[MAX_SHIELD];
   }
-  inline float get_speed() const noexcept {
+  [[nodiscard]] inline float get_max_health() const noexcept {
+    return effects[MAX_HEALTH] * (1 + effects[HEALTH_MULT_P]);
+  }
+  [[nodiscard]] inline float get_max_mana() const noexcept {
+    return effects[MAX_MANA] * (1 + effects[MANA_MULT_P]);
+  }
+  [[nodiscard]] inline float get_speed() const noexcept {
     return speed * (1 + effects[SPEED_MULT_P]);
   }
 };

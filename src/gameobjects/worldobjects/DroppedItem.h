@@ -9,12 +9,11 @@ struct DroppedItem final : public WorldObject {
 
   }
   void draw() final{
-    DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
-                     size.y(), {0, 0}, pov, PINK);
+    DrawTextureProFast(item->texture, pos.x(),pos.y(),0,WHITE);
+
   }
   void collision() final {
     CharacterBag::add_item(item);
-    item = nullptr;
     dead = true;
   }
 };
