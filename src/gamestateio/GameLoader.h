@@ -12,7 +12,6 @@ struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
   static std::array<std::function<void()>,6> load_functions;
   static void load() {
-    DataBaseHandler::init();
     std::thread worker(load_game);
     worker.detach();
   }
@@ -20,7 +19,7 @@ struct GameLoader {
     if (finished_cpu_loading &&
         load_util::current_step < load_functions.size() + load_util::cpu_steps) {
       load_step(load_functions[load_util::current_step - load_util::cpu_steps]);
-    } else if (RAYLIB_LOGO->finished) {
+    } else if (true) {
       PlaySound(sound::intro);
       WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
       GAME_STATE = GameState::MainMenu;

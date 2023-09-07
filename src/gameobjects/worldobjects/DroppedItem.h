@@ -3,14 +3,13 @@
 
 struct DroppedItem final : public WorldObject {
   Item* item;
-  DroppedItem(const Point& pos, Item* item) : WorldObject(pos, {45, 45}, ShapeType::RECT), item(item) {}
+  DroppedItem(const Point& pos, Item* item)
+      : WorldObject(pos, {45, 45}, ShapeType::RECT), item(item) {}
 
-  void update()final{
-
-  }
-  void draw() final{
-    DrawTextureProFast(item->texture, pos.x(),pos.y(),0,WHITE);
-
+  void update() final {}
+  void draw() final {
+    DrawTextureProFast(item->texture, pos.x() + DRAW_X, pos.y() + DRAW_Y, 0,
+                       WHITE);
   }
   void collision() final {
     CharacterBag::add_item(item);

@@ -11,7 +11,7 @@ struct FireStrike final : public Skill {
   void activate() final {
     use();
     auto mouse_pos = GetMousePosition();
-    Point pos = {PLAYER_X + mouse_pos.x - CAMERA_X, PLAYER_Y + mouse_pos.y - CAMERA_Y};
+    Point pos = { mouse_pos.x +DRAW_X, mouse_pos.y +DRAW_Y};
     const float interval_angle = 360.0f / num_fireballs;
     for (uint_fast32_t i = 0; i < num_fireballs; i++) {
       float angle_rad = (interval_angle * i) * (M_PI / 180.0f);

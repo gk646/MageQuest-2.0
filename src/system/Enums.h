@@ -42,7 +42,8 @@ enum class ItemType {
   TWO_HAND = 11,
   OFF_HAND = 6,
   BAG = 2,
-  EMPTY = 0
+  EMPTY = 0,
+  MISC = 12
 };
 enum class ItemRarity {
   NORMAL = 1,

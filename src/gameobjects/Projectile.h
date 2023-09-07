@@ -81,22 +81,20 @@ struct Projectile : public Entity {
     }
   }
   Point get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle = std::atan2(mouse_pos.y - (pos.y() - PLAYER_Y + CAMERA_Y),
-                             mouse_pos.x - (pos.x() - PLAYER_X + CAMERA_X));
+    float angle = std::atan2(mouse_pos.y - (pos.y() +DRAW_X),
+                             mouse_pos.x - (pos.x() +DRAW_Y));
     //pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
   void draw() noexcept final {
     switch (shape_type) {
       case ShapeType::RECT:
-        DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X,
-                         pos.y() - PLAYER_Y + CAMERA_Y, size.x(), size.y(),
+        DrawRectanglePro(pos.x() + DRAW_X, pos.y() + DRAW_Y, size.x(), size.y(),
                          {0, 0}, pov, PURPLE);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X,
-                         pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0, 360, 56,
-                         PURPLE);
+        DrawCircleSector(pos.x() + DRAW_X, pos.y() + DRAW_Y, size.x(), 0, 360,
+                         56, PURPLE);
         break;
     }
 #ifdef DRAW_HITBOXES

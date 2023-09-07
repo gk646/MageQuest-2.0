@@ -20,9 +20,10 @@ inline float CAMERA_X = SCREEN_WIDTH / 2;
 inline float CAMERA_Y = SCREEN_HEIGHT / 2;
 inline float PLAYER_X = 0;
 inline float PLAYER_Y = 0;
+inline float DRAW_X = 0;
+inline float DRAW_Y = 0;
 inline int PLAYER_TILE_X = 0;
 inline int PLAYER_TILE_Y = 0;
-
 
 
 //WORLD
@@ -34,9 +35,9 @@ inline int CURRENT_MAP_SIZE = 100;
 inline int8_t COLLISIONS[6000];
 inline Texture TEXTURES[6000];
 inline std::vector<Item> ITEMS;
-inline std::vector<InventorySlot> CHAR_BAG;
+inline std::vector<InventorySlot> PLAYER_BAG;
 #include "../ui/player/CharacterBag.h"
-inline std::vector<InventorySlot> EQUIPPED_ITEMS;
+inline InventorySlot* PLAYER_EQUIPPED;
 
 //Entities
 #include "../gameobjects/Entity.h"

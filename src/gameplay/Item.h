@@ -6,7 +6,7 @@ struct Item {
   int quality = 70;
   int durability = 100;
   int level = 1;
-  int id;
+  int id = 0;
   std::string name;
   std::string description;
   Texture texture;
@@ -20,20 +20,30 @@ struct Item {
         type(type),
         description(std::move(description)),
         texture(texture) {}
-  Item(Item* base_item, int level, int quality, int durability = 100) {}
+  Item(const Item* base_item, int quality, int level, int durability = 100)
+      : Item(*base_item) {
+    this->quality = quality;
+    this->level = level;
+    this->durability = durability;
+    scale(quality, level);
+  }
   Item(const Item& other)
-      : quality(other.quality),
+      : id(other.id),
+        quality(other.quality),
         durability(other.durability),
         level(other.level),
         name(other.name),
         description(other.description),
         texture(other.texture),
         rarity(other.rarity),
-        type(other.type) {}
+        type(other.type) {
+    std::copy(std::begin(other.effects), std::end(other.effects), std::begin(effects));
+  }
   Item& operator=(const Item& other) {
     if (this == &other) {
       return *this;
     }
+    id = other.id;
     quality = other.quality;
     durability = other.durability;
     level = other.level;
@@ -42,29 +52,35 @@ struct Item {
     texture = other.texture;
     rarity = other.rarity;
     type = other.type;
+    std::copy(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
   Item(Item&& other) noexcept
-      : quality(other.quality),
+      : id(other.id),
+        quality(other.quality),
         durability(other.durability),
         level(other.level),
         name(std::move(other.name)),
         description(std::move(other.description)),
-        texture(other.texture),
+        texture(std::move(other.texture)),
         rarity(other.rarity),
-        type(other.type) {}
+        type(other.type) {
+    std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
+  }
   Item& operator=(Item&& other) noexcept {
     if (this == &other) {
       return *this;
     }
-    quality = std::move(other.quality);
-    durability = std::move(other.durability);
-    level = std::move(other.level);
+    id = other.id;
+    quality = other.quality;
+    durability = other.durability;
+    level = other.level;
     name = std::move(other.name);
     description = std::move(other.description);
     texture = std::move(other.texture);
-    rarity = std::move(other.rarity);
-    type = std::move(other.type);
+    rarity = other.rarity;
+    type = other.type;
+    std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
   void draw(const Rectangle& rect) const noexcept {
@@ -82,6 +98,7 @@ struct Item {
                {(float)startX + 5, (float)startY + 5}, 16, 1,
                Colors::darkBackground);
   }
+  inline static void scale(int quality, int level) {}
   Item scale_clone(int new_level, int new_quality) const noexcept {
     auto new_item = Item(*this);
     return new_item;

@@ -27,7 +27,9 @@ struct CharacterPanel : public Window {
                     ItemType::ONE_HAND),
       InventorySlot(width / 2 + SLOT_SIZE / 2, begin_y + vertical_gap * 4,
                     ItemType::OFF_HAND)};
-  CharacterPanel() noexcept : Window(SCREEN_WIDTH*0.1F,SCREEN_HEIGHT*0.2F,width, 500, 25, "Character", KEY_C) {}
+  CharacterPanel() noexcept : Window(SCREEN_WIDTH*0.1F,SCREEN_HEIGHT*0.2F,width, 500, 25, "Character", KEY_C) {
+    PLAYER_EQUIPPED = equip_slots.data();
+  }
   void draw() {
     OPEN_CLOSE()
     DRAG_WINDOW()
