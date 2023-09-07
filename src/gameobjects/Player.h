@@ -44,8 +44,6 @@ struct Player : public Entity {
     if (IsKeyDown(KEY_D) && !tile_collision_right(speed)) {
       pos.x() += speed;
     }
-    PLAYER_X = pos.x();
-    PLAYER_Y = pos.y();
     PLAYER_TILE_X = (pos.x() + size.x() / 2) / TILE_SIZE;
     PLAYER_TILE_Y = (pos.y() + size.y() / 2) / TILE_SIZE;
   }

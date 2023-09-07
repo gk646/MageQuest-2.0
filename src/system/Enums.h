@@ -1,7 +1,7 @@
 #ifndef MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 #define MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 
-enum class GameState { MainMenu, GameMenu, Game, Loading , GameOver};
+enum class GameState { MainMenu, GameMenu, Game, Loading, GameOver };
 enum class MenuState { Main, Settings, ServerBrowser, HostGame };
 enum class Class {
   BARBARIAN,
@@ -30,22 +30,28 @@ inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::HARD, 1.5F},   {Difficulty::TORMENT, 3},
     {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};
 
-
 enum class ItemType {
-  HEAD,
-  CHEST,
-  PANTS,
-  BOOTS,
-  AMULET,
-  RING,
-  RELIC,
-  ONE_HAND,
-  TWO_HAND,
-  OFF_HAND,
-  BAG,
-  EMPTY
+  HEAD= 5,
+  CHEST = 4,
+  PANTS= 8,
+  BOOTS = 3,
+  AMULET = 1,
+  RING = 10,
+  RELIC= 9,
+  ONE_HAND= 7,
+  TWO_HAND = 11,
+  OFF_HAND = 6,
+  BAG = 2,
+  EMPTY = 0
 };
-enum class ItemRarity { NORMAL, RARE, EPIC, LEGENDARY, SET_ITEM, UNIQUE };
+enum class ItemRarity {
+  NORMAL = 1,
+  RARE = 2,
+  EPIC = 3,
+  LEGENDARY = 4,
+  SET_ITEM = 5,
+  UNIQUE = 10
+};
 enum class Zone {
   Woodland_Edge,
   EtherRealm,
@@ -94,7 +100,7 @@ enum Stat {
   HEALTH_MULT_P,
   MANA_MULT_P,
   ARMOUR,
-  SHIELD,
+  MAX_SHIELD,
   SPEED_MULT_P,
   STATS_ENDING
 };

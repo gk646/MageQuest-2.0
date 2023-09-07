@@ -10,18 +10,17 @@
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
-  static std::array<std::function<void()>,5> load_functions;
-
+  static std::array<std::function<void()>,6> load_functions;
   static void load() {
+    DataBaseHandler::init();
     std::thread worker(load_game);
     worker.detach();
   }
-
   static void finish_loading() {
     if (finished_cpu_loading &&
         load_util::current_step < load_functions.size() + load_util::cpu_steps) {
       load_step(load_functions[load_util::current_step - load_util::cpu_steps]);
-    } else if (true) {
+    } else if (RAYLIB_LOGO->finished) {
       PlaySound(sound::intro);
       WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
       GAME_STATE = GameState::MainMenu;
@@ -40,7 +39,7 @@ struct GameLoader {
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
-std::array<std::function<void()>,5> GameLoader::load_functions = {
-    EntityLoader::load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load, FontLoader::load};
+std::array<std::function<void()>,6> GameLoader::load_functions = {
+    EntityLoader::load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load, FontLoader::load, DataBaseHandler::load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

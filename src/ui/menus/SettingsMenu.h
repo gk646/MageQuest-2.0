@@ -50,10 +50,8 @@ struct SettingsMenu {
         setResolution(selectedResolution);
       }
     }
-
     CAMERA_X = SCREEN_WIDTH / 2;
     CAMERA_Y = SCREEN_HEIGHT / 2;
-
     startY += verticalSpacing;
     showFPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
                           "Show FPS", showFPS);
