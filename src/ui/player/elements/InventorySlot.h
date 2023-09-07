@@ -136,7 +136,7 @@ struct InventorySlot {
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item &&
-                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                 !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && DRAGGED_SLOT->item_type == item->type) {
         DRAGGED_SLOT->item = item;
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;

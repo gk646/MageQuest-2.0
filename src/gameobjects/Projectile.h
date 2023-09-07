@@ -81,8 +81,8 @@ struct Projectile : public Entity {
     }
   }
   Point get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle = std::atan2(mouse_pos.y - (pos.y() +DRAW_X),
-                             mouse_pos.x - (pos.x() +DRAW_Y));
+    float angle = std::atan2(mouse_pos.y - (pos.y() +DRAW_Y),
+                             mouse_pos.x - (pos.x() +DRAW_X));
     //pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
