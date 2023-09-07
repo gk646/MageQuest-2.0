@@ -64,11 +64,11 @@ struct Entity {
   void draw_hitbox() {
     switch (shape_type) {
       case ShapeType::RECT:
-        DrawRectangleOutlinePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
+        DrawRectangleOutlinePro(pos.x() +DRAW_X, pos.y() +DRAW_Y, size.x(),
                          size.y(), {0, 0}, pov,5, RED);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSectorLines({pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y},size.x(), 0,
+        DrawCircleSectorLines({pos.x()+DRAW_X, pos.y() +DRAW_Y},size.x(), 0,
                          360, 50, RED);
         break;
     }

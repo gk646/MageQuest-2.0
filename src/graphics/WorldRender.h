@@ -2,8 +2,7 @@
 #define MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
 
 struct WorldRender {
-  static int player_x;
-  static int player_y;
+
   static void draw() noexcept {
     int worldCol = std::max(PLAYER_TILE_X - 21, 0);
     int worldRow = std::max(PLAYER_TILE_Y - 12, 0);
@@ -30,14 +29,14 @@ struct WorldRender {
       worldRow = std::min(std::max(worldRow - 10, 0), CURRENT_MAP_SIZE);
     }
 
-    player_x = -playerX + screenX;
-    player_y = -playerY + screenY;
+    DRAW_X = -playerX + screenX;
+    DRAW_Y = -playerY + screenY;
 
     float x_base, y_base;
     for (uint_fast16_t i = worldCol; i < maxCol; ++i) {
-      x_base = i * TILE_SIZE + player_x;
+      x_base = i * TILE_SIZE + DRAW_X;
       for (uint_fast16_t b = worldRow; b < maxRow; ++b) {
-        y_base = b * TILE_SIZE + player_y;
+        y_base = b * TILE_SIZE + DRAW_Y;
 
         DrawTextureProFast(TEXTURES[CURRENT_BACK_GROUND[i][b]], x_base, y_base,
                            0, WHITE);
@@ -57,9 +56,9 @@ struct WorldRender {
 
     float x_base, y_base;
     for (uint_fast16_t i = worldCol; i < maxCol; ++i) {
-      x_base = i * TILE_SIZE + player_x;
+      x_base = i * TILE_SIZE + DRAW_X;
       for (uint_fast16_t b = worldRow; b < maxRow; ++b) {
-        y_base = b * TILE_SIZE + player_y;
+        y_base = b * TILE_SIZE + DRAW_Y;
 
         int num1 = CURRENT_FORE_GROUND[i][b];
         if (num1 != -1) {
@@ -69,6 +68,5 @@ struct WorldRender {
     }
   }
 };
-int WorldRender::player_x = 0;
-int WorldRender::player_y = 0;
+
 #endif  //MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_

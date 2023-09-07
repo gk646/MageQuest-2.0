@@ -12,36 +12,38 @@ struct CharacterBag final : public Window {
   explicit CharacterBag(int slots) noexcept
       : Window(SCREEN_WIDTH * 0.6F, SCREEN_HEIGHT * 0.6F, width, 300, 20,
                "Bags", KEY_B) {
-    add_slots(slots);
   }
 
   void draw() noexcept {
     OPEN_CLOSE()
     DRAG_WINDOW()
     draw_window();
-    for (auto& slot : CHAR_BAG) {
+    for (auto& slot : PLAYER_BAG) {
       slot.draw(whole_window.x, whole_window.y);
     }
   }
   void update() noexcept {
     update_window();
-    for (auto& slot : CHAR_BAG) {
+    for (auto& slot : PLAYER_BAG) {
       slot.update();
     }
   }
-  inline void add_slots(int n) noexcept {
-    int exist_x = CHAR_BAG.size() % per_row;
-    int exist_y = CHAR_BAG.size() / per_row;
+  inline static void add_slots(int n) noexcept {
+    int exist_x = PLAYER_BAG.size() % per_row;
+    int exist_y = PLAYER_BAG.size() / per_row;
     for (uint_fast32_t i = 0; i < n; i++) {
-      CHAR_BAG.emplace_back(offset_x + spacing_x * exist_x,
+      PLAYER_BAG.emplace_back(offset_x + spacing_x * exist_x,
                             offset_y + spacing_y * exist_y, ItemType::EMPTY);
-      exist_x = CHAR_BAG.size() % per_row;
-      exist_y = CHAR_BAG.size() / per_row;
+      exist_x = PLAYER_BAG.size() % per_row;
+      exist_y = PLAYER_BAG.size() / per_row;
     }
+  }
+  inline static void remove_slots(int n) noexcept{
+
   }
 
   static void add_item(Item* new_item) noexcept {
-    for (auto& slot : CHAR_BAG) {
+    for (auto& slot : PLAYER_BAG) {
       if (!slot.item) {
         slot.item = new_item;
         break;

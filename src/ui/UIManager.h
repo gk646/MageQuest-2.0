@@ -13,14 +13,11 @@ struct UIManager {
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH) {
         SCREEN_WIDTH = GetScreenWidth();
-        CAMERA_X = SCREEN_WIDTH / 2;
       }
       if (GetScreenHeight() != SCREEN_HEIGHT) {
         SCREEN_HEIGHT = GetScreenHeight();
-        CAMERA_Y = SCREEN_HEIGHT / 2;
       }
     }
-
     if (IsKeyPressed(KEY_ESCAPE)) {
       if (GAME_STATE == GameState::GameMenu &&
           game_menu.menu_state == MenuState::Main) {

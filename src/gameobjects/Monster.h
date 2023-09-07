@@ -8,11 +8,15 @@ struct Monster : public Entity {
   StatusEffectHandler status_effects{stats};
   MonsterResource entity_resource;
   std::string name;
-  Monster(const Point& pos, const EntityStats& stats, const Point& size = {50, 50},
-          ShapeType shape_type = ShapeType::RECT)
-      : Entity(pos, size, shape_type), pov(0), health_bar(size.x(), 15), stats(stats) {}
-  Monster(const Point& pos, const Point& size, ShapeType shape_type = ShapeType::RECT,
-          float pov = 0, std::string name = "", const EntityStats& stats = {})
+  Monster(const Point& pos, const EntityStats& stats,
+          const Point& size = {50, 50}, ShapeType shape_type = ShapeType::RECT)
+      : Entity(pos, size, shape_type),
+        pov(0),
+        health_bar(size.x(), 15),
+        stats(stats) {}
+  Monster(const Point& pos, const Point& size,
+          ShapeType shape_type = ShapeType::RECT, float pov = 0,
+          std::string name = "", const EntityStats& stats = {})
       : Entity(pos, size, shape_type),
         pov(pov),
         name(std::move(name)),
@@ -40,14 +44,14 @@ struct Monster : public Entity {
   }
   void draw() final {
     if (shape_type == ShapeType::CIRCLE) {
-      DrawCircleSector(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(), 0,
-                       360, 50, PURPLE);
+      DrawCircleSector(pos.x() + DRAW_X, pos.y() + DRAW_Y, size.x(), 0, 360, 50,
+                       PURPLE);
     } else {
-      DrawRectanglePro(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, size.x(),
-                       size.y(), {0, 0}, pov, PURPLE);
+      DrawRectanglePro(pos.x() + DRAW_X, pos.y() + DRAW_Y, size.x(), size.y(),
+                       {0, 0}, pov, PURPLE);
     }
     if (health_bar.show) {
-      health_bar.draw(pos.x() - PLAYER_X + CAMERA_X, pos.y() - PLAYER_Y + CAMERA_Y, stats);
+      health_bar.draw(pos.x() + DRAW_X, pos.y() + DRAW_Y, stats);
     }
 #ifdef DRAW_HITBOXES
     draw_hitbox();

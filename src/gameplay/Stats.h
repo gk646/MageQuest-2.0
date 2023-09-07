@@ -1,16 +1,10 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
-struct EffectStats {
-  float effects[50] = {0};
-};
-
 struct SkillStats {
   float cool_down = 0;
   float mana_cost = 0;
   float health_cost = 0;
-
-  inline float get_cd(float cd_percent) const noexcept {}
 };
 
 struct DamageStats {

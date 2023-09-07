@@ -205,6 +205,7 @@ class Game {
     //SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {
+    GameSaver::save();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
     for (uint_fast32_t i = 0; i < 5589; i++) {
       UnloadTexture(TEXTURES[i]);
