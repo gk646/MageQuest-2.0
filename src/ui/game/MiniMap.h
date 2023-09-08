@@ -10,7 +10,7 @@ class MiniMap {
   std::stringstream ss{};
   std::string time_str{};
   int update_timer = 500;
-  inline bool map_bounds(int x, int y) const noexcept {
+  static inline bool map_bounds(int x, int y) noexcept {
     return x > 0 && y > 0 && x < CURRENT_MAP_SIZE && y < CURRENT_MAP_SIZE;
   }
 
@@ -31,20 +31,20 @@ class MiniMap {
         if (map_bounds(tile_x + i, tile_y + j)) {
           if (COLLISIONS[CURRENT_BACK_GROUND[tile_x + i][tile_y + j]] == C_SOLID ||
               COLLISIONS[CURRENT_MIDDLE_GROUND[tile_x + i][tile_y + j]] == C_SOLID) {
-            DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
+            DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
                              Colors::darkBackground);
-          } else {
+          } else [[likely]]{
             if (tile_x + i == PLAYER_TILE_X && tile_y + j == PLAYER_TILE_Y) {
-              DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
+              DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
                                Colors::Blue);
 
             } else {
-              DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
+              DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
                                Colors::map_green);
             }
           }
         } else {
-          DrawRectanglePro(draw_x + i * zoom, draw_y + j * zoom, zoom, zoom, {0, 0}, 0,
+          DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
                            Colors::lightGreyMiddleAlpha);
         }
       }

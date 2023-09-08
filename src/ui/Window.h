@@ -46,15 +46,15 @@ struct Window {
     Rectangle scaled_whole = SCALE_RECT(whole_window);
     Rectangle scaled_head = SCALE_RECT(header_bar);
 
-    DrawRectangleRounded(scaled_whole, 0.1F, 25, Colors::LightGrey);
+    DrawRectangleRounded(scaled_whole, 0.1F, 30, Colors::LightGrey);
 
-    DrawRectangleRounded(scaled_head, 0.6F, 20,
+    DrawRectangleRounded(scaled_head, 0.6F, 30,
                          header_hover ? isDragging ? Colors::mediumLightGreyDarker
                                                    : Colors::mediumLightGreyBitDarker
                                       : Colors::mediumLightGrey);
 
-    DrawRectangleRoundedLines(scaled_whole, 0.1F, 25, 3, Colors::darkBackground);
-    DrawRectangleRoundedLines(scaled_head, 1.5F, 15, 2, Colors::darkBackground);
+    DrawRectangleRoundedLines(scaled_whole, 0.1F, 30, 3, Colors::darkBackground);
+    DrawRectangleRoundedLines(scaled_head, 1.5F, 30, 2, Colors::darkBackground);
 
     DrawTextEx(ANT_PARTY, header_text,
                {scaled_whole.x + scaled_whole.width / 2 -

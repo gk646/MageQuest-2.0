@@ -40,10 +40,11 @@ struct ItemSaver {
     std::string effect_string;
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
       if (arr[i] != 0) {
-        effect_string += "[" + std::to_string(i) += "]" + std::to_string(arr[i]);
+        effect_string += std::to_string(i) + ":" + std::to_string(arr[i]) + ";";
       }
     }
     return effect_string;
   }
+
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_SAVING_ITEMSAVER_H_

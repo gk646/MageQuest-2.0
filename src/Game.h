@@ -162,10 +162,10 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
-          WorldRender::draw();
-          DRAW_ENTITIES()
-          WorldRender::draw_fore_ground();
-          UI_MANAGER.player_ui.draw();
+        WorldRender::draw();
+        DRAW_ENTITIES()
+        WorldRender::draw_fore_ground();
+        UI_MANAGER.player_ui.draw();
           break;
         }
       case GameState::GameMenu: {

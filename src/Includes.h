@@ -20,6 +20,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <regex>
 
 //raylib
 #define RAYLIB_IMPLEMENTATION

@@ -133,16 +133,15 @@ struct EntityStats {
     float& max_shield = effects[MAX_SHIELD];
     if (shield < max_shield && mana > 0) {
       shield += effects[MANA_REGEN] / 60;
-      mana -= effects[MANA_REGEN]/60;
+      mana -= effects[MANA_REGEN] / 60;
     } else if (shield > max_shield) {
       shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
     }
   }
 
-  inline bool skill_useable(const SkillStats& stats,
-                            float ticks_done) const noexcept {
+  inline bool skill_useable(const SkillStats& stats, float ticks_done) const noexcept {
     return !stunned && ticks_done >= stats.cool_down * (1 - effects[CDR_P]) &&
-           mana >= stats.mana_cost * (1 + effects[MANA_COST_REDUCTION_P]);
+           mana >= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline void use_skill(const SkillStats& stats) noexcept {
     mana -= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
@@ -160,15 +159,15 @@ struct EntityStats {
   inline float get_weapon_damage(DamageType type) noexcept {
     switch (type) {
       case DamageType::FIRE:
-        return effects[WEAPON_DAMAGE] * effects[FIRE_DMG];
+        return effects[WEAPON_DAMAGE] * (1 + effects[FIRE_DMG_P]);
       case DamageType::POISON:
-        return effects[WEAPON_DAMAGE] * effects[POISON_DMG];
+        return effects[WEAPON_DAMAGE] * (1 + effects[POISON_DMG_P]);
       case DamageType::ICE:
-        return effects[WEAPON_DAMAGE] * effects[ICE_DMG];
+        return effects[WEAPON_DAMAGE] * (1 + effects[ICE_DMG_P]);
       case DamageType::ARCANE:
-        return effects[WEAPON_DAMAGE] * effects[ARCANE_DMG];
+        return effects[WEAPON_DAMAGE] * (1 + effects[ARCANE_DMG_P]);
       case DamageType::DARK:
-        return effects[WEAPON_DAMAGE] * effects[DARK_DMG];
+        return effects[WEAPON_DAMAGE] * (1 + effects[DARK_DMG_P]);
       case DamageType::PHYSICAL:
         return effects[WEAPON_DAMAGE];
       case DamageType::TRUE_DMG:

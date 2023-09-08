@@ -13,17 +13,11 @@ struct HotBar {
     const float slotSize = 30 * UI_SCALE;
     const float slotSpacing = 5 * UI_SCALE;
 
-    const float hotbarWidth = columns * (slotSize + slotSpacing) - slotSpacing;
-    const float hotbarHeight = rows * (slotSize + slotSpacing) - slotSpacing;
-
-    const float startX = (SCREEN_WIDTH - hotbarWidth) / 2.0F;
-    const float startY = SCREEN_HEIGHT - (SCREEN_HEIGHT - hotbarHeight) / 8.0F;
+    const float startX = (SCREEN_WIDTH - columns * (slotSize + slotSpacing) - slotSpacing) / 2.0F;
+    const float startY = SCREEN_HEIGHT - (SCREEN_HEIGHT - rows * (slotSize + slotSpacing) - slotSpacing) / 8.0F;
 
     for (int col = 0; col < columns; ++col) {
-      const auto slotX = startX + col * (slotSize + slotSpacing);
-      const auto slotY = startY;
-
-      skills[col]->draw(slotX, slotY, slotSize);
+      skills[col]->draw(startX + col * (slotSize + slotSpacing), startY, slotSize);
     }
   }
 
