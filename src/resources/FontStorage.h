@@ -5,8 +5,8 @@
 inline Font ANT_PARTY;
 inline Font VARNISHED;
 inline Font MINECRAFT_BOLD;
+inline Font MINECRAFT_ITALIC;
+inline Font MINECRAFT_REGULAR;
 inline Font EDIT_UNDO;
-
-
 
 #endif  //MAGEQUEST_SRC_RESOURCES_FONTSTORAGE_H_

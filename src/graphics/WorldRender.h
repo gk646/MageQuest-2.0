@@ -6,14 +6,14 @@ struct WorldRender {
   static void draw() noexcept {
     int worldCol = std::max(PLAYER_TILE_X - 21, 0);
     int worldRow = std::max(PLAYER_TILE_Y - 12, 0);
-    int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
-    int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
+    const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
+    const int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
 
-    int playerX = PLAYER_X = PLAYER.pos.x();
-    int playerY = PLAYER_Y = PLAYER.pos.y();
+    const int playerX = PLAYER_X = PLAYER.pos.x();
+    const int playerY = PLAYER_Y = PLAYER.pos.y();
     int screenX = CAMERA_X;
     int screenY = CAMERA_Y;
-    int worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
+    const int worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
 
     if (screenX > playerX) {
       CAMERA_X = screenX = playerX;
@@ -33,36 +33,35 @@ struct WorldRender {
     DRAW_Y = -playerY + screenY;
 
     float x_base, y_base;
-    for (uint_fast16_t i = worldCol; i < maxCol; ++i) {
+    for (int i = worldCol; i < maxCol; ++i) {
       x_base = i * TILE_SIZE + DRAW_X;
-      for (uint_fast16_t b = worldRow; b < maxRow; ++b) {
+      for (int b = worldRow; b < maxRow; ++b) {
         y_base = b * TILE_SIZE + DRAW_Y;
 
-        DrawTextureProFast(TEXTURES[CURRENT_BACK_GROUND[i][b]], x_base, y_base,
-                           0, WHITE);
+        DrawTextureProFastUltra(TEXTURES[CURRENT_BACK_GROUND[i][b]].id, x_base, y_base);
 
         int num2 = CURRENT_MIDDLE_GROUND[i][b];
         if (num2 != -1) {
-          DrawTextureProFast(TEXTURES[num2], x_base, y_base, 0, WHITE);
+          DrawTextureProFastUltra(TEXTURES[num2].id, x_base, y_base);
         }
       }
     }
   }
   static void draw_fore_ground() noexcept {
-    int worldCol = std::max(PLAYER_TILE_X - 21, 0);
-    int worldRow = std::max(PLAYER_TILE_Y - 12, 0);
-    int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
-    int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
+    const int worldCol = std::max(PLAYER_TILE_X - 21, 0);
+    const int worldRow = std::max(PLAYER_TILE_Y - 12, 0);
+    const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
+    const int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
 
     float x_base, y_base;
-    for (uint_fast16_t i = worldCol; i < maxCol; ++i) {
+    for (int i = worldCol; i < maxCol; ++i) {
       x_base = i * TILE_SIZE + DRAW_X;
-      for (uint_fast16_t b = worldRow; b < maxRow; ++b) {
+      for (int b = worldRow; b < maxRow; ++b) {
         y_base = b * TILE_SIZE + DRAW_Y;
 
         int num1 = CURRENT_FORE_GROUND[i][b];
         if (num1 != -1) {
-          DrawTextureProFast(TEXTURES[num1], x_base, y_base, 0, WHITE);
+          DrawTextureProFastUltra(TEXTURES[num1].id, x_base, y_base);
         }
       }
     }

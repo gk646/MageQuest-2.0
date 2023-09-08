@@ -11,6 +11,7 @@ To see the base features head over to the page of the first game.
 - Engine overhaul
   - Fully adjustable framerate
   - 10x performance in general
+  - Faster saving and loading through low-level sqlite3
 - Fully dynamic effect system 
   - Both monsters and the player can be effect by DoT's, Buffs, Debuffs and have over 30 attributes
 - New Gameplay systems

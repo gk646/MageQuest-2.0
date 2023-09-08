@@ -13,15 +13,15 @@ struct PlayerUI {
   CharacterBag char_bag{8};
   StatusBar status_bar{};
 
-  void draw()  noexcept {
+  void draw() noexcept {
     PLAYER_EFFECTS.draw();
     PLAYER_HOTBAR.draw();
     status_bar.draw();
     mini_map.draw();
     char_panel.draw();
     char_bag.draw();
-    if(DRAGGED_ITEM){
-      DRAGGED_ITEM->draw({GetMousePosition().x-22,GetMousePosition().y-22,45,45});
+    if (DRAGGED_ITEM) {
+      DRAGGED_ITEM->draw({GetMousePosition().x - 22, GetMousePosition().y - 22, 45, 45});
     }
   }
   void update() noexcept {
@@ -30,11 +30,11 @@ struct PlayerUI {
     status_bar.update();
     char_panel.update();
     char_bag.update();
-    if(DRAGGED_ITEM&&!IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
-      if(WINDOW_FOCUSED){
+    if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      if (WINDOW_FOCUSED) {
         InventorySlot::place_item_back();
-      }else{
-        WORLD_OBJECTS.push_back(new DroppedItem({PLAYER_X+50,PLAYER_Y},DRAGGED_ITEM));
+      } else {
+        WORLD_OBJECTS.push_back(new DroppedItem({PLAYER_X + 50, PLAYER_Y}, DRAGGED_ITEM));
         DRAGGED_ITEM = nullptr;
         DRAGGED_SLOT = nullptr;
       }
