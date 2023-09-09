@@ -81,19 +81,19 @@ struct Projectile : public Entity {
     }
   }
   Point get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle = std::atan2(mouse_pos.y - (pos.y() +DRAW_Y),
-                             mouse_pos.x - (pos.x() +DRAW_X));
+    float angle = std::atan2(mouse_pos.y - (pos.y_ +DRAW_Y),
+                             mouse_pos.x - (pos.x_ +DRAW_X));
     //pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
   void draw() noexcept final {
     switch (shape_type) {
       case ShapeType::RECT:
-        DrawRectanglePro(pos.x() + DRAW_X, pos.y() + DRAW_Y, size.x(), size.y(),
+        DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_,
                          {0, 0}, pov, PURPLE);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSector(pos.x() + DRAW_X, pos.y() + DRAW_Y, size.x(), 0, 360,
+        DrawCircleSector(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, 0, 360,
                          56, PURPLE);
         break;
     }
@@ -102,8 +102,8 @@ struct Projectile : public Entity {
 #endif
   }
   void update() noexcept final {
-    pos.x() += move_vector.x() * speed;
-    pos.y() += move_vector.y() * speed;
+    pos.x_ += move_vector.x() * speed;
+    pos.y_ += move_vector.y() * speed;
     life_span--;
     if (life_span <= 0) {
       dead = true;

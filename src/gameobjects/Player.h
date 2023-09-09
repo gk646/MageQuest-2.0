@@ -20,7 +20,7 @@ struct Player : public Entity {
     return *this;
   }
   void draw() final {
-    DrawRectanglePro(pos.x() +DRAW_X , pos.y() +DRAW_Y, size.x(), size.y(),
+    DrawRectanglePro(pos.x_ +DRAW_X , pos.y_ +DRAW_Y, size.x_, size.y_,
                      {0, 0}, pov, BLUE);
 #ifdef DRAW_HITBOXES
     draw_hitbox();
@@ -37,19 +37,19 @@ struct Player : public Entity {
     float speed = PLAYER_STATS.get_speed();
 
     if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
-      pos.y() -= speed;
+      pos.y_ -= speed;
     }
     if (IsKeyDown(KEY_S) && !tile_collision_down(speed)) {
-      pos.y() += speed;
+      pos.y_ += speed;
     }
     if (IsKeyDown(KEY_A) && !tile_collision_left(speed)) {
-      pos.x() -= speed;
+      pos.x_ -= speed;
     }
     if (IsKeyDown(KEY_D) && !tile_collision_right(speed)) {
-      pos.x() += speed;
+      pos.x_ += speed;
     }
-    tile_pos.x = (pos.x() + size.x() / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y() + size.y() / 2) / TILE_SIZE;
+    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
+    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
   }
 };
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
