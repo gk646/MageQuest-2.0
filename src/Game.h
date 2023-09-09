@@ -204,8 +204,8 @@ class Game {
     UnloadImage(icon);
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
-    for (uint_fast32_t i = 0; i < 100; i++) {
-      MONSTERS.push_back(new SkeletonWarrior({250.0F + i * 50, 150}, 10));
+    for (uint_fast32_t i = 0; i < 1; i++) {
+      MONSTERS.push_back(new SkeletonSpear({250.0F + i * 50, 150}, 10));
     }
     //SettingsMenu::set_full_screen();
   }

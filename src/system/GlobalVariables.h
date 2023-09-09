@@ -28,6 +28,7 @@ inline float PLAYER_X = 0;
 inline float PLAYER_Y = 0;
 inline float DRAW_X = 0;
 inline float DRAW_Y = 0;
+inline float MIRROR_POINT = 0;
 inline PointI* PLAYER_TILE = nullptr;
 
 //WORLD

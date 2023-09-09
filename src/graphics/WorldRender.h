@@ -9,8 +9,8 @@ struct WorldRender {
     const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
     const int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
 
-    const int playerX = PLAYER_X = PLAYER.pos.x();
-    const int playerY = PLAYER_Y = PLAYER.pos.y();
+    const int playerX = PLAYER_X = PLAYER.pos.x_;
+    const int playerY = PLAYER_Y = PLAYER.pos.y_;
     int screenX = CAMERA_X;
     int screenY = CAMERA_Y;
     const int worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
@@ -31,6 +31,7 @@ struct WorldRender {
 
     DRAW_X = -playerX + screenX;
     DRAW_Y = -playerY + screenY;
+    MIRROR_POINT = playerX + PLAYER.size.x_/2;
 
     float x_base, y_base;
     for (int i = worldCol; i < maxCol; ++i) {

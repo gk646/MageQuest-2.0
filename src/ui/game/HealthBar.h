@@ -7,7 +7,7 @@ struct HealthBar {
   int height = 10;
 
   HealthBar(int width, int height) noexcept : width(width), height(height) {}
-  void draw(int x, int y, const EntityStats& stats) const noexcept {
+  void draw(float x, float y, const EntityStats& stats) const noexcept {
     const float scaledWidth = width * UI_SCALE;
     const float scaledHeight = height * UI_SCALE;
 

@@ -28,23 +28,26 @@ struct PlayerUI {
     status_bar.update();
     char_panel.update();
     char_bag.update();
-    if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      if (WINDOW_FOCUSED) {
-        InventorySlot::place_item_back();
-      } else {
-        WORLD_OBJECTS.push_back(new DroppedItem({PLAYER_X + 50, PLAYER_Y}, DRAGGED_ITEM));
-        DRAGGED_ITEM = nullptr;
-        DRAGGED_SLOT = nullptr;
-      }
-    }
+    update_special_items();
   }
-  static inline void draw_special_items() noexcept{
+  static inline void draw_special_items() noexcept {
     if (DRAGGED_ITEM) {
       DRAGGED_ITEM->draw({GetMousePosition().x - 22, GetMousePosition().y - 22, 45, 45});
     }
     if (TOOL_TIP_ITEM) {
       TOOL_TIP_ITEM->draw_tooltip();
       TOOL_TIP_ITEM = nullptr;
+    }
+  }
+  static inline void update_special_items() noexcept {
+    if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      if (WINDOW_FOCUSED) {
+        InventorySlot::place_item_back();
+      } else {
+        WORLD_OBJECTS.push_back(new DroppedItem(PLAYER.pos, DRAGGED_ITEM));
+        DRAGGED_ITEM = nullptr;
+        DRAGGED_SLOT = nullptr;
+      }
     }
   }
   inline bool window_closeable() noexcept {

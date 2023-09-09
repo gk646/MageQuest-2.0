@@ -11,10 +11,12 @@ To see the base features head over to the page of the first game.
   - Fully adjustable framerate
   - Better performance
   - Faster saving and loading through low-level sqlite3
+  - Enemies automatically look in your direction through texture mirroring
 - Fully dynamic effect system 
   - Both monsters and the player can be effect by DoT's, Buffs, Debuffs and have over 30 attributes
 - New Gameplay systems
   - New item effects like: Magic Shield,
+  - Improved diversity of enemy pathfinding
 
 
 ### Progress: 50%  of base game features ported
