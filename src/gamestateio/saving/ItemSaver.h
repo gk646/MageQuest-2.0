@@ -4,7 +4,7 @@ struct ItemSaver {
 
   static void save() noexcept {
     save_items(PLAYER_EQUIPPED, 10, "PLAYER_INV");
-    save_items(PLAYER_BAG.data(), PLAYER_BAG.size(), "PLAYER_BAG");
+    save_items(PLAYER_BAG, PLAYER_BAG_SIZE, "PLAYER_BAG");
   }
   static void save_items(InventorySlot* slots, int size,
                          const std::string& table) noexcept {
@@ -23,7 +23,7 @@ struct ItemSaver {
         sqlite3_bind_int(stmt, 3, slots[i].item->quality);
         sqlite3_bind_int(stmt, 4, slots[i].item->level);
         sqlite3_bind_text(stmt, 5, get_effect_text(slots[i].item->effects).c_str(), -1,
-                          SQLITE_STATIC);
+                          SQLITE_TRANSIENT);
       } else {
         for (int col = 1; col <= 5; ++col) {
           sqlite3_bind_null(stmt, col);

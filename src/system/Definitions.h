@@ -6,6 +6,7 @@
 //SYSTEM
 #define SIMD_PRAGMA _Pragma("omp simd")
 
+
 //Tile Collision
 #define C_SOLID 1
 #define C_AIR_ONLY 2
@@ -26,9 +27,7 @@
 #define SCALE_TEXT_SIZE(size) (SCALE(size))
 
 
-//GAMEPLAY
-#define EFFECT_COUNT 50
-
-//#define DRAW_HITBOXES
+//#define DRAW_HITBOXES                                                                   //Draws an outline around hitboxes
+//#define DRAW_TILE_BORDER                                                                //Draws and outline on the tile edges
 
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_

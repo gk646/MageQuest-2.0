@@ -10,7 +10,7 @@
 struct PlayerUI {
   MiniMap mini_map{};
   CharacterPanel char_panel{};
-  CharacterBag char_bag{8};
+  CharacterBag char_bag{};
   StatusBar status_bar{};
 
   void draw() noexcept {
@@ -20,9 +20,7 @@ struct PlayerUI {
     mini_map.draw();
     char_panel.draw();
     char_bag.draw();
-    if (DRAGGED_ITEM) {
-      DRAGGED_ITEM->draw({GetMousePosition().x - 22, GetMousePosition().y - 22, 45, 45});
-    }
+    draw_special_items();
   }
   void update() noexcept {
     WINDOW_FOCUSED = false;
@@ -40,7 +38,15 @@ struct PlayerUI {
       }
     }
   }
-
+  static inline void draw_special_items() noexcept{
+    if (DRAGGED_ITEM) {
+      DRAGGED_ITEM->draw({GetMousePosition().x - 22, GetMousePosition().y - 22, 45, 45});
+    }
+    if (TOOL_TIP_ITEM) {
+      TOOL_TIP_ITEM->draw_tooltip();
+      TOOL_TIP_ITEM = nullptr;
+    }
+  }
   inline bool window_closeable() noexcept {
     if (char_panel.open || char_bag.open) {
       char_panel.open = false;

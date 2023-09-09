@@ -31,9 +31,9 @@ struct StatusBar {
       DrawRectangleRounded({beginX + 82, beginY + 27,
                             (shield / stats.effects[MAX_SHIELD]) * health_width, 13},
                            0.5F, 20, Colors::shield);
-      DrawTextEx(EDIT_UNDO, health_buffer, {beginX + 160, beginY + 15}, 16, 1,
+      DrawTextExR(EDIT_UNDO, health_buffer, {beginX + 160, beginY + 15}, 16, 1,
                  Colors::white_smoke);
-      DrawTextEx(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2,
+      DrawTextExR(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2,
                  Colors::white_smoke);
     } else {
       snprintf(health_buffer, sizeof(health_buffer), "%d/%d", (int)health,
@@ -44,9 +44,9 @@ struct StatusBar {
       DrawRectanglePro(beginX + 82, beginY + 57, (mana / max_mana) * mana_width, 10,
                        {0, 0}, 0, Colors::Blue);
       DrawTextureProFast(textures::STATUS_BAR, beginX, beginY, 0, WHITE);
-      DrawTextEx(EDIT_UNDO, health_buffer, {beginX + 160, beginY + 15}, 16, 1,
+      DrawTextExR(EDIT_UNDO, health_buffer, {beginX + 160, beginY + 15}, 16, 1,
                  Colors::white_smoke);
-      DrawTextEx(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2,
+      DrawTextExR(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2,
                  Colors::white_smoke);
     }
   }

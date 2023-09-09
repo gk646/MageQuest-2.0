@@ -2,8 +2,6 @@
 #define MAGEQUEST_SRC_GAMESTATEIO_DATABASEHANDLER_H_
 
 struct DataBaseHandler {
-  static constexpr char* player_bag = "PLAYER_BAG";
-  static constexpr char* player_inv = "PLAYER_INV";
   static sqlite3* database;
   static sqlite3* gamesave;
   static void load() noexcept {
@@ -16,9 +14,10 @@ struct DataBaseHandler {
     for (const auto& name : table_names) {
       create_items_from_table(name);
     }
+
     load_items_from_table(PLAYER_EQUIPPED, "PLAYER_INV", 10);
     CharacterBag::add_slots(8);
-    load_items_from_table(PLAYER_BAG.data(), "PLAYER_BAG", 8);
+    load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_BAG_SIZE);
     cxstructs::printTime<std::chrono::nanoseconds>();
   }
   static bool prepare_stmt(const std::string& sql, sqlite3* db,
@@ -87,7 +86,7 @@ struct DataBaseHandler {
     return nullptr;
   }
   inline static void parse_effect_text(float* arr, const unsigned char* ptr) {
-    if (!ptr) {
+    if (!ptr || !arr) {
       return;
     }
     std::stringstream ss(reinterpret_cast<const char*>(ptr));

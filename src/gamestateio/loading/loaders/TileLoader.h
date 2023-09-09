@@ -21,7 +21,7 @@ struct TileLoader {
  private:
   static void load_texture_span(int start, int end) {
     for (uint_fast32_t i = start; i < end; ++i) {
-      images.push_back(LoadImage((ASSET_PATH+"textures/" + std::to_string(i) + ".png").c_str()));
+      images.push_back(LoadImageR((ASSET_PATH+"textures/" + std::to_string(i) + ".png").c_str()));
     }
   }
 

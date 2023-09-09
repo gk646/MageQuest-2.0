@@ -92,7 +92,7 @@ enum Stat {
   CDR_P,
   ARMOUR_MULT_P,
   HEALTH_MULT_P,
-  MANA_MULT_P,
+  MANA_MULT_P, //other pecentile only before mana mult
   WEAPON_DAMAGE,
   ARMOUR,
   MAX_SHIELD,
@@ -168,6 +168,22 @@ inline std::unordered_map<std::string, Stat> attrToStat = {
     {"INT", INTELLIGENCE}, {"WIS", WISDOM},    {"CHA", CHARISMA},
     {"VIT", VITALITY},     {"AGI", AGILITY},   {"LUC", LUCK},
 };
+inline std::unordered_map<ItemType, std::string> type_to_string = {
+    { ItemType::HEAD, "Head" },
+    { ItemType::CHEST, "Chest" },
+    { ItemType::PANTS, "Pants" },
+    { ItemType::BOOTS, "Boots" },
+    { ItemType::AMULET, "Amulet" },
+    { ItemType::RING, "Ring" },
+    { ItemType::RELIC, "Relic" },
+    { ItemType::ONE_HAND, "One Hand" },
+    { ItemType::TWO_HAND, "Two Hand" },
+    { ItemType::OFF_HAND, "Off Hand" },
+    { ItemType::BAG, "Bag" },
+    { ItemType::EMPTY, "Empty" },
+    { ItemType::MISC, "Misc" }
+};
+
 inline std::unordered_map<ItemRarity, Color> rarity_to_color = {
     {ItemRarity::NORMAL, Colors::NormalGrey},
     {ItemRarity::RARE, Colors::rareColor},

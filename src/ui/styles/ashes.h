@@ -91,7 +91,7 @@ static unsigned char ashesFontData[ASHES_COMPRESSED_DATA_SIZE] = { 0xed,
                                                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x5b, 0xfa, 0x05 };
 
 // Font characters rectangles data
-static const Rectangle ashesFontRecs[95] = {
+static const RectangleR ashesFontRecs[95] = {
     { 4, 4, 4 , 16 },
     { 16, 4, 1 , 10 },
     { 25, 4, 3 , 3 },
@@ -315,8 +315,8 @@ static void GuiLoadStyleAshes()
 
   // Copy char recs data from global fontRecs
   // NOTE: Required to avoid issues if trying to free font
-  font.recs = (Rectangle *)malloc(font.glyphCount*sizeof(Rectangle));
-  memcpy(font.recs, ashesFontRecs, font.glyphCount*sizeof(Rectangle));
+  font.recs = (RectangleR*)malloc(font.glyphCount*sizeof(RectangleR));
+  memcpy(font.recs, ashesFontRecs, font.glyphCount*sizeof(RectangleR));
 
   // Copy font char info data from global fontChars
   // NOTE: Required to avoid issues if trying to free font
@@ -328,7 +328,7 @@ static void GuiLoadStyleAshes()
   // Setup a white rectangle on the font to be used on shapes drawing,
   // this way we make sure all gui can be drawn on a single pass because no texture change is required
   // NOTE: Setting up this rectangle is a manual process (for the moment)
-  Rectangle whiteChar = { 37, 6, 1, 1 };
+  RectangleR whiteChar = { 37, 6, 1, 1 };
   SetShapesTexture(font.texture, whiteChar);
 
   //-----------------------------------------------------------------
