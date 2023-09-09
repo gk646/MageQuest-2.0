@@ -4,9 +4,9 @@
 struct ItemDropHandler {
 
   static Item get_random_item(int level) {
-    int num = ITEM_DIST(RNG_ENGINE);
+    int num = RANGE_EXISTING_ITEMS(RNG_ENGINE);
 
-    int quality = QUALITY_DIST(RNG_ENGINE);
+    int quality = RANGE_ItemQuality(RNG_ENGINE);
 
   }
 };

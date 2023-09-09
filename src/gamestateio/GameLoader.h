@@ -20,12 +20,7 @@ struct GameLoader {
         load_util::current_step < load_functions.size() + load_util::cpu_steps) {
       load_step(load_functions[load_util::current_step - load_util::cpu_steps]);
     } else if (true) {
-      PlaySound(sound::intro);
-      WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
-      GAME_STATE = GameState::MainMenu;
-      LoadingScreen::progress = 0;
-      finished_cpu_loading = false;
-      delete RAYLIB_LOGO;
+      setup_game();
     }
   }
 
@@ -35,6 +30,20 @@ struct GameLoader {
     load_step(TileLoader::load);
     load_step(MapLoader::load);
     finished_cpu_loading = true;
+  }
+  static void setup_game(){
+    PlaySoundR(sound::intro);
+    for (uint_fast32_t i = 0; i < 10; i++) {
+      if(PLAYER_EQUIPPED[i].item){
+        PLAYER_STATS.equip_item(PLAYER_EQUIPPED[i].item->effects);
+      }
+    }
+    PLAYER_STATS.refill_stats();
+    WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
+    GAME_STATE = GameState::MainMenu;
+    LoadingScreen::progress = 0;
+    finished_cpu_loading = false;
+    delete RAYLIB_LOGO;
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

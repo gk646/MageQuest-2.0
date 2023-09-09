@@ -58,7 +58,7 @@ struct MonsterResource {
     std::string path;
     for (size_t i = 0; i < folder_names.size(); ++i) {
       for (uint_fast32_t j = 0; j < load_num; ++j) {
-        path = ASSET_PATH + "Entities/" + name + folder_names[i] + std::to_string(j) + ".png";
+        path = ASSET_PATH + "Entities/" += name + folder_names[i] + std::to_string(j) + ".png";
         if (std::filesystem::exists(path)) {
           texture_arrays[i]->push_back(LoadTexture(path.c_str()));
         } else {

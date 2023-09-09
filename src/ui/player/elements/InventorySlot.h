@@ -2,29 +2,34 @@
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
 class InventorySlot;
 inline InventorySlot* DRAGGED_SLOT;
-
+inline InventorySlot* PLAYER_EQUIPPED;
+inline InventorySlot* PLAYER_BAG;
+inline int PLAYER_BAG_SIZE = 0;
 struct InventorySlot {
   static constexpr int tool_tip_delay = 12;
   int tool_tip_counter = 0;
-  int base_x, base_y = 0;
-  Rectangle hit_box = {0};
+  int base_x = 0, base_y = 0;
+  RectangleR hit_box = {0};
   Item* item = nullptr;
   ItemType item_type = ItemType::EMPTY;
+  InventorySlot() = default;
   InventorySlot(int x, int y, ItemType item_type) noexcept
       : hit_box(x, y, 40, 40), base_x(x), base_y(y), item_type(item_type) {}
   void draw(float x, float y) noexcept {
     hit_box.x = (x + base_x) * UI_SCALE;
     hit_box.y = (y + base_y) * UI_SCALE;
-    if (item) {
-      DrawRectangleRounded(hit_box, 0.4F, 40, Colors::LightGrey);
-      DrawRectangleRoundedLines(hit_box, 0.4F, 40, 2, rarity_to_color[item->rarity]);
-      item->draw(hit_box);
+
+    auto ptr = item;  //thread safety
+    DrawRectangleRounded(hit_box, 0.4F, 40, Colors::LightGrey);
+    DrawRectangleRoundedLines(
+        hit_box, 0.4F, 40, 2,
+        ptr ? rarity_to_color[ptr->rarity] : Colors::darkBackground);
+
+    if (ptr) {
+      ptr->draw(hit_box);
       if (tool_tip_counter > tool_tip_delay) {
-        item->draw_tooltip(hit_box);
+        TOOL_TIP_ITEM = ptr;
       }
-    }else{
-      DrawRectangleRounded(hit_box, 0.4F, 40, Colors::LightGrey);
-      DrawRectangleRoundedLines(hit_box, 0.4F, 40, 2, Colors::darkBackground);
     }
   }
   static void place_item_back() noexcept {
@@ -68,12 +73,10 @@ struct InventorySlot {
         DrawTexturePro(textures::relic, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
         break;
       case ItemType::ONE_HAND:
-        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hit_box, {0, 0}, 0,
-                       WHITE);  // Assuming one-hand weapons use the same texture
+        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
         break;
       case ItemType::TWO_HAND:
-        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hit_box, {0, 0}, 0,
-                       WHITE);  // Assuming two-hand weapons use the same texture
+        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
         break;
       case ItemType::OFF_HAND:
         DrawTexturePro(textures::offhand, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
@@ -90,10 +93,21 @@ struct InventorySlot {
     hit_box.width = 40 * UI_SCALE;
     if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        PLAYER_STATS.un_equip_item(item->effects);
-        DRAGGED_ITEM = item;
-        DRAGGED_SLOT = this;
-        item = nullptr;
+        if (IsKeyDown(KEY_LEFT_SHIFT)) {
+          for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
+            if (!PLAYER_BAG[i].item) {
+              PLAYER_BAG[i].item = item;
+              PLAYER_STATS.un_equip_item(item->effects);
+              item = nullptr;
+              break;
+            }
+          }
+        } else {
+          PLAYER_STATS.un_equip_item(item->effects);
+          DRAGGED_ITEM = item;
+          DRAGGED_SLOT = this;
+          item = nullptr;
+        }
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  item_type == DRAGGED_ITEM->type) {
         item = DRAGGED_ITEM;
@@ -118,15 +132,27 @@ struct InventorySlot {
     hit_box.width = 40 * UI_SCALE;
     if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        DRAGGED_ITEM = item;
-        DRAGGED_SLOT = this;
-        item = nullptr;
+        if (IsKeyDown(KEY_LEFT_SHIFT)) {
+          for (uint_fast32_t i = 0; i < 10; i++) {
+            if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].item_type == item->type) {
+              PLAYER_EQUIPPED[i].item = item;
+              PLAYER_STATS.equip_item(item->effects);
+              item = nullptr;
+              break;
+            }
+          }
+        } else {
+          DRAGGED_ITEM = item;
+          DRAGGED_SLOT = this;
+          item = nullptr;
+        }
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 DRAGGED_SLOT->item_type == item->type) {
+                 (DRAGGED_SLOT->item_type == ItemType::EMPTY ||
+                  DRAGGED_SLOT->item_type == item->type)) {
         DRAGGED_SLOT->item = item;
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
@@ -138,4 +164,5 @@ struct InventorySlot {
     }
   }
 };
+
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_

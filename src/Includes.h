@@ -1,7 +1,12 @@
 #ifndef MAGEQUEST_SRC_INCLUDES_H_
 #define MAGEQUEST_SRC_INCLUDES_H_
 
+#ifndef M_PI
+#define M_PI 3.1415926
+#endif
+
 //stdlib
+#include <unordered_set>
 #include <array>
 #include <chrono>
 #include <csignal>
@@ -13,6 +18,7 @@
 #include <list>
 #include <mutex>
 #include <random>
+#include <regex>
 #include <shared_mutex>
 #include <sstream>
 #include <string>
@@ -20,7 +26,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <regex>
+
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -28,12 +34,11 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-//SFML
-//#include <SFML/Network.hpp>
-
 //SQlite
 #include <sqlite3.h>
 inline std::string ASSET_PATH = "../res/";
+
+//#include "multiplayer/Multiplayer.h"
 
 //cxstructs
 #include "cxstructs/Geometry.h"
@@ -41,9 +46,11 @@ inline std::string ASSET_PATH = "../res/";
 #include "cxutil/cxtime.h"
 using namespace cxstructs;
 //Mage Quest
+#include "gamestateio/loading/EntityResource.h"
 #include "resources/Colors.h"
 #include "resources/FontStorage.h"
 #include "resources/SoundStorage.h"
+#include "resources/TextureStorage.h"
 #include "system/Definitions.h"
 #include "system/Enums.h"
 #include "system/GameSettings.h"
@@ -54,17 +61,14 @@ using namespace cxstructs;
 
 #include "gameplay/Stats.h"
 #include "gameplay/Talent.h"
+#include "ui/player/elements/InventorySlot.h"
+
 #include "world/maps/Map.h"
 
-#include "gamestateio/loading/EntityResource.h"
-#include "resources/TextureStorage.h"
-
 #include "gameplay/StatusEffect.h"
-
 #include "gameplay/handlers/StatusEffectHandler.h"
 #include "graphics/GifDrawer.h"
 #include "ui/Window.h"
-#include "ui/player/elements/InventorySlot.h"
 
 #include "system/GlobalVariables.h"
 

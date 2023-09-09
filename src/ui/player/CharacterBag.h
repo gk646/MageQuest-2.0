@@ -8,44 +8,45 @@ struct CharacterBag final : public Window {
   static constexpr int per_row = width / spacing_x;
   static constexpr int offset_x = 15;
   static constexpr int offset_y = 50;
+  static constexpr int max_slots = 40;
 
-  explicit CharacterBag(int slots) noexcept
-      : Window(SCREEN_WIDTH * 0.6F, SCREEN_HEIGHT * 0.6F, width, 300, 20,
-               "Bags", KEY_B) {
+  explicit CharacterBag() noexcept
+      : Window(SCREEN_WIDTH * 0.6F, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags", KEY_B) {
+    PLAYER_BAG = new InventorySlot[max_slots];
   }
 
   void draw() noexcept {
     OPEN_CLOSE()
     DRAG_WINDOW()
     draw_window();
-    for (auto& slot : PLAYER_BAG) {
-      slot.draw(whole_window.x, whole_window.y);
+    for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
+      PLAYER_BAG[i].draw(whole_window.x, whole_window.y);
     }
   }
   void update() noexcept {
     update_window();
-    for (auto& slot : PLAYER_BAG) {
-      slot.update();
+    for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
+      PLAYER_BAG[i].update();
     }
   }
   inline static void add_slots(int n) noexcept {
-    int exist_x = PLAYER_BAG.size() % per_row;
-    int exist_y = PLAYER_BAG.size() / per_row;
+    int exist_x = PLAYER_BAG_SIZE % per_row;
+    int exist_y = PLAYER_BAG_SIZE / per_row;
     for (uint_fast32_t i = 0; i < n; i++) {
-      PLAYER_BAG.emplace_back(offset_x + spacing_x * exist_x,
-                            offset_y + spacing_y * exist_y, ItemType::EMPTY);
-      exist_x = PLAYER_BAG.size() % per_row;
-      exist_y = PLAYER_BAG.size() / per_row;
+      RectangleR rect = {(float)offset_x + spacing_x * exist_x,
+                        (float)offset_y + spacing_y * exist_y, 45, 45};
+      PLAYER_BAG[i].hit_box = rect;
+      PLAYER_BAG[i].base_x = rect.x;
+      PLAYER_BAG[i].base_y = rect.y;
+      PLAYER_BAG_SIZE++;
+      exist_x = PLAYER_BAG_SIZE % per_row;
+      exist_y = PLAYER_BAG_SIZE / per_row;
     }
   }
-  inline static void remove_slots(int n) noexcept{
-
-  }
-
   static void add_item(Item* new_item) noexcept {
-    for (auto& slot : PLAYER_BAG) {
-      if (!slot.item) {
-        slot.item = new_item;
+    for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
+      if (!PLAYER_BAG[i].item) {
+        PLAYER_BAG[i].item = new_item;
         break;
       }
     }

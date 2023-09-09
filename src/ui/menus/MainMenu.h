@@ -20,7 +20,7 @@ struct MainMenu {
     DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0,
                      Colors::LightGrey);
     if (!IsSoundPlaying(sound::intro)) {
-      PlaySound(sound::intro);
+      PlaySoundR(sound::intro);
     }
 
     if (menu_state == MenuState::Main) {

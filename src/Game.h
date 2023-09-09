@@ -21,8 +21,13 @@ class Game {
     }                                                                 \
   }                                                                   \
   SIMD_PRAGMA                                                         \
-  for (auto monster : MONSTERS) {                                     \
-    monster->update();                                                \
+  for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {           \
+    if ((*it)->dead) {                                                \
+      it = MONSTERS.erase(it);                                        \
+    } else {                                                          \
+      (*it)->update();                                                \
+      ++it;                                                           \
+    }                                                                 \
   }                                                                   \
   for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {     \
     (*it)->update();                                                  \
@@ -81,7 +86,7 @@ class Game {
           PLAYER_EFFECTS.update();
           PLAYER_STATS.update();
           PLAYER_HOTBAR.update();
-          PLAYER.movement();
+          PLAYER.update();
           std::unique_lock<std::shared_mutex> lock(rwLock);
           UPDATE_AND_COLLISION()
           break;
@@ -162,10 +167,10 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
-        WorldRender::draw();
-        DRAW_ENTITIES()
-        WorldRender::draw_fore_ground();
-        UI_MANAGER.player_ui.draw();
+          WorldRender::draw();
+          DRAW_ENTITIES()
+          WorldRender::draw_fore_ground();
+          UI_MANAGER.player_ui.draw();
           break;
         }
       case GameState::GameMenu: {
@@ -192,16 +197,16 @@ class Game {
 
  public:
   Game() noexcept {
+    RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
-    Image icon = LoadImage((ASSET_PATH + "Icons/icon2.png").c_str());
+    Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 100; i++) {
-      MONSTERS.push_back(new SkeletonWarrior({250 + i * 50, 150}, 10));
+      MONSTERS.push_back(new SkeletonWarrior({250.0F + i * 50, 150}, 10));
     }
-
     //SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {
@@ -213,7 +218,7 @@ class Game {
     logic_thread_running = false;
     logic_thread.join();
     CloseAudioDevice();
-    CloseWindow();
+    CloseWindowR();
   }
   void start() noexcept {
     GameLoader::load();

@@ -22,7 +22,7 @@ struct SettingsMenu {
     float startY = SCREEN_HEIGHT / 2 - scaledHeight * 3;
     float verticalSpacing = 35 * UI_SCALE;
 
-    Rectangle resolutionBounds = {startX, startY, scaledWidth, scaledHeight};
+    RectangleR resolutionBounds = {startX, startY, scaledWidth, scaledHeight};
     int newSelectedResolution =
         GuiComboBox(resolutionBounds, resolutions, selectedResolution,
                     IsWindowFullscreen() ? STATE_DISABLED : STATE_NORMAL);

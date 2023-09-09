@@ -10,9 +10,15 @@ inline std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 inline GifDrawer* RAYLIB_LOGO;
 inline std::random_device e;
 inline std::mt19937 RNG_ENGINE(e());
-inline std::uniform_int_distribution<int> ITEM_DIST(1, 80);
-inline std::uniform_int_distribution<int> QUALITY_DIST(70, 100);
+inline std::default_random_engine RNG_RANDOM;
+inline std::uniform_int_distribution<int> RANGE_EXISTING_ITEMS(1, 80);
+inline std::uniform_int_distribution<int> RANGE_ItemQuality(70, 100);
+inline std::uniform_int_distribution<int> RANGE_100(0, 100);
+inline std::uniform_real_distribution<float> RANGE_01(0, 1);
+inline std::uniform_real_distribution<float> RANGE_01SMALL(-0.25,0.25);
 
+// Distribution in the range [0, 1)
+std::uniform_real_distribution<float> distribution(0.0, 1.0);
 //UI
 
 //PLAYER
@@ -22,9 +28,7 @@ inline float PLAYER_X = 0;
 inline float PLAYER_Y = 0;
 inline float DRAW_X = 0;
 inline float DRAW_Y = 0;
-inline int PLAYER_TILE_X = 0;
-inline int PLAYER_TILE_Y = 0;
-
+inline PointI* PLAYER_TILE = nullptr;
 
 //WORLD
 inline int16_t** CURRENT_BACK_GROUND;
@@ -35,9 +39,8 @@ inline int CURRENT_MAP_SIZE = 100;
 inline int8_t COLLISIONS[6000];
 inline Texture TEXTURES[6000];
 inline std::vector<Item> ITEMS;
-inline std::vector<InventorySlot> PLAYER_BAG;
 #include "../ui/player/CharacterBag.h"
-inline InventorySlot* PLAYER_EQUIPPED;
+
 
 //Entities
 #include "../gameobjects/Entity.h"
@@ -46,7 +49,6 @@ inline InventorySlot* PLAYER_EQUIPPED;
 #include "../gameobjects/Projectile.h"
 #include "../ui/game/HealthBar.h"
 
-#include "../gameobjects/Monster.h"
 #include "../gameobjects/NPC.h"
 
 inline std::vector<Projectile*> PROJECTILES;
@@ -57,6 +59,7 @@ inline StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline Player PLAYER{{150, 150}, {25, 25}};
 inline std::vector<WorldObject*> WORLD_OBJECTS;
 
+#include "../gameobjects/Monster.h"
 inline std::vector<Player> OTHER_PLAYERS;
 inline std::vector<NPC*> NPCS;
 inline std::vector<Monster*> MONSTERS;

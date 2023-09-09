@@ -30,7 +30,7 @@ struct GameMenu {
                     "Back to MainMenu")) {
         GAME_STATE = GameState::MainMenu;
         menu_state = MenuState::Main;
-        PlaySound(sound::intro);
+        PlaySoundR(sound::intro);
       }
     } else if (menu_state == MenuState::Settings) {
       settings_menu.draw();

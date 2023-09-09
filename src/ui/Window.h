@@ -2,8 +2,8 @@
 #define MAGEQUEST_SRC_UI_WINDOW_H_
 
 struct Window {
-  Rectangle whole_window;
-  Rectangle header_bar;
+  RectangleR whole_window;
+  RectangleR header_bar;
   Vector2 lastMousePos = {0};
   bool isDragging = false;
   const char* header_text;
@@ -43,8 +43,8 @@ struct Window {
   }
 
   void draw_window() const noexcept {
-    Rectangle scaled_whole = SCALE_RECT(whole_window);
-    Rectangle scaled_head = SCALE_RECT(header_bar);
+    RectangleR scaled_whole = SCALE_RECT(whole_window);
+    RectangleR scaled_head = SCALE_RECT(header_bar);
 
     DrawRectangleRounded(scaled_whole, 0.1F, 30, Colors::LightGrey);
 
@@ -56,7 +56,7 @@ struct Window {
     DrawRectangleRoundedLines(scaled_whole, 0.1F, 30, 3, Colors::darkBackground);
     DrawRectangleRoundedLines(scaled_head, 1.5F, 30, 2, Colors::darkBackground);
 
-    DrawTextEx(ANT_PARTY, header_text,
+    DrawTextExR(ANT_PARTY, header_text,
                {scaled_whole.x + scaled_whole.width / 2 -
                     GetTextWidth(header_text, font_size * UI_SCALE) / 2,
                 scaled_whole.y + scaled_head.height / 4},

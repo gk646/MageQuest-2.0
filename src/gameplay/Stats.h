@@ -109,7 +109,7 @@ struct EntityStats {
     effects[MAX_HEALTH] = 10;
     effects[MAX_MANA] = 20;
   };
-  EntityStats(float base_health, int level) noexcept : level(level) {
+  EntityStats(float base_health, int level, float speed) noexcept : level(level), speed(speed) {
     effects[MAX_HEALTH] = base_health;
     effects[MAX_HEALTH] *= std::pow(1.2F, level);
     effects[MAX_HEALTH] *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];

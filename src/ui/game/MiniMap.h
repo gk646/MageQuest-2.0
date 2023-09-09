@@ -16,13 +16,14 @@ class MiniMap {
 
  public:
   void draw() const noexcept {
+    auto player_tile = *PLAYER_TILE;
     int draw_x = SCREEN_WIDTH - 25 - width;
-    int tile_x = PLAYER_TILE_X - 15;
-    int tile_y = PLAYER_TILE_Y - 15;
+    int tile_x = player_tile.x - 15;
+    int tile_y = player_tile.y - 15;
 
-    DrawTextEx(ANT_PARTY, zoneMap[CURRENT_ZONE].c_str(), {(float)draw_x - 20, 9}, 17, 1,
+    DrawTextExR(ANT_PARTY, zoneMap[CURRENT_ZONE].c_str(), {(float)draw_x - 20, 9}, 17, 1,
                Colors::white);
-    DrawTextEx(ANT_PARTY, time_str.c_str(), {SCREEN_WIDTH - 55, 9}, 17, 1, Colors::white);
+    DrawTextExR(ANT_PARTY, time_str.c_str(), {SCREEN_WIDTH - 55, 9}, 17, 1, Colors::white);
 
     DrawRectangleLinesEx({(float)draw_x - 3, draw_y - 3, width + 6, height + 6}, 3,
                          Colors::LightGrey);
@@ -34,7 +35,7 @@ class MiniMap {
             DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
                              Colors::darkBackground);
           } else [[likely]]{
-            if (tile_x + i == PLAYER_TILE_X && tile_y + j == PLAYER_TILE_Y) {
+            if (tile_x + i == player_tile.x && tile_y + j == player_tile.y) {
               DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
                                Colors::Blue);
 
