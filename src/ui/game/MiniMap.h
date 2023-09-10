@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_GRAPHICS_MINIMAP_H_
 #define MAGEQUEST_SRC_GRAPHICS_MINIMAP_H_
 
-class MiniMap {
+struct  MiniMap {
   static constexpr int width = 200;
   static constexpr int height = 200;
   static constexpr int zoom = 5;
@@ -10,11 +10,11 @@ class MiniMap {
   std::stringstream ss{};
   std::string time_str{};
   int update_timer = 500;
-  static inline bool map_bounds(int x, int y) noexcept {
-    return x > 0 && y > 0 && x < CURRENT_MAP_SIZE && y < CURRENT_MAP_SIZE;
-  }
 
- public:
+
+  static inline bool map_bounds(int x, int y) noexcept {
+    return x >= 0 && y >= 0 && x < CURRENT_MAP_SIZE && y < CURRENT_MAP_SIZE;
+  }
   void draw() const noexcept {
     auto player_tile = *PLAYER_TILE;
     int draw_x = SCREEN_WIDTH - 25 - width;
@@ -27,8 +27,8 @@ class MiniMap {
 
     DrawRectangleLinesEx({(float)draw_x - 3, draw_y - 3, width + 6, height + 6}, 3,
                          Colors::LightGrey);
-    for (uint_fast32_t i = 0; i < tile_width; i++) {
-      for (uint_fast32_t j = 0; j < tile_width; j++) {
+    for (int_fast32_t i = 0; i < tile_width; i++) {
+      for (int_fast32_t j = 0; j < tile_width; j++) {
         if (map_bounds(tile_x + i, tile_y + j)) {
           if (COLLISIONS[CURRENT_BACK_GROUND[tile_x + i][tile_y + j]] == C_SOLID ||
               COLLISIONS[CURRENT_MIDDLE_GROUND[tile_x + i][tile_y + j]] == C_SOLID) {

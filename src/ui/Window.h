@@ -48,7 +48,7 @@ struct Window {
 
     DrawRectangleRounded(scaled_whole, 0.1F, 30, Colors::LightGrey);
 
-    DrawRectangleRounded(scaled_head, 0.6F, 30,
+    DrawRectangleRounded(scaled_head, 0.5F, 30,
                          header_hover ? isDragging ? Colors::mediumLightGreyDarker
                                                    : Colors::mediumLightGreyBitDarker
                                       : Colors::mediumLightGrey);

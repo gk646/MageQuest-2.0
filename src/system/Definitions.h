@@ -27,7 +27,7 @@
 #define SCALE_TEXT_SIZE(size) (SCALE(size))
 
 
-#define DRAW_HITBOXES                                                                   //Draws an outline around hitboxes
-#define DRAW_TILE_BORDER                                                                //Draws and outline on the tile edges
+//#define DRAW_HITBOXES                                                                   //Draws an outline around hitboxes
+//#define DRAW_TILE_BORDER                                                                //Draws and outline on the tile edges
 
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_
