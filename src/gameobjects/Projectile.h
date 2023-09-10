@@ -5,6 +5,7 @@ struct Projectile : public Entity {
   bool from_player;
   float speed;
   int life_span;
+  int sprite_counter = 0;
   ProjectileType projectile_type = ProjectileType::ONE_HIT;
   DamageStats damage_stats;
   Point move_vector;
@@ -102,8 +103,11 @@ struct Projectile : public Entity {
 #endif
   }
   void update() noexcept final {
+    sprite_counter++;
     pos.x_ += move_vector.x() * speed;
     pos.y_ += move_vector.y() * speed;
+    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
+    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
     life_span--;
     if (life_span <= 0) {
       dead = true;

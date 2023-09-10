@@ -3,4 +3,6 @@
 
 inline float UI_SCALE = 1;
 inline int TARGET_FPS = 120;
+
+inline bool FAST_UI;
 #endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

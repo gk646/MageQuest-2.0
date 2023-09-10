@@ -9,8 +9,8 @@
 #include "player/StatusBar.h"
 
 struct PlayerUI {
-  MiniMap mini_map{};
   RegionMap region_map{};
+  MiniMap mini_map{&region_map.open};
   CharacterPanel char_panel{};
   CharacterBag char_bag{};
   StatusBar status_bar{};
