@@ -45,7 +45,7 @@ struct SkeletonSpear final : public Monster {
             texture,
             {0, 0, static_cast<float>(-texture.width),
              static_cast<float>(texture.height)},
-            {pos.x_ + DRAW_X, pos.y_ + DRAW_Y - 46, static_cast<float>(texture.width),
+            {pos.x_ + DRAW_X-45, pos.y_ + DRAW_Y - 46, static_cast<float>(texture.width),
              static_cast<float>(texture.height)},
             {0, 0}, 0, WHITE);
       } else {

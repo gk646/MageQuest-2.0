@@ -4,11 +4,13 @@
 #include "player/elements/ToolTip.h"
 
 #include "game/MiniMap.h"
+#include "game/RegionMap.h"
 #include "player/CharacterPanel.h"
 #include "player/StatusBar.h"
 
 struct PlayerUI {
   MiniMap mini_map{};
+  RegionMap region_map{};
   CharacterPanel char_panel{};
   CharacterBag char_bag{};
   StatusBar status_bar{};
@@ -20,6 +22,7 @@ struct PlayerUI {
     mini_map.draw();
     char_panel.draw();
     char_bag.draw();
+    region_map.draw();
     draw_special_items();
   }
   void update() noexcept {
@@ -28,6 +31,7 @@ struct PlayerUI {
     status_bar.update();
     char_panel.update();
     char_bag.update();
+    region_map.update();
     update_special_items();
   }
   static inline void draw_special_items() noexcept {
@@ -51,9 +55,10 @@ struct PlayerUI {
     }
   }
   inline bool window_closeable() noexcept {
-    if (char_panel.open || char_bag.open) {
+    if (char_panel.open || char_bag.open|| region_map.open) {
       char_panel.open = false;
       char_bag.open = false;
+      region_map.open = false;
       return true;
     } else {
       return false;
