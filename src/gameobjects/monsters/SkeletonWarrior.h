@@ -80,12 +80,10 @@ struct SkeletonWarrior final : public Monster {
     if (num < 5) {
       if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
         auto texture = resource->attack1[num];
-        RectangleR srcRec = {0, 0, static_cast<float>(-texture.width),
-                             static_cast<float>(texture.height)};
-        RectangleR destRec = {pos.x_ + DRAW_X - 40, pos.y_ + DRAW_Y - 13,
-                              static_cast<float>(texture.width),
-                              static_cast<float>(texture.height)};
-        DrawTexturePro(texture, srcRec, destRec, {0, 0}, 0, WHITE);
+        DrawTexturePro(texture, {0, 0, static_cast<float>(-texture.width),
+                                 static_cast<float>(texture.height)}, {pos.x_ + DRAW_X - 40, pos.y_ + DRAW_Y - 13,
+                        static_cast<float>(texture.width),
+                        static_cast<float>(texture.height)}, {0, 0}, 0, WHITE);
       } else {
         DrawTextureProFast(resource->attack1[num], pos.x_ + DRAW_X - 23,
                            pos.y_ + DRAW_Y - 13, 0, WHITE);

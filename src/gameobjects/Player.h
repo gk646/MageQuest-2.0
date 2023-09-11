@@ -35,7 +35,7 @@ struct Player : public Entity {
   }
   void update() final {
     float speed = PLAYER_STATS.get_speed();
-
+    
     if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
       pos.y_ -= speed;
     }

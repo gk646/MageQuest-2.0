@@ -27,12 +27,12 @@ inline static int receive_packet() noexcept {
     case UDP_PLAYER_POS: {
       auto data = (MPE_PlayerPos*)msg_info.data;
       if (!connected) {
-        MPE_PlayerPos_Destroy(data);
+        delete data;
         return 0;
       }
       OTHER_PLAYERS[data->player_num - 1]->pos.x_ = data->x;
       OTHER_PLAYERS[data->player_num - 1]->pos.y_ = data->y;
-      MPE_PlayerPos_Destroy(data);
+      delete data;
     }
     case UDP_PLAYER_ABILITY: {
     }

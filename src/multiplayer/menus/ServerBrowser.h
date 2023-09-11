@@ -50,9 +50,10 @@ struct ServerBrowser {
                              BUTTON_HEIGHT},
                   "Join")) {
       ip_field.erase(std::remove(ip_field.begin(), ip_field.end(), ' '), ip_field.end());
-      Client::init(ip_field.c_str());
+      Client::init("192.168.2.41");
       GAME_STATE = GameState::Game;
       StopSound(sound::intro);
+      WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
     }
   }
 };

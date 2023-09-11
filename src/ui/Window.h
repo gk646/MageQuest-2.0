@@ -12,12 +12,12 @@ struct Window {
   bool open = false;
   bool header_hover = false;
   Vector2 base_pos;
-  Window(int startx, int starty,int width, int height, int header_height, const char* header_text, int open_key)
-      : whole_window(startx, starty, width, height),
-        header_bar(startx, starty+2, width, header_height),
+  Window(int start_x, int start_y,int width, int height, int header_height, const char* header_text, int open_key)
+      : whole_window(start_x, start_y, width, height),
+        header_bar(start_x, start_y+2, width, header_height),
         header_text(header_text),
         open_key(open_key),
-        base_pos(startx,starty) {}
+        base_pos(start_x,start_y) {}
 
 #define OPEN_CLOSE()            \
   if (IsKeyPressed(open_key)) { \

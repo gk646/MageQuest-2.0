@@ -27,7 +27,7 @@ struct Entity {
 
     return *this;
   }
-  virtual ~Entity() {}
+  virtual ~Entity() = default;
   virtual void update() = 0;
   virtual void draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {
@@ -78,31 +78,31 @@ struct Entity {
         break;
     }
   };
-  inline bool tile_collision_left(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_left(float speed) const noexcept {
     int entX = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
-  inline bool tile_collision_right(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_right(float speed) const noexcept {
     int entX = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
-  inline bool tile_collision_down(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_down(float speed) const noexcept {
     int entX = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
-  inline bool tile_collision_up(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_up(float speed) const noexcept {
     int entX = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
-  inline bool tile_collision_upright(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_upright(float speed) const noexcept {
     int entXRight = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entYUp = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
 
@@ -110,7 +110,7 @@ struct Entity {
            COLLISIONS[CURRENT_MIDDLE_GROUND[entXRight][entYUp]] == C_SOLID ||
            tile_collision_right(speed) || tile_collision_up(speed);
   }
-  inline bool tile_collision_downright(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_downright(float speed) const noexcept {
     int entXRight = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entYDown = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
 
@@ -118,7 +118,7 @@ struct Entity {
            COLLISIONS[CURRENT_MIDDLE_GROUND[entXRight][entYDown]] == C_SOLID ||
            tile_collision_right(speed) || tile_collision_down(speed);
   }
-  inline bool tile_collision_upleft(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_upleft(float speed) const noexcept {
     int entXLeft = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entYUp = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
 
@@ -126,7 +126,7 @@ struct Entity {
            COLLISIONS[CURRENT_MIDDLE_GROUND[entXLeft][entYUp]] == C_SOLID ||
            tile_collision_left(speed) || tile_collision_up(speed);
   }
-  inline bool tile_collision_downleft(float speed) const noexcept {
+  [[nodiscard]] inline bool tile_collision_downleft(float speed) const noexcept {
     int entXLeft = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entYDown = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
 

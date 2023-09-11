@@ -325,7 +325,7 @@ static void GuiLoadStyleAshes()
 
   GuiSetFont(font);
 
-  // Setup a white rectangle on the font to be used on shapes drawing,
+  // Set up a white rectangle on the font to be used on shapes drawing,
   // this way we make sure all gui can be drawn on a single pass because no texture change is required
   // NOTE: Setting up this rectangle is a manual process (for the moment)
   RectangleR whiteChar = { 37, 6, 1, 1 };

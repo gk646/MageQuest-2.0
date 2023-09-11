@@ -119,7 +119,7 @@ class Game {
   CAMERA_Y = SCREEN_HEIGHT / 2;
 
 #define DRAW_ENTITIES()                             \
-  std::shared_lock<std::shared_mutex> lock(rwLock); \
+ \
                                                     \
   for (auto object : WORLD_OBJECTS) {               \
     object->draw();                                 \
@@ -138,7 +138,7 @@ class Game {
       net_player->draw();                           \
     }                                               \
   }                                                 \
-  lock.unlock();                                    \
+                                      \
   PLAYER.draw();
 
 #define DRAW_GAME_UI()         \

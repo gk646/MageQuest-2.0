@@ -55,7 +55,7 @@ inline Texture TALENT_BIG_PURPLE;
 inline Texture TALENT_MID;
 inline Texture TALENT_MID_GREEN;
 inline Texture TALENT_MID_PURPLE;
-inline Texture TALENTNODE;
+inline Texture TALENT_NODE;
 
 }  // namespace textures
 #endif  //MAGEQUEST_SRC_SYSTEM_TEXTURESTORAGE_H_
