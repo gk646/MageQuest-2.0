@@ -2,8 +2,8 @@
 #define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 
 struct Player : public Entity {
+  MonsterResource* resource = nullptr;
   std::string name;
-  MonsterResource resource;
   explicit Player(const Point& pos, const Point& size = {25, 25})
       : Entity(pos, size, ShapeType::RECT), name("New Player") {
     PLAYER_TILE = &tile_pos;
@@ -20,8 +20,8 @@ struct Player : public Entity {
     return *this;
   }
   void draw() final {
-    DrawRectanglePro(pos.x_ +DRAW_X , pos.y_ +DRAW_Y, size.x_, size.y_,
-                     {0, 0}, pov, BLUE);
+    DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,
+                     BLUE);
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif
@@ -50,6 +50,9 @@ struct Player : public Entity {
     }
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
+    Multiplayer::send_event(UDP_PLAYER_POS, MP_TYPE == MultiplayerType::OFFLINE
+                                                ? nullptr
+                                                : new MPE_PlayerPos(1, pos.x_, pos.y_));
   }
 };
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

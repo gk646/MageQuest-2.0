@@ -23,7 +23,6 @@ enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class ProjectileType { CONTINUOUS, ONE_HIT };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 
-inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
@@ -104,6 +103,13 @@ enum Stat {
   MANA_REGEN,
   STATS_ENDING
 };
+
+enum class MultiplayerType{CLIENT, SERVER, OFFLINE};
+enum  UDP_MSG_TYPE : uint8_t {
+  UDP_PLAYER_POS,
+  UDP_PLAYER_ABILITY,
+};
+
 inline std::unordered_map<Stat, std::string> statToName = {
     {ARCANE_DMG_P, "Arcane Damage (%)"},
     {DARK_DMG_P, "Dark Damage (%)"},
@@ -192,4 +198,8 @@ inline std::unordered_map<ItemRarity, Color> rarity_to_color = {
     {ItemRarity::SET_ITEM, Colors::setItem},
     {ItemRarity::UNIQUE, Colors::highQuality},
 };
+
+inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
+inline int MP_EVENT_CODE = 0;
+inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #endif  //MAGE_QUEST_SRC_ENUMS_ENUMS_H_

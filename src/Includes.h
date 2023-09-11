@@ -6,16 +6,16 @@
 #endif
 
 //stdlib
-#include <unordered_set>
 #include <array>
 #include <chrono>
 #include <csignal>
+#include <cstdarg>
 #include <cstdint>
+#include <cstdio>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
-#include <list>
 #include <mutex>
 #include <random>
 #include <regex>
@@ -24,9 +24,9 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
-
 
 //raylib
 #define RAYLIB_IMPLEMENTATION
@@ -38,20 +38,19 @@
 #include <sqlite3.h>
 inline std::string ASSET_PATH = "../res/";
 
-//#include "multiplayer/Multiplayer.h"
-
 //cxstructs
 #include "cxstructs/Geometry.h"
 #include "cxstructs/vec.h"
 #include "cxutil/cxtime.h"
 using namespace cxstructs;
 //Mage Quest
+#include "system/Definitions.h"
+
 #include "gamestateio/loading/EntityResource.h"
 #include "resources/Colors.h"
 #include "resources/FontStorage.h"
 #include "resources/SoundStorage.h"
 #include "resources/TextureStorage.h"
-#include "system/Definitions.h"
 #include "system/Enums.h"
 #include "system/GameSettings.h"
 #include "system/Util.h"
