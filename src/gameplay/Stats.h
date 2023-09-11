@@ -101,7 +101,7 @@ struct EntityStats {
   float mana = 20;
   float speed = 3;
   int level = 1;
-  float shield;
+  float shield = 0;
   bool stunned = false;
   EntityStats() {
     effects[HEALTH_REGEN] = 0.2F;

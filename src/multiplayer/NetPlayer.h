@@ -10,7 +10,6 @@ struct NetPlayer : Entity {
   StatusEffectHandler status_effects{stats};
   explicit NetPlayer(const Point& pos, std::string name, const Point& size = {25, 25})
       : Entity(pos, size, ShapeType::RECT), name(std::move(name)) {
-    PLAYER_TILE = &tile_pos;
   }
   void draw() final {
     DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,

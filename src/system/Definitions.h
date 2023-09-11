@@ -42,7 +42,10 @@
  * |                       DEBUG                         |
  * |-----------------------------------------------------|
  */
-//#define DRAW_HITBOXES                                                                   //Draws an outline around hitboxes
-//#define DRAW_TILE_BORDER                                                                //Draws and outline on the tile edges
+#define MG2_DEBUG
 
+#ifdef MG2_DEBUG
+#define DRAW_HITBOXES                                                                   //Draws an outline around hitboxes
+#define DRAW_TILE_BORDER                                                                //Draws and outline on the tile edges
+#endif
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_

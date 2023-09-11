@@ -36,11 +36,11 @@ struct SettingsMenu {
                          "UI Scale", nullptr, UI_SCALE, 0.7f, 2.0f);
 
     startY += verticalSpacing;
-    bool fullscreen =
+    bool full_screen =
         GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
                     "Fullscreen", IsWindowFullscreen());
-    if (fullscreen != IsWindowFullscreen()) {
-      if (fullscreen) {
+    if (full_screen != IsWindowFullscreen()) {
+      if (full_screen) {
         SCREEN_WIDTH = GetMonitorWidth(0);
         SCREEN_HEIGHT = GetMonitorHeight(0);
         SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);

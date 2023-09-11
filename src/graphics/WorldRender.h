@@ -5,7 +5,7 @@ struct WorldRender {
 
   static void draw() noexcept {
     int worldCol = std::max(PLAYER_TILE->x - 21, 0);
-    int worldRow = std::max(PLAYER_TILE->y- 12, 0);
+    int worldRow = std::max(PLAYER_TILE->y - 12, 0);
     const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
     const int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
 
@@ -31,7 +31,7 @@ struct WorldRender {
 
     DRAW_X = -playerX + screenX;
     DRAW_Y = -playerY + screenY;
-    MIRROR_POINT = playerX + PLAYER.size.x_/2;
+    MIRROR_POINT = playerX + PLAYER.size.x_ / 2;
 
     float x_base, y_base;
     for (int i = worldCol; i < maxCol; ++i) {
@@ -39,15 +39,15 @@ struct WorldRender {
       for (int b = worldRow; b < maxRow; ++b) {
         y_base = b * TILE_SIZE + DRAW_Y;
 
+
         DrawTextureProFastUltra(TEXTURES[CURRENT_BACK_GROUND[i][b]].id, x_base, y_base);
 #ifdef DRAW_TILE_BORDER
-        DrawRectangleLines(x_base,y_base,TILE_SIZE,TILE_SIZE,RED);
+        DrawRectangleLines(x_base, y_base, TILE_SIZE, TILE_SIZE, RED);
 #endif
         int num2 = CURRENT_MIDDLE_GROUND[i][b];
         if (num2 != -1) {
           DrawTextureProFastUltra(TEXTURES[num2].id, x_base, y_base);
         }
-
       }
     }
   }

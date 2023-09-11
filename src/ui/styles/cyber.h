@@ -299,7 +299,7 @@ static const GlyphInfo cyberFontChars[95] = {
 };
 
 // Style gamestateio function: cyber
-static void GuiLoadStyleCyber(void)
+static void GuiLoadStyleCyber()
 {
   // Load style properties provided
   // NOTE: Default properties are propagated

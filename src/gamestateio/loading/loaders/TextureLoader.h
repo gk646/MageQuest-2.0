@@ -38,7 +38,7 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/talents/" + "talent_mid_green.png").c_str());
     textures::TALENT_MID_PURPLE =
         LoadTexture((ASSET_PATH + "ui/talents/" + "talent_mid_purple.png").c_str());
-    textures::TALENTNODE =
+    textures::TALENT_NODE =
         LoadTexture((ASSET_PATH + "ui/talents/" + "talentnode.png").c_str());
 
     textures::amulet = LoadTexture((ASSET_PATH + "ui/inventory/" + "amulet.png").c_str());

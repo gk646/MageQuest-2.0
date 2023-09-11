@@ -19,7 +19,11 @@ struct GameLoader {
     if (finished_cpu_loading &&
         load_util::current_step < load_functions.size() + load_util::cpu_steps) {
       load_step(load_functions[load_util::current_step - load_util::cpu_steps]);
+#ifdef MG2_DEBUG
     } else if (true) {
+#else
+    }else if(RAYLIB_LOGO->finished){
+#endif
       setup_game();
     }
   }
