@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.26)
 project(MageQuest CXX C)
 set(CMAKE_CXX_STANDARD 23)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")  # GCC
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -flto")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -flto")
 endif ()
 
 #-DCMAKE_C_FLAGS_RELEASE:STRING="/O2i /DNDEBUG /fp:fast /EHs-c- /GL"
@@ -28,12 +29,7 @@ include_directories(${PROJECT_NAME} PUBLIC
         C:/Users/gk646/Documents/Libaries/raygui-3.6/src
         C:/Users/gk646/Documents/CodingProjects/C++/cxstructs/src
         C:/Users/gk646/Documents/Libaries/SQLiteCpp-3.3.1/sqlite3
-        #C:/Users/gk646/Documents/Libaries/SFML-2.6.0/include
 )
-target_link_directories(${PROJECT_NAME} PUBLIC
-        # C:/Users/gk646/Documents/Libaries/SFML-2.6.0/lib
-)
-
 
 #target_link_libraries(MageQuest raylib sqlite3 wsock32 ws2_32 opengl32 gdi32 winmm)
 

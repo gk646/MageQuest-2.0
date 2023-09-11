@@ -2,46 +2,45 @@
 #define MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_
 
 //SYSTEM
-inline float SCREEN_WIDTH = 1280;
-inline float SCREEN_HEIGHT = 960;
-inline GameState GAME_STATE = GameState::Loading;
-inline std::shared_mutex rwLock;
-inline std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
-inline GifDrawer* RAYLIB_LOGO;
-inline std::random_device e;
-inline std::mt19937 RNG_ENGINE(e());
-inline std::default_random_engine RNG_RANDOM;
-inline std::uniform_int_distribution<int> RANGE_EXISTING_ITEMS(1, 80);
-inline std::uniform_int_distribution<int> RANGE_ItemQuality(70, 100);
-inline std::uniform_int_distribution<int> RANGE_100(0, 100);
-inline std::uniform_real_distribution<float> RANGE_01(0, 1);
-inline std::uniform_real_distribution<float> RANGE_01SMALL(-0.25,0.25);
-
+inline static float SCREEN_WIDTH = 1280;
+inline static float SCREEN_HEIGHT = 960;
+inline static GameState GAME_STATE = GameState::Loading;
+inline static std::shared_mutex rwLock;
+inline static std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
+inline static GifDrawer* RAYLIB_LOGO;
+inline static std::random_device e;
+inline static std::mt19937 RNG_ENGINE(e());
+inline static std::default_random_engine RNG_RANDOM;
+inline static std::uniform_int_distribution<int> RANGE_EXISTING_ITEMS(1, 80);
+inline static std::uniform_int_distribution<int> RANGE_ItemQuality(70, 100);
+inline static std::uniform_int_distribution<int> RANGE_100(0, 100);
+inline static std::uniform_real_distribution<float> RANGE_01(0, 1);
+inline static std::uniform_real_distribution<float> RANGE_01SMALL(-0.25, 0.25);
 // Distribution in the range [0, 1)
-std::uniform_real_distribution<float> distribution(0.0, 1.0);
+inline static std::uniform_real_distribution<float> distribution(0.0, 1.0);
 //UI
 
 //PLAYER
-inline float CAMERA_X = SCREEN_WIDTH / 2;
-inline float CAMERA_Y = SCREEN_HEIGHT / 2;
-inline float PLAYER_X = 0;
-inline float PLAYER_Y = 0;
-inline float DRAW_X = 0;
-inline float DRAW_Y = 0;
-inline float MIRROR_POINT = 0;
-inline PointI* PLAYER_TILE = nullptr;
+inline static float CAMERA_X = SCREEN_WIDTH / 2;
+inline static float CAMERA_Y = SCREEN_HEIGHT / 2;
+inline static float PLAYER_X = 0;
+inline static float PLAYER_Y = 0;
+inline static float DRAW_X = 0;
+inline static float DRAW_Y = 0;
+inline static float MIRROR_POINT = 0;
+inline static PointI* PLAYER_TILE = nullptr;
 
 //WORLD
-inline int16_t** CURRENT_BACK_GROUND;
-inline int16_t** CURRENT_MIDDLE_GROUND;
-inline int16_t** CURRENT_FORE_GROUND;
-inline Zone CURRENT_ZONE = Zone::Hillcrest;
-inline int CURRENT_MAP_SIZE = 100;
-inline int8_t COLLISIONS[6000];
-inline Texture TEXTURES[6000];
-inline std::vector<Item> ITEMS;
+inline static int16_t** CURRENT_BACK_GROUND;
+inline static int16_t** CURRENT_MIDDLE_GROUND;
+inline static int16_t** CURRENT_FORE_GROUND;
+inline static int8_t** CURRENT_MAP_COVER;
+inline static Zone CURRENT_ZONE = Zone::Hillcrest;
+inline static int CURRENT_MAP_SIZE = 100;
+inline static int8_t COLLISIONS[6000];
+inline static Texture TEXTURES[6000];
+inline static std::vector<Item> ITEMS;
 #include "../ui/player/CharacterBag.h"
-
 
 //Entities
 #include "../gameobjects/Entity.h"
@@ -50,27 +49,29 @@ inline std::vector<Item> ITEMS;
 #include "../gameobjects/Projectile.h"
 #include "../ui/game/HealthBar.h"
 
-#include "../gameobjects/NPC.h"
+#include "../multiplayer/NetPlayer.h"
 
-inline std::vector<Projectile*> PROJECTILES;
+#include "../gameobjects/NPC.h"
+#include "../multiplayer/Multiplayer.h"
+
+inline static std::vector<Projectile*> PROJECTILES;
 #include "../ui/player/HotBar.h"
-inline HotBar PLAYER_HOTBAR{6, 1};
-inline StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
+inline static HotBar PLAYER_HOTBAR{6, 1};
+inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 #include "../gameobjects/Player.h"
-inline Player PLAYER{{150, 150}, {25, 25}};
-inline std::vector<WorldObject*> WORLD_OBJECTS;
+inline static Player PLAYER{{150, 150}, {25, 25}};
+inline static std::vector<WorldObject*> WORLD_OBJECTS;
 
 #include "../gameobjects/Monster.h"
-inline std::vector<Player> OTHER_PLAYERS;
-inline std::vector<NPC*> NPCS;
-inline std::vector<Monster*> MONSTERS;
-inline std::vector<Map> MAPS;
+inline static std::vector<NPC*> NPCS;
+inline static std::vector<Monster*> MONSTERS;
+inline static std::vector<Map> MAPS;
 
 //BENCHMARK
-inline int PERF_FRAMES = 0;
-inline long long PERF_TIME = 0;
+inline static int PERF_FRAMES = 0;
+inline static long long PERF_TIME = 0;
 
-inline long long GAME_TICK_TIME = 0;
-inline long long FRAME_TIME = 0;
+inline static long long GAME_TICK_TIME = 0;
+inline static long long FRAME_TIME = 0;
 
 #endif  //MAGE_QUEST_SRC_UTIL_GLOBALVARIABLES_H_

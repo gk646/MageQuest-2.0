@@ -6,3 +6,4 @@ analysis.txt
 gmon.out
 gprof.exe
 raylib/
+benchmark.py

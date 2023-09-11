@@ -76,6 +76,7 @@ class Game {
   }
   static inline void game_tick() noexcept {
     cxstructs::now();
+    Multiplayer::poll_events();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
@@ -101,10 +102,13 @@ class Game {
         break;
       }
       case GameState::Loading: {
-      }
-      case GameState::GameOver:
         break;
+      }
+      case GameState::GameOver: {
+        break;
+      }
     }
+    Multiplayer::send_packets();
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
     PERF_TIME += GAME_TICK_TIME;
     PERF_FRAMES++;
@@ -129,8 +133,10 @@ class Game {
   for (auto npc : NPCS) {                           \
     npc->draw();                                    \
   }                                                 \
-  for (auto players : OTHER_PLAYERS) {              \
-    players.draw();                                 \
+  for (auto net_player : OTHER_PLAYERS) {           \
+    if (net_player) {                               \
+      net_player->draw();                           \
+    }                                               \
   }                                                 \
   lock.unlock();                                    \
   PLAYER.draw();
@@ -211,6 +217,7 @@ class Game {
   }
   ~Game() noexcept {
     GameSaver::save();
+    Multiplayer::close_mp();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
     for (uint_fast32_t i = 0; i < 5589; i++) {
       UnloadTexture(TEXTURES[i]);
