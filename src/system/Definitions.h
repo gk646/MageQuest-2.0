@@ -5,12 +5,15 @@
  * |                      SYSTEM                         |
  * |-----------------------------------------------------|
  */
+#ifndef M_PI
+#define M_PI 3.1415
+#endif
 #define SIMD_PRAGMA _Pragma("omp simd")
 #define TILE_SIZE 48
 #define SCALE(val) ((val)*UI_SCALE)
 #define SCALE_RECT(rect) \
   { SCALE((rect).x), SCALE((rect).y), SCALE((rect).width), SCALE((rect).height) }
-
+inline std::string ASSET_PATH = "../res/";
 /* |-----------------------------------------------------|
  * |                    MULTIPLAYER                      |
  * |-----------------------------------------------------|
@@ -18,8 +21,12 @@
 #define MG2_NET_IDENTIFIER "MageQuest"
 #define MG2_PORT 42042
 #define MG2_TICK_RATE 60
-#define MG2_SERVER_BUSY 42
 #define MG2_TICK_TIME 0.0166
+#define MG2_MAX_CLIENTS 3
+#define MG2_MAX_PLAYERS 4
+//codes
+#define MG2_SERVER_BUSY 401
+#define MG2_HOST_CLOSED_GAMED 402
 
 /* |-----------------------------------------------------|
  * |                TILE COLLISIONS                      |

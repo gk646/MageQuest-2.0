@@ -6,6 +6,11 @@ struct StatusEffectHandler {
   std::vector<StatusEffect*> status_effects{};
   bool effects_changed = false;
   explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
+  ~StatusEffectHandler(){
+    for(auto effect : status_effects){
+      delete effect;
+    }
+  }
   void add_effects(const std::vector<StatusEffect*>& o) {
     for (const auto& new_effect : o) {
       bool is_new = true;
@@ -23,7 +28,6 @@ struct StatusEffectHandler {
       }
     }
   }
-
   void update() noexcept {
     if (effects_changed) {
       for (const auto& effect : status_effects) {

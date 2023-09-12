@@ -106,7 +106,9 @@ enum Stat {
 
 enum class MultiplayerType{CLIENT, SERVER, OFFLINE};
 enum  UDP_MSG_TYPE : uint8_t {
-  UDP_PLAYER_POS,
+  UDP_PLAYER_POS_CLIENT,
+  UDP_PLAYER_STATE,
+  UDP_PLAYER_NAME,
   UDP_PLAYER_ABILITY,
 };
 

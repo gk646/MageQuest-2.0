@@ -5,7 +5,6 @@
 
 struct NPC : Entity{
 
-  NPC(){}
   void draw() final{
 
   }
