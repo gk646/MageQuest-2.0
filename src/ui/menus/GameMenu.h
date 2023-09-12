@@ -31,6 +31,7 @@ struct GameMenu {
         GAME_STATE = GameState::MainMenu;
         menu_state = MenuState::Main;
         PlaySoundR(sound::intro);
+        Multiplayer::close_mp();
       }
     } else if (menu_state == MenuState::Settings) {
       settings_menu.draw();

@@ -1,17 +1,17 @@
 #ifndef MAGEQUEST_SRC_INCLUDES_H_
 #define MAGEQUEST_SRC_INCLUDES_H_
 
-#ifndef M_PI
-#define M_PI 3.1415926
-#endif
-
-//stdlib
+/* |-----------------------------------------------------|
+ * |                      STL                            |
+ * |-----------------------------------------------------|
+ */
 #include <array>
 #include <chrono>
 #include <csignal>
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <functional>
@@ -28,108 +28,129 @@
 #include <utility>
 #include <vector>
 
-//raylib
+/* |-----------------------------------------------------|
+ * |                         RAYLIB                      |
+ * |-----------------------------------------------------|
+ */
 #define RAYLIB_IMPLEMENTATION
 #include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-//SQlite
+#if defined(_WIN32) || defined(_WIN64)
+#define NOGDICAPMASKS      // CC_*, LC_*, PC_*, CP_*, TC_*, RC_
+#define NOVIRTUALKEYCODES  // VK_*
+#define NOWINMESSAGES      // WM_*, EM_*, LB_*, CB_*
+#define NOWINSTYLES        // WS_*, CS_*, ES_*, LBS_*, SBS_*, CBS_*
+#define NOSYSMETRICS       // SM_*
+#define NOMENUS            // MF_*
+#define NOICONS            // IDI_*
+#define NOKEYSTATES        // MK_*
+#define NOSYSCOMMANDS      // SC_*
+#define NORASTEROPS        // Binary and Tertiary raster ops
+#define NOSHOWWINDOW       // SW_*
+#define OEMRESOURCE        // OEM Resource values
+#define NOATOM             // Atom Manager routines
+#define NOCLIPBOARD        // Clipboard routines
+#define NOCOLOR            // Screen colors
+#define NOCTLMGR           // Control and Dialog routines
+#define NODRAWTEXT         // DrawText() and DT_*
+#define NOGDI              // All GDI defines and routines
+#define NOKERNEL           // All KERNEL defines and routines
+#define NOUSER             // All USER defines and routines
+//#define NONLS            // All NLS defines and routines
+#define NOMB              // MB_* and MessageBox()
+#define NOMEMMGR          // GMEM_*, LMEM_*, GHND, LHND, associated routines
+#define NOMETAFILE        // typedef METAFILEPICT
+#define NOMINMAX          // Macros min(a,b) and max(a,b)
+#define NOMSG             // typedef MSG and associated routines
+#define NOOPENFILE        // OpenFile(), OemToAnsi, AnsiToOem, and OF_*
+#define NOSCROLL          // SB_* and scrolling routines
+#define NOSERVICE         // All Service Controller routines, SERVICE_ equates, etc.
+#define NOSOUND           // Sound driver routines
+#define NOTEXTMETRIC      // typedef TEXTMETRIC and associated routines
+#define NOWH              // SetWindowsHook and WH_*
+#define NOWINOFFSETS      // GWL_*, GCL_*, associated routines
+#define NOCOMM            // COMM driver routines
+#define NOKANJI           // Kanji support stuff.
+#define NOHELP            // Help engine interface.
+#define NOPROFILER        // Profiler interface.
+#define NODEFERWINDOWPOS  // DeferWindowPos routines
+#define NOMCX             // Modem Configuration Extensions
+
+// Type required before windows.h inclusion
+typedef struct tagMSG* LPMSG;
+#include <winsock2.h>
+#include <windows.h>
+#endif  // WINDOWS
+
+/* |-----------------------------------------------------|
+ * |                         SQLITE                      |
+ * |-----------------------------------------------------|
+ */
 #include <sqlite3.h>
-inline std::string ASSET_PATH = "../res/";
 
+/* |-----------------------------------------------------|
+ * |                    NBNET                            |
+ * |-----------------------------------------------------|
+ */
+#include "system/NBNet.h"
 
-//nbnet
-enum LogCode {
-  NET_LOG_INFO,
-  NET_LOG_ERROR,
-  NET_LOG_DEBUG,
-  NET_LOG_TRACE,
-  NET_LOG_WARNING
-};
-class NetPlayer;
-static const char* log_type_strings[] = {"INFO", "ERROR", "DEBUG", "TRACE", "WARNING"};
-inline static std::array<NetPlayer*, 3> OTHER_PLAYERS = {0};
-#define NBN_LogInfo(...) Log(NET_LOG_INFO, __VA_ARGS__)
-#define NBN_LogError(...) Log(NET_LOG_ERROR, __VA_ARGS__)
-#define NBN_LogDebug(...) Log(NET_LOG_DEBUG, __VA_ARGS__)
-#define NBN_LogTrace(...) Log(NET_LOG_TRACE, __VA_ARGS__)
-#define NBN_LogWarning(...) Log(NET_LOG_WARNING, __VA_ARGS__)
-
-inline static void Log(int type, const char* fmt, ...) {
-  if(type == 3) return;
-  va_list args;
-
-  va_start(args, fmt);
-
-  printf("[%s] ", log_type_strings[type]);
-  vprintf(fmt, args);
-  printf("\n");
-
-  va_end(args);
-}
-
-#define NBNET_IMPL
-#include "nbnet.h"
-#include "udp.h"
-
-
-//cxstructs
+/* |-----------------------------------------------------|
+ * |                      CXSTRUCTS                      |
+ * |-----------------------------------------------------|
+ */
 #include "cxstructs/Geometry.h"
 #include "cxstructs/vec.h"
 #include "cxutil/cxtime.h"
 using namespace cxstructs;
-//Mage Quest
-#include "system/Definitions.h"
 
-#include "gamestateio/loading/EntityResource.h"
+/* |-----------------------------------------------------|
+ * |                  MAGE QUEST II                      |
+ * |-----------------------------------------------------|
+ */
+#include "system/Definitions.h"
 #include "resources/Colors.h"
-#include "resources/FontStorage.h"
-#include "resources/SoundStorage.h"
-#include "resources/TextureStorage.h"
 #include "system/Enums.h"
+#include "gameplay/Stats.h"
 #include "system/GameSettings.h"
 #include "system/Util.h"
-#include "ui/StyleSheet.h"
-
-#include "gameplay/Item.h"
-
-#include "gameplay/Stats.h"
-#include "gameplay/Talent.h"
-#include "ui/player/elements/InventorySlot.h"
-
-#include "world/maps/Map.h"
-
 #include "gameplay/StatusEffect.h"
 #include "gameplay/handlers/StatusEffectHandler.h"
-#include "graphics/GifDrawer.h"
-#include "ui/Window.h"
-
+#include "world/maps/Map.h"
+#include "resources/FontStorage.h"
+#include "gameplay/Item.h"
 #include "system/GlobalVariables.h"
-
-//after global variables
+#include "gamestateio/loading/EntityResource.h"
+#include "resources/SoundStorage.h"
+#include "resources/TextureStorage.h"
+#include "gameplay/Talent.h"
+#include "ui/StyleSheet.h"
+#include "ui/player/elements/InventorySlot.h"
+#include "ui/Window.h"
+#include "ui/player/CharacterBag.h"
+#include "gameobjects/Entity.h"
+#include "gameobjects/Projectile.h"
+#include "multiplayer/Multiplayer.h"
+#include "gameobjects/Player.h"
+#include "world/WorldManager.h"
+#include "multiplayer/menus/ServerBrowser.h"
+#include "gameobjects/Monster.h"
+#include "gameobjects/NPC.h"
 #include "gamestateio/DataBaseHandler.h"
 #include "ui/game/LoadingScreen.h"
 #include "ui/player/CharacterPanel.h"
-
 #include "gameplay/handlers/ItemDropHandler.h"
 #include "gamestateio/loading/LoadingUtil.h"
 #include "graphics/WorldRender.h"
 #include "system/BenchMark.h"
 #include "ui/game/MiniMap.h"
-
 #include "ui/menus/SettingsMenu.h"
-
 #include "gamestateio/GameLoader.h"
 #include "gamestateio/GameSaver.h"
-
 #include "ui/PlayerUI.h"
-
 #include "ui/menus/GameMenu.h"
 #include "ui/menus/MainMenu.h"
-
 #include "ui/UIManager.h"
-
 #include "Game.h"
-
 #endif  //MAGEQUEST_SRC_INCLUDES_H_

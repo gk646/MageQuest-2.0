@@ -6,11 +6,10 @@
 struct Entity {
   bool dead = false;
   float pov = 0;
-  Point pos;
+  Point pos{};
   PointI tile_pos{};
-  Point size;
-  ShapeType shape_type;
-  Entity() noexcept : pos{}, size{}, shape_type(ShapeType::RECT) {}
+  Point size{};
+  ShapeType shape_type = ShapeType::RECT;
   Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0)
       : pos(pos), size(size), shape_type(shape_type), pov(pov) {}
   Entity(const Entity& o) noexcept
@@ -135,4 +134,6 @@ struct Entity {
            tile_collision_left(speed) || tile_collision_down(speed);
   }
 };
+#include "WorldObject.h"
+
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

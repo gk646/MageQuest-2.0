@@ -1,6 +1,7 @@
 #ifndef MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 #define MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 
+#include "../ui/game/HealthBar.h"
 struct Monster : public Entity {
 
   EntityStats stats;

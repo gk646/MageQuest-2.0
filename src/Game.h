@@ -119,8 +119,8 @@ class Game {
   CAMERA_Y = SCREEN_HEIGHT / 2;
 
 #define DRAW_ENTITIES()                             \
- \
                                                     \
+  std::shared_lock<std::shared_mutex> lock(rwLock); \
   for (auto object : WORLD_OBJECTS) {               \
     object->draw();                                 \
   }                                                 \
@@ -138,7 +138,7 @@ class Game {
       net_player->draw();                           \
     }                                               \
   }                                                 \
-                                      \
+  lock.unlock();                                    \
   PLAYER.draw();
 
 #define DRAW_GAME_UI()         \
@@ -203,6 +203,7 @@ class Game {
 
  public:
   Game() noexcept {
+    NBN_UDP_Register();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());

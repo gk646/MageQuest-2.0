@@ -1,19 +1,26 @@
-#include <utility>
-
 #ifndef MAGEQUEST_SRC_MULTIPLAYER_NETPLAYER_H_
 #define MAGEQUEST_SRC_MULTIPLAYER_NETPLAYER_H_
 
-struct NetPlayer : Entity {
+struct NetPlayer final : public Entity {
+  int client_id;
   EntityStats stats;
   MonsterResource* resource = nullptr;
   std::string name;
   StatusEffectHandler status_effects{stats};
-  explicit NetPlayer(const Point& pos, std::string name, const Point& size = {25, 25})
-      : Entity(pos, size, ShapeType::RECT), name(std::move(name)) {
-  }
+  NBN_Connection* connection = nullptr;
+  Zone zone = Zone::Woodland_Edge;
+  explicit NetPlayer(const Point& pos, std::string name, Zone zone,
+                     NBN_Connection* connection, int client_id,
+                     const Point& size = {25, 25})
+      : Entity(pos, size, ShapeType::RECT),
+        name(std::move(name)),
+        zone(zone),
+        connection(connection),
+        client_id(client_id) {}
   void draw() final {
     DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,
                      PURPLE);
+    DrawTextR(name.c_str(), pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 20, WHITE);
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif

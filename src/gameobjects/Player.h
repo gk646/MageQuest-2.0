@@ -50,9 +50,12 @@ struct Player : public Entity {
     }
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
-    Multiplayer::send_event(UDP_PLAYER_POS, MP_TYPE == MultiplayerType::OFFLINE
+    Multiplayer::send_event(UDP_PLAYER_POS_CLIENT, MP_TYPE == MultiplayerType::OFFLINE
                                                 ? nullptr
-                                                : new MPE_PlayerPos(1, pos.x_, pos.y_));
+                                                : new UDP_PlayerPos( (int)pos.x_, (int)pos.y_));
   }
 };
+inline static Player PLAYER({150,150},{25,25});
+#include "../ui/player/HotBar.h"
+inline static HotBar PLAYER_HOTBAR{6, 1};
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

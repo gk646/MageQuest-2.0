@@ -2,8 +2,8 @@
 #define MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
 
 struct Item {
-  static constexpr int tltip_x = 260;
-  static constexpr int tltip_y = 350;
+  static constexpr int tooltip_x = 260;
+  static constexpr int tooltip_y = 350;
   static char text_buffer[10];
   float effects[STATS_ENDING] = {0};
   int quality = 70;
@@ -90,7 +90,7 @@ struct Item {
     level = other.level;
     name = std::move(other.name);
     description = std::move(other.description);
-    texture = std::move(other.texture);
+    texture = other.texture;
     rarity = other.rarity;
     type = other.type;
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
@@ -103,8 +103,8 @@ struct Item {
   void draw_tooltip() const noexcept {
     auto mouse = GetMousePosition();
     float startX, startY;
-    float width = tltip_x * UI_SCALE;
-    float height = tltip_y * UI_SCALE;
+    float width = tooltip_x * UI_SCALE;
+    float height = tooltip_y * UI_SCALE;
     if (mouse.x - width < 0) {
       startX = mouse.x + 10;
     } else {
@@ -121,7 +121,10 @@ struct Item {
     DrawRectangleRoundedLines({startX, startY, width, height}, 0.1, 30, 2,
                               rarity_to_color[rarity]);
 
-    //ilvl
+    /* |-----------------------------------------------------|
+     * |                     ITEM LEVEL                      |
+     * |-----------------------------------------------------|
+     */
     snprintf(text_buffer, 10, "ilvl:%d", level);
     DrawTextExR(MINECRAFT_ITALIC, text_buffer,
                {startX + 3 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE, 1,
@@ -145,11 +148,11 @@ struct Item {
                rarity_to_color[rarity]);
 
     //attributes
-    int off_setX = 6 * UI_SCALE;
-    int off_sety = 80 * UI_SCALE;
-    int v_space = 15 * UI_SCALE;
-    int h_space = 90 * UI_SCALE;
-    int font_size = 16 * UI_SCALE;
+    float off_setX = 6 * UI_SCALE;
+    float off_sety = 80 * UI_SCALE;
+    float v_space = 15 * UI_SCALE;
+    float h_space = 90 * UI_SCALE;
+    float font_size = 16 * UI_SCALE;
 
     snprintf(text_buffer, 10, "INT: %d", (int)effects[INTELLIGENCE]);
    DrawTextExR(MINECRAFT_REGULAR, text_buffer, {startX + off_setX, startY + off_sety},
@@ -243,7 +246,7 @@ struct Item {
                {startX + width - 35 * UI_SCALE, startY + height - 15 * UI_SCALE},
                15 * UI_SCALE, 0.5F, Colors::darkBackground);
   }
-  inline Color get_quality_color() const noexcept {
+  [[nodiscard]] inline Color get_quality_color() const noexcept {
     if (quality < 90) [[likely]] {
       return Colors::NormalGrey;
     } else if (quality == 100) {
@@ -277,13 +280,10 @@ struct Item {
     return lines;
   }
   inline static void scale(int quality, int level) {}
-  Item* scale_clone(int new_level, int new_quality) const noexcept {
+  [[nodiscard]] Item* scale_clone(int new_level, int new_quality) const noexcept {
     auto new_item = new Item(*this);
     return new_item;
   }
 };
 char Item::text_buffer[10];
-inline bool WINDOW_FOCUSED = false;
-inline Item* DRAGGED_ITEM = nullptr;
-inline Item* TOOL_TIP_ITEM = nullptr;
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
