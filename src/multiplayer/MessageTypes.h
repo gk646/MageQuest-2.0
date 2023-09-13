@@ -48,10 +48,10 @@ struct UDP_PositionState {
 UDP_PositionState* UDP_PositionState_Create() {
   return (UDP_PositionState*)malloc(sizeof(UDP_PositionState));
 }
-void UDP_PlayerPos_BroadCast_Destroy(UDP_PositionState* msg) {
+void UDP_PositionState_Destroy(UDP_PositionState* msg) {
   free(msg);
 }
-int UDP_PlayerPos_BroadCast_Serialize(UDP_PositionState* msg, NBN_Stream* stream) {
+int UDP_PositionState_Serialize(UDP_PositionState* msg, NBN_Stream* stream) {
   NBN_SerializeInt(stream, msg->client_count, 0, 3);
   for (uint_fast32_t i = 0; i < msg->client_count; i++) {
     NBN_SerializeInt(stream, msg->clients_pos[i].client_id, 0, 3);

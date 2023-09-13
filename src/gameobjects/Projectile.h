@@ -55,7 +55,7 @@ struct Projectile : public Entity {
         life_span(p.life_span),
         damage_stats(p.damage_stats),
         from_player(p.from_player),
-        projectile_type(p.projectile_type) {
+        projectile_type(p.projectile_type),type(p.type),u_id(p.u_id) {
     for (const auto& effect : p.status_effects) {
       status_effects.push_back(effect->clone());
     }

@@ -11,9 +11,9 @@ inline static void RegisterMessages() noexcept {
                                  (NBN_MessageSerializer)UDP_PlayerPos_Client_Serialize);
   NBN_GameClient_RegisterMessage(
       UDP_PLAYER_STATE, (NBN_MessageBuilder)UDP_PositionState_Create,
-      (NBN_MessageDestructor)UDP_PlayerPos_BroadCast_Destroy,
-      (NBN_MessageSerializer)UDP_PlayerPos_BroadCast_Serialize);
-  NBN_GameClient_RegisterMessage(UDP_PROJECTILE_STATE,
+      (NBN_MessageDestructor)UDP_PositionState_Destroy,
+                                 (NBN_MessageSerializer)UDP_PositionState_Serialize);
+  NBN_GameClient_RegisterMessage(UDP_PROJECTILE,
                                  (NBN_MessageBuilder)UDP_Projectile_Create,
                                  (NBN_MessageDestructor)UDP_Projectile_Destroy,
                                  (NBN_MessageSerializer)UDP_Projectile_Serialize);
@@ -57,6 +57,7 @@ static void HandleDisconnection() {
   switch (code) {
     case MG2_HOST_CLOSED_GAMED:
       Log(NET_LOG_INFO, "Host closed game");
+      break;
   }
   MP_TYPE = MultiplayerType::OFFLINE;
   for (auto& net_player : OTHER_PLAYERS) {
@@ -67,19 +68,23 @@ static void HandleDisconnection() {
   NBN_GameClient_Stop();
 }
 inline static void HandleProjectileUpdate(UDP_Projectile* data) noexcept {
-  for (const auto p : PROJECTILES) {
-    if (p->u_id == data->u_id) {
-      return;
-    }
-  }
   switch (data->p_type) {
     case FIRE_BALL: {
       PROJECTILES.emplace_back(new Projectile(
-          false, {data->x, data->y}, {25, 25}, ShapeType::RECT, 300, 4,
-          {DamageType::FIRE, data->damage}, HitType::CONTINUOUS, {new Burn{1, 1, 1}},
+          true, {data->x, data->y}, {25, 25}, ShapeType::RECT, 250, 5,
+          {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
           {data->move_x, data->move_y}, data->pov, FIRE_BALL, data->u_id));
+      break;
+    }
+    case FIRE_STRIKE:{
+      PROJECTILES.emplace_back(new Projectile(
+          true, {data->x, data->y}, {25, 25}, ShapeType::RECT, 300, 2,
+          {DamageType::FIRE, data->damage}, HitType::CONTINUOUS, {new Burn{1, 1, 1}},
+          {data->move_x, data->move_y}, data->pov, FIRE_STRIKE, data->u_id));
+      break;
     }
   }
+  UDP_Projectile_Destroy(data);
 }
 inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept {
   for (uint_fast32_t j = 0; j < data->client_count; j++) {
@@ -94,6 +99,7 @@ inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept 
                         "", CURRENT_ZONE, nullptr, 50);
     }
   }
+  UDP_PositionState_Destroy(data);
 }
 inline static int receive_packet() noexcept {
   if (!connected)
@@ -104,7 +110,7 @@ inline static int receive_packet() noexcept {
       HandlePlayerPositionUpdate((UDP_PositionState*)msg_info.data);
       break;
 
-    case UDP_PROJECTILE_STATE:
+    case UDP_PROJECTILE:
       HandleProjectileUpdate((UDP_Projectile*)msg_info.data);
       break;
   }

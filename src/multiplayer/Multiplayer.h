@@ -11,7 +11,16 @@ namespace Multiplayer {
 inline static NBN_ConnectionStats client_stats;
 inline static NBN_GameServerStats server_stats;
 inline static void send_event(UDP_MSG_TYPE event, void* data) noexcept {
-  if (MP_TYPE == MultiplayerType::CLIENT && Client::connected) {
+  if (MP_TYPE == MultiplayerType::SERVER) {
+    if (event == UDP_PROJECTILE) {
+      for (const auto net_player : OTHER_PLAYERS) {
+        if (net_player) {
+          NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE,
+                                               data);
+        }
+      }
+    }
+  } else if (MP_TYPE == MultiplayerType::CLIENT && Client::connected) {
     NBN_GameClient_SendUnreliableMessage(event, data);
   }
 }
@@ -23,7 +32,6 @@ inline static void poll_events() noexcept {
     Client::poll_events();
   }
 }
-
 inline static void send_packets() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     Server::send_packets();
@@ -59,7 +67,6 @@ inline static void close_mp() noexcept {
     NBN_GameClient_Stop();
   }
   MP_TYPE = MultiplayerType::OFFLINE;
-
 }
 inline static void draw_stats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
