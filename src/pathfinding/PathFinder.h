@@ -29,6 +29,7 @@ static inline PriorityQueue<NodeP> frontier{};
 static inline std::unordered_set<PointI> closedSet{};
 static inline PointI star_movement[8] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0},
                                          {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
+
 static inline PointI cross_movement[4] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
 static inline PointI next_point(NodeP* target_node) noexcept {
@@ -57,7 +58,6 @@ static PointI astar_pathfinding(const PointI& start, const PointI& target) noexc
       return next_point(current);
     }
     frontier.pop();
-
 
     closedSet.insert(current->position);
     for (const auto& dir : star_movement) {

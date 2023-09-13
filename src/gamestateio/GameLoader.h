@@ -22,7 +22,7 @@ struct GameLoader {
 #ifdef MG2_DEBUG
     } else if (true) {
 #else
-    }else if(RAYLIB_LOGO->finished){
+    }else if(NBNET_LOGO->finished == -1){
 #endif
       setup_game();
     }
@@ -48,6 +48,7 @@ struct GameLoader {
     LoadingScreen::progress = 0;
     finished_cpu_loading = false;
     delete RAYLIB_LOGO;
+    delete NBNET_LOGO;
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

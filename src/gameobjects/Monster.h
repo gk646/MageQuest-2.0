@@ -3,7 +3,7 @@
 
 #include "../ui/game/HealthBar.h"
 struct Monster : public Entity {
-
+  uint_fast32_t u_id = MONSTER_ID++;
   EntityStats stats;
   bool moving = false;
   int attack = 0;
@@ -56,12 +56,12 @@ struct Monster : public Entity {
 #endif
   }
   void hit(Projectile& p)noexcept {
-    if (p.from_player) {
+    if (p.from_player && MP_TYPE!= MultiplayerType::CLIENT) {
       health_bar.hit();
       status_effects.add_effects(p.status_effects);
       stats.take_damage(p.damage_stats);
-      p.dead = attack != -100 && p.projectile_type == ProjectileType::ONE_HIT;
     }
+    p.dead = p.from_player&& attack != -100 && p.projectile_type == HitType::ONE_HIT;
   }
   inline void monster_update() noexcept {
     sprite_counter++;

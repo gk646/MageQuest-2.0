@@ -15,85 +15,6 @@ struct DamageStats {
            damage == d.damage;
   }
 };
-/*
-struct ArmourStats {
-  float physical_armour = 0;
-  float magical_armour = 0;
-
-  float base_physical_armour = 0;
-  float base_magical_armour = 0;
-
-  inline void reset_to_base() noexcept {
-    physical_armour = base_physical_armour;
-    magical_armour = base_magical_armour;
-  }
-};
-
-struct CombatStats {
-  //Percent Values
-  int16_t cooldown_reduction = 0;
-  int16_t health_cost_reduction = 0;
-  int16_t mana_cost_reduction = 0;
-
-  bool stunned = false;
-};
-
-struct Abilities {
-  int8_t strength = 0;
-  int8_t wisdom = 0;
-  int8_t dexterity = 0;
-  int8_t intelligence = 0;
-  int8_t charisma = 0;
-  int8_t constitution = 0;
-
-  int8_t base_strength = 0;
-  int8_t base_wisdom = 0;
-  int8_t base_dexterity = 0;
-  int8_t base_intelligence = 0;
-  int8_t base_charisma = 0;
-  int8_t base_constitution = 0;
-
-  inline void reset_to_base() noexcept {
-    strength = base_strength;
-    wisdom = base_wisdom;
-    dexterity = base_dexterity;
-    intelligence = base_intelligence;
-    charisma = base_charisma;
-    constitution = base_constitution;
-  }
-};
-
-struct GeneralStats {
-  // ArmourStats armour_stats;
-  float mana = 20;
-  float concentration = 10;
-  float health = 10;
-
-  float speed = 3;  //pixel per tick
-  float max_health = 10;
-  float max_mana = 20;
-  float max_concentration = 10;
-  float health_regen = 0.2;  //per second
-  float mana_regen = 1;      //per second
-
-  float base_speed = 3;
-  float base_max_health = 10;
-  float base_max_mana = 20;
-  float base_max_concentration = 10;
-  float base_health_regen = 0.2;  //per second
-  float base_mana_regen = 1;      //per second
-  inline void reset_to_base() noexcept {
-    //armour_stats.reset_to_base();
-
-    speed = base_speed;
-    max_health = base_max_health;
-    max_mana = base_max_mana;
-    max_concentration = base_max_concentration;
-  }
-  inline void update() {}
-  inline void apply_monster_scaling(int level) {}
-};
-*/
 
 struct EntityStats {
   float effects[STATS_ENDING] = {0};
@@ -138,7 +59,6 @@ struct EntityStats {
       shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
     }
   }
-
   inline bool skill_useable(const SkillStats& stats, float ticks_done) const noexcept {
     return !stunned && ticks_done >= stats.cool_down * (1 - effects[CDR_P]) &&
            mana >= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);

@@ -20,9 +20,8 @@ enum class Class {
 enum class StatusEffectType { BUFF, DE_BUFF };
 enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
 enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
-enum class ProjectileType { CONTINUOUS, ONE_HIT };
+enum class HitType { CONTINUOUS, ONE_HIT };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
-
 
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
@@ -91,7 +90,7 @@ enum Stat {
   CDR_P,
   ARMOUR_MULT_P,
   HEALTH_MULT_P,
-  MANA_MULT_P, //other pecentile only before mana mult
+  MANA_MULT_P,  //other pecentile only before mana mult
   WEAPON_DAMAGE,
   ARMOUR,
   MAX_SHIELD,
@@ -104,13 +103,15 @@ enum Stat {
   STATS_ENDING
 };
 
-enum class MultiplayerType{CLIENT, SERVER, OFFLINE};
-enum  UDP_MSG_TYPE : uint8_t {
+enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
+enum UDP_MSG_TYPE : uint8_t {
   UDP_PLAYER_POS_CLIENT,
   UDP_PLAYER_STATE,
   UDP_PLAYER_NAME,
-  UDP_PLAYER_ABILITY,
+  UDP_PROJECTILE_STATE
 };
+
+enum ProjectileType { POISON_BALL, FIRE_STRIKE, FIRE_BALL };
 
 inline std::unordered_map<Stat, std::string> statToName = {
     {ARCANE_DMG_P, "Arcane Damage (%)"},
@@ -177,20 +178,13 @@ inline std::unordered_map<std::string, Stat> attrToStat = {
     {"VIT", VITALITY},     {"AGI", AGILITY},   {"LUC", LUCK},
 };
 inline std::unordered_map<ItemType, std::string> type_to_string = {
-    { ItemType::HEAD, "Head" },
-    { ItemType::CHEST, "Chest" },
-    { ItemType::PANTS, "Pants" },
-    { ItemType::BOOTS, "Boots" },
-    { ItemType::AMULET, "Amulet" },
-    { ItemType::RING, "Ring" },
-    { ItemType::RELIC, "Relic" },
-    { ItemType::ONE_HAND, "One Hand" },
-    { ItemType::TWO_HAND, "Two Hand" },
-    { ItemType::OFF_HAND, "Off Hand" },
-    { ItemType::BAG, "Bag" },
-    { ItemType::EMPTY, "Empty" },
-    { ItemType::MISC, "Misc" }
-};
+    {ItemType::HEAD, "Head"},         {ItemType::CHEST, "Chest"},
+    {ItemType::PANTS, "Pants"},       {ItemType::BOOTS, "Boots"},
+    {ItemType::AMULET, "Amulet"},     {ItemType::RING, "Ring"},
+    {ItemType::RELIC, "Relic"},       {ItemType::ONE_HAND, "One Hand"},
+    {ItemType::TWO_HAND, "Two Hand"}, {ItemType::OFF_HAND, "Off Hand"},
+    {ItemType::BAG, "Bag"},           {ItemType::EMPTY, "Empty"},
+    {ItemType::MISC, "Misc"}};
 
 inline std::unordered_map<ItemRarity, Color> rarity_to_color = {
     {ItemRarity::NORMAL, Colors::NormalGrey},

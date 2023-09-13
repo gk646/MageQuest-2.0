@@ -3,8 +3,8 @@
 
 struct StatusEffectHandler {
   EntityStats& stats;
-  std::vector<StatusEffect*> status_effects{};
   bool effects_changed = false;
+  std::vector<StatusEffect*> status_effects{};
   explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
   ~StatusEffectHandler(){
     for(auto effect : status_effects){

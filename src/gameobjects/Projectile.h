@@ -2,33 +2,33 @@
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
 struct Projectile : public Entity {
+  ProjectileType type;
+  uint_fast32_t u_id;
+  DamageStats damage_stats;
   bool from_player;
   float speed;
   int life_span;
   int sprite_counter = 0;
-  ProjectileType projectile_type = ProjectileType::ONE_HIT;
-  DamageStats damage_stats;
+  HitType projectile_type = HitType::ONE_HIT;
   Point move_vector;
+  ProjectileResources* resources = nullptr;
   std::vector<StatusEffect*> status_effects{};
-  ProjectileResources resources;
-  Projectile(bool from_player, const Point& pos, const Point& size,
-             ShapeType shape_type, const Vector2& destination, int life_span,
-             float speed, const DamageStats& damage_stats, ProjectileType type,
-             const std::vector<StatusEffect*>& effects) noexcept
+  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
+             const Vector2& destination, int life_span, float speed,
+             const DamageStats& damage_stats, HitType type,
+             const std::vector<StatusEffect*>& effects, ProjectileType p_type) noexcept
       : Entity(pos, size, shape_type),
         life_span(life_span),
         speed(speed),
         damage_stats(damage_stats),
         from_player(from_player),
         projectile_type(type),
-        status_effects(effects) {
+        status_effects(effects) , type(p_type),u_id(PROJECTILE_ID++){
     move_vector = get_move_vector(destination);
   }
-  Projectile(bool from_player, const Point& pos, const Point& size,
-             ShapeType shape_type, int life_span, float speed,
-             const DamageStats& damage_stats, ProjectileType type,
-             const std::vector<StatusEffect*>& effects,
-             const Point& move_vector, float pov) noexcept
+  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
+             int life_span, float speed, const DamageStats& damage_stats, HitType type, const std::vector<StatusEffect*>& effects,
+             const Point& move_vector, float pov, ProjectileType p_type) noexcept
       : Entity(pos, size, shape_type, pov),
         life_span(life_span),
         speed(speed),
@@ -36,7 +36,18 @@ struct Projectile : public Entity {
         from_player(from_player),
         projectile_type(type),
         status_effects(effects),
-        move_vector(move_vector) {}
+        move_vector(move_vector) ,type(p_type),u_id(PROJECTILE_ID++){}
+  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
+             int life_span, float speed, const DamageStats& damage_stats, HitType type, const std::vector<StatusEffect*>& effects,
+             const Point& move_vector, float pov, ProjectileType p_type,uint_fast32_t u_id) noexcept
+      : Entity(pos, size, shape_type, pov),
+        life_span(life_span),
+        speed(speed),
+        damage_stats(damage_stats),
+        from_player(from_player),
+        projectile_type(type),
+        status_effects(effects),
+        move_vector(move_vector) ,type(p_type),u_id(u_id){}
   Projectile(const Projectile& p) noexcept
       : Entity(p),
         move_vector(p.move_vector),
@@ -82,20 +93,19 @@ struct Projectile : public Entity {
     }
   }
   Point get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle = std::atan2(mouse_pos.y - (pos.y_ +DRAW_Y),
-                             mouse_pos.x - (pos.x_ +DRAW_X));
+    float angle =
+        std::atan2(mouse_pos.y - (pos.y_ + DRAW_Y), mouse_pos.x - (pos.x_ + DRAW_X));
     //pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
-  void draw() noexcept final {
+  void draw() override  {
     switch (shape_type) {
       case ShapeType::RECT:
-        DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_,
-                         {0, 0}, pov, PURPLE);
+        DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,
+                         PURPLE);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSector(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, 0, 360,
-                         56, PURPLE);
+        DrawCircleSector(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, 0, 360, 56, PURPLE);
         break;
     }
 #ifdef DRAW_HITBOXES
