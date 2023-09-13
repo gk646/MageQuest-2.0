@@ -4,11 +4,15 @@
 struct NetPlayer final : public Entity {
   int client_id;
   EntityStats stats;
-  MonsterResource* resource = nullptr;
+  MonsterResource* resource = &textures::PLAYER_RESOURCE;
   std::string name;
   StatusEffectHandler status_effects{stats};
   NBN_Connection* connection = nullptr;
   Zone zone = Zone::Woodland_Edge;
+  int sprite_counter = 0;
+  bool moving = false;
+  int action_state = 0;
+  bool flip = false;
   explicit NetPlayer(const Point& pos, std::string name, Zone zone,
                      NBN_Connection* connection, int client_id,
                      const Point& size = {25, 25})
@@ -18,12 +22,62 @@ struct NetPlayer final : public Entity {
         connection(connection),
         client_id(client_id) {}
   void draw() final {
-    DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,
-                     PURPLE);
-    DrawTextR(name.c_str(), pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 20, WHITE);
+    if (moving) {
+      DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
+                           pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
+      action_state = 0;
+    } else if (action_state == 1) {
+      draw_attack1();
+    } else if (action_state == 2) {
+      draw_attack2();
+    } else if (action_state == 3) {
+      draw_attack3();
+    } else if (action_state == -100) {
+      draw_death();
+    }
+    if (!moving && action_state == 0) {
+      DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10], pos.x_ + DRAW_X - 30,
+                           pos.y_ + DRAW_Y - 45, -7, 0, flip, WHITE);
+    }
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif
+  }
+  inline void draw_death() noexcept {
+    int num = sprite_counter % 75 / 15;
+    if (num < 4) {
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 25,
+                           pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
+    } else {
+      dead = true;
+    }
+  }
+  inline void draw_attack1() noexcept {
+    int num = sprite_counter % 48 / 6;
+    if (num < 7) {
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 25,
+                           pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
+    } else {
+      action_state = 0;
+    }
+  }
+  inline void draw_attack2() noexcept {
+    int num = sprite_counter % 50 / 5;
+    if (num < 9) {
+      DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 25,
+                           pos.y_ + DRAW_Y - 45, -20, 0, flip, WHITE);
+    } else {
+      action_state = 0;
+    }
+  }
+  inline void draw_attack3() noexcept {
+    int num = sprite_counter % 85 / 5;
+    if (num < 16) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 25,
+                           pos.y_ + DRAW_Y - 45, -15, 0, flip, WHITE);
+    } else {
+      action_state = 0;
+    }
   }
   void hit(Projectile& p) noexcept {
     if (!p.from_player) {
@@ -33,8 +87,23 @@ struct NetPlayer final : public Entity {
     }
   }
   void update() final {
+    sprite_counter++;
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
+  }
+  inline void update_state(int x, int y) noexcept {
+    moving = false;
+    if(pos.x_ != x ||pos.y_ != y){
+      moving = true;
+    }
+
+    if (x > pos.x_) {
+      flip = false;
+    }else {
+      flip = true;
+    }
+
+
   }
 };
 #endif  //MAGEQUEST_SRC_MULTIPLAYER_NETPLAYER_H_

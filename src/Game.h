@@ -8,6 +8,13 @@ class Game {
   std::thread logic_thread;
 
 #define UPDATE_AND_COLLISION()                                        \
+                                                                      \
+  SIMD_PRAGMA                                                         \
+  for (const auto net_player : OTHER_PLAYERS) {                       \
+    if (net_player) {                                                 \
+      net_player->update();                                           \
+    }                                                                 \
+  }                                                                   \
   SIMD_PRAGMA                                                         \
   for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) { \
     if ((*it)->dead) {                                                \

@@ -18,28 +18,6 @@ struct Player final : public Entity {
     Entity::operator=(other);
     return *this;
   }
-  void draw() final {
-    if (moving) {
-      DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
-                           pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
-      action_state = 0;
-    } else if (action_state == 1) {
-      draw_attack1();
-    } else if (action_state == 2) {
-      draw_attack2();
-    } else if (action_state == 3) {
-      draw_attack3();
-    } else if (action_state == -100) {
-      draw_death();
-    }
-    if (!moving && action_state == 0) {
-      DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10], pos.x_ + DRAW_X - 30,
-                           pos.y_ + DRAW_Y - 45, -7, 0, flip, WHITE);
-    }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
-  }
   static void hit(Projectile& p) noexcept {
     if (!p.from_player) {
       PLAYER_EFFECTS.add_effects(p.status_effects);
@@ -80,7 +58,28 @@ struct Player final : public Entity {
                                 : new UDP_PlayerPos((int)pos.x_, (int)pos.y_));
     sprite_counter++;
   }
-
+  void draw() final {
+    if (moving) {
+      DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
+                           pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
+      action_state = 0;
+    } else if (action_state == 1) {
+      draw_attack1();
+    } else if (action_state == 2) {
+      draw_attack2();
+    } else if (action_state == 3) {
+      draw_attack3();
+    } else if (action_state == -100) {
+      draw_death();
+    }
+    if (!moving && action_state == 0) {
+      DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10], pos.x_ + DRAW_X - 30,
+                           pos.y_ + DRAW_Y - 45, -7, 0, flip, WHITE);
+    }
+#ifdef DRAW_HITBOXES
+    draw_hitbox();
+#endif
+  }
   inline void draw_death() noexcept {
     int num = sprite_counter % 75 / 15;
     if (num < 4) {
