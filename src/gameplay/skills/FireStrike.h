@@ -18,10 +18,18 @@ struct FireStrike final : public Skill {
       float x_component = std::cos(angle_rad);
       float y_component = std::sin(angle_rad);
 
-      PROJECTILES.emplace_back(new Projectile(
-          from_player, pos, {25, 25}, ShapeType::RECT, 300, 4, damage_stats,
-          HitType::CONTINUOUS, {new Burn{1, 1, 1}}, {x_component, y_component},
-          angle_rad * (180.0f / M_PI), FIRE_BALL));
+      float pov = angle_rad * (180.0f / M_PI);
+      Multiplayer::send_event(
+          UDP_PROJECTILE,
+          new UDP_Projectile(0, FIRE_STRIKE, pos.x_, pos.y_, pov, x_component,
+                             y_component, damage_stats.damage));
+      if (MP_TYPE == MultiplayerType::CLIENT) {
+        continue;
+      }
+      PROJECTILES.emplace_back(
+          new Projectile(from_player, pos, {25, 25}, ShapeType::RECT, 300, 2,
+                         damage_stats, HitType::CONTINUOUS, {new Burn{1, 1, 1}},
+                         {x_component, y_component}, pov, FIRE_STRIKE));
     }
   }
   inline void update() final { cool_down_ticks++; }

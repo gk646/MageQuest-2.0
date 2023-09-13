@@ -8,11 +8,11 @@ inline static void RegisterMessages() noexcept {
                                  (NBN_MessageBuilder)UDP_PlayerPos_Client_Create,
                                  (NBN_MessageDestructor)UDP_PlayerPos_Client_Destroy,
                                  (NBN_MessageSerializer)UDP_PlayerPos_Client_Serialize);
-  NBN_GameServer_RegisterMessage(
-      UDP_PLAYER_STATE, (NBN_MessageBuilder)UDP_PositionState_Create,
-      (NBN_MessageDestructor)UDP_PlayerPos_BroadCast_Destroy,
-      (NBN_MessageSerializer)UDP_PlayerPos_BroadCast_Serialize);
-  NBN_GameServer_RegisterMessage(UDP_PROJECTILE_STATE,
+  NBN_GameServer_RegisterMessage(UDP_PLAYER_STATE,
+                                 (NBN_MessageBuilder)UDP_PositionState_Create,
+                                 (NBN_MessageDestructor)UDP_PositionState_Destroy,
+                                 (NBN_MessageSerializer)UDP_PositionState_Serialize);
+  NBN_GameServer_RegisterMessage(UDP_PROJECTILE,
                                  (NBN_MessageBuilder)UDP_Projectile_Create,
                                  (NBN_MessageDestructor)UDP_Projectile_Destroy,
                                  (NBN_MessageSerializer)UDP_Projectile_Serialize);
@@ -48,14 +48,6 @@ inline static void BroadCastGameState() noexcept {
              sizeof(UDP_PlayerPos_Update) * MG2_MAX_PLAYERS);
       NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PLAYER_STATE,
                                              msg);
-      for (const auto projectile : PROJECTILES) {
-        auto msg = new UDP_Projectile(
-            projectile->u_id, projectile->type, projectile->pos.x_, projectile->pos.y_,projectile->pov,
-            projectile->move_vector.x_, projectile->move_vector.y_,
-            projectile->damage_stats.damage);
-        NBN_GameServer_SendUnreliableMessageTo(net_player->connection,
-                                               UDP_PROJECTILE_STATE, msg);
-      }
     }
   }
 }
@@ -71,7 +63,22 @@ inline static void HandleProjectileState(UDP_Projectile* data) noexcept {
           {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
           {data->move_x, data->move_y}, data->pov, FIRE_BALL, PROJECTILE_ID++));
       break;
+    case FIRE_STRIKE:
+      PROJECTILES.emplace_back(new Projectile(
+          false, {data->x, data->y}, {25, 25}, ShapeType::RECT, 300, 2,
+          {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
+          {data->move_x, data->move_y}, data->pov, FIRE_STRIKE, PROJECTILE_ID++));
+      break;
   }
+  for (auto net_player : OTHER_PLAYERS) {
+    if (net_player) {
+      auto prj = UDP_Projectile_Create();
+      memcpy(prj, data, sizeof(UDP_Projectile));
+      NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE,
+                                             prj);
+    }
+  }
+  UDP_Projectile_Destroy(data);
 }
 inline static int HandleReceiveMessage() noexcept {
   NBN_MessageInfo msg_info = NBN_GameServer_GetMessageInfo();
@@ -84,9 +91,11 @@ inline static int HandleReceiveMessage() noexcept {
         sender->pos.y_ = data->y;
       }
       UDP_PlayerPos_Client_Destroy(data);
+      break;
     }
-    case UDP_PROJECTILE_STATE: {
+    case UDP_PROJECTILE: {
       HandleProjectileState((UDP_Projectile*)msg_info.data);
+      break;
     }
   }
 
@@ -144,9 +153,7 @@ static void poll_events() noexcept {
         break;
 
       case NBN_CLIENT_MESSAGE_RECEIVED:
-        if (HandleReceiveMessage() < 0) {
-          Log(NET_LOG_ERROR, "Failed received message");
-        }
+        HandleReceiveMessage();
         break;
     }
   }
