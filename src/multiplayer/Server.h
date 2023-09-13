@@ -87,6 +87,7 @@ inline static int HandleReceiveMessage() noexcept {
       auto data = (UDP_PlayerPos*)msg_info.data;
       auto sender = OTHER_PLAYERS[msg_info.sender->id % MG2_MAX_CLIENTS];
       if (sender) {
+        sender->update_state(data->x,data->y);
         sender->pos.x_ = data->x;
         sender->pos.y_ = data->y;
       }

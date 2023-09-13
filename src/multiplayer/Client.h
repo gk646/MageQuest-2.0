@@ -91,6 +91,7 @@ inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept 
     if (data->clients_pos[j].client_id == client_id)
       continue;
     if (OTHER_PLAYERS[j]) {
+      OTHER_PLAYERS[j]->update_state(data->clients_pos[j].x,data->clients_pos[j].y);
       OTHER_PLAYERS[j]->pos.x_ = data->clients_pos[j].x;
       OTHER_PLAYERS[j]->pos.y_ = data->clients_pos[j].y;
     } else {
