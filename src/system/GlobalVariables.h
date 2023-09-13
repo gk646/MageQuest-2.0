@@ -13,7 +13,8 @@ inline static float SCREEN_HEIGHT = 960;
 inline static GameState GAME_STATE = GameState::Loading;
 inline static std::shared_mutex rwLock;
 inline static std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
-inline static GifDrawer* RAYLIB_LOGO;
+inline static GifDrawer* RAYLIB_LOGO = nullptr;
+inline static LogoDrawer* NBNET_LOGO= nullptr;
 inline static std::random_device e;
 inline static std::mt19937 RNG_ENGINE(e());
 inline static std::default_random_engine RNG_RANDOM;
@@ -24,10 +25,6 @@ inline static std::uniform_real_distribution<float> RANGE_01(0, 1);
 inline static std::uniform_real_distribution<float> RANGE_01SMALL(-0.25, 0.25);
 inline static std::uniform_real_distribution<float> distribution(0.0, 1.0);
 inline bool WINDOW_FOCUSED = false;
-class Item;
-inline Item* DRAGGED_ITEM = nullptr;
-inline Item* TOOL_TIP_ITEM = nullptr;
-
 inline static int PERF_FRAMES = 0;
 inline static long long PERF_TIME = 0;
 inline static long long GAME_TICK_TIME = 0;
@@ -47,6 +44,9 @@ inline static float MIRROR_POINT = 0;
 inline static PointI* PLAYER_TILE = nullptr;
 inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline static std::string PLAYER_NAME = "hello";
+class Item;
+inline Item* DRAGGED_ITEM = nullptr;
+inline Item* TOOL_TIP_ITEM = nullptr;
 /* |-----------------------------------------------------|
  * |                          WORLD                      |
  * |-----------------------------------------------------|
@@ -56,6 +56,8 @@ class WorldObject;
 class NPC;
 class Monster;
 class Player;
+inline uint_fast32_t MONSTER_ID = 1;
+inline uint_fast32_t PROJECTILE_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND;
 inline static int16_t** CURRENT_MIDDLE_GROUND;
 inline static int16_t** CURRENT_FORE_GROUND;

@@ -1,7 +1,7 @@
 #ifndef MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 #define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 
-struct Player : public Entity {
+struct Player final: public Entity {
   MonsterResource* resource = nullptr;
   std::string name;
   explicit Player(const Point& pos, const Point& size = {25, 25})
@@ -30,7 +30,7 @@ struct Player : public Entity {
     if (!p.from_player) {
       PLAYER_EFFECTS.add_effects(p.status_effects);
       PLAYER_STATS.take_damage(p.damage_stats);
-      p.dead = p.projectile_type == ProjectileType::ONE_HIT;
+      p.dead = p.projectile_type == HitType::ONE_HIT;
     }
   }
   void update() final {

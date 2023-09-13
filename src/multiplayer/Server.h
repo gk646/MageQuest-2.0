@@ -3,9 +3,7 @@
 
 namespace Server {
 inline static int connected_clients = 0;
-static void init() {
-  connected_clients = 0;
-  NBN_GameServer_Init(MG2_NET_IDENTIFIER, MG2_PORT, false);
+inline static void RegisterMessages() noexcept {
   NBN_GameServer_RegisterMessage(UDP_PLAYER_POS_CLIENT,
                                  (NBN_MessageBuilder)UDP_PlayerPos_Client_Create,
                                  (NBN_MessageDestructor)UDP_PlayerPos_Client_Destroy,
@@ -14,10 +12,15 @@ static void init() {
       UDP_PLAYER_STATE, (NBN_MessageBuilder)UDP_PositionState_Create,
       (NBN_MessageDestructor)UDP_PlayerPos_BroadCast_Destroy,
       (NBN_MessageSerializer)UDP_PlayerPos_BroadCast_Serialize);
-  NBN_GameServer_RegisterMessage(UDP_PLAYER_NAME,
-                                 (NBN_MessageBuilder)UDP_PlayerName_Create,
-                                 (NBN_MessageDestructor)UDP_PlayerName_Destroy,
-                                 (NBN_MessageSerializer)UDP_PlayerName_Serialize);
+  NBN_GameServer_RegisterMessage(UDP_PROJECTILE_STATE,
+                                 (NBN_MessageBuilder)UDP_Projectile_Create,
+                                 (NBN_MessageDestructor)UDP_Projectile_Destroy,
+                                 (NBN_MessageSerializer)UDP_Projectile_Serialize);
+}
+static void init() {
+  connected_clients = 0;
+  NBN_GameServer_Init(MG2_NET_IDENTIFIER, MG2_PORT, false);
+  RegisterMessages();
   if (NBN_GameServer_Start() < 0) {
     Log(NET_LOG_ERROR, "Failed to start the server");
   }
@@ -45,6 +48,14 @@ inline static void BroadCastGameState() noexcept {
              sizeof(UDP_PlayerPos_Update) * MG2_MAX_PLAYERS);
       NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PLAYER_STATE,
                                              msg);
+      for (const auto projectile : PROJECTILES) {
+        auto msg = new UDP_Projectile(
+            projectile->u_id, projectile->type, projectile->pos.x_, projectile->pos.y_,projectile->pov,
+            projectile->move_vector.x_, projectile->move_vector.y_,
+            projectile->damage_stats.damage);
+        NBN_GameServer_SendUnreliableMessageTo(net_player->connection,
+                                               UDP_PROJECTILE_STATE, msg);
+      }
     }
   }
 }
@@ -52,19 +63,30 @@ inline static void send_packets() noexcept {
   BroadCastGameState();
   NBN_GameServer_SendPackets();
 }
+inline static void HandleProjectileState(UDP_Projectile* data) noexcept {
+  switch (data->p_type) {
+    case FIRE_BALL:
+      PROJECTILES.emplace_back(new Projectile(
+          false, {data->x, data->y}, {25, 25}, ShapeType::RECT, 240, 5,
+          {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
+          {data->move_x, data->move_y}, data->pov, FIRE_BALL, PROJECTILE_ID++));
+      break;
+  }
+}
 inline static int HandleReceiveMessage() noexcept {
   NBN_MessageInfo msg_info = NBN_GameServer_GetMessageInfo();
-  auto sender = OTHER_PLAYERS[msg_info.sender->id % MG2_MAX_CLIENTS];
   switch (msg_info.type) {
     case UDP_PLAYER_POS_CLIENT: {
       auto data = (UDP_PlayerPos*)msg_info.data;
+      auto sender = OTHER_PLAYERS[msg_info.sender->id % MG2_MAX_CLIENTS];
       if (sender) {
         sender->pos.x_ = data->x;
         sender->pos.y_ = data->y;
       }
       UDP_PlayerPos_Client_Destroy(data);
     }
-    case UDP_PLAYER_ABILITY: {
+    case UDP_PROJECTILE_STATE: {
+      HandleProjectileState((UDP_Projectile*)msg_info.data);
     }
   }
 

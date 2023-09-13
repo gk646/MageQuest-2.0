@@ -20,38 +20,40 @@ class Game {
       ++it;                                                           \
     }                                                                 \
   }                                                                   \
-  SIMD_PRAGMA                                                         \
-  for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {           \
-    if ((*it)->dead) {                                                \
-      it = MONSTERS.erase(it);                                        \
-    } else {                                                          \
+                           \
+    SIMD_PRAGMA                                                       \
+    for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {         \
+      if ((*it)->dead) {                                              \
+        it = MONSTERS.erase(it);                                      \
+      } else {                                                        \
+        (*it)->update();                                              \
+        ++it;                                                         \
+      }                                                               \
+    }                                                                 \
+    for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {   \
       (*it)->update();                                                \
-      ++it;                                                           \
-    }                                                                 \
-  }                                                                   \
-  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {     \
-    (*it)->update();                                                  \
                                                                       \
-    if ((*it)->dead) [[unlikely]] {                                   \
-      delete *it;                                                     \
-      it = PROJECTILES.erase(it);                                     \
-    } else {                                                          \
-      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {   \
-        if ((*m_it)->dead) [[unlikely]] {                             \
-          delete *m_it;                                               \
-          m_it = MONSTERS.erase(m_it);                                \
-        } else {                                                      \
-          if ((*it)->intersects(**m_it)) [[unlikely]] {               \
-            (*m_it)->hit(**it);                                       \
+      if ((*it)->dead) [[unlikely]] {                                 \
+        delete *it;                                                   \
+        it = PROJECTILES.erase(it);                                   \
+      } else {                                                        \
+        for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) { \
+          if ((*m_it)->dead) [[unlikely]] {                           \
+            delete *m_it;                                             \
+            m_it = MONSTERS.erase(m_it);                              \
+          } else {                                                    \
+            if ((*it)->intersects(**m_it)) [[unlikely]] {             \
+              (*m_it)->hit(**it);                                     \
+            }                                                         \
+            ++m_it;                                                   \
           }                                                           \
-          ++m_it;                                                     \
         }                                                             \
+        if ((*it)->intersects(PLAYER)) [[unlikely]] {                 \
+          PLAYER.hit(**it);                                           \
+        }                                                             \
+        ++it;                                                         \
       }                                                               \
-      if ((*it)->intersects(PLAYER)) [[unlikely]] {                   \
-        PLAYER.hit(**it);                                             \
-      }                                                               \
-      ++it;                                                           \
-    }                                                                 \
+                                                                   \
   }
 
   void logic_loop() const noexcept {
@@ -206,13 +208,14 @@ class Game {
     NBN_UDP_Register();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
+    NBNET_LOGO = new LogoDrawer(ASSET_PATH + "ui/titleScreen/nbnet.png");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
     for (uint_fast32_t i = 0; i < 1; i++) {
-      MONSTERS.push_back(new SkeletonSpear({250.0F + i * 50, 150}, 10));
+      MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));
     }
     //SettingsMenu::set_full_screen();
   }

@@ -13,7 +13,6 @@ struct Skill {
   }
   inline virtual void activate() = 0;
   inline virtual void update() = 0;
-
   void draw(float x, float y, float size) const noexcept {
     DrawRectanglePro(x, y, size, size, {0, 0}, 0, RED);
 
@@ -55,7 +54,7 @@ struct Skill {
       }
     }
   }
-  inline bool use_able() const noexcept {
+  [[nodiscard]] inline bool use_able() const noexcept {
     return PLAYER_STATS.skill_useable(skill_stats, cool_down_ticks);
   }
   inline void use() noexcept {

@@ -29,7 +29,7 @@ struct NetPlayer final : public Entity {
     if (!p.from_player) {
       status_effects.add_effects(p.status_effects);
       stats.take_damage(p.damage_stats);
-      p.dead = p.projectile_type == ProjectileType::ONE_HIT;
+      p.dead = p.projectile_type == HitType::ONE_HIT;
     }
   }
   void update() final {

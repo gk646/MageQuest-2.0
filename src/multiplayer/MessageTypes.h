@@ -41,24 +41,10 @@ struct UDP_PlayerPos_Update {
   int y;
 };
 
-UDP_PlayerPos_Update* UDP_PlayerPos_Update_Create() {
-  return (UDP_PlayerPos_Update*)malloc(sizeof(UDP_PlayerPos_Update));
-}
-void UDP_PlayerPos_Update_Destroy(UDP_PlayerPos_Update* msg) {
-  free(msg);
-}
-int UDP_PlayerPos_Update_Serialize(UDP_PlayerPos_Update* msg, NBN_Stream* stream) {
-  NBN_SerializeInt(stream, msg->client_id, 0, 3);
-  NBN_SerializeInt(stream, msg->x, 0, 24000);
-  NBN_SerializeInt(stream, msg->y, 0, 24000);
-  return 0;
-}
-
 struct UDP_PositionState {
   int client_count;
   UDP_PlayerPos_Update clients_pos[MG2_MAX_PLAYERS];
 };
-
 UDP_PositionState* UDP_PositionState_Create() {
   return (UDP_PositionState*)malloc(sizeof(UDP_PositionState));
 }
@@ -74,5 +60,40 @@ int UDP_PlayerPos_BroadCast_Serialize(UDP_PositionState* msg, NBN_Stream* stream
   }
   return 0;
 }
+
+struct UDP_Projectile {
+  unsigned int u_id;
+  int p_type;
+  int x;
+  int y;
+  float pov;
+  float move_x;
+  float move_y;
+  float damage;
+};
+
+UDP_Projectile* UDP_Projectile_Create() {
+  return (UDP_Projectile*)malloc(sizeof(UDP_Projectile));
+}
+void UDP_Projectile_Destroy(UDP_Projectile* msg) {
+  free(msg);
+}
+int UDP_Projectile_Serialize(UDP_Projectile* msg, NBN_Stream* stream) {
+  NBN_SerializeUInt(stream, msg->u_id, 0, 1000000);
+  NBN_SerializeInt(stream, msg->p_type, 0, 50);
+  NBN_SerializeInt(stream, msg->x, -24000, 24000);
+  NBN_SerializeInt(stream, msg->y, -24000, 24000);
+
+  NBN_SerializeFloat(stream, msg->pov, -360, 360, 3);
+  NBN_SerializeFloat(stream, msg->move_x, -50, 50, 3);
+  NBN_SerializeFloat(stream, msg->move_y, -50, 50, 3);
+  NBN_SerializeFloat(stream, msg->damage, 0, 1000000, 3);
+  return 0;
+}
+
+#define UDP_PROJECTILE_UPDATE_SIG                                                     \
+  NBN_RPC_BuildSignature(7, NBN_RPC_PARAM_INT, NBN_RPC_PARAM_INT, NBN_RPC_PARAM_INT,  \
+                         NBN_RPC_PARAM_INT, NBN_RPC_PARAM_FLOAT, NBN_RPC_PARAM_FLOAT, \
+                         NBN_RPC_PARAM_FLOAT)
 
 #endif  //MAGEQUEST_SRC_MULTIPLAYER_MESSAGETYPES_H_
