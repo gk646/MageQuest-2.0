@@ -1,16 +1,16 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_ABILITIES_FIREBALL_H_
 #define MAGEQUEST_SRC_GAMEPLAY_ABILITIES_FIREBALL_H_
 
-struct FireBall final : public Skill {
-  FireBall(bool from_player, float damage)
+struct FireBall_Skill final : public Skill {
+  FireBall_Skill(bool from_player, float damage)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::FIRE, damage},
-              from_player) {}
+              from_player,3) {}
 
   void activate() final {
     use();
 
     if (MP_TYPE == MultiplayerType::CLIENT || MP_TYPE == MultiplayerType::SERVER) {
-      auto mouse_pos = GetMousePosition();
+      auto mouse_pos = MOUSE_POS;
       float angle = std::atan2(mouse_pos.y - (PLAYER_Y + DRAW_Y),
                                mouse_pos.x - (PLAYER_X + DRAW_X));
       Multiplayer::send_event(
@@ -22,7 +22,7 @@ struct FireBall final : public Skill {
         return;
       }
     }
-    PROJECTILES.push_back(new FireBall_P({PLAYER_X, PLAYER_Y}, true));
+    PROJECTILES.push_back(new FireBall({PLAYER_X, PLAYER_Y}, true));
   }
 
   inline void update() final { cool_down_ticks++; }

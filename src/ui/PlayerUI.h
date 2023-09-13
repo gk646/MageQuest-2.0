@@ -36,7 +36,7 @@ struct PlayerUI {
   }
   static inline void draw_special_items() noexcept {
     if (DRAGGED_ITEM) {
-      DRAGGED_ITEM->draw({GetMousePosition().x - 22, GetMousePosition().y - 22, 45, 45});
+      DRAGGED_ITEM->draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
     }
     if (TOOL_TIP_ITEM) {
       TOOL_TIP_ITEM->draw_tooltip();

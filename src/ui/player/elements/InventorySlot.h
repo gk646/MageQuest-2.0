@@ -91,7 +91,7 @@ struct InventorySlot {
   void update_player_inv() {
     hit_box.height = 40 * UI_SCALE;
     hit_box.width = 40 * UI_SCALE;
-    if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
+    if (CheckCollisionPointRec(MOUSE_POS, hit_box)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
           for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
@@ -130,7 +130,7 @@ struct InventorySlot {
   void update() noexcept {
     hit_box.height = 40 * UI_SCALE;
     hit_box.width = 40 * UI_SCALE;
-    if (CheckCollisionPointRec(GetMousePosition(), hit_box)) {
+    if (CheckCollisionPointRec(MOUSE_POS, hit_box)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
           for (uint_fast32_t i = 0; i < 10; i++) {

@@ -22,7 +22,7 @@ enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
 enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class HitType { CONTINUOUS, ONE_HIT };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
-
+enum PlayerDirection {PLAYER_LEFT = 50,PLAYER_RIGHT = 51};
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
     {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};

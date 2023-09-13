@@ -4,12 +4,12 @@
 struct FireStrike final : public Skill {
   int num_fireballs;
   FireStrike(bool from_player, float damage, int num_fireballs)
-      : Skill(SkillStats{400, 20, 0}, DamageStats{DamageType::FIRE, damage}, from_player),
+      : Skill(SkillStats{400, 20, 0}, DamageStats{DamageType::FIRE, damage}, from_player,2),
         num_fireballs(num_fireballs) {}
 
   void activate() final {
     use();
-    auto mouse_pos = GetMousePosition();
+    auto mouse_pos = MOUSE_POS;
     Point pos = {PLAYER_X + mouse_pos.x - CAMERA_X, PLAYER_Y + mouse_pos.y - CAMERA_Y};
     const float interval_angle = 360.0f / num_fireballs;
     for (uint_fast32_t i = 0; i < num_fireballs; i++) {

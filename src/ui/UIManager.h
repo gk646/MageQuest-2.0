@@ -30,7 +30,10 @@ struct UIManager {
     }
   }
 
-  inline void update() noexcept { player_ui.update(); }
+  inline void update() noexcept {
+    MOUSE_POS = GetMousePosition();
+    player_ui.update();
+  }
 };
 
 inline UIManager UI_MANAGER{};

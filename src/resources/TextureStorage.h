@@ -2,6 +2,9 @@
 #define MAGEQUEST_SRC_SYSTEM_TEXTURESTORAGE_H_
 
 namespace textures {
+//player
+inline MonsterResource PLAYER_RESOURCE;
+
 //monsters
 inline MonsterResource SKELETON_WARRIOR;
 inline MonsterResource SKELETON_SPEAR;
@@ -15,6 +18,28 @@ inline MonsterResource KNIGHT;
 inline MonsterResource MUSHROOM;
 inline MonsterResource SNAKE;
 inline MonsterResource WOLF;
+
+
+//projectiles
+inline ProjectileResources BLAST_HAMMER;
+inline ProjectileResources ENERGY_SPHERE;
+inline ProjectileResources ETHER_PORTAL;
+inline ProjectileResources FIRE_BURST;
+inline ProjectileResources FIRE_EXPLOSION;
+inline ProjectileResources FIRE_SWORD;
+inline ProjectileResources FROST_NOVA;
+inline ProjectileResources GATE_1;
+inline ProjectileResources ICE_LANCE;
+inline ProjectileResources INFERNO_RAY;
+inline ProjectileResources LIGHTNING_STRIKE;
+inline ProjectileResources POWER_SURGE;
+inline ProjectileResources PYRO_BLAST;
+inline ProjectileResources SOLAR_FLARE;
+inline ProjectileResources THUNDER_SPLASH;
+inline ProjectileResources THUNDER_STRIKE;
+inline ProjectileResources VOID_ERUPTION;
+inline ProjectileResources VOID_FIELD;
+
 
 //UI
 inline Texture STATUS_BAR;

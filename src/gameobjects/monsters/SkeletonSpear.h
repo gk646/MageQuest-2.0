@@ -39,20 +39,8 @@ struct SkeletonSpear final : public Monster {
   inline void draw_death() noexcept {
     int num = sprite_counter % 120 / 20;
     if (num < 5) {
-      if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-        auto texture = resource->death[num];
-        DrawTexturePro(
-            texture,
-            {0, 0, static_cast<float>(-texture.width),
-             static_cast<float>(texture.height)},
-            {pos.x_ + DRAW_X-45, pos.y_ + DRAW_Y - 46, static_cast<float>(texture.width),
-             static_cast<float>(texture.height)},
-            {0, 0}, 0, WHITE);
-      } else {
-
-        DrawTextureProFast(resource->death[num], pos.x_ + DRAW_X - 25,
-                           pos.y_ + DRAW_Y - 46, 0, WHITE);
-      }
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
+                         pos.y_ + DRAW_Y - 46,0, 0,pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
     } else {
       dead = true;
     }
@@ -60,16 +48,8 @@ struct SkeletonSpear final : public Monster {
   inline void draw_attack1() noexcept {
     int num = sprite_counter % 75 / 15;
     if (num < 4) {
-      if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-        auto texture = resource->attack1[num];
-        DrawTexturePro(texture, {0, 0, static_cast<float>(-texture.width),
-                                 static_cast<float>(texture.height)}, {pos.x_ + DRAW_X - 45, pos.y_ + DRAW_Y - 46,
-                        static_cast<float>(texture.width),
-                        static_cast<float>(texture.height)}, {0, 0}, 0, WHITE);
-      } else {
-        DrawTextureProFast(resource->attack1[num], pos.x_ + DRAW_X - 20,
-                           pos.y_ + DRAW_Y - 46, 0, WHITE);
-      }
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
+                           pos.y_ + DRAW_Y - 46,-30, 0,pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
     } else {
       attack = 0;
     }
@@ -77,18 +57,8 @@ struct SkeletonSpear final : public Monster {
   inline void draw_attack2() noexcept {
     int num = sprite_counter % 75 / 15;
     if (num < 4) {
-      if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-        auto texture = resource->attack2[num];
-        RectangleR srcRec = {0, 0, static_cast<float>(-texture.width),
-                             static_cast<float>(texture.height)};
-        RectangleR destRec = {pos.x_ + DRAW_X - 40, pos.y_ + DRAW_Y - 46,
-                              static_cast<float>(texture.width),
-                              static_cast<float>(texture.height)};
-        DrawTexturePro(texture, srcRec, destRec, {0, 0}, 0, WHITE);
-      } else {
-        DrawTextureProFast(resource->attack2[num], pos.x_ + DRAW_X - 26,
-                           pos.y_ + DRAW_Y - 46, 0, WHITE);
-      }
+      DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 27,
+                           pos.y_ + DRAW_Y - 46,-10, 0,pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
     } else {
       attack = 0;
     }
@@ -96,16 +66,8 @@ struct SkeletonSpear final : public Monster {
   inline void draw_attack3() noexcept {
     int num = sprite_counter % 72 / 12;
     if (num < 5) {
-      if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-        auto texture = resource->attack3[num];
-        DrawTexturePro(texture, {0, 0, static_cast<float>(-texture.width),
-                                 static_cast<float>(texture.height)}, {pos.x_ + DRAW_X - 47, pos.y_ + DRAW_Y - 46,
-                                         static_cast<float>(texture.width),
-                                         static_cast<float>(texture.height)}, {0, 0}, 0, WHITE);
-      } else {
-        DrawTextureProFast(resource->attack3[num], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 46, 0, WHITE);
-      }
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 16,
+                           pos.y_ + DRAW_Y - 46,-32, 0,pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
     } else {
       attack = 0;
     }

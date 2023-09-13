@@ -14,7 +14,7 @@ inline static GameState GAME_STATE = GameState::Loading;
 inline static std::shared_mutex rwLock;
 inline static std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 inline static GifDrawer* RAYLIB_LOGO = nullptr;
-inline static LogoDrawer* NBNET_LOGO= nullptr;
+inline static LogoDrawer* NBNET_LOGO = nullptr;
 inline static std::random_device e;
 inline static std::mt19937 RNG_ENGINE(e());
 inline static std::default_random_engine RNG_RANDOM;
@@ -29,6 +29,7 @@ inline static int PERF_FRAMES = 0;
 inline static long long PERF_TIME = 0;
 inline static long long GAME_TICK_TIME = 0;
 inline static long long FRAME_TIME = 0;
+inline static Vector2 MOUSE_POS = GetMousePosition();
 
 /* |-----------------------------------------------------|
  * |                    PLAYER                      |

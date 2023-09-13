@@ -6,9 +6,10 @@ struct Skill {
   SkillStats skill_stats;
   int cool_down_ticks = 0;
   bool from_player;
+  int attack_animation = 0;
   // Texture2D texture;
-  Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player) noexcept
-      : damage_stats(damage_stats), skill_stats(ability_stats), from_player(from_player) {
+  Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player, int attack_animation) noexcept
+      : damage_stats(damage_stats), skill_stats(ability_stats), from_player(from_player), attack_animation(attack_animation) {
     cool_down_ticks = ability_stats.cool_down;
   }
   inline virtual void activate() = 0;
@@ -59,11 +60,14 @@ struct Skill {
   }
   inline void use() noexcept {
     cool_down_ticks = 0;
+    PLAYER.flip  = MOUSE_POS.x < CAMERA_X;
+    PLAYER.sprite_counter = 0;
+    PLAYER.action_state = attack_animation;
     PLAYER_STATS.use_skill(skill_stats);
   }
 };
 
 #include "skills/Dummy.h"
-#include "skills/FireBall.h"
+#include "skills/FireBall_Skill.h"
 #include "skills/FireStrike.h"
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_
