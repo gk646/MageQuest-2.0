@@ -95,7 +95,7 @@ struct Projectile : public Entity {
   Point get_move_vector(const Vector2& mouse_pos) noexcept {
     float angle =
         std::atan2(mouse_pos.y - (pos.y_ + DRAW_Y), mouse_pos.x - (pos.x_ + DRAW_X));
-    //pov =  angle * (180.0f / M_PI);
+    pov =  angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
   void draw() override  {
@@ -125,6 +125,6 @@ struct Projectile : public Entity {
   }
 };
 
-#include "projectiles/FireBall_P.h"
+#include "projectiles/FireBall.h"
 #include "projectiles/PoisonBall.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

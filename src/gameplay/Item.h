@@ -101,7 +101,7 @@ struct Item {
                    {0, 0}, 0, WHITE);
   }
   void draw_tooltip() const noexcept {
-    auto mouse = GetMousePosition();
+    auto mouse = MOUSE_POS;
     float startX, startY;
     float width = tooltip_x * UI_SCALE;
     float height = tooltip_y * UI_SCALE;

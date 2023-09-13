@@ -30,7 +30,7 @@ struct Window {
   }
 #define DRAG_WINDOW()                                               \
   if (isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {         \
-    auto mouse_pos = GetMousePosition();                            \
+    auto mouse_pos = MOUSE_POS;                            \
     auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
     auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
     whole_window.x += delta_x;                                      \
@@ -67,18 +67,18 @@ struct Window {
       return;
     }
     header_hover = false;
-    if (CheckCollisionPointRec(GetMousePosition(), SCALE_RECT(header_bar))&&!DRAGGED_ITEM) {
+    if (CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar))&&!DRAGGED_ITEM) {
       header_hover = true;
       if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
         if (!isDragging) {
           isDragging = true;
-          lastMousePos = GetMousePosition();
+          lastMousePos = MOUSE_POS;
         }
       }
     }
 
     if (!WINDOW_FOCUSED) {
-      WINDOW_FOCUSED = isDragging || CheckCollisionPointRec(GetMousePosition(),
+      WINDOW_FOCUSED = isDragging || CheckCollisionPointRec(MOUSE_POS,
                                                             SCALE_RECT(whole_window));
     }
   }

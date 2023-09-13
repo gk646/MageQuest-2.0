@@ -88,7 +88,7 @@ struct RegionMap final : public Window {
            y >= whole_window.y && y < whole_window.y + whole_window.height;
   }
   inline void drag_map() noexcept {
-    auto mouse_pos = GetMousePosition();
+    auto mouse_pos = MOUSE_POS;
     if (!isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON) &&
         CheckCollisionPointRec(mouse_pos, whole_window)) {
       int deltax = mouse_pos.x - last_mouse_pos.x;

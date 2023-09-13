@@ -20,40 +20,39 @@ class Game {
       ++it;                                                           \
     }                                                                 \
   }                                                                   \
-                           \
-    SIMD_PRAGMA                                                       \
-    for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {         \
-      if ((*it)->dead) {                                              \
-        it = MONSTERS.erase(it);                                      \
-      } else {                                                        \
-        (*it)->update();                                              \
-        ++it;                                                         \
-      }                                                               \
-    }                                                                 \
-    for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {   \
-      (*it)->update();                                                \
                                                                       \
-      if ((*it)->dead) [[unlikely]] {                                 \
-        delete *it;                                                   \
-        it = PROJECTILES.erase(it);                                   \
-      } else {                                                        \
-        for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) { \
-          if ((*m_it)->dead) [[unlikely]] {                           \
-            delete *m_it;                                             \
-            m_it = MONSTERS.erase(m_it);                              \
-          } else {                                                    \
-            if ((*it)->intersects(**m_it)) [[unlikely]] {             \
-              (*m_it)->hit(**it);                                     \
-            }                                                         \
-            ++m_it;                                                   \
+  SIMD_PRAGMA                                                         \
+  for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {           \
+    if ((*it)->dead) {                                                \
+      it = MONSTERS.erase(it);                                        \
+    } else {                                                          \
+      (*it)->update();                                                \
+      ++it;                                                           \
+    }                                                                 \
+  }                                                                   \
+  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {     \
+    (*it)->update();                                                  \
+                                                                      \
+    if ((*it)->dead) [[unlikely]] {                                   \
+      delete *it;                                                     \
+      it = PROJECTILES.erase(it);                                     \
+    } else {                                                          \
+      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {   \
+        if ((*m_it)->dead) [[unlikely]] {                             \
+          delete *m_it;                                               \
+          m_it = MONSTERS.erase(m_it);                                \
+        } else {                                                      \
+          if ((*it)->intersects(**m_it)) [[unlikely]] {               \
+            (*m_it)->hit(**it);                                       \
           }                                                           \
+          ++m_it;                                                     \
         }                                                             \
-        if ((*it)->intersects(PLAYER)) [[unlikely]] {                 \
-          PLAYER.hit(**it);                                           \
-        }                                                             \
-        ++it;                                                         \
       }                                                               \
-                                                                   \
+      if ((*it)->intersects(PLAYER)) [[unlikely]] {                   \
+        PLAYER.hit(**it);                                             \
+      }                                                               \
+      ++it;                                                           \
+    }                                                                 \
   }
 
   void logic_loop() const noexcept {
@@ -216,7 +215,7 @@ class Game {
     SetMasterVolume(0);
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
-    PLAYER_HOTBAR.skills[4] = new FireBall(true, 5);
+    PLAYER_HOTBAR.skills[4] = new FireBall_Skill(true, 5);
     for (uint_fast32_t i = 0; i < 1; i++) {
       MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));
     }
