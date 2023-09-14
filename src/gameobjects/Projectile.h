@@ -2,8 +2,6 @@
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
 struct Projectile : public Entity {
-  ProjectileType type;
-  uint_fast32_t u_id;
   DamageStats damage_stats;
   bool from_player;
   float speed;
@@ -16,19 +14,20 @@ struct Projectile : public Entity {
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              const Vector2& destination, int life_span, float speed,
              const DamageStats& damage_stats, HitType type,
-             const std::vector<StatusEffect*>& effects, ProjectileType p_type) noexcept
+             const std::vector<StatusEffect*>& effects) noexcept
       : Entity(pos, size, shape_type),
         life_span(life_span),
         speed(speed),
         damage_stats(damage_stats),
         from_player(from_player),
         projectile_type(type),
-        status_effects(effects) , type(p_type),u_id(PROJECTILE_ID++){
+        status_effects(effects) {
     move_vector = get_move_vector(destination);
   }
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             int life_span, float speed, const DamageStats& damage_stats, HitType type, const std::vector<StatusEffect*>& effects,
-             const Point& move_vector, float pov, ProjectileType p_type) noexcept
+             int life_span, float speed, const DamageStats& damage_stats, HitType type,
+             const std::vector<StatusEffect*>& effects, const Point& move_vector,
+             float pov) noexcept
       : Entity(pos, size, shape_type, pov),
         life_span(life_span),
         speed(speed),
@@ -36,18 +35,7 @@ struct Projectile : public Entity {
         from_player(from_player),
         projectile_type(type),
         status_effects(effects),
-        move_vector(move_vector) ,type(p_type),u_id(PROJECTILE_ID++){}
-  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             int life_span, float speed, const DamageStats& damage_stats, HitType type, const std::vector<StatusEffect*>& effects,
-             const Point& move_vector, float pov, ProjectileType p_type,uint_fast32_t u_id) noexcept
-      : Entity(pos, size, shape_type, pov),
-        life_span(life_span),
-        speed(speed),
-        damage_stats(damage_stats),
-        from_player(from_player),
-        projectile_type(type),
-        status_effects(effects),
-        move_vector(move_vector) ,type(p_type),u_id(u_id){}
+        move_vector(move_vector) {}
   Projectile(const Projectile& p) noexcept
       : Entity(p),
         move_vector(p.move_vector),
@@ -55,7 +43,7 @@ struct Projectile : public Entity {
         life_span(p.life_span),
         damage_stats(p.damage_stats),
         from_player(p.from_player),
-        projectile_type(p.projectile_type),type(p.type),u_id(p.u_id) {
+        projectile_type(p.projectile_type) {
     for (const auto& effect : p.status_effects) {
       status_effects.push_back(effect->clone());
     }
@@ -93,12 +81,12 @@ struct Projectile : public Entity {
     }
   }
   Point get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle =
-        std::atan2(mouse_pos.y - (pos.y_ + DRAW_Y), mouse_pos.x - (pos.x_ + DRAW_X));
-    pov =  angle * (180.0f / M_PI);
+    float angle = std::atan2(mouse_pos.y - (pos.y_ + size.y_ / 2 + DRAW_Y),
+                             mouse_pos.x - (pos.x_ + size.x_ / 2 + DRAW_X));
+    pov = angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
-  void draw() override  {
+  void draw() override {
     switch (shape_type) {
       case ShapeType::RECT:
         DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,

@@ -43,6 +43,8 @@ class Game {
     if ((*it)->dead) [[unlikely]] {                                   \
       delete *it;                                                     \
       it = PROJECTILES.erase(it);                                     \
+    } else if (MP_TYPE == MultiplayerType::CLIENT) {                  \
+      ++it;                                                           \
     } else {                                                          \
       for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {   \
         if ((*m_it)->dead) [[unlikely]] {                             \
@@ -221,7 +223,7 @@ class Game {
 #ifdef MG2_DEBUG
     SetMasterVolume(0);
 #endif
-    PLAYER_HOTBAR.skills[1] = new FireStrike(true, 10, 6);
+    PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall_Skill(true, 5);
     for (uint_fast32_t i = 0; i < 1; i++) {
       MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));

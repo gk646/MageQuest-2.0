@@ -69,5 +69,5 @@ struct Skill {
 
 #include "skills/Dummy.h"
 #include "skills/FireBall_Skill.h"
-#include "skills/FireStrike.h"
+#include "skills/FireStrike_Skill.h"
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

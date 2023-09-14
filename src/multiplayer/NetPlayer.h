@@ -42,6 +42,8 @@ struct NetPlayer final : public Entity {
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif
+    DrawTextPro(ANT_PARTY, name.c_str(), {pos.x_ + DRAW_X, pos.y_ + DRAW_Y}, {0, 0}, 0,
+                15, 1, WHITE);
   }
   inline void draw_death() noexcept {
     int num = sprite_counter % 75 / 15;
@@ -93,17 +95,15 @@ struct NetPlayer final : public Entity {
   }
   inline void update_state(int x, int y) noexcept {
     moving = false;
-    if(pos.x_ != x ||pos.y_ != y){
+    if (pos.x_ != x || pos.y_ != y) {
       moving = true;
     }
 
-    if (x > pos.x_) {
-      flip = false;
-    }else {
+    if (x < pos.x_) {
       flip = true;
+    } else if (x > pos.y_) {
+      flip = false;
     }
-
-
   }
 };
 #endif  //MAGEQUEST_SRC_MULTIPLAYER_NETPLAYER_H_
