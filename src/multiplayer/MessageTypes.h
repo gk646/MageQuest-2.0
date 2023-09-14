@@ -62,7 +62,6 @@ int UDP_PositionState_Serialize(UDP_PositionState* msg, NBN_Stream* stream) {
 }
 
 struct UDP_Projectile {
-  unsigned int u_id;
   int p_type;
   int x;
   int y;
@@ -79,7 +78,6 @@ void UDP_Projectile_Destroy(UDP_Projectile* msg) {
   free(msg);
 }
 int UDP_Projectile_Serialize(UDP_Projectile* msg, NBN_Stream* stream) {
-  NBN_SerializeUInt(stream, msg->u_id, 0, 1000000);
   NBN_SerializeInt(stream, msg->p_type, 0, 50);
   NBN_SerializeInt(stream, msg->x, -24000, 24000);
   NBN_SerializeInt(stream, msg->y, -24000, 24000);

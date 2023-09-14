@@ -15,10 +15,13 @@ inline static void send_event(UDP_MSG_TYPE event, void* data) noexcept {
     if (event == UDP_PROJECTILE) {
       for (const auto net_player : OTHER_PLAYERS) {
         if (net_player) {
+          auto prj = UDP_Projectile_Create();
+          memcpy(prj,data,sizeof(UDP_Projectile));
           NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE,
-                                               data);
+                                               prj);
         }
       }
+      UDP_Projectile_Destroy((UDP_Projectile*)data);
     }
   } else if (MP_TYPE == MultiplayerType::CLIENT && Client::connected) {
     NBN_GameClient_SendUnreliableMessage(event, data);

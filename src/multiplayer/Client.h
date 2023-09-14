@@ -9,9 +9,9 @@ inline static void RegisterMessages() noexcept {
                                  (NBN_MessageBuilder)UDP_PlayerPos_Client_Create,
                                  (NBN_MessageDestructor)UDP_PlayerPos_Client_Destroy,
                                  (NBN_MessageSerializer)UDP_PlayerPos_Client_Serialize);
-  NBN_GameClient_RegisterMessage(
-      UDP_PLAYER_STATE, (NBN_MessageBuilder)UDP_PositionState_Create,
-      (NBN_MessageDestructor)UDP_PositionState_Destroy,
+  NBN_GameClient_RegisterMessage(UDP_PLAYER_STATE,
+                                 (NBN_MessageBuilder)UDP_PositionState_Create,
+                                 (NBN_MessageDestructor)UDP_PositionState_Destroy,
                                  (NBN_MessageSerializer)UDP_PositionState_Serialize);
   NBN_GameClient_RegisterMessage(UDP_PROJECTILE,
                                  (NBN_MessageBuilder)UDP_Projectile_Create,
@@ -70,17 +70,15 @@ static void HandleDisconnection() {
 inline static void HandleProjectileUpdate(UDP_Projectile* data) noexcept {
   switch (data->p_type) {
     case FIRE_BALL: {
-      PROJECTILES.emplace_back(new Projectile(
-          true, {data->x, data->y}, {25, 25}, ShapeType::RECT, 250, 5,
-          {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
-          {data->move_x, data->move_y}, data->pov, FIRE_BALL, data->u_id));
+      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 250, 4,
+                                            data->damage, HitType::ONE_HIT, {}, data->pov,
+                                            {data->move_x, data->move_y}));
       break;
     }
-    case FIRE_STRIKE:{
-      PROJECTILES.emplace_back(new Projectile(
-          true, {data->x, data->y}, {25, 25}, ShapeType::RECT, 300, 2,
-          {DamageType::FIRE, data->damage}, HitType::CONTINUOUS, {new Burn{1, 1, 1}},
-          {data->move_x, data->move_y}, data->pov, FIRE_STRIKE, data->u_id));
+    case FIRE_STRIKE: {
+      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 120, 2,
+                                            data->damage, HitType::CONTINUOUS, {},
+                                            data->pov, {data->move_x, data->move_y}));
       break;
     }
   }
@@ -91,7 +89,7 @@ inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept 
     if (data->clients_pos[j].client_id == client_id)
       continue;
     if (OTHER_PLAYERS[j]) {
-      OTHER_PLAYERS[j]->update_state(data->clients_pos[j].x,data->clients_pos[j].y);
+      OTHER_PLAYERS[j]->update_state(data->clients_pos[j].x, data->clients_pos[j].y);
       OTHER_PLAYERS[j]->pos.x_ = data->clients_pos[j].x;
       OTHER_PLAYERS[j]->pos.y_ = data->clients_pos[j].y;
     } else {
@@ -135,9 +133,7 @@ inline static void poll_events() noexcept {
         return;
 
       case NBN_MESSAGE_RECEIVED:
-        if (receive_packet() < 0) {
-          Log(NET_LOG_ERROR, "Error receiving packet");
-        }
+        receive_packet();
         break;
     }
   }

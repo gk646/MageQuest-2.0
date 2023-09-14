@@ -30,6 +30,7 @@ inline static long long PERF_TIME = 0;
 inline static long long GAME_TICK_TIME = 0;
 inline static long long FRAME_TIME = 0;
 inline static Vector2 MOUSE_POS = GetMousePosition();
+inline static bool FRIENDLY_FIRE = false;
 
 /* |-----------------------------------------------------|
  * |                    PLAYER                      |

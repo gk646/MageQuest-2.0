@@ -56,7 +56,7 @@ struct Monster : public Entity {
 #endif
   }
   void hit(Projectile& p)noexcept {
-    if (p.from_player && MP_TYPE!= MultiplayerType::CLIENT) {
+    if (p.from_player) {
       health_bar.hit();
       status_effects.add_effects(p.status_effects);
       stats.take_damage(p.damage_stats);

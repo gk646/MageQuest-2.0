@@ -55,43 +55,45 @@ inline static void send_packets() noexcept {
   BroadCastGameState();
   NBN_GameServer_SendPackets();
 }
-inline static void HandleProjectileState(UDP_Projectile* data) noexcept {
+static void HandleProjectileState(UDP_Projectile* data) noexcept {
   switch (data->p_type) {
-    case FIRE_BALL:
-      PROJECTILES.emplace_back(new Projectile(
-          false, {data->x, data->y}, {25, 25}, ShapeType::RECT, 240, 5,
-          {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
-          {data->move_x, data->move_y}, data->pov, FIRE_BALL, PROJECTILE_ID++));
+    case FIRE_BALL: {
+      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 250, 4,
+                                            data->damage, HitType::ONE_HIT, {}, data->pov,
+                                            {data->move_x, data->move_y}));
       break;
-    case FIRE_STRIKE:
-      PROJECTILES.emplace_back(new Projectile(
-          false, {data->x, data->y}, {25, 25}, ShapeType::RECT, 300, 2,
-          {DamageType::FIRE, data->damage}, HitType::ONE_HIT, {},
-          {data->move_x, data->move_y}, data->pov, FIRE_STRIKE, PROJECTILE_ID++));
+    }
+    case FIRE_STRIKE: {
+      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 120, 2,
+                                            data->damage, HitType::CONTINUOUS, {},
+                                            data->pov, {data->move_x, data->move_y}));
       break;
+    }
   }
   for (auto net_player : OTHER_PLAYERS) {
     if (net_player) {
       auto prj = UDP_Projectile_Create();
       memcpy(prj, data, sizeof(UDP_Projectile));
-      NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE,
-                                             prj);
+      NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE, prj);
     }
   }
   UDP_Projectile_Destroy(data);
 }
-inline static int HandleReceiveMessage() noexcept {
-  NBN_MessageInfo msg_info = NBN_GameServer_GetMessageInfo();
+inline static void HandlePositionUpdate(const NBN_MessageInfo& msg) noexcept {
+  auto data = (UDP_PlayerPos*)msg.data;
+  auto sender = OTHER_PLAYERS[msg.sender->id % MG2_MAX_CLIENTS];
+  if (sender) {
+    sender->update_state(data->x, data->y);
+    sender->pos.x_ = data->x;
+    sender->pos.y_ = data->y;
+  }
+  UDP_PlayerPos_Client_Destroy(data);
+}
+static int HandleReceiveMessage() noexcept {
+  auto msg_info = NBN_GameServer_GetMessageInfo();
   switch (msg_info.type) {
     case UDP_PLAYER_POS_CLIENT: {
-      auto data = (UDP_PlayerPos*)msg_info.data;
-      auto sender = OTHER_PLAYERS[msg_info.sender->id % MG2_MAX_CLIENTS];
-      if (sender) {
-        sender->update_state(data->x,data->y);
-        sender->pos.x_ = data->x;
-        sender->pos.y_ = data->y;
-      }
-      UDP_PlayerPos_Client_Destroy(data);
+      HandlePositionUpdate(msg_info);
       break;
     }
     case UDP_PROJECTILE: {
