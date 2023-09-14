@@ -4,7 +4,7 @@
 struct FireBall_Skill final : public Skill {
   FireBall_Skill(bool from_player, float damage)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::FIRE, damage}, from_player,
-              3) {}
+              1) {}
 
   void activate() final {
     use();

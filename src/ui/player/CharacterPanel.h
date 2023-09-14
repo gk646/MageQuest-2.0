@@ -1,8 +1,6 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 
-
-
 struct CharacterPanel : public Window {
   static constexpr int width = 400;
   static constexpr int left_x = 50;
@@ -27,12 +25,13 @@ struct CharacterPanel : public Window {
                     ItemType::ONE_HAND),
       InventorySlot(width / 2 + SLOT_SIZE / 2, begin_y + vertical_gap * 4,
                     ItemType::OFF_HAND)};
-  CharacterPanel() noexcept : Window(SCREEN_WIDTH*0.1F,SCREEN_HEIGHT*0.2F,width, 500, 25, "Character", KEY_C) {
+  CharacterPanel() noexcept
+      : Window(SCREEN_WIDTH * 0.1F, SCREEN_HEIGHT * 0.2F, width, 500, 25, "Character",
+               KEY_C) {
     PLAYER_EQUIPPED = equip_slots.data();
   }
   void draw() {
-    OPEN_CLOSE()
-    DRAG_WINDOW()
+    WINDOW_LOGIC()
     draw_window();
     for (auto& slot : equip_slots) {
       slot.draw(whole_window.x, whole_window.y);
@@ -42,7 +41,7 @@ struct CharacterPanel : public Window {
     }
   }
   void update() noexcept {
-    update_window();
+    WINDOW_UPDATE();
     for (auto& slot : equip_slots) {
       slot.update_player_inv();
     }

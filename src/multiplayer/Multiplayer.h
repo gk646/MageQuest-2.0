@@ -17,7 +17,7 @@ inline static void send_event(UDP_MSG_TYPE event, void* data) noexcept {
         if (net_player) {
           auto prj = UDP_Projectile_Create();
           memcpy(prj,data,sizeof(UDP_Projectile));
-          NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE,
+          NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PROJECTILE,
                                                prj);
         }
       }
@@ -27,7 +27,6 @@ inline static void send_event(UDP_MSG_TYPE event, void* data) noexcept {
     NBN_GameClient_SendUnreliableMessage(event, data);
   }
 }
-
 inline static void poll_events() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     Server::poll_events();
@@ -45,6 +44,9 @@ inline static void send_packets() noexcept {
   }
 }
 inline static void close_mp() noexcept {
+  MP_TYPE = MultiplayerType::OFFLINE;
+  Server::connected_clients = 0;
+  Client::connected = false;
   if (MP_TYPE == MultiplayerType::SERVER) {
     for (auto& net_player : OTHER_PLAYERS) {
       if (net_player) {
@@ -69,7 +71,6 @@ inline static void close_mp() noexcept {
     NBN_GameClient_Disconnect();
     NBN_GameClient_Stop();
   }
-  MP_TYPE = MultiplayerType::OFFLINE;
 }
 inline static void draw_stats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {

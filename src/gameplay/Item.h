@@ -116,9 +116,9 @@ struct Item {
       startY = mouse.y - height;
     }
 
-    DrawRectangleRounded({startX - 4, startY - 4, width + 8, height + 8}, 0.1, 25,
+    DrawRectangleRounded({startX - 4, startY - 4, width + 8, height + 8}, 0.1, ROUND_SEGMENTS,
                          Colors::LightGrey);
-    DrawRectangleRoundedLines({startX, startY, width, height}, 0.1, 30, 2,
+    DrawRectangleRoundedLines({startX, startY, width, height}, 0.1, ROUND_SEGMENTS, 2,
                               rarity_to_color[rarity]);
 
     /* |-----------------------------------------------------|

@@ -117,12 +117,7 @@ inline static int receive_packet() noexcept {
 }
 inline static void poll_events() noexcept {
   NBN_GameClient_AddTime(MG2_TICK_TIME);
-  while ((MP_EVENT_CODE = NBN_GameClient_Poll()) != NBN_NO_EVENT) {
-    if (MP_EVENT_CODE < 0) {
-      Log(NET_LOG_ERROR, "An error occurred while polling client events. Exit");
-      break;
-    }
-
+  while ((MP_EVENT_CODE = NBN_GameClient_Poll()) != NBN_NO_EVENT && connected) {
     switch (MP_EVENT_CODE) {
       case NBN_CONNECTED:
         HandleConnection();

@@ -49,7 +49,7 @@ inline std::string ASSET_PATH = "../res/";
  * |                       DEBUG                         |
  * |-----------------------------------------------------|
  */
-#define MG2_DEBUG
+//#define MG2_DEBUG
 
 #ifdef MG2_DEBUG
 #define DRAW_HITBOXES                                                                   //Draws an outline around hitboxes
