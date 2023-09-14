@@ -9,22 +9,21 @@ struct CharacterBag final : public Window {
   static constexpr int offset_x = 15;
   static constexpr int offset_y = 50;
   static constexpr int max_slots = 40;
-
   explicit CharacterBag() noexcept
       : Window(SCREEN_WIDTH * 0.6F, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags", KEY_B) {
     PLAYER_BAG = new InventorySlot[max_slots];
+    cxstructs::now(2);
   }
 
   void draw() noexcept {
-    OPEN_CLOSE()
-    DRAG_WINDOW()
+    WINDOW_LOGIC()
     draw_window();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
       PLAYER_BAG[i].draw(whole_window.x, whole_window.y);
     }
   }
   void update() noexcept {
-    update_window();
+   WINDOW_UPDATE();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
       PLAYER_BAG[i].update();
     }
@@ -34,7 +33,7 @@ struct CharacterBag final : public Window {
     int exist_y = PLAYER_BAG_SIZE / per_row;
     for (uint_fast32_t i = 0; i < n; i++) {
       RectangleR rect = {(float)offset_x + spacing_x * exist_x,
-                        (float)offset_y + spacing_y * exist_y, 45, 45};
+                         (float)offset_y + spacing_y * exist_y, 45, 45};
       PLAYER_BAG[i].hit_box = rect;
       PLAYER_BAG[i].base_x = rect.x;
       PLAYER_BAG[i].base_y = rect.y;

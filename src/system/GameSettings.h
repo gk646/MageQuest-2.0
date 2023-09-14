@@ -4,4 +4,6 @@
 inline float UI_SCALE = 1;
 inline int TARGET_FPS = 120;
 inline bool FAST_UI;
+inline bool SHOW_FPS;
+inline int ROUND_SEGMENTS = 30;
 #endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

@@ -13,7 +13,7 @@ void UDP_PlayerPos_Client_Destroy(UDP_PlayerPos* msg) {
   free(msg);
 }
 int UDP_PlayerPos_Client_Serialize(UDP_PlayerPos* msg, NBN_Stream* stream) {
-  NBN_SerializeInt(stream, msg->x, 0, 24000);
+  NBN_SerializeInt(stream, msg->x, 0, 24000)
   NBN_SerializeInt(stream, msg->y, 0, 24000);
   return 0;
 }

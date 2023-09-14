@@ -203,7 +203,7 @@ class Game {
       case GameState::GameOver:
         break;
     }
-    if (UI_MANAGER.settings_menu.showFPS) {
+    if (SHOW_FPS) {
       DrawFPS(25, 25);
     }
     FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);

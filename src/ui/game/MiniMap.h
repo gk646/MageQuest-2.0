@@ -56,6 +56,9 @@ struct MiniMap {
         }
       }
     }
+    if(FAST_UI){
+      return;
+    }
     std::shared_lock<std::shared_mutex> lock(rwLock);
     for (const auto monster : MONSTERS) {
       if (monster->tile_pos.dist(player_tile) < 20) {

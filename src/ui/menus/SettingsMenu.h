@@ -2,9 +2,6 @@
 #define MAGE_QUEST_SRC_UI_SETTINGSMENU_H_
 
 struct SettingsMenu {
-  int targetFPS = 120;
-  bool showFPS = false;
-
   int selectedResolution = 0;
   const char* resolutions = "800x600;1280x720;1920x1080;2560x1440;3840x2160";
 
@@ -53,14 +50,27 @@ struct SettingsMenu {
     CAMERA_X = SCREEN_WIDTH / 2;
     CAMERA_Y = SCREEN_HEIGHT / 2;
     startY += verticalSpacing;
-    showFPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
-                          "Show FPS", showFPS);
 
+    //show pfs
+    SHOW_FPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
+                          "Show FPS", SHOW_FPS);
     startY += verticalSpacing;
-    targetFPS = static_cast<int>(
+
+    FAST_UI = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
+                           "Fast UI", FAST_UI);
+    if(FAST_UI){
+      ROUND_SEGMENTS = 15;
+    }else{
+      ROUND_SEGMENTS = 30;
+    }
+    startY += verticalSpacing;
+
+
+
+    TARGET_FPS = static_cast<int>(
         GuiSlider({startX, startY, scaledWidth, scaledHeight}, "FPS Target",
-                  nullptr, static_cast<float>(targetFPS), 60, 10000));
-    SetTargetFPS(targetFPS);
+                  nullptr, static_cast<float>(TARGET_FPS), 60, 3000));
+    SetTargetFPS(TARGET_FPS);
   }
   static void setResolution(int resolution) noexcept {
     switch (resolution) {

@@ -109,6 +109,7 @@ using namespace cxstructs;
  * |                  MAGE QUEST II                      |
  * |-----------------------------------------------------|
  */
+#include "system/GameSettings.h"
 #include "system/Definitions.h"
 #include "resources/Colors.h"
 #include "system/Enums.h"
