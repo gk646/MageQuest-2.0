@@ -27,7 +27,7 @@ struct Player final : public Entity {
   }
   void update() final {
     if(dead){
-      GAME_STATE == GameState::GameOver;
+      GAME_STATE = GameState::GameOver;
     }
     float speed = PLAYER_STATS.get_speed();
     moving = false;

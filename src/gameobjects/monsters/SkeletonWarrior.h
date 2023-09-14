@@ -37,7 +37,7 @@ struct SkeletonWarrior final : public Monster {
 #endif
   }
   void update() final {
-    monster_update();
+    Monster::update();
     if (move_to_player() && attack == 0 && attack_cd < 0) {
       int num = RANGE_100(RNG_ENGINE);
       attack_cd = 160;
@@ -53,7 +53,6 @@ struct SkeletonWarrior final : public Monster {
       attack_cd--;
     }
   }
-
   inline void draw_death() noexcept {
     int num = sprite_counter % 175 / 35;
     if (num < 4) {

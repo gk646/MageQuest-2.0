@@ -38,17 +38,7 @@ struct Monster : public Entity {
 
     return *this;
   }
-  void update() override = 0;
-  void draw() override = 0;
-  void hit(Projectile& p) noexcept {
-    if (p.from_player) {
-      health_bar.hit();
-      status_effects.add_effects(p.status_effects);
-      stats.take_damage(p.damage_stats);
-    }
-    p.dead = p.from_player && attack != -100 && p.projectile_type == HitType::ONE_HIT;
-  }
-  inline void monster_update() noexcept {
+  void update() override {
     sprite_counter++;
     if (stats.health <= 0) {
       attack = -100;
@@ -57,6 +47,15 @@ struct Monster : public Entity {
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
     health_bar.update();
     status_effects.update();
+  };
+  void draw() override = 0;
+  void hit(Projectile& p) noexcept {
+    if (p.from_player) {
+      health_bar.hit();
+      status_effects.add_effects(p.status_effects);
+      stats.take_damage(p.damage_stats);
+    }
+    p.dead = p.from_player && attack != -100 && p.projectile_type == HitType::ONE_HIT;
   }
   bool move_to_player() noexcept {
     if (attack != 0) {
