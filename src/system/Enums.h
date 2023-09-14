@@ -22,11 +22,22 @@ enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
 enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class HitType { CONTINUOUS, ONE_HIT };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
-enum PlayerDirection {PLAYER_LEFT = 50,PLAYER_RIGHT = 51};
-inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
-    {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
-    {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};
 
+enum class QuestState { NOT_STARTED, IN_PROGRESS, COMPLETED };
+enum class Quest_ID { TUTORIAL, MARLA,END };
+enum class NPC_ID : int {
+  DECKARD,
+  MARLA,
+  ARIA,
+  HILLCREST_MAYOR,
+  RECEPTIONS,
+  DYING_MAN,
+  NIETZSCHE,
+  VILLAGER,
+  TRADER,
+  RANDOM,
+  END
+};
 enum class ItemType {
   HEAD = 5,
   CHEST = 4,
@@ -90,7 +101,7 @@ enum Stat {
   CDR_P,
   ARMOUR_MULT_P,
   HEALTH_MULT_P,
-  MANA_MULT_P,  //other pecentile only before mana mult
+  MANA_MULT_P,  //other percentile only before mana mult
   WEAPON_DAMAGE,
   ARMOUR,
   MAX_SHIELD,
@@ -112,7 +123,9 @@ enum UDP_MSG_TYPE : uint8_t {
 };
 
 enum ProjectileType { POISON_BALL, FIRE_STRIKE, FIRE_BALL };
-
+inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
+    {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
+    {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};
 inline std::unordered_map<Stat, std::string> statToName = {
     {ARCANE_DMG_P, "Arcane Damage (%)"},
     {DARK_DMG_P, "Dark Damage (%)"},

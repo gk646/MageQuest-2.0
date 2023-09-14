@@ -7,7 +7,6 @@ struct Monster : public Entity {
   EntityStats stats;
   bool moving = false;
   int attack = 0;
-  int sprite_counter = 0;
   int attack_cd = 0;
   std::string name;
   MonsterResource* resource;
@@ -24,7 +23,6 @@ struct Monster : public Entity {
         stats(other.stats),
         name(other.name),
         health_bar(other.health_bar),
-        sprite_counter(other.sprite_counter),
         resource(other.resource) {}
   Monster& operator=(const Monster& other) {
     if (this == &other) {
@@ -41,27 +39,14 @@ struct Monster : public Entity {
     return *this;
   }
   void update() override = 0;
-  void draw() override {
-    if (shape_type == ShapeType::CIRCLE) {
-      DrawCircleSector(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, 0, 360, 50, PURPLE);
-    } else {
-      DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0},
-                       pov, PURPLE);
-    }
-    if (health_bar.delay > 0) {
-      health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
-    }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
-  }
-  void hit(Projectile& p)noexcept {
+  void draw() override = 0;
+  void hit(Projectile& p) noexcept {
     if (p.from_player) {
       health_bar.hit();
       status_effects.add_effects(p.status_effects);
       stats.take_damage(p.damage_stats);
     }
-    p.dead = p.from_player&& attack != -100 && p.projectile_type == HitType::ONE_HIT;
+    p.dead = p.from_player && attack != -100 && p.projectile_type == HitType::ONE_HIT;
   }
   inline void monster_update() noexcept {
     sprite_counter++;
@@ -74,7 +59,7 @@ struct Monster : public Entity {
     status_effects.update();
   }
   bool move_to_player() noexcept {
-    if(attack != 0){
+    if (attack != 0) {
       return false;
     }
     PointI point;
@@ -83,7 +68,8 @@ struct Monster : public Entity {
       decideMovement(point.x, point.y);
       moving = true;
       return false;
-    } else if (point == 0 &&RANGE_01SMALL(RNG_RANDOM) > 30 && !this->intersects(PLAYER)) {
+    } else if (point == 0 && RANGE_01SMALL(RNG_RANDOM) > 30 &&
+               !this->intersects(PLAYER)) {
       float speed = stats.get_speed();
       moving = true;
       if (pos.x_ < PLAYER_X) {
@@ -98,7 +84,7 @@ struct Monster : public Entity {
     }
     return true;
   }
-  void decideMovement(int nextX, int nextY)noexcept {
+  void decideMovement(int nextX, int nextY) noexcept {
     float speed = stats.get_speed();
     bool canMoveRight = tile_pos.x < nextX && !tile_collision_right(speed);
     bool canMoveLeft = tile_pos.x > nextX && !tile_collision_left(speed);

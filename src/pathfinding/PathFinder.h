@@ -1,13 +1,6 @@
 #ifndef MAGEQUEST_SRC_PATHFINDING_PATHFINDER_H_
 #define MAGEQUEST_SRC_PATHFINDING_PATHFINDER_H_
 
-#include <cmath>
-#include <queue>
-#include <vector>
-
-#include <cxstructs/HashSet.h>
-#include <cxstructs/PriorityQueue.h>
-
 struct NodeP {
   PointI position{};
   uint16_t f_cost = 0;
