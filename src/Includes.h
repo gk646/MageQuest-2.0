@@ -101,6 +101,9 @@ typedef struct tagMSG* LPMSG;
  * |-----------------------------------------------------|
  */
 #include "cxstructs/Geometry.h"
+#include "cxstructs/HashMap.h"
+#include "cxstructs/PriorityQueue.h"
+#include <cxstructs/HashSet.h>
 #include "cxstructs/vec.h"
 #include "cxutil/cxtime.h"
 using namespace cxstructs;
@@ -113,6 +116,7 @@ using namespace cxstructs;
 #include "system/Definitions.h"
 #include "resources/Colors.h"
 #include "system/Enums.h"
+#include "quests/Quest.h"
 #include "gameplay/Stats.h"
 #include "system/GameSettings.h"
 #include "system/Util.h"
@@ -123,6 +127,7 @@ using namespace cxstructs;
 #include "graphics/LogoDrawer.h"
 #include "gamestateio/loading/EntityResource.h"
 #include "system/GlobalVariables.h"
+#include "quests/QuestResources.h"
 #include "gameplay/Item.h"
 #include "resources/SoundStorage.h"
 #include "resources/TextureStorage.h"
@@ -131,6 +136,7 @@ using namespace cxstructs;
 #include "ui/player/elements/InventorySlot.h"
 #include "ui/Window.h"
 #include "ui/player/CharacterBag.h"
+#include "ui/player/QuestPanel.h"
 #include "gameobjects/Entity.h"
 #include "gameobjects/Projectile.h"
 #include "multiplayer/Multiplayer.h"

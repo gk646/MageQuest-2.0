@@ -5,20 +5,22 @@
 
 struct Entity {
   bool dead = false;
-  float pov = 0;
-  Point pos{};
-  PointI tile_pos{};
-  Point size{};
-  ShapeType shape_type = ShapeType::RECT;
+  float pov;
+  Point pos;
+  PointI tile_pos;
+  Point size;
+  ShapeType shape_type;
+  int sprite_counter = 0;
   Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0)
       : pos(pos), size(size), shape_type(shape_type), pov(pov) {}
   Entity(const Entity& o) noexcept
-      : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov) {}
-  Entity& operator=(const Entity& other) {
+      : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov), dead(o.dead) {}
+  Entity& operator=(const Entity& other)noexcept {
     if (this == &other) {
       return *this;
     }
 
+    dead = other.dead;
     pos = other.pos;
     size = other.size;
     shape_type = other.shape_type;
@@ -135,5 +137,4 @@ struct Entity {
   }
 };
 #include "WorldObject.h"
-
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

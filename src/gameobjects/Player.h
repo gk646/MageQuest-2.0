@@ -2,9 +2,9 @@
 #define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 
 struct Player final : public Entity {
+  std::string name;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
-  int action_state;
-  int sprite_counter = 0;
+  int action_state = 0;
   bool flip = false;
   bool moving = false;
   explicit Player(const Point& pos) : Entity(pos, {28, 50}, ShapeType::RECT) {
