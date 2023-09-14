@@ -36,6 +36,13 @@ struct EntityLoader {
     textures::THUNDER_STRIKE.load("thunderStrike/");
     textures::VOID_ERUPTION.load("voidEruption/");
     textures::VOID_FIELD.load("voidField/");
+
+
+    //npcs
+    textures::ARIA.load("npc/aria/");
+    textures::OLD_MAN.load("npc/oldman/");
+    textures::realmKeeper.load("npc/realmKeeper/");
+    textures::NIETZSCHE.load("npc/nietzsche/");
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ENTITYLOADER_H_

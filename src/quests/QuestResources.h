@@ -24,7 +24,7 @@ struct Quest_Dialogue {
 namespace QuestResources {
 std::array<std::vector<Quest_Dialogue>, (int)NPC_ID::END> dialog_storage;
 
-inline static const std::string& get_dialogue(const NPC_ID id) noexcept {
+inline static const std::string& get_quest_dialogue(const NPC_ID id) noexcept {
   if(id == NPC_ID::VILLAGER){
 
   }else if (id == NPC_ID::TRADER){

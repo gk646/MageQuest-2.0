@@ -5,6 +5,13 @@ namespace textures {
 //player
 inline MonsterResource PLAYER_RESOURCE;
 
+
+//npcs
+inline MonsterResource OLD_MAN;
+inline MonsterResource ARIA;
+inline MonsterResource NIETZSCHE;
+inline MonsterResource realmKeeper;
+
 //monsters
 inline MonsterResource SKELETON_WARRIOR;
 inline MonsterResource SKELETON_SPEAR;

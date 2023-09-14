@@ -84,8 +84,6 @@ static void HandlePositionUpdate(const NBN_MessageInfo& msg) noexcept {
   auto sender = OTHER_PLAYERS[msg.sender->id % MG2_MAX_CLIENTS];
   if (sender) {
     sender->update_state(data->x, data->y);
-    sender->pos.x_ = data->x;
-    sender->pos.y_ = data->y;
   }
   UDP_PlayerPos_Client_Destroy(data);
 }
@@ -145,7 +143,8 @@ inline static void HandleClientDisconnect() noexcept {
 }
 static void poll_events() noexcept {
   NBN_GameServer_AddTime(MG2_TICK_TIME);
-  while ((MP_EVENT_CODE = NBN_GameServer_Poll()) != NBN_NO_EVENT && connected_clients > 0) {
+  while ((MP_EVENT_CODE = NBN_GameServer_Poll()) != NBN_NO_EVENT &&
+         connected_clients > 0) {
     switch (MP_EVENT_CODE) {
       case NBN_NEW_CONNECTION:
         HandleNewConnection();

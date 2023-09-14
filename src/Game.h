@@ -16,6 +16,11 @@ class Game {
     }                                                                 \
   }                                                                   \
   SIMD_PRAGMA                                                         \
+  for (const auto npc : NPCS) {                                       \
+    npc->update();                                                    \
+  }                                                                   \
+                                                                      \
+  SIMD_PRAGMA                                                         \
   for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) { \
     if ((*it)->dead) {                                                \
       delete *it;                                                     \
@@ -228,6 +233,7 @@ class Game {
     for (uint_fast32_t i = 0; i < 1; i++) {
       MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));
     }
+    NPCS.push_back(new Deckard(400, 150));
     //SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {

@@ -38,6 +38,8 @@ inline const Color white_smoke = {237, 242, 244, 200};
 inline const Color map_green = {99, 199, 77, 255};
 inline const Color mediumLightGreyTransparent = {155, 169, 194, 229};  // 0.9 * 255
 inline const Color blue_npc = {18, 78, 137, 255};
+inline const Color green_npc = {14, 135, 12, 255};
+inline const Color purple_npc = {181, 80, 136, 255};
 inline const Color black = {24, 20, 37, 255};
 
 // TALENTS

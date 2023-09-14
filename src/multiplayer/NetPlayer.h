@@ -22,6 +22,9 @@ struct NetPlayer final : public Entity {
         connection(connection),
         client_id(client_id) {}
   void draw() final {
+    if (zone != CURRENT_ZONE) {
+      return;
+    }
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
@@ -44,6 +47,32 @@ struct NetPlayer final : public Entity {
 #endif
     DrawTextPro(ANT_PARTY, name.c_str(), {pos.x_ + DRAW_X, pos.y_ + DRAW_Y}, {0, 0}, 0,
                 15, 1, WHITE);
+  }
+  void update() final {
+    sprite_counter++;
+    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
+    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
+  }
+  inline void update_state(int x, int y) noexcept {
+    moving = false;
+    if (pos.x_ != x || pos.y_ != y) {
+      moving = true;
+    }
+
+    if (x < pos.x_) {
+      flip = true;
+    } else if (x > pos.y_) {
+      flip = false;
+    }
+    pos.x_ = x;
+    pos.y_ = y;
+  }
+  void hit(Projectile& p) noexcept {
+    if (!p.from_player) {
+      status_effects.add_effects(p.status_effects);
+      stats.take_damage(p.damage_stats);
+      p.dead = p.projectile_type == HitType::ONE_HIT;
+    }
   }
   inline void draw_death() noexcept {
     int num = sprite_counter % 75 / 15;
@@ -79,30 +108,6 @@ struct NetPlayer final : public Entity {
                            pos.y_ + DRAW_Y - 45, -15, 0, flip, WHITE);
     } else {
       action_state = 0;
-    }
-  }
-  void hit(Projectile& p) noexcept {
-    if (!p.from_player) {
-      status_effects.add_effects(p.status_effects);
-      stats.take_damage(p.damage_stats);
-      p.dead = p.projectile_type == HitType::ONE_HIT;
-    }
-  }
-  void update() final {
-    sprite_counter++;
-    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
-  }
-  inline void update_state(int x, int y) noexcept {
-    moving = false;
-    if (pos.x_ != x || pos.y_ != y) {
-      moving = true;
-    }
-
-    if (x < pos.x_) {
-      flip = true;
-    } else if (x > pos.y_) {
-      flip = false;
     }
   }
 };

@@ -60,13 +60,6 @@ struct MiniMap {
       return;
     }
     std::shared_lock<std::shared_mutex> lock(rwLock);
-    for (const auto monster : MONSTERS) {
-      if (monster->tile_pos.dist(player_tile) < 20) {
-        DrawRectangleProFast(draw_x + (monster->tile_pos.x - tile_x) * zoom,
-                             draw_y + (monster->tile_pos.y - tile_y) * zoom, zoom,
-                             Colors::Red);
-      }
-    }
     for (const auto projectile : PROJECTILES) {
       if(projectile->from_player){
         DrawRectangleProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,
@@ -76,6 +69,26 @@ struct MiniMap {
         DrawRectangleProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,
                              draw_y + (projectile->tile_pos.y - tile_y) * zoom, 3,
                              Colors::Red);
+      }
+    }
+    for (const auto monster : MONSTERS) {
+      if (monster->tile_pos.dist(player_tile) < 20) {
+        DrawRectangleProFast(draw_x + (monster->tile_pos.x - tile_x) * zoom,
+                             draw_y + (monster->tile_pos.y - tile_y) * zoom, zoom,
+                             Colors::Red);
+      }
+    }
+    for(const auto npc : NPCS){
+      if (npc->tile_pos.dist(player_tile) < 20) {
+        if(npc->id == NPC_ID::RANDOM || npc->id == NPC_ID::VILLAGER){
+          DrawRectangleProFast(draw_x + (npc->tile_pos.x - tile_x) * zoom,
+                               draw_y + (npc->tile_pos.y - tile_y) * zoom, zoom,
+                               Colors::green_npc);
+        }else {
+          DrawRectangleProFast(draw_x + (npc->tile_pos.x - tile_x) * zoom,
+                               draw_y + (npc->tile_pos.y - tile_y) * zoom, zoom,
+                               Colors::blue_npc);
+        }
       }
     }
   }
