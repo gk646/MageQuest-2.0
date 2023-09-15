@@ -2,10 +2,8 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_NPCS_DECKARD_H_
 
 struct Deckard final : public NPC {
-  Deckard(int x, int y) : NPC({x*TILE_SIZE, y*TILE_SIZE}, &textures::OLD_MAN, NPC_ID::DECKARD) {
-    dialogue = new std::string(
-        "Before I let you go here are some coins for your trouble, but don't spend it all at once! You should go talk to the mayor while you in town, tell you much more useful things, and doesn't need to be rescued...");
-  }
+  Deckard(int x, int y)
+      : NPC({x * TILE_SIZE, y * TILE_SIZE}, &textures::OLD_MAN, NPC_ID::DECKARD) {}
   void draw() final {
     draw_dialogue();
     if (moving) {
@@ -22,10 +20,19 @@ struct Deckard final : public NPC {
   }
   void update() final {
     NPC::update();
-    if (IsKeyDown(KEY_E) && this->intersects(PLAYER)) {
-      dial_count = 0;
-      show_dial_delay = 400;
-      //PLAYER_QUESTS.interact_npc(this);
+    if (IsKeyPressedU::E()) {
+      if (this->intersects(PLAYER)) {
+        if (!dialogue) {
+          PLAYER_QUESTS.interact_npc(this);
+        } else if (show_dial_delay < 0) {
+          dial_count = 0;
+          show_dial_delay = 400;
+        } else if (dial_count < 1000) {
+          dial_count = 1000;
+        } else {
+          PLAYER_QUESTS.interact_npc(this);
+        }
+      }
     }
   }
 };

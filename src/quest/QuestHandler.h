@@ -5,26 +5,30 @@
 
 struct QuestHandler {
   std::vector<Quest*> quests;
-
-  void interact_npc(NPC* npc) {
-    for (auto quest : quests) {
-      if (quest->progressable(NodeType::SPEAK)) {
-        quest->progress(npc);
-      }
-    }
-  }
-  void killed_monster() {}
-  void update_void() {}
-  inline void add_quest(Quest* q) noexcept {
-
-    quests.push_back(q);
-
-  }
   ~QuestHandler() {
     for (auto q : quests) {
       delete q;
     }
   }
+  inline Quest* get_quest(Quest_ID id) {
+    for (auto quest : quests) {
+      if (quest->id == id) {
+        return quest;
+      }
+    }
+  }
+  void interact_npc(NPC* npc) {
+    for (auto quest : quests) {
+      if (quest) {
+        if (quest->progressable(NodeType::SPEAK)) {
+          quest->progress(npc);
+        }
+      }
+    }
+  }
+  void killed_monster() {}
+  void update() {}
+  inline void add_quest(Quest* q) noexcept { quests.push_back(q); }
 };
 inline static QuestHandler PLAYER_QUESTS;
 

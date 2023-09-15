@@ -15,8 +15,11 @@ struct NPC : public Entity {
   void draw() override = 0;
   void draw_dialogue() {
     if (show_dial_delay > 0) {
-      DialogueRender::render_npc(pos.x_ + DRAW_X + size.x_ / 2,
-                                 pos.y_ + DRAW_Y, dialogue, dial_count);
+      if(dialogue){
+        DialogueRender::render_npc(pos.x_ + DRAW_X + size.x_ / 2,
+                                   pos.y_ + DRAW_Y, dialogue, dial_count);
+
+      }
     }
   }
   void update() override {

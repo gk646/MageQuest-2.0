@@ -38,6 +38,5 @@ void render_npc(int x, int y, const std::string* text, float& count) {
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX+3, startY+3}, 17, 0.5, WHITE);
 }
 
-
 }  // namespace DialogueRender
 #endif  //MAGEQUEST_SRC_GRAPHICS_DIALOGUERENDER_H_

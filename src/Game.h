@@ -234,7 +234,7 @@ class Game {
     for (uint_fast32_t i = 0; i < 1; i++) {
       MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));
     }
-    PLAYER_QUESTS.add_quest(QuestResources::TUTORIAL);
+
 
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();

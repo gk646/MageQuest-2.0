@@ -13,8 +13,8 @@ std::vector<std::string> split(const std::string& s, char delim) {
   return result;
 }
 
-Quest* load(const std::string& path, Quest_ID u_id) {
-  auto quest = new Quest();
+Quest* load(const std::string& path, Quest_ID id) {
+  auto quest = new Quest(id);
   std::ifstream file(ASSET_PATH + path);
   NodeType type;
   std::string line;
@@ -45,8 +45,6 @@ Quest* load(const std::string& path, Quest_ID u_id) {
         break;
       case NodeType::SPEAK: {
         auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
-        std::getline(file, line);
-        assert(line == "*");
         while (std::getline(file, line) && line != "*") {
           obj->lines.push_back(line);
         }
@@ -71,10 +69,7 @@ Quest* load(const std::string& path, Quest_ID u_id) {
         break;
     }
   }
-
   return quest;
 }
-
-QuestNode* parse_SPEAK(const std::vector<std::string>&) {}
-};      // namespace ScriptParser
+}      // namespace ScriptParser
 #endif  //MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
