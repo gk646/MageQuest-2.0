@@ -7,16 +7,24 @@ struct QuestHandler {
   std::vector<Quest*> quests;
 
   void interact_npc(NPC* npc) {
-    Objective* obj;
     for (auto quest : quests) {
-      if (quest->state == QuestState::ACTIVE) {
-        if ((obj = quest->get_current_obj()) && obj->type == ObjectiveType::SPEAK) {
-          ((SPEAK*)obj)->progress(npc);
-        }
+      if (quest->progressable(NodeType::SPEAK)) {
+        quest->progress(npc);
       }
     }
   }
   void killed_monster() {}
+  void update_void() {}
+  inline void add_quest(Quest* q) noexcept {
+
+    quests.push_back(q);
+
+  }
+  ~QuestHandler() {
+    for (auto q : quests) {
+      delete q;
+    }
+  }
 };
 inline static QuestHandler PLAYER_QUESTS;
 

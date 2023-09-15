@@ -4,23 +4,6 @@
 namespace DialogueRender {
 inline static constexpr int base_width = 365;
 inline static constexpr int base_height = 120;
-void render_npcb(int x, int y, const std::string* text, int& count) {
-  int width = SCALE(base_width);
-  int height = SCALE(base_height);
-
-  if (count < text->size()) {
-    int startY = height + 2;
-    std::string curr = text->substr(0, count);
-    if (GetTextWidth(curr.data()) > width) {
-      for (uint_fast32_t i = 0; i < 10; i++) {
-        DrawTextPro(MINECRAFT_REGULAR, curr.data(), {x - width / 2.0F, (float)y - height},
-                    {0, 0}, 0, 20, 1, WHITE);
-      }
-    }
-  } else {
-    count = 1000;
-  }
-}
 void render_npc(int x, int y, const std::string* text, float& count) {
   float width = SCALE(base_width);
   float height = SCALE(base_height);
@@ -33,6 +16,7 @@ void render_npc(int x, int y, const std::string* text, float& count) {
   if (count > text->size()) {
     count = 1000;
   }
+
   std::string toRender = text->substr(0, count);
 
   std::istringstream iss(toRender);

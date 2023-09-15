@@ -2,6 +2,7 @@
 #define MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_
 
 #include "loading/loaders/EntityLoader.h"
+#include "loading/loaders/QuestLoader.h"
 #include "loading/loaders/MapLoader.h"
 #include "loading/loaders/SoundLoader.h"
 #include "loading/loaders/TextureLoader.h"
@@ -30,6 +31,7 @@ struct GameLoader {
 
  private:
   static void load_game() {
+    load_step(QuestLoader::load);
     load_step(SoundLoader::load);
     load_step(TileLoader::load);
     load_step(MapLoader::load);
