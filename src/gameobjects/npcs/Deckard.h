@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_NPCS_DECKARD_H_
 
 struct Deckard final : public NPC {
-  Deckard(int x, int y) : NPC({x, y}, &textures::OLD_MAN, NPC_ID::DECKARD) {
+  Deckard(int x, int y) : NPC({x*TILE_SIZE, y*TILE_SIZE}, &textures::OLD_MAN, NPC_ID::DECKARD) {
     dialogue = new std::string(
         "Before I let you go here are some coins for your trouble, but don't spend it all at once! You should go talk to the mayor while you in town, tell you much more useful things, and doesn't need to be rescued...");
   }

@@ -14,7 +14,7 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: Never  # To avoid conflict, set this "Never" and each "if statement" should include brace when coding
+AllowShortIfStatementsOnASingleLine: Always  # To avoid conflict, set this "Never" and each "if statement" should include brace when coding
 AllowShortLambdasOnASingleLine: Inline
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None

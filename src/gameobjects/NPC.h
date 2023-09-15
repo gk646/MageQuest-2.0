@@ -32,7 +32,7 @@ struct NPC : public Entity {
   void update_dialogue(std::string* text) {
     dial_count = 0;
     dialogue = text;
-    show_dial_delay = 300;
+    show_dial_delay = 400;
   }
 };
 

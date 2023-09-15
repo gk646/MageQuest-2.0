@@ -111,7 +111,18 @@ enum Stat {
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
  */
-enum class ObjectiveType {GOTO,KILL,SPEAK,COLLECT,REQUIRE,PROTECT,ESCORT};
+enum class NodeType {GOTO,KILL,SPEAK,COLLECT,REQUIRE,PROTECT,ESCORT,MIX,NPC_MOVE};
+inline static std::unordered_map<std::string, NodeType> node_to_type = {
+    {"GOTO", NodeType::GOTO},
+    {"KILL", NodeType::KILL},
+    {"SPEAK", NodeType::SPEAK},
+    {"COLLECT", NodeType::COLLECT},
+    {"REQUIRE", NodeType::REQUIRE},
+    {"PROTECT", NodeType::PROTECT},
+    {"ESCORT", NodeType::ESCORT},
+    {"MIX", NodeType::MIX},
+    {"NPC_MOVE", NodeType::NPC_MOVE}
+};
 enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID { TUTORIAL, MARLA, END };
 enum class NPC_ID : int {
@@ -127,7 +138,19 @@ enum class NPC_ID : int {
   RANDOM,
   END
 };
-
+std::unordered_map<std::string, NPC_ID> npcIdMap = {
+    {"DECKARD", NPC_ID::DECKARD},
+    {"MARLA", NPC_ID::MARLA},
+    {"ARIA", NPC_ID::ARIA},
+    {"HILLCREST_MAYOR", NPC_ID::HILLCREST_MAYOR},
+    {"RECEPTIONS", NPC_ID::RECEPTIONS},
+    {"DYING_MAN", NPC_ID::DYING_MAN},
+    {"NIETZSCHE", NPC_ID::NIETZSCHE},
+    {"VILLAGER", NPC_ID::VILLAGER},
+    {"TRADER", NPC_ID::TRADER},
+    {"RANDOM", NPC_ID::RANDOM},
+    {"END", NPC_ID::END}
+};
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
 enum UDP_MSG_TYPE : uint8_t {
   UDP_PLAYER_POS_CLIENT,
