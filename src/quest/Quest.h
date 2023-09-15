@@ -9,16 +9,17 @@ struct Quest final {
   Quest_ID id;
   QuestReward* reward = nullptr;
   std::string name;
-  QuestState state;
+  QuestState state = QuestState::IN_ACTIVE;
   std::vector<QuestNode*> objectives;
-  bool hidden;
-  ~Quest(){
-    for(auto obj: objectives){
+  bool hidden = false;
+  explicit Quest(Quest_ID id) : id(id) {}
+  ~Quest() {
+    for (auto obj : objectives) {
       delete obj;
     }
     delete reward;
   }
-  inline bool progressable(NodeType type) const noexcept{
+  inline bool progressable(NodeType type) const noexcept {
     return state == QuestState::ACTIVE && objectives[stage]->suitable(type);
   }
   void progress(NPC* npc) {
@@ -34,6 +35,7 @@ struct Quest final {
   inline const std::string& get_objective_text() const noexcept {
     return objectives[stage]->objective_text;
   }
+
  private:
   void complete_quest() noexcept { state = QuestState::COMPLETED; }
   inline bool finish_stage(QuestNode* obj) noexcept {

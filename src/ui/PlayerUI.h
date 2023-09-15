@@ -14,7 +14,6 @@ struct PlayerUI {
   CharacterPanel char_panel{};
   CharacterBag char_bag{};
   StatusBar status_bar{};
-
   void draw() noexcept {
     PLAYER_EFFECTS.draw();
     PLAYER_HOTBAR.draw();
@@ -32,6 +31,8 @@ struct PlayerUI {
     char_panel.update();
     char_bag.update();
     region_map.update();
+    PLAYER_QUESTS.update();
+    IsKeyPressedU::update();
     update_special_items();
   }
   static inline void draw_special_items() noexcept {
