@@ -44,7 +44,6 @@ inline static float DRAW_X = 0;
 inline static float DRAW_Y = 0;
 inline static float MIRROR_POINT = 0;
 inline static PointI* PLAYER_TILE = nullptr;
-inline static std::vector<Quest> PLAYER_QUESTS;
 inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline static std::string PLAYER_NAME = "hello";
 class Item;

@@ -1,8 +1,17 @@
 #ifndef MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 #define MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 
+/* |-----------------------------------------------------|
+ * |                          SYSTEM                      |
+ * |-----------------------------------------------------|
+ */
 enum class GameState { MainMenu, GameMenu, Game, Loading, GameOver };
 enum class MenuState { Main, Settings, ServerBrowser, HostGame };
+
+/* |-----------------------------------------------------|
+ * |                    GAMEPLAY                         |
+ * |-----------------------------------------------------|
+ */
 enum class Class {
   BARBARIAN,
   BARD,
@@ -22,22 +31,6 @@ enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
 enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class HitType { CONTINUOUS, ONE_HIT };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
-
-enum class QuestState { NOT_STARTED, IN_PROGRESS, COMPLETED };
-enum class Quest_ID { TUTORIAL, MARLA,END };
-enum class NPC_ID : int {
-  DECKARD,
-  MARLA,
-  ARIA,
-  HILLCREST_MAYOR,
-  RECEPTIONS,
-  DYING_MAN,
-  NIETZSCHE,
-  VILLAGER,
-  TRADER,
-  RANDOM,
-  END
-};
 enum class ItemType {
   HEAD = 5,
   CHEST = 4,
@@ -112,6 +105,27 @@ enum Stat {
   HEALTH_REGEN,
   MANA_REGEN,
   STATS_ENDING
+};
+
+/* |-----------------------------------------------------|
+ * |                  QUESTS                             |
+ * |-----------------------------------------------------|
+ */
+enum class ObjectiveType {GOTO,KILL,SPEAK,COLLECT,REQUIRE,PROTECT,ESCORT};
+enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
+enum class Quest_ID { TUTORIAL, MARLA, END };
+enum class NPC_ID : int {
+  DECKARD,
+  MARLA,
+  ARIA,
+  HILLCREST_MAYOR,
+  RECEPTIONS,
+  DYING_MAN,
+  NIETZSCHE,
+  VILLAGER,
+  TRADER,
+  RANDOM,
+  END
 };
 
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
