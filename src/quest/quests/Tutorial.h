@@ -1,0 +1,7 @@
+#ifndef MAGEQUEST_SRC_QUEST_QUESTS_TUTORIAL_H_
+#define MAGEQUEST_SRC_QUEST_QUESTS_TUTORIAL_H_
+
+struct Tutorial final : public Quest{
+
+};
+#endif  //MAGEQUEST_SRC_QUEST_QUESTS_TUTORIAL_H_

@@ -225,8 +225,9 @@ class Game {
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
+    //PLAYER_QUESTS.push_back()
 #ifdef MG2_DEBUG
-    SetMasterVolume(0);
+        SetMasterVolume(0);
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall_Skill(true, 5);
