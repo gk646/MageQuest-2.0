@@ -66,6 +66,7 @@ Quest* load(const std::string& path, Quest_ID id) {
           auto vec = split(parts[i], ',');
           obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));
         }
+        quest->objectives.push_back(obj);
         break;
     }
   }
