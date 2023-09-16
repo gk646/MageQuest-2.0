@@ -232,10 +232,8 @@ class Game {
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 10, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall_Skill(true, 5);
     for (uint_fast32_t i = 0; i < 1; i++) {
-      MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));
+     // MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 10));
     }
-
-
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();
   }

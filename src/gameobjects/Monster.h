@@ -64,7 +64,7 @@ struct Monster : public Entity {
     PointI point;
     moving = false;
     if ((point = astar_pathfinding(tile_pos, *PLAYER_TILE)) > 0) [[likely]] {
-      decideMovement(point.x, point.y);
+      decideMovement(point,stats.get_speed());
       moving = true;
       return false;
     } else if (point == 0 && RANGE_01SMALL(RNG_RANDOM) > 30 &&
@@ -82,43 +82,6 @@ struct Monster : public Entity {
       }
     }
     return true;
-  }
-  void decideMovement(int nextX, int nextY) noexcept {
-    float speed = stats.get_speed();
-    bool canMoveRight = tile_pos.x < nextX && !tile_collision_right(speed);
-    bool canMoveLeft = tile_pos.x > nextX && !tile_collision_left(speed);
-    bool canMoveUp = tile_pos.y > nextY && !tile_collision_up(speed);
-    bool canMoveDown = tile_pos.y < nextY && !tile_collision_down(speed);
-
-    if (RANGE_100(RNG_ENGINE) < 25) {
-      if (canMoveRight && canMoveUp && !tile_collision_upright(speed)) {
-        pos.x_ += speed;
-        pos.y_ -= speed;
-        return;
-      } else if (canMoveRight && canMoveDown && !tile_collision_downright(speed)) {
-        pos.x_ += speed;
-        pos.y_ += speed;
-        return;
-      } else if (canMoveLeft && canMoveUp && !tile_collision_upleft(speed)) {
-        pos.x_ -= speed;
-        pos.y_ -= speed;
-        return;
-      } else if (canMoveLeft && canMoveDown && !tile_collision_downleft(speed)) {
-        pos.x_ -= speed;
-        pos.y_ += speed;
-        return;
-      }
-    }
-
-    if (canMoveRight) {
-      pos.x_ += speed;
-    } else if (canMoveLeft) {
-      pos.x_ -= speed;
-    } else if (canMoveUp) {
-      pos.y_ -= speed;
-    } else if (canMoveDown) {
-      pos.y_ += speed;
-    }
   }
 };
 

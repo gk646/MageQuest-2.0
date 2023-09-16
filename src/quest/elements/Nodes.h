@@ -23,12 +23,19 @@ struct GOTO final : public QuestNode {
 };
 struct NPC_MOVE final : public QuestNode {
   std::vector<PointI> waypoints;
+  int waypoint = 0;
   NPC_ID target_id;
   explicit NPC_MOVE(NPC_ID id) : QuestNode("", NodeType::NPC_MOVE), target_id(id) {}
   inline bool progress() final {
     for (auto npc : NPCS) {
       if (npc->id == target_id) {
-        //
+        if (npc->move_to(waypoints[waypoint])) {
+          waypoint++;
+          if(waypoint == waypoints.size()){
+            return true;
+          }
+        }
+        return false;
       }
     }
     return false;
@@ -47,6 +54,7 @@ struct SPEAK final : public QuestNode {
         stage++;
         return false;
       } else {
+        npc->dialogue = nullptr;
         return true;
       }
     }
