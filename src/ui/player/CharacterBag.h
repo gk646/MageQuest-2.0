@@ -3,8 +3,8 @@
 
 struct CharacterBag final : public Window {
   static constexpr int width = 420;
-  static constexpr int spacing_x = SLOT_SIZE + 5;
-  static constexpr int spacing_y = SLOT_SIZE + 5;
+  static constexpr int spacing_x = SLOT_SIZE + 1;
+  static constexpr int spacing_y = SLOT_SIZE + 2;
   static constexpr int per_row = width / spacing_x;
   static constexpr int offset_x = 15;
   static constexpr int offset_y = 50;

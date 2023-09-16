@@ -32,7 +32,7 @@ struct Quest final {
       finish_stage(objectives[stage]);
     }
   }
-  inline const std::string& get_objective_text() const noexcept {
+  [[nodiscard]] inline const std::string& get_objective_text() const noexcept {
     return objectives[stage]->objective_text;
   }
 

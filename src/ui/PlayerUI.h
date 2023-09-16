@@ -15,6 +15,7 @@ struct PlayerUI {
   CharacterBag char_bag{};
   StatusBar status_bar{};
   void draw() noexcept {
+    DRAW_NPC_DIALOGUE()
     PLAYER_EFFECTS.draw();
     PLAYER_HOTBAR.draw();
     status_bar.draw();

@@ -135,6 +135,43 @@ struct Entity {
            COLLISIONS[CURRENT_MIDDLE_GROUND[entXLeft][entYDown]] == C_SOLID ||
            tile_collision_left(speed) || tile_collision_down(speed);
   }
+  void decideMovement(PointI next , float speed) noexcept {
+    bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
+    bool canMoveLeft = tile_pos.x > next.x && !tile_collision_left(speed);
+    bool canMoveUp = tile_pos.y > next.y && !tile_collision_up(speed);
+    bool canMoveDown = tile_pos.y < next.y && !tile_collision_down(speed);
+
+    if (RANGE_100(RNG_ENGINE) < 25) {
+      if (canMoveRight && canMoveUp && !tile_collision_upright(speed)) {
+        pos.x_ += speed;
+        pos.y_ -= speed;
+        return;
+      } else if (canMoveRight && canMoveDown && !tile_collision_downright(speed)) {
+        pos.x_ += speed;
+        pos.y_ += speed;
+        return;
+      } else if (canMoveLeft && canMoveUp && !tile_collision_upleft(speed)) {
+        pos.x_ -= speed;
+        pos.y_ -= speed;
+        return;
+      } else if (canMoveLeft && canMoveDown && !tile_collision_downleft(speed)) {
+        pos.x_ -= speed;
+        pos.y_ += speed;
+        return;
+      }
+    }
+
+    if (canMoveRight) {
+      pos.x_ += speed;
+    } else if (canMoveLeft) {
+      pos.x_ -= speed;
+    } else if (canMoveUp) {
+      pos.y_ -= speed;
+    } else if (canMoveDown) {
+      pos.y_ += speed;
+    }
+  }
+
 };
 #include "WorldObject.h"
 #endif  //MAGE_QUEST_SRC_ENTITY_H_
