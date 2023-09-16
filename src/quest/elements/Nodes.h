@@ -12,7 +12,7 @@ struct QuestNode {
     return event_type == type || event_type == NodeType::MIX;
   };
   virtual bool progress(NPC* npc){};
-  virtual bool progress(){};
+  virtual bool progress() { return false; };
 };
 
 struct GOTO final : public QuestNode {
@@ -24,14 +24,14 @@ struct GOTO final : public QuestNode {
 struct NPC_MOVE final : public QuestNode {
   std::vector<PointI> waypoints;
   NPC_ID target_id;
-  explicit NPC_MOVE(NPC_ID id)
-      : QuestNode("", NodeType::NPC_MOVE), target_id(id) {}
+  explicit NPC_MOVE(NPC_ID id) : QuestNode("", NodeType::NPC_MOVE), target_id(id) {}
   inline bool progress() final {
     for (auto npc : NPCS) {
       if (npc->id == target_id) {
         //
       }
     }
+    return false;
   }
 };
 struct SPEAK final : public QuestNode {
@@ -39,7 +39,7 @@ struct SPEAK final : public QuestNode {
   NPC_ID target;
   std::vector<std::string> lines;
   explicit SPEAK(std::string objective_text, NPC_ID target)
-      : QuestNode(std::move(objective_text), NodeType::SPEAK) {}
+      : QuestNode(std::move(objective_text), NodeType::SPEAK), target(target) {}
   bool progress(NPC* npc) final {
     if (npc->id == target) {
       if (stage < lines.size()) {

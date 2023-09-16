@@ -19,7 +19,7 @@ struct Quest final {
     }
     delete reward;
   }
-  inline bool progressable(NodeType type) const noexcept {
+  [[nodiscard]] inline bool progressable(NodeType type) const noexcept {
     return state == QuestState::ACTIVE && objectives[stage]->suitable(type);
   }
   void progress(NPC* npc) {
@@ -29,7 +29,7 @@ struct Quest final {
   }
   void update() {
     if (objectives[stage]->progress()) {
-      stage++;
+      finish_stage(objectives[stage]);
     }
   }
   inline const std::string& get_objective_text() const noexcept {
@@ -38,7 +38,7 @@ struct Quest final {
 
  private:
   void complete_quest() noexcept { state = QuestState::COMPLETED; }
-  inline bool finish_stage(QuestNode* obj) noexcept {
+  inline void finish_stage(const QuestNode* obj) noexcept {
     if (obj->major_objective) {
       //play sound
     }

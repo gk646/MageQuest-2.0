@@ -16,18 +16,23 @@ struct QuestHandler {
         return quest;
       }
     }
+    return nullptr;
   }
   void interact_npc(NPC* npc) {
     for (auto quest : quests) {
-      if (quest) {
-        if (quest->progressable(NodeType::SPEAK)) {
-          quest->progress(npc);
-        }
+      if (quest->progressable(NodeType::SPEAK)) {
+        quest->progress(npc);
       }
     }
   }
   void killed_monster() {}
-  void update() {}
+  void update() {
+    for (auto quest : quests) {
+      if (quest->state == QuestState::ACTIVE) {
+        quest->update();
+      }
+    }
+  }
   inline void add_quest(Quest* q) noexcept { quests.push_back(q); }
 };
 inline static QuestHandler PLAYER_QUESTS;
