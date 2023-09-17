@@ -41,10 +41,11 @@ enum class Monster_ID {
   SKEL_SHIELD,
   SNAKE
 };
+
 enum class StatusEffectType { BUFF, DE_BUFF };
-enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
+enum class ShapeType { CIRCLE, RECT, TRIANGLE };
 enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
-enum class HitType { CONTINUOUS, ONE_HIT };
+enum class HitType { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class ItemType {
   HEAD = 5,
@@ -140,7 +141,7 @@ enum class NodeType {
   TILE_ACTION
 };
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
-    {"NPC_SAY",NodeType::NPC_SAY},{"TILE_ACTION",NodeType::TILE_ACTION},
+    {"NPC_SAY", NodeType::NPC_SAY},  {"TILE_ACTION", NodeType::TILE_ACTION},
     {"GOTO", NodeType::GOTO},        {"KILL", NodeType::KILL},
     {"SPEAK", NodeType::SPEAK},      {"COLLECT", NodeType::COLLECT},
     {"REQUIRE", NodeType::REQUIRE},  {"PROTECT", NodeType::PROTECT},
@@ -181,7 +182,7 @@ enum UDP_MSG_TYPE : uint8_t {
   UDP_PROJECTILE
 };
 inline static std::unordered_map<std::string, Monster_ID> stringToMonsterID = {
-    {"ANY",Monster_ID::ANY},
+    {"ANY", Monster_ID::ANY},
     {"SKEL_WAR", Monster_ID::SKEL_WAR},
     {"SKEL_SPEAR", Monster_ID::SKEL_SPEAR},
     {"WOLF", Monster_ID::WOLF},
@@ -193,9 +194,25 @@ inline static std::unordered_map<std::string, Monster_ID> stringToMonsterID = {
     {"MUSHROOM", Monster_ID::MUSHROOM},
     {"SKEL_ARCHER", Monster_ID::SKEL_ARCHER},
     {"SKEL_SHIELD", Monster_ID::SKEL_SHIELD},
-    {"SNAKE", Monster_ID::SNAKE}
+    {"SNAKE", Monster_ID::SNAKE}};
+enum ProjectileType {
+  POISON_BALL,
+  FIRE_STRIKE,
+  FIRE_BALL,
+  BLAST_HAMMER,
+  ENERGY_SPHERE,
+  FIRE_SWORD,
+  FROST_NOVA,
+  ICE_LANCE,
+  INFERNO_RAY,
+  LIGHTNING,
+  PYRO_BLAST,
+  SOLAR_FLARE,
+  THUNDER_SPLASH,
+  THUNDER_STRIKE,
+  VOID_ERUPTION,
+  VOID_FIELD
 };
-enum ProjectileType { POISON_BALL, FIRE_STRIKE, FIRE_BALL };
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
     {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};
@@ -293,8 +310,7 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"The Grove", Zone::The_Grove},
     {"TestRoom", Zone::TestRoom},
     {"Goblin Cave", Zone::Goblin_Cave},
-    {"Hillcrest Hermit Cave", Zone::Hillcrest_Hermit_Cave}
-};
+    {"Hillcrest Hermit Cave", Zone::Hillcrest_Hermit_Cave}};
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline int MP_EVENT_CODE = 0;
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;

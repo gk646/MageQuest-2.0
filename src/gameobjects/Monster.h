@@ -50,12 +50,12 @@ struct Monster : public Entity {
   };
   void draw() override = 0;
   void hit(Projectile& p) noexcept {
-    if (p.from_player) {
+    if (p.from_player && p.active()) {
       health_bar.hit();
       status_effects.add_effects(p.status_effects);
       stats.take_damage(p.damage_stats);
+      p.dead = attack != -100 && p.projectile_type == HitType::ONE_HIT;
     }
-    p.dead = p.from_player && attack != -100 && p.projectile_type == HitType::ONE_HIT;
   }
   bool move_to_player() noexcept {
     if (attack != 0) {
