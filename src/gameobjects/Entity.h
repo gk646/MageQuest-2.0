@@ -48,11 +48,13 @@ struct Entity {
       } else if (shape_type == ShapeType::CIRCLE) {
         float radius_sq = size.x_ * size.x_;
         if (o.shape_type == ShapeType::RECT) {
-          const float closestX = std::clamp(pos.x_, o.pos.x_, o.pos.x_ + o.size.x_);
-          const float closestY = std::clamp(pos.y_, o.pos.y_, o.pos.y_ + o.size.y_);
+          float newX = pos.x_+size.x_/2;
+          float newY = pos.y_+size.x_/2;
+          const float closestX = std::clamp(newX, o.pos.x_, o.pos.x_ + o.size.x_);
+          const float closestY = std::clamp(newY, o.pos.y_, o.pos.y_ + o.size.y_);
 
-          return ((closestX - pos.x_) * (closestX - pos.x_) +
-                  (closestY - pos.y_) * (closestY - pos.y_)) <= radius_sq;
+          return ((closestX - newX) * (closestX - newX) +
+                  (closestY - newY) * (closestY - newY)) <= radius_sq;
         } else if (o.shape_type == ShapeType::CIRCLE) {
           float other_radius_sq = o.size.x_ * o.size.x_;
           return ((pos.x_ - o.pos.x_) * (pos.x_ - o.pos.x_) +
@@ -76,7 +78,7 @@ struct Entity {
                                 {0, 0}, pov, 3, GREEN);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSectorLines({pos.x_ + DRAW_X, pos.y_ + DRAW_Y}, size.x_, 0, 360, 50,
+        DrawCircleSectorLines({pos.x_ + DRAW_X+size.x_/2, pos.y_ + DRAW_Y+size.x_/2}, size.x_, 0, 360, 50,
                               GREEN);
         break;
     }
@@ -138,6 +140,7 @@ struct Entity {
            tile_collision_left(speed) || tile_collision_down(speed);
   }
   void decideMovement(PointI next, float speed) noexcept {
+    return;
     bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
     bool canMoveLeft = tile_pos.x > next.x && !tile_collision_left(speed);
     bool canMoveUp = tile_pos.y > next.y && !tile_collision_up(speed);

@@ -230,9 +230,9 @@ class Game {
     //SetMasterVolume(0);
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
-    PLAYER_HOTBAR.skills[4] = new BlastHammer_Skill(true);
+    PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
     for (uint_fast32_t i = 0; i < 1; i++) {
-    MONSTERS.push_back(new SkeletonWarrior({250.0F, 150}, 100));
+    MONSTERS.push_back(new SkeletonWarrior({250.0F, 150}, 150));
     }
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();

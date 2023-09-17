@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEPLAY_ABILITIES_FIRESTRIKE_H_
 
 struct FireStrike_Skill final : public Skill {
-  static constexpr float base_dmg = 1 / 30.0F;
+  static constexpr float base_dmg = 1;
   static constexpr int lifespan = 120;
   static constexpr float speed = 2;
   int num_fireballs;
@@ -15,7 +15,7 @@ struct FireStrike_Skill final : public Skill {
     use();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X, PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
     const float interval_angle = 360.0f / num_fireballs;
-    float damage = PLAYER_STATS.get_ability_dmg(damage_stats);
+    float damage = PLAYER_STATS.get_ability_dmg(damage_stats)/30.0F;
     for (uint_fast32_t i = 0; i < num_fireballs; i++) {
       float angle_rad = (interval_angle * i) * (M_PI / 180.0f);
 
