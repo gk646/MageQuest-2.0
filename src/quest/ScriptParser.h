@@ -27,24 +27,33 @@ Quest* load(const std::string& path, Quest_ID id) {
   quest->name = split(line, ':')[1];
   std::getline(file, line);
   std::getline(file, line);
-
+  std::vector<std::string> parts;
   while (std::getline(file, line)) {
     if (line.empty()) continue;
-    std::vector<std::string> parts;
+    parts.clear();
     parts = split(line, ':');
     type = node_to_type[parts[0]];
     switch (type) {
       case NodeType::GOTO: {
         auto obj = new GOTO(parts[2], {std::stoi(split(parts[1], ',')[0]),
                                        std::stoi(split(parts[1], ',')[1])});
-        obj->major_objective = parts.size() > 3;
+        obj->major_objective = parts[parts.size() - 1] == "MAJOR";
         quest->objectives.push_back(obj);
 
       } break;
-      case NodeType::KILL:
-        break;
+      case NodeType::KILL: {
+        auto obj = new KILL(stringToMonsterID[split(parts[1], ',')[0]],
+                            std::stoi(split(parts[1], ',')[1]), parts[2]);
+        obj->major_objective = parts[parts.size() - 1] == "MAJOR";
+        quest->objectives.push_back(obj);
+      } break;
       case NodeType::SPEAK: {
         auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
+        if (parts.size() > 3) {
+          obj->map_marker = {std::stoi(split(parts[3], ',')[1]),
+                             std::stoi(split(parts[3], ',')[2])};
+        }
+        obj->major_objective = parts[parts.size() - 1] == "MAJOR";
         while (std::getline(file, line) && line != "*") {
           obj->lines.push_back(line);
         }
@@ -60,17 +69,37 @@ Quest* load(const std::string& path, Quest_ID id) {
         break;
       case NodeType::MIX:
         break;
-      case NodeType::NPC_MOVE:
-        auto obj = new NPC_MOVE(npcIdMap[parts[1]]);
-        for (uint_fast32_t i = 2; i < parts.size(); i++) {
+      case NodeType::NPC_MOVE: {
+        auto obj = new NPC_MOVE(npcIdMap[parts[1]], parts[2]);
+        obj->map_marker = {std::stoi(split(parts[3], ',')[1]),
+                           std::stoi(split(parts[3], ',')[2])};
+        for (uint_fast32_t i = 4; i < parts.size(); i++) {
           auto vec = split(parts[i], ',');
           obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));
         }
         quest->objectives.push_back(obj);
-        break;
+
+      } break;
+      case NodeType::TILE_ACTION: {
+        int layer = -1;
+        if (parts[2] == "BACK") {
+          layer = 0;
+        } else if (parts[2] == "MIDDLE") {
+          layer = 1;
+        } else if (parts[2] == "FORE") {
+          layer = 2;
+        }
+        auto obj = new TILE_ACTION(
+            stringToZoneMap[parts[1]], layer,
+            {std::stoi(split(parts[3], ',')[0]), std::stoi(split(parts[3], ',')[1])},
+            std::stoi(parts[4]));
+        quest->objectives.push_back(obj);
+      } break;
+      case NodeType::NPC_SAY:
+        return quest;
     }
   }
   return quest;
 }
-}      // namespace ScriptParser
+}  // namespace ScriptParser
 #endif  //MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
