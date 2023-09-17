@@ -26,6 +26,21 @@ enum class Class {
   WARLOCK,
   WIZARD
 };
+enum class Monster_ID {
+  ANY,
+  SKEL_WAR,
+  SKEL_SPEAR,
+  WOLF,
+  BOSS_DEATH_BRINGER,
+  BOSS_KNIGHT,
+  BOSS_SLIME,
+  GOBLIN,
+  KNIGHT,
+  MUSHROOM,
+  SKEL_ARCHER,
+  SKEL_SHIELD,
+  SNAKE
+};
 enum class StatusEffectType { BUFF, DE_BUFF };
 enum class ShapeType { CIRCLE, RECT, TRIANGLE, POLYGON };
 enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
@@ -111,18 +126,26 @@ enum Stat {
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
  */
-enum class NodeType {GOTO,KILL,SPEAK,COLLECT,REQUIRE,PROTECT,ESCORT,MIX,NPC_MOVE};
-inline static std::unordered_map<std::string, NodeType> node_to_type = {
-    {"GOTO", NodeType::GOTO},
-    {"KILL", NodeType::KILL},
-    {"SPEAK", NodeType::SPEAK},
-    {"COLLECT", NodeType::COLLECT},
-    {"REQUIRE", NodeType::REQUIRE},
-    {"PROTECT", NodeType::PROTECT},
-    {"ESCORT", NodeType::ESCORT},
-    {"MIX", NodeType::MIX},
-    {"NPC_MOVE", NodeType::NPC_MOVE}
+enum class NodeType {
+  GOTO,
+  KILL,
+  SPEAK,
+  COLLECT,
+  REQUIRE,
+  PROTECT,
+  ESCORT,
+  MIX,
+  NPC_MOVE,
+  NPC_SAY,
+  TILE_ACTION
 };
+inline static std::unordered_map<std::string, NodeType> node_to_type = {
+    {"NPC_SAY",NodeType::NPC_SAY},{"TILE_ACTION",NodeType::TILE_ACTION},
+    {"GOTO", NodeType::GOTO},        {"KILL", NodeType::KILL},
+    {"SPEAK", NodeType::SPEAK},      {"COLLECT", NodeType::COLLECT},
+    {"REQUIRE", NodeType::REQUIRE},  {"PROTECT", NodeType::PROTECT},
+    {"ESCORT", NodeType::ESCORT},    {"MIX", NodeType::MIX},
+    {"NPC_MOVE", NodeType::NPC_MOVE}};
 enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID { TUTORIAL, MARLA, END };
 enum class NPC_ID : int {
@@ -149,8 +172,7 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"VILLAGER", NPC_ID::VILLAGER},
     {"TRADER", NPC_ID::TRADER},
     {"RANDOM", NPC_ID::RANDOM},
-    {"END", NPC_ID::END}
-};
+    {"END", NPC_ID::END}};
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
 enum UDP_MSG_TYPE : uint8_t {
   UDP_PLAYER_POS_CLIENT,
@@ -158,7 +180,21 @@ enum UDP_MSG_TYPE : uint8_t {
   UDP_PLAYER_NAME,
   UDP_PROJECTILE
 };
-
+inline static std::unordered_map<std::string, Monster_ID> stringToMonsterID = {
+    {"ANY",Monster_ID::ANY},
+    {"SKEL_WAR", Monster_ID::SKEL_WAR},
+    {"SKEL_SPEAR", Monster_ID::SKEL_SPEAR},
+    {"WOLF", Monster_ID::WOLF},
+    {"BOSS_DEATH_BRINGER", Monster_ID::BOSS_DEATH_BRINGER},
+    {"BOSS_KNIGHT", Monster_ID::BOSS_KNIGHT},
+    {"BOSS_SLIME", Monster_ID::BOSS_SLIME},
+    {"GOBLIN", Monster_ID::GOBLIN},
+    {"KNIGHT", Monster_ID::KNIGHT},
+    {"MUSHROOM", Monster_ID::MUSHROOM},
+    {"SKEL_ARCHER", Monster_ID::SKEL_ARCHER},
+    {"SKEL_SHIELD", Monster_ID::SKEL_SHIELD},
+    {"SNAKE", Monster_ID::SNAKE}
+};
 enum ProjectileType { POISON_BALL, FIRE_STRIKE, FIRE_BALL };
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
@@ -244,7 +280,21 @@ inline std::unordered_map<ItemRarity, Color> rarity_to_color = {
     {ItemRarity::SET_ITEM, Colors::setItem},
     {ItemRarity::UNIQUE, Colors::highQuality},
 };
-
+inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
+    {"Woodland Edge", Zone::Woodland_Edge},
+    {"EtherRealm", Zone::EtherRealm},
+    {"DeadPlains", Zone::DeadPlains},
+    {"GrassLands", Zone::GrassLands},
+    {"City1", Zone::City1},
+    {"Ruin Dungeon", Zone::Ruin_Dungeon},
+    {"Hillcrest", Zone::Hillcrest},
+    {"Treasure Cave", Zone::Treasure_Cave},
+    {"Hillcrest Mountain Cave", Zone::Hillcrest_Mountain_Cave},
+    {"The Grove", Zone::The_Grove},
+    {"TestRoom", Zone::TestRoom},
+    {"Goblin Cave", Zone::Goblin_Cave},
+    {"Hillcrest Hermit Cave", Zone::Hillcrest_Hermit_Cave}
+};
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline int MP_EVENT_CODE = 0;
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;

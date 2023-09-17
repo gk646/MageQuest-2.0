@@ -227,13 +227,12 @@ class Game {
     UnloadImage(icon);
     //PLAYER_QUESTS.push_back()
 #ifdef MG2_DEBUG
-    SetMasterVolume(0);
+    //SetMasterVolume(0);
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new FireBall_Skill(true);
-    PLAYER_HOTBAR.skills[5] = new Dummy_Skill(true);
     for (uint_fast32_t i = 0; i < 100; i++) {
-    MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 100));
+    //MONSTERS.push_back(new SkeletonSpear({250.0F, 150}, 100));
     }
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();
@@ -251,6 +250,7 @@ class Game {
     CloseWindowR();
   }
   void start() noexcept {
+
     GameLoader::load();
     logic_thread = std::thread(&Game::logic_loop, this);
     render_loop();

@@ -42,6 +42,19 @@ struct Window {
   } else {                                                          \
     isDragging = false;                                             \
   }
+#define DRAG_WINDOW()                                               \
+  if (isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {         \
+    auto mouse_pos = MOUSE_POS;                                     \
+    auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
+    auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
+    whole_window.x += delta_x;                                      \
+    whole_window.y += delta_y;                                      \
+    header_bar.x += delta_x;                                        \
+    header_bar.y += delta_y;                                        \
+    lastMousePos = mouse_pos;                                       \
+  } else {                                                          \
+    isDragging = false;                                             \
+  }
 
   void draw_window() const noexcept {
     RectangleR scaled_whole = SCALE_RECT(whole_window);
