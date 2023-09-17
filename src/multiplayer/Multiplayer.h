@@ -10,15 +10,21 @@
 namespace Multiplayer {
 inline static NBN_ConnectionStats client_stats;
 inline static NBN_GameServerStats server_stats;
+#define SEND_UDP_PROJECTILE(type, x, y, p, xc, yc, dmg)                          \
+  Multiplayer::send_event(UDP_PROJECTILE,                                        \
+                          MP_TYPE == MultiplayerType::OFFLINE                    \
+                              ? nullptr                                          \
+                              : new UDP_Projectile(type, x, y, p, xc, yc, dmg)); \
+
 inline static void send_event(UDP_MSG_TYPE event, void* data) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     if (event == UDP_PROJECTILE) {
       for (const auto net_player : OTHER_PLAYERS) {
         if (net_player) {
           auto prj = UDP_Projectile_Create();
-          memcpy(prj,data,sizeof(UDP_Projectile));
+          memcpy(prj, data, sizeof(UDP_Projectile));
           NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PROJECTILE,
-                                               prj);
+                                                 prj);
         }
       }
       UDP_Projectile_Destroy((UDP_Projectile*)data);

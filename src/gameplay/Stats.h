@@ -30,9 +30,9 @@ struct EntityStats {
     effects[MAX_HEALTH] = 10;
     effects[MAX_MANA] = 20;
   };
-  EntityStats(float base_health, int level, float speed) noexcept : level(level), speed(speed) {
-    effects[MAX_HEALTH] = base_health;
-    effects[MAX_HEALTH] *= std::pow(1.2F, level);
+  EntityStats(float base_health, int level, float per_level, float speed) noexcept
+      : level(level), speed(speed) {
+    effects[MAX_HEALTH] = base_health + ((level-1) * per_level * std::sqrt(level));
     effects[MAX_HEALTH] *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
     health = effects[MAX_HEALTH];
   }
@@ -59,7 +59,7 @@ struct EntityStats {
       shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
     }
   }
-  inline bool skill_useable(const SkillStats& stats, float ticks_done) const noexcept {
+  [[nodiscard]] inline bool skill_useable(const SkillStats& stats, int ticks_done) const noexcept {
     return !stunned && ticks_done >= stats.cool_down * (1 - effects[CDR_P]) &&
            mana >= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
@@ -76,22 +76,22 @@ struct EntityStats {
       effects[i] -= effect_arr[i];
     }
   }
-  inline float get_weapon_damage(DamageType type) noexcept {
-    switch (type) {
+  inline float get_ability_dmg(DamageStats stats) noexcept {
+    switch (stats.damage_type) {
       case DamageType::FIRE:
-        return effects[WEAPON_DAMAGE] * (1 + effects[FIRE_DMG_P]);
+        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[FIRE_DMG_P]);
       case DamageType::POISON:
-        return effects[WEAPON_DAMAGE] * (1 + effects[POISON_DMG_P]);
+        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[POISON_DMG_P]);
       case DamageType::ICE:
-        return effects[WEAPON_DAMAGE] * (1 + effects[ICE_DMG_P]);
+        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[ICE_DMG_P]);
       case DamageType::ARCANE:
-        return effects[WEAPON_DAMAGE] * (1 + effects[ARCANE_DMG_P]);
+        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[ARCANE_DMG_P]);
       case DamageType::DARK:
-        return effects[WEAPON_DAMAGE] * (1 + effects[DARK_DMG_P]);
+        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[DARK_DMG_P]);
       case DamageType::PHYSICAL:
-        return effects[WEAPON_DAMAGE];
+        return stats.damage + effects[WEAPON_DAMAGE];
       case DamageType::TRUE_DMG:
-        return effects[WEAPON_DAMAGE];
+        return stats.damage + effects[WEAPON_DAMAGE];
     }
   }
   inline void take_damage(const DamageStats& stats) {
@@ -101,7 +101,7 @@ struct EntityStats {
     float total_damage = stats.damage;
 
     if (stats.damage_type == DamageType::PHYSICAL) {
-      total_damage *= (armour * (1 + armour_mult)) / (level * 50);
+      total_damage *= (armour * (1 + armour_mult)) / (level * 50.0F);
     } else if (stats.damage_type != DamageType::TRUE_DMG) {
       if (shield >= total_damage) {
         shield -= total_damage;

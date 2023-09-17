@@ -36,6 +36,7 @@ struct EntityLoader {
     textures::THUNDER_STRIKE.load("thunderStrike/");
     textures::VOID_ERUPTION.load("voidEruption/");
     textures::VOID_FIELD.load("voidField/");
+    textures::DUMMY.load("dummy/");
 
 
     //npcs

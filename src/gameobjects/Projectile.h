@@ -8,7 +8,7 @@ struct Projectile : public Entity {
   int life_span;
   int sprite_counter = 0;
   HitType projectile_type = HitType::ONE_HIT;
-  Point move_vector;
+  Vector2 move_vector;
   ProjectileResources* resources = nullptr;
   std::vector<StatusEffect*> status_effects{};
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
@@ -21,12 +21,11 @@ struct Projectile : public Entity {
         damage_stats(damage_stats),
         from_player(from_player),
         projectile_type(type),
-        status_effects(effects) {
-    move_vector = get_move_vector(destination);
-  }
+        status_effects(effects),
+        move_vector(get_move_vector(destination)) {}
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, const DamageStats& damage_stats, HitType type,
-             const std::vector<StatusEffect*>& effects, const Point& move_vector,
+             const std::vector<StatusEffect*>& effects, const Vector2 & move_vector,
              float pov) noexcept
       : Entity(pos, size, shape_type, pov),
         life_span(life_span),
@@ -80,9 +79,9 @@ struct Projectile : public Entity {
       delete ptr;
     }
   }
-  Point get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle = std::atan2(mouse_pos.y - (pos.y_ + size.y_ / 2 + DRAW_Y),
-                             mouse_pos.x - (pos.x_ + size.x_ / 2 + DRAW_X));
+  inline Vector2 get_move_vector(const Vector2& mouse_pos) noexcept {
+    float angle =
+        std::atan2(mouse_pos.y - (pos.y_ + DRAW_Y), mouse_pos.x - (pos.x_ + DRAW_X));
     pov = angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
@@ -102,10 +101,10 @@ struct Projectile : public Entity {
   }
   void update() noexcept final {
     sprite_counter++;
-    pos.x_ += move_vector.x() * speed;
-    pos.y_ += move_vector.y() * speed;
-    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
+    pos.x_ += move_vector.x * speed;
+    pos.y_ += move_vector.y* speed;
+    tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
+    tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     life_span--;
     if (life_span <= 0) {
       dead = true;
@@ -114,5 +113,6 @@ struct Projectile : public Entity {
 };
 
 #include "projectiles/FireBall.h"
+#include "projectiles/Dummy.h"
 #include "projectiles/PoisonBall.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

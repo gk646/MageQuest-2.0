@@ -46,6 +46,7 @@ inline ProjectileResources THUNDER_SPLASH;
 inline ProjectileResources THUNDER_STRIKE;
 inline ProjectileResources VOID_ERUPTION;
 inline ProjectileResources VOID_FIELD;
+inline ProjectileResources DUMMY;
 
 
 //UI

@@ -10,7 +10,9 @@ struct Player final : public Entity {
   explicit Player(const Point& pos) : Entity(pos, {28, 50}, ShapeType::RECT) {
     PLAYER_TILE = &tile_pos;
   }
-  Player(const Player& other) noexcept : Entity(other) {}
+  Player(const Player& other) noexcept : Entity(other) {
+    PLAYER_STATS.effects[WEAPON_DAMAGE] = 10;
+  }
   Player& operator=(const Player& other) {
     if (this == &other) {
       return *this;

@@ -5,7 +5,7 @@ struct HealthBar {
   int delay = 0;
   int width = 50;
   int height = 10;
-
+  static char buffer[15];
   HealthBar(int width, int height) noexcept : width(width), height(height) {}
   void draw(float x, float y, const EntityStats& stats) const noexcept {
     const float scaledWidth = width * UI_SCALE;
@@ -15,14 +15,15 @@ struct HealthBar {
     const float startY = y - scaledHeight - 3;
     const float healthWidth =  stats.health / stats.get_max_health() * scaledWidth - 1;
 
-
+    std::sprintf(buffer,"%.0f/%.0f",stats.health,stats.effects[MAX_HEALTH]);
     DrawRectanglePro(startX + 1, startY + 2, healthWidth, scaledHeight-2, {0, 0}, 0,
                      Colors::Red);
     DrawTexturePro(textures::HEALTH_BAR, {0, 0, 50, 10},
                    {startX, startY, scaledWidth, scaledHeight}, {0, 0}, 0, WHITE);
+    DrawTextExR(MINECRAFT_BOLD,buffer,{startX,startY},15,0.5,WHITE);
   }
-
   void update() { delay--; }
-  void hit() { delay = 300; }
+  void hit() { delay = 10; }
 };
+char  HealthBar::buffer[15];
 #endif  //MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
