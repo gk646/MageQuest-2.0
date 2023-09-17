@@ -20,10 +20,10 @@ struct HealthBar {
                      Colors::Red);
     DrawTexturePro(textures::HEALTH_BAR, {0, 0, 50, 10},
                    {startX, startY, scaledWidth, scaledHeight}, {0, 0}, 0, WHITE);
-    DrawTextExR(MINECRAFT_BOLD,buffer,{startX,startY},15,0.5,WHITE);
+    DrawTextExR(MINECRAFT_BOLD,buffer,{startX+scaledWidth/2- GetTextWidth(buffer)/2,startY-height},15,0.5,WHITE);
   }
   void update() { delay--; }
-  void hit() { delay = 50; }
+  void hit() { delay = 10; }
 };
 char  HealthBar::buffer[15];
 #endif  //MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
