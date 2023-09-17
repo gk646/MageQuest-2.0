@@ -23,7 +23,7 @@ struct HealthBar {
     DrawTextExR(MINECRAFT_BOLD,buffer,{startX,startY},15,0.5,WHITE);
   }
   void update() { delay--; }
-  void hit() { delay = 10; }
+  void hit() { delay = 50; }
 };
 char  HealthBar::buffer[15];
 #endif  //MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_

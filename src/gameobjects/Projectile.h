@@ -4,6 +4,7 @@
 struct Projectile : public Entity {
   DamageStats damage_stats;
   bool from_player;
+  bool does_damage = true;
   float speed;
   int life_span;
   int sprite_counter = 0;
@@ -25,7 +26,7 @@ struct Projectile : public Entity {
         move_vector(get_move_vector(destination)) {}
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, const DamageStats& damage_stats, HitType type,
-             const std::vector<StatusEffect*>& effects, const Vector2 & move_vector,
+             const std::vector<StatusEffect*>& effects, const Vector2& move_vector,
              float pov) noexcept
       : Entity(pos, size, shape_type, pov),
         life_span(life_span),
@@ -85,24 +86,11 @@ struct Projectile : public Entity {
     pov = angle * (180.0f / M_PI);
     return {std::cos(angle), std::sin(angle)};
   }
-  void draw() override {
-    switch (shape_type) {
-      case ShapeType::RECT:
-        DrawRectanglePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_, {0, 0}, pov,
-                         PURPLE);
-        break;
-      case ShapeType::CIRCLE:
-        DrawCircleSector(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, 0, 360, 56, PURPLE);
-        break;
-    }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
-  }
-  void update() noexcept final {
+  [[nodiscard]] inline bool active() const noexcept { return !dead && does_damage; }
+  void update() noexcept override {
     sprite_counter++;
     pos.x_ += move_vector.x * speed;
-    pos.y_ += move_vector.y* speed;
+    pos.y_ += move_vector.y * speed;
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     life_span--;
@@ -115,4 +103,18 @@ struct Projectile : public Entity {
 #include "projectiles/FireBall.h"
 #include "projectiles/Dummy.h"
 #include "projectiles/PoisonBall.h"
+#include "projectiles/BlastHammer.h"
+#include "projectiles/EnergySphere.h"
+#include "projectiles/FireSword.h"
+#include "projectiles/FrostNova.h"
+#include "projectiles/IceLance.h"
+#include "projectiles/InfernoRay.h"
+#include "projectiles/Lightning.h"
+#include "projectiles/PowerSurge.h"
+#include "projectiles/PyroBlast.h"
+#include "projectiles/SolarFlare.h"
+#include "projectiles/ThunderStrike.h"
+#include "projectiles/ThunderSplash.h"
+#include "projectiles/VoidEruption.h"
+#include "projectiles/VoidField.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
