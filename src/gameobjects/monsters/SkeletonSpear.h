@@ -1,19 +1,16 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
 struct SkeletonSpear final : public Monster {
-  static constexpr int base_health = 10;
+  static constexpr int base_health = 5;
+  static constexpr float per_level = 3.5;
   static constexpr float base_speed = 2;
   SkeletonSpear(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level, base_speed},
+      : Monster(pos, EntityStats{base_health, level,per_level, base_speed},
                 &textures::SKELETON_SPEAR, {30, 50}) {
     attack_cd = 120;
   }
 
   void draw() final {
-#ifdef DRAW_HITBOXES
-    DrawRectangle(tile_pos.x * TILE_SIZE + DRAW_X, tile_pos.y * TILE_SIZE + DRAW_Y,
-                  TILE_SIZE, TILE_SIZE, GREEN);
-#endif
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {

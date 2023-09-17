@@ -85,7 +85,7 @@ int UDP_Projectile_Serialize(UDP_Projectile* msg, NBN_Stream* stream) {
   NBN_SerializeFloat(stream, msg->pov, -360, 360, 3);
   NBN_SerializeFloat(stream, msg->move_x, -50, 50, 3);
   NBN_SerializeFloat(stream, msg->move_y, -50, 50, 3);
-  NBN_SerializeFloat(stream, msg->damage, 0, 1000000, 3);
+  NBN_SerializeFloat(stream, msg->damage, 0, 1000000, 4);
   return 0;
 }
 

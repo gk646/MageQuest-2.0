@@ -15,7 +15,7 @@ struct Entity {
       : pos(pos), size(size), shape_type(shape_type), pov(pov) {}
   Entity(const Entity& o) noexcept
       : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov), dead(o.dead) {}
-  Entity& operator=(const Entity& other)noexcept {
+  Entity& operator=(const Entity& other) noexcept {
     if (this == &other) {
       return *this;
     }
@@ -32,9 +32,6 @@ struct Entity {
   virtual void update() = 0;
   virtual void draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {
-    if (dead || o.dead) {
-      return false;
-    }
     if (pov == 0) {
       if (shape_type == ShapeType::RECT) {
         if (o.shape_type == ShapeType::RECT) {
@@ -64,18 +61,23 @@ struct Entity {
         }
       }
     } else {
-      return false;
+      if (shape_type == ShapeType::RECT) {
+        if (o.shape_type == ShapeType::RECT) {
+          return  SAT::rectanglesIntersect({pos.x_,pos.y_}, size.x_, size.y_, pov, o.pos, o.size.x_,
+                                          o.size.y_, o.pov);
+        }
+      }
     }
   }
   void draw_hitbox() const {
     switch (shape_type) {
       case ShapeType::RECT:
         DrawRectangleOutlinePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_,
-                                {0, 0}, pov, 5, RED);
+                                {0, 0}, pov, 3, GREEN);
         break;
       case ShapeType::CIRCLE:
         DrawCircleSectorLines({pos.x_ + DRAW_X, pos.y_ + DRAW_Y}, size.x_, 0, 360, 50,
-                              RED);
+                              GREEN);
         break;
     }
   };
@@ -135,7 +137,7 @@ struct Entity {
            COLLISIONS[CURRENT_MIDDLE_GROUND[entXLeft][entYDown]] == C_SOLID ||
            tile_collision_left(speed) || tile_collision_down(speed);
   }
-  void decideMovement(PointI next , float speed) noexcept {
+  void decideMovement(PointI next, float speed) noexcept {
     bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
     bool canMoveLeft = tile_pos.x > next.x && !tile_collision_left(speed);
     bool canMoveUp = tile_pos.y > next.y && !tile_collision_up(speed);
@@ -171,7 +173,6 @@ struct Entity {
       pos.y_ += speed;
     }
   }
-
 };
 #include "WorldObject.h"
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

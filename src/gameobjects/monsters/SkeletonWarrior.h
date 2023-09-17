@@ -2,10 +2,11 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_MONSTERS_SKELETONWARRIOR_H_
 
 struct SkeletonWarrior final : public Monster {
-  static constexpr int base_health = 10;
+  static constexpr int base_health = 7;
+  static constexpr int per_level = 5;
   static constexpr float base_speed = 1.5;
   SkeletonWarrior(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level, base_speed},
+      : Monster(pos, EntityStats{base_health, level,per_level, base_speed},
                 &textures::SKELETON_WARRIOR, {35, 47}) {
     attack_cd = 50;
   }
