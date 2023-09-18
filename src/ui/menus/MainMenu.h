@@ -3,10 +3,11 @@
 
 struct MainMenu {
   ServerBrowser server_browser{};
+  HostMenu host_menu{};
   SettingsMenu& settings_menu;
   MenuState menu_state = MenuState::Main;
 
-  MainMenu(SettingsMenu& settings_menu) noexcept : settings_menu(settings_menu) {}
+  explicit MainMenu(SettingsMenu& settings_menu) noexcept : settings_menu(settings_menu) {}
   void draw() noexcept {
     const float scaled_width = 110 * UI_SCALE;
     const float scaled_height = 30 * UI_SCALE;
@@ -26,9 +27,11 @@ struct MainMenu {
       if (GuiButton({xOffset, baseYOffset + (scaled_height + vertical_gap), scaled_width,
                      scaled_height},
                     "Host Game")) {
-        GAME_STATE = GameState::Game;
-        StopSound(sound::intro);
-        Server::init();
+        menu_state = MenuState::HostGame;
+        SteamMatchmaking()->CreateLobby(k_ELobbyTypeFriendsOnly,3);
+        //GAME_STATE = GameState::Game;
+        //StopSound(sound::intro);
+        //Server::init();
       }
       if (GuiButton({xOffset, baseYOffset + 2 * (scaled_height + vertical_gap),
                      scaled_width, scaled_height},
@@ -50,10 +53,12 @@ struct MainMenu {
     } else if (menu_state == MenuState::ServerBrowser) {
       server_browser.draw();
     } else if (menu_state == MenuState::HostGame) {
+      host_menu.draw();
     }
 
     if (IsKeyPressed(KEY_ESCAPE)) {
       menu_state = MenuState::Main;
+      SteamMatchmaking()->LeaveLobby(LOBBY_ID);
     }
   }
 };

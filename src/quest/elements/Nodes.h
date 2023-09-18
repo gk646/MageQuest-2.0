@@ -11,7 +11,7 @@ struct QuestNode {
   [[nodiscard]] inline bool suitable(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
-  virtual bool progress(NPC* npc) noexcept {};
+  virtual bool progress(NPC* npc) noexcept {return false;};
   virtual bool progress() noexcept { return false; };
 };
 

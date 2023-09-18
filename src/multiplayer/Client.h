@@ -49,7 +49,7 @@ static void HandleConnection() noexcept {
   NBN_SerializeInt(rs, y, 0, 24000);
   NBN_SerializeInt(rs, id, 0, 4);
   client_id = id;
-  OTHER_PLAYERS[0] = new NetPlayer({(float)x, (float)y}, "hey ", Zone(0), nullptr, 1);
+  //  OTHER_PLAYERS[0] = new NetPlayer({(float)x, (float)y}, "hey ", Zone(0), nullptr, 1);
   connected = true;
 }
 static void HandleDisconnection() {
@@ -70,15 +70,15 @@ static void HandleDisconnection() {
 inline static void HandleProjectileUpdate(UDP_Projectile* data) noexcept {
   switch (data->p_type) {
     case FIRE_BALL: {
-      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 250, 4,
-                                            data->damage, HitType::ONE_HIT, {}, data->pov,
-                                            {data->move_x, data->move_y}));
+      PROJECTILES.emplace_back(new FireBall(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 250, 4, data->damage,
+          HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
       break;
     }
     case FIRE_STRIKE: {
-      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 120, 2,
-                                            data->damage, HitType::CONTINUOUS, {},
-                                            data->pov, {data->move_x, data->move_y}));
+      PROJECTILES.emplace_back(new FireBall(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 120, 2, data->damage,
+          HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
       break;
     }
   }
@@ -86,21 +86,19 @@ inline static void HandleProjectileUpdate(UDP_Projectile* data) noexcept {
 }
 inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept {
   for (uint_fast32_t j = 0; j < data->client_count; j++) {
-    if (data->clients_pos[j].client_id == client_id)
-      continue;
+    if (data->clients_pos[j].client_id == client_id) continue;
     if (OTHER_PLAYERS[j]) {
       OTHER_PLAYERS[j]->update_state(data->clients_pos[j].x, data->clients_pos[j].y);
     } else {
-      OTHER_PLAYERS[j] =
-          new NetPlayer({(float)data->clients_pos[j].x, (float)data->clients_pos[j].y},
-                        "", CURRENT_ZONE, nullptr, 50);
+     // OTHER_PLAYERS[j] =
+      //    new NetPlayer({(float)data->clients_pos[j].x, (float)data->clients_pos[j].y},
+        //                "", CURRENT_ZONE, nullptr, 50);
     }
   }
   UDP_PositionState_Destroy(data);
 }
 inline static int receive_packet() noexcept {
-  if (!connected)
-    return 0;
+  if (!connected) return 0;
   NBN_MessageInfo msg_info = NBN_GameClient_GetMessageInfo();
   switch (msg_info.type) {
     case UDP_PLAYER_STATE:

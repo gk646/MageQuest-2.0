@@ -91,6 +91,7 @@ class Game {
   }
   static inline void game_tick() noexcept {
     cxstructs::now();
+    SteamAPI_RunCallbacks();
     Multiplayer::poll_events();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
@@ -248,6 +249,7 @@ class Game {
     logic_thread.join();
     CloseAudioDevice();
     CloseWindowR();
+    SteamAPI_Shutdown();
   }
   void start() noexcept {
 

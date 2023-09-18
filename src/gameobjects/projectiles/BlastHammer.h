@@ -3,15 +3,15 @@
 struct BlastHammer final : Projectile {
   static constexpr int width = 50;
   static constexpr int height = 50;
-  static constexpr int hit_delay =50;
+  static constexpr int hit_delay = 50;
   bool flip;
   BlastHammer(const Point& pos, bool from_player, int life_span, float speed,
               float damage, HitType hit_type, const vector<StatusEffect*>& effects,
               float pov, const Vector2& move, bool flip)
       : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
-                   {DamageType::FIRE, damage}, hit_type, effects, move, pov),
+                   {DamageType::FIRE, damage}, hit_type, effects, move, pov, nullptr,
+                   &textures::BLAST_HAMMER),
         flip(flip) {
-    resources = &textures::BLAST_HAMMER;
     does_damage = false;
   }
   void draw() final {
@@ -26,7 +26,7 @@ struct BlastHammer final : Projectile {
     Projectile::update();
     if (sprite_counter == hit_delay) {
       does_damage = true;
-    }else {
+    } else {
       does_damage = false;
     }
   }
