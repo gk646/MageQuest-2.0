@@ -12,6 +12,7 @@ struct Projectile : public Entity {
   Vector2 move_vector;
   ProjectileResources* resources = nullptr;
   std::vector<StatusEffect*> status_effects{};
+  Sound* sound = nullptr;
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              const Vector2& destination, int life_span, float speed,
              const DamageStats& damage_stats, HitType type,
@@ -27,7 +28,7 @@ struct Projectile : public Entity {
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, const DamageStats& damage_stats, HitType type,
              const std::vector<StatusEffect*>& effects, const Vector2& move_vector,
-             float pov) noexcept
+             float pov,Sound* sound,ProjectileResources * res) noexcept
       : Entity(pos, size, shape_type, pov),
         life_span(life_span),
         speed(speed),
@@ -35,7 +36,7 @@ struct Projectile : public Entity {
         from_player(from_player),
         projectile_type(type),
         status_effects(effects),
-        move_vector(move_vector) {}
+        move_vector(move_vector) ,resources(res),sound(sound){}
   Projectile(const Projectile& p) noexcept
       : Entity(p),
         move_vector(p.move_vector),

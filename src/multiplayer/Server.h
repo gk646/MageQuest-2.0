@@ -46,8 +46,8 @@ inline static void BroadCastGameState() noexcept {
       msg->client_count = connected_clients + 1;
       memcpy(msg->clients_pos, broad_cast,
              sizeof(UDP_PlayerPos_Update) * MG2_MAX_PLAYERS);
-      NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PLAYER_STATE,
-                                             msg);
+//      NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PLAYER_STATE,
+        //                                     msg);
     }
   }
 }
@@ -58,13 +58,13 @@ inline static void send_packets() noexcept {
 static void HandleProjectileState(UDP_Projectile* data) noexcept {
   switch (data->p_type) {
     case FIRE_BALL: {
-      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 250, 4,
+      PROJECTILES.emplace_back(new FireBall({(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 250, 4,
                                             data->damage, HitType::ONE_HIT, {}, data->pov,
                                             {data->move_x, data->move_y}));
       break;
     }
     case FIRE_STRIKE: {
-      PROJECTILES.emplace_back(new FireBall({data->x, data->y}, !FRIENDLY_FIRE, 120, 2,
+      PROJECTILES.emplace_back(new FireBall({(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 120, 2,
                                             data->damage, HitType::CONTINUOUS, {},
                                             data->pov, {data->move_x, data->move_y}));
       break;
@@ -74,7 +74,7 @@ static void HandleProjectileState(UDP_Projectile* data) noexcept {
     if (net_player) {
       auto prj = UDP_Projectile_Create();
       memcpy(prj, data, sizeof(UDP_Projectile));
-      NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE, prj);
+     // NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE, prj);
     }
   }
   UDP_Projectile_Destroy(data);
@@ -113,9 +113,9 @@ inline static void HandleNewConnection() {
   auto client_data = NBN_GameServer_GetConnectionData(connection);
 
   int client_id = connection->id % MG2_MAX_CLIENTS;
-  OTHER_PLAYERS[client_id] = new NetPlayer({(float)client_data[1], (float)client_data[2]},
-                                           read_string_from_uint8(client_data, 3),
-                                           Zone(client_data[0]), connection, client_id);
+  //OTHER_PLAYERS[client_id] = new NetPlayer({(float)client_data[1], (float)client_data[2]},
+  //                                         read_string_from_uint8(client_data, 3),
+  //                                         Zone(client_data[0]), connection, client_id);
 
   auto stream = NBN_GameServer_GetConnectionAcceptDataWriteStream(connection);
   int player_x = (int)PLAYER_X;

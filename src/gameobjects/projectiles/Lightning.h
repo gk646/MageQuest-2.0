@@ -7,8 +7,7 @@ struct Lightning final : Projectile {
            HitType hit_type, const vector<StatusEffect*>& effects, float pov,
            const Vector2& move)
       : Projectile(from_player, pos, {25, 25}, ShapeType::RECT, life_span, speed,
-                   {DamageType::FIRE, damage}, hit_type, effects, move, pov) {
-    resources = &textures::FIRE_BURST;
+                   {DamageType::FIRE, damage}, hit_type, effects, move, pov,nullptr, nullptr) {
   }
 
   void draw() final {

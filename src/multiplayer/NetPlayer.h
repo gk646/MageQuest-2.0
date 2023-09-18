@@ -7,20 +7,19 @@ struct NetPlayer final : public Entity {
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
   std::string name;
   StatusEffectHandler status_effects{stats};
-  NBN_Connection* connection = nullptr;
+  CSteamID steam_id;
   Zone zone = Zone::Woodland_Edge;
   int sprite_counter = 0;
   bool moving = false;
   int action_state = 0;
   bool flip = false;
-  explicit NetPlayer(const Point& pos, std::string name, Zone zone,
-                     NBN_Connection* connection, int client_id,
-                     const Point& size = {25, 25})
+  explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id, int client_id,
+                     const Point& size = {28, 50})
       : Entity(pos, size, ShapeType::RECT),
-        name(std::move(name)),
         zone(zone),
-        connection(connection),
-        client_id(client_id) {}
+        steam_id(steam_id),
+        client_id(client_id),
+        name(SteamFriends()->GetFriendPersonaName(steam_id)) {}
   void draw() final {
     if (zone != CURRENT_ZONE) {
       return;

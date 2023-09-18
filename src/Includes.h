@@ -85,6 +85,12 @@ typedef struct tagMSG* LPMSG;
 #endif  // WINDOWS
 
 /* |-----------------------------------------------------|
+ * |                        STEAM                        |
+ * |-----------------------------------------------------|
+ */
+#include <steam/steam_api.h>
+
+/* |-----------------------------------------------------|
  * |                         SQLITE                      |
  * |-----------------------------------------------------|
  */
@@ -142,6 +148,7 @@ using namespace cxstructs;
 #include "ui/game/DialogueRender.h"
 #include "gameobjects/Projectile.h"
 #include "multiplayer/Multiplayer.h"
+#include "steam/Callbacks.h"
 #include "gameobjects/Player.h"
 #include "gameobjects/NPC.h"
 #include "world/WorldManager.h"

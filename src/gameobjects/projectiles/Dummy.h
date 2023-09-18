@@ -10,8 +10,7 @@ struct Dummy final : Projectile {
            HitType hit_type, const vector<StatusEffect*>& effects, float pov,
            const Vector2 & move)
       : Projectile(from_player, pos, {25, 25}, ShapeType::RECT, life_span, speed,
-                   {DamageType::FIRE, damage}, hit_type, effects, move, pov) {
-    resources = &textures::DUMMY;
+                   {DamageType::FIRE, damage}, hit_type, effects, move, pov,nullptr,&textures::DUMMY) {
   }
 
   void draw() final {
