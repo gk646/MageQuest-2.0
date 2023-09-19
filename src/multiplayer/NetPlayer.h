@@ -7,7 +7,7 @@ struct NetPlayer final : public Entity {
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
   std::string name;
   StatusEffectHandler status_effects{stats};
-  CSteamID steam_id;
+  SteamNetworkingIdentity identity = SteamNetworkingIdentity();
   Zone zone = Zone::Woodland_Edge;
   int sprite_counter = 0;
   bool moving = false;
@@ -17,9 +17,10 @@ struct NetPlayer final : public Entity {
                      const Point& size = {28, 50})
       : Entity(pos, size, ShapeType::RECT),
         zone(zone),
-        steam_id(steam_id),
         client_id(client_id),
-        name(SteamFriends()->GetFriendPersonaName(steam_id)) {}
+        name(SteamFriends()->GetFriendPersonaName(steam_id)) {
+    identity.SetSteamID(steam_id);
+  }
   void draw() final {
     if (zone != CURRENT_ZONE) {
       return;
@@ -44,8 +45,11 @@ struct NetPlayer final : public Entity {
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif
-    DrawTextPro(ANT_PARTY, name.c_str(), {pos.x_ + DRAW_X, pos.y_ + DRAW_Y}, {0, 0}, 0,
-                15, 1, WHITE);
+    DrawTextPro(
+        ANT_PARTY, name.c_str(),
+        {pos.x_ + DRAW_X - MeasureTextEx(MINECRAFT_REGULAR, name.c_str(), 15, 0.5).x / 2,
+         pos.y_ + DRAW_Y},
+        {0, 0}, 0, 15, 0.5, WHITE);
   }
   void update() final {
     sprite_counter++;

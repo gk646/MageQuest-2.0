@@ -2,111 +2,98 @@
 #define MAGE_QUEST_SRC_NETCODE_MULTIPLAYER_H_
 
 #include "MessageTypes.h"
-
 #include "NetPlayer.h"
-#include "Client.h"
-#include "Server.h"
-
-#include "menus/HostMenu.h"
 
 namespace Multiplayer {
-inline static NetPlayer* get_netplayer(CSteamID steam_id) noexcept {
+inline static int count() noexcept {
+  int ret = 0;
+  for (auto p : OTHER_PLAYERS) {
+    if (p) {
+      ret++;
+    }
+  }
+  return ret;
+}
+inline static NetPlayer* get(CSteamID steam_id) noexcept {
   for (auto& np : OTHER_PLAYERS) {
-    if (np && np->steam_id == steam_id) {
+    if (np && np->identity.GetSteamID() == steam_id) {
       return np;
     }
   }
   return nullptr;
 }
-inline static void add_netplayer(CSteamID steam_id) noexcept {
-  if (!get_netplayer(steam_id)) {
+inline static void add(CSteamID steam_id) noexcept {
+  if (!get(steam_id)) {
     for (auto& np : OTHER_PLAYERS) {
       if (!np) {
         np = new NetPlayer({150, 150}, Zone::Woodland_Edge, steam_id, 0);
         break;
       }
     }
+    std::cout << "added" << std::endl;
   }
 }
-inline static void remove_netplayer(CSteamID steam_id) noexcept {
+inline static void remove(CSteamID steam_id) noexcept {
   for (auto& np : OTHER_PLAYERS) {
-    if (np && np->steam_id == steam_id) {
+    if (np && np->identity.GetSteamID() == steam_id) {
       delete np;
       np = nullptr;
       break;
     }
   }
 }
+inline static void CloseMultiplayer() noexcept {
+  SteamMatchmaking()->LeaveLobby(LOBBY_ID);
+  MP_TYPE = MultiplayerType::OFFLINE;
+}
+inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept{
+  switch (channel) {
+    case UDP_PROJECTILE:
+      delete (UDP_Projectile*)msg;
+      break;
+  }
+}
+}  // namespace Multiplayer
 
+#include "Client.h"
+#include "Server.h"
+#include "menus/HostMenu.h"
+
+namespace Multiplayer {
 inline static NBN_ConnectionStats client_stats;
 inline static NBN_GameServerStats server_stats;
-#define SEND_UDP_PROJECTILE(type, x, y, p, xc, yc, dmg)       \
-  Multiplayer::send_event(UDP_PROJECTILE,                     \
-                          MP_TYPE == MultiplayerType::OFFLINE \
-                              ? nullptr                       \
-                              : new UDP_Projectile(type, x, y, p, xc, yc, dmg));
 
-inline static void send_event(UDP_MSG_TYPE event, void* data) noexcept {
-  if (MP_TYPE == MultiplayerType::SERVER) {
-    if (event == UDP_PROJECTILE) {
-      for (const auto net_player : OTHER_PLAYERS) {
-        if (net_player) {
-          auto prj = UDP_Projectile_Create();
-          memcpy(prj, data, sizeof(UDP_Projectile));
-          // NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PROJECTILE,
-          //  prj);
-        }
-      }
-      UDP_Projectile_Destroy((UDP_Projectile*)data);
-    }
-  } else if (MP_TYPE == MultiplayerType::CLIENT && Client::connected) {
-    NBN_GameClient_SendUnreliableMessage(event, data);
+inline static void UDP_SEND_PROJECTILE(ProjectileType type,int16_t x, int16_t  y, float pov, float mx, float my, float dmg) {
+  if(MP_TYPE == MultiplayerType::CLIENT){
+    Client::SendMsgToHost(UDP_PROJECTILE,new UDP_Projectile(type,x,y,pov,mx,my,dmg),sizeof (UDP_Projectile));
+  }else if(MP_TYPE == MultiplayerType::SERVER){
+    Server::SendMsgToAllUsers(UDP_PROJECTILE,new UDP_Projectile(type,x,y,pov,mx,my,dmg),sizeof (UDP_Projectile));
   }
 }
-inline static void poll_events() noexcept {
-  if (MP_TYPE == MultiplayerType::SERVER) {
-    Server::poll_events();
-  } else if (MP_TYPE == MultiplayerType::CLIENT) {
-    Client::poll_events();
+
+inline static void UDP_SEND_POSITION(uint8_t x, uint8_t y) {
+  if (MP_TYPE == MultiplayerType::CLIENT){
+    Client::SendMsgToHost(UDP_PLAYER_POS_CLIENT,new UDP_PlayerPos(x,y),sizeof (UDP_PlayerPos));
   }
 }
-inline static void send_packets() noexcept {
+
+inline static void PollPackets() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
-    Server::send_packets();
-    server_stats = NBN_GameServer_GetStats();
+    Server::PollPackets();
   } else if (MP_TYPE == MultiplayerType::CLIENT) {
-    Client::send_packets();
-    client_stats = NBN_GameClient_GetStats();
+    Client::PollPackets();
   }
 }
-inline static void close_mp() noexcept {
-  MP_TYPE = MultiplayerType::OFFLINE;
-  Server::connected_clients = 0;
-  Client::connected = false;
+
+inline static void SendPacket(UDP_Channel channel, void* data, uint32_t size) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
-    for (auto& net_player : OTHER_PLAYERS) {
-      if (net_player) {
-        // NBN_GameServer_CloseClientWithCode(net_player->connection, MG2_HOST_CLOSED_GAMED);
-      }
-    }
-    NBN_GameServer_SendPackets();
-    for (auto& net_player : OTHER_PLAYERS) {
-      if (net_player) {
-        //NBN_Connection_Destroy(net_player->connection);
-        delete net_player;
-        net_player = nullptr;
-      }
-    }
-    GameServer_RemoveClosedClientConnections();
-    NBN_GameServer_Stop();
+    Server::SendMsgToAllUsers(channel, data, size);
   } else if (MP_TYPE == MultiplayerType::CLIENT) {
-    for (auto& net_player : OTHER_PLAYERS) {
-      delete net_player;
-      net_player = nullptr;
-    }
-    NBN_GameClient_Disconnect();
-    NBN_GameClient_Stop();
+    Client::SendMsgToHost(channel, data, size);
   }
+}
+inline static void BroadCastGameState() noexcept{
+  //Server::BroadCastGameState();
 }
 inline static void draw_stats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {

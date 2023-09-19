@@ -20,8 +20,8 @@ struct FireBall_Skill final : public Skill {
     float pov = angle * (180.0f / M_PI);
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
-
-    SEND_UDP_PROJECTILE(FIRE_BALL, posX, posY, pov, x_move, y_move, damage);
+    
+    Multiplayer::UDP_SEND_PROJECTILE(FIRE_BALL, posX, posY, pov, x_move, y_move, damage);
     if (MP_TYPE == MultiplayerType::CLIENT) return;
 
     PROJECTILES.emplace_back(new FireBall({posX, posY}, from_player, lifespan, speed,

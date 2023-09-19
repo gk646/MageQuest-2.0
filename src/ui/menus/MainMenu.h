@@ -53,12 +53,12 @@ struct MainMenu {
     } else if (menu_state == MenuState::ServerBrowser) {
       server_browser.draw();
     } else if (menu_state == MenuState::HostGame) {
-      host_menu.draw();
+      host_menu.DrawHostMenu();
     }
 
     if (IsKeyPressed(KEY_ESCAPE)) {
       menu_state = MenuState::Main;
-      SteamMatchmaking()->LeaveLobby(LOBBY_ID);
+      Multiplayer::CloseMultiplayer();
     }
   }
 };
