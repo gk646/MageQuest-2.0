@@ -177,8 +177,8 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
 enum UDP_Channel : uint8_t {
   FILL,
-  UDP_PLAYER_POS_CLIENT,
-  UDP_PLAYER_STATE,
+  UDP_PLAYER_POS_UPDATE,
+  UDP_PLAYER_POS_BROADCAST,
   UDP_PLAYER_NAME,
   UDP_PROJECTILE,
   LAST_CHANNEL

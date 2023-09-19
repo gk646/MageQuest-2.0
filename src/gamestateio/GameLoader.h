@@ -23,7 +23,7 @@ struct GameLoader {
 #ifdef MG2_DEBUG
     } else if (true) {
 #else
-    }else if(NBNET_LOGO->finished == -1){
+    }else if(RAYLIB_LOGO->finished){
 #endif
       setup_game();
     }

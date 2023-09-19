@@ -39,6 +39,7 @@ inline static bool FRIENDLY_FIRE = false;
 
 inline static CSteamID LOBBY_ID;
 inline static SteamNetworkingIdentity HOST_ID = SteamNetworkingIdentity();
+inline static CSteamID PLAYER_ID;
 
 /* |-----------------------------------------------------|
  * |                    PLAYER                      |
