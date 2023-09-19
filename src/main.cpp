@@ -7,6 +7,7 @@ int main() {
   if (!SteamAPI_Init()) {
     exit(1);
   }
+  SteamNetworkingUtils()->InitRelayNetworkAccess();
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
   SetTargetFPS(TARGET_FPS);
   GuiSetStyle(DEFAULT, TEXT_SIZE, 21);

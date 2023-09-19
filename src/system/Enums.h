@@ -175,11 +175,13 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"RANDOM", NPC_ID::RANDOM},
     {"END", NPC_ID::END}};
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
-enum UDP_MSG_TYPE : uint8_t {
+enum UDP_Channel : uint8_t {
+  FILL,
   UDP_PLAYER_POS_CLIENT,
   UDP_PLAYER_STATE,
   UDP_PLAYER_NAME,
-  UDP_PROJECTILE
+  UDP_PROJECTILE,
+  LAST_CHANNEL
 };
 inline static std::unordered_map<std::string, Monster_ID> stringToMonsterID = {
     {"ANY", Monster_ID::ANY},
@@ -195,7 +197,8 @@ inline static std::unordered_map<std::string, Monster_ID> stringToMonsterID = {
     {"SKEL_ARCHER", Monster_ID::SKEL_ARCHER},
     {"SKEL_SHIELD", Monster_ID::SKEL_SHIELD},
     {"SNAKE", Monster_ID::SNAKE}};
-enum ProjectileType {
+
+enum ProjectileType : uint8_t {
   POISON_BALL,
   FIRE_STRIKE,
   FIRE_BALL,

@@ -38,6 +38,7 @@ inline static bool FRIENDLY_FIRE = false;
  */
 
 inline static CSteamID LOBBY_ID;
+inline static SteamNetworkingIdentity HOST_ID = SteamNetworkingIdentity();
 
 /* |-----------------------------------------------------|
  * |                    PLAYER                      |
@@ -52,7 +53,7 @@ inline static float DRAW_Y = 0;
 inline static float MIRROR_POINT = 0;
 inline static PointI* PLAYER_TILE = nullptr;
 inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
-inline static std::string PLAYER_NAME = "hello";
+inline static std::string PLAYER_NAME = "";
 class Item;
 inline Item* DRAGGED_ITEM = nullptr;
 inline Item* TOOL_TIP_ITEM = nullptr;

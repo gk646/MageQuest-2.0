@@ -92,7 +92,7 @@ class Game {
   static inline void game_tick() noexcept {
     cxstructs::now();
     SteamAPI_RunCallbacks();
-    Multiplayer::poll_events();
+    Multiplayer::PollPackets();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
@@ -124,7 +124,7 @@ class Game {
         break;
       }
     }
-    Multiplayer::send_packets();
+    Multiplayer::BroadCastGameState();
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
     PERF_TIME += GAME_TICK_TIME;
     PERF_FRAMES++;
@@ -219,10 +219,10 @@ class Game {
 
  public:
   Game() noexcept {
+    PLAYER_NAME = SteamFriends()->GetPersonaName();
     NBN_UDP_Register();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
-    NBNET_LOGO = new LogoDrawer(ASSET_PATH + "ui/titleScreen/nbnet.png");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
     SetWindowIcon(icon);
     UnloadImage(icon);
@@ -240,7 +240,7 @@ class Game {
   }
   ~Game() noexcept {
     GameSaver::save();
-    Multiplayer::close_mp();
+    Multiplayer::CloseMultiplayer();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
     for (uint_fast32_t i = 0; i < 5589; i++) {
       UnloadTexture(TEXTURES[i]);

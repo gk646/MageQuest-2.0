@@ -20,7 +20,8 @@ struct EnergySphere_Skill final : public Skill {
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
 
-    SEND_UDP_PROJECTILE(ENERGY_SPHERE, posX, posY, pov, x_move, y_move, damage);
+    Multiplayer::UDP_SEND_PROJECTILE(ENERGY_SPHERE, posX, posY, pov, x_move, y_move,
+                                     damage);
     if (MP_TYPE == MultiplayerType::CLIENT) return;
 
     PROJECTILES.emplace_back(new EnergySphere({posX, posY}, from_player, lifespan, speed,

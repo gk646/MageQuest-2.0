@@ -2,22 +2,37 @@
 #define MAGEQUEST_SRC_MULTIPLAYER_CLIENT_H_
 
 namespace Client {
+static void SyncPlayers() noexcept {
+  int numMembers = SteamMatchmaking()->GetNumLobbyMembers(LOBBY_ID);
+  for (int i = 0; i < numMembers; i++) {
+    CSteamID memberId = SteamMatchmaking()->GetLobbyMemberByIndex(LOBBY_ID, i);
+    if (memberId != SteamUser()->GetSteamID()) {
+      const char* inGameName =
+          SteamMatchmaking()->GetLobbyMemberData(LOBBY_ID, memberId, "InGameName");
+      if (inGameName && *inGameName) {
+        Multiplayer::add(memberId);
+        Multiplayer::get(memberId)->name = inGameName;
+      }
+    }
+  }
+}
+//Takes ownership of the passed msg pointer and deletes it
+inline static void SendMsgToHost(uint8_t channel, const void* msg,
+                                 uint32_t length) noexcept {
+  auto result = SteamNetworkingMessages()->SendMessageToUser(
+      HOST_ID, msg, length, k_nSteamNetworkingSend_Reliable, channel);
+
+  Multiplayer::CleanUpMessage(channel, msg);
+
+  if (result != k_EResultOK) {
+    Multiplayer::CloseMultiplayer();
+  }
+}
+static void PollPackets() noexcept {
+
+}
 inline bool connected = false;
 inline int client_id = 0;
-inline static void RegisterMessages() noexcept {
-  NBN_GameClient_RegisterMessage(UDP_PLAYER_POS_CLIENT,
-                                 (NBN_MessageBuilder)UDP_PlayerPos_Client_Create,
-                                 (NBN_MessageDestructor)UDP_PlayerPos_Client_Destroy,
-                                 (NBN_MessageSerializer)UDP_PlayerPos_Client_Serialize);
-  NBN_GameClient_RegisterMessage(UDP_PLAYER_STATE,
-                                 (NBN_MessageBuilder)UDP_PositionState_Create,
-                                 (NBN_MessageDestructor)UDP_PositionState_Destroy,
-                                 (NBN_MessageSerializer)UDP_PositionState_Serialize);
-  NBN_GameClient_RegisterMessage(UDP_PROJECTILE,
-                                 (NBN_MessageBuilder)UDP_Projectile_Create,
-                                 (NBN_MessageDestructor)UDP_Projectile_Destroy,
-                                 (NBN_MessageSerializer)UDP_Projectile_Serialize);
-}
 static void init(const char* ip) noexcept {
   connected = false;
   client_id = -1;
@@ -27,7 +42,6 @@ static void init(const char* ip) noexcept {
   send_data[0] = (uint8_t)PLAYER_Y;
   transcribe_string_into_uint8(3, PLAYER_NAME, send_data);
   NBN_GameClient_Init(MG2_NET_IDENTIFIER, ip, MG2_PORT, false, send_data);
-  RegisterMessages();
   if (NBN_GameClient_Start() < 0) {
     Log(NET_LOG_ERROR, "Failed to start client");
   }
@@ -82,7 +96,6 @@ inline static void HandleProjectileUpdate(UDP_Projectile* data) noexcept {
       break;
     }
   }
-  UDP_Projectile_Destroy(data);
 }
 inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept {
   for (uint_fast32_t j = 0; j < data->client_count; j++) {
@@ -90,9 +103,9 @@ inline static void HandlePlayerPositionUpdate(UDP_PositionState* data) noexcept 
     if (OTHER_PLAYERS[j]) {
       OTHER_PLAYERS[j]->update_state(data->clients_pos[j].x, data->clients_pos[j].y);
     } else {
-     // OTHER_PLAYERS[j] =
+      // OTHER_PLAYERS[j] =
       //    new NetPlayer({(float)data->clients_pos[j].x, (float)data->clients_pos[j].y},
-        //                "", CURRENT_ZONE, nullptr, 50);
+      //                "", CURRENT_ZONE, nullptr, 50);
     }
   }
   UDP_PositionState_Destroy(data);

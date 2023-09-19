@@ -2,29 +2,25 @@
 #define MAGEQUEST_SRC_MULTIPLAYER_SERVER_H_
 
 namespace Server {
-inline static int connected_clients = 0;
-inline static void RegisterMessages() noexcept {
-  NBN_GameServer_RegisterMessage(UDP_PLAYER_POS_CLIENT,
-                                 (NBN_MessageBuilder)UDP_PlayerPos_Client_Create,
-                                 (NBN_MessageDestructor)UDP_PlayerPos_Client_Destroy,
-                                 (NBN_MessageSerializer)UDP_PlayerPos_Client_Serialize);
-  NBN_GameServer_RegisterMessage(UDP_PLAYER_STATE,
-                                 (NBN_MessageBuilder)UDP_PositionState_Create,
-                                 (NBN_MessageDestructor)UDP_PositionState_Destroy,
-                                 (NBN_MessageSerializer)UDP_PositionState_Serialize);
-  NBN_GameServer_RegisterMessage(UDP_PROJECTILE,
-                                 (NBN_MessageBuilder)UDP_Projectile_Create,
-                                 (NBN_MessageDestructor)UDP_Projectile_Destroy,
-                                 (NBN_MessageSerializer)UDP_Projectile_Serialize);
-}
-static void init() {
-  connected_clients = 0;
-  NBN_GameServer_Init(MG2_NET_IDENTIFIER, MG2_PORT, false);
-  RegisterMessages();
-  if (NBN_GameServer_Start() < 0) {
-    Log(NET_LOG_ERROR, "Failed to start the server");
+static void SendMsgToAllUsers(uint8_t channel, const void* msg, uint32_t length) {
+  for (auto p : OTHER_PLAYERS) {
+    if (p) {
+      SteamNetworkingMessages()->SendMessageToUser(
+          p->identity, msg, length, k_nSteamNetworkingSend_Reliable, channel);
+    }
   }
-  MP_TYPE = MultiplayerType::SERVER;
+
+}
+static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  int numMsgs =
+      api->ReceiveMessagesOnChannel(UDP_PLAYER_POS_CLIENT, pMessages, MP_MAX_MESSAGES);
+  for (int i = 0; i < numMsgs; ++i) {
+    auto data = (UDP_PlayerPos*)pMessages[i]->GetData();
+    Multiplayer::get(pMessages[i]->m_identityPeer.GetSteamID())
+        ->update_state(data->x, data->y);
+    pMessages[i]->Release();
+  }
 }
 inline static void BroadCastGameState() noexcept {
   UDP_PlayerPos_Update broad_cast[MG2_MAX_PLAYERS];
@@ -43,67 +39,38 @@ inline static void BroadCastGameState() noexcept {
   for (auto net_player : OTHER_PLAYERS) {
     if (net_player) {
       auto msg = UDP_PositionState_Create();
-      msg->client_count = connected_clients + 1;
+      //msg->client_count = connected_clients + 1;
       memcpy(msg->clients_pos, broad_cast,
              sizeof(UDP_PlayerPos_Update) * MG2_MAX_PLAYERS);
-//      NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PLAYER_STATE,
-        //                                     msg);
+      //      NBN_GameServer_SendUnreliableMessageTo(net_player->connection, UDP_PLAYER_STATE,
+      //                                     msg);
     }
   }
 }
-inline static void send_packets() noexcept {
-  BroadCastGameState();
-  NBN_GameServer_SendPackets();
-}
+inline static void send_packets() noexcept {}
 static void HandleProjectileState(UDP_Projectile* data) noexcept {
   switch (data->p_type) {
     case FIRE_BALL: {
-      PROJECTILES.emplace_back(new FireBall({(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 250, 4,
-                                            data->damage, HitType::ONE_HIT, {}, data->pov,
-                                            {data->move_x, data->move_y}));
+      PROJECTILES.emplace_back(new FireBall(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 250, 4, data->damage,
+          HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
       break;
     }
     case FIRE_STRIKE: {
-      PROJECTILES.emplace_back(new FireBall({(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 120, 2,
-                                            data->damage, HitType::CONTINUOUS, {},
-                                            data->pov, {data->move_x, data->move_y}));
+      PROJECTILES.emplace_back(new FireBall(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 120, 2, data->damage,
+          HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
       break;
     }
   }
   for (auto net_player : OTHER_PLAYERS) {
     if (net_player) {
-      auto prj = UDP_Projectile_Create();
-      memcpy(prj, data, sizeof(UDP_Projectile));
-     // NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE, prj);
+      // NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE, prj);
     }
   }
-  UDP_Projectile_Destroy(data);
-}
-static void HandlePositionUpdate(const NBN_MessageInfo& msg) noexcept {
-  auto data = (UDP_PlayerPos*)msg.data;
-  auto sender = OTHER_PLAYERS[msg.sender->id % MG2_MAX_CLIENTS];
-  if (sender) {
-    sender->update_state(data->x, data->y);
-  }
-  UDP_PlayerPos_Client_Destroy(data);
-}
-static int HandleReceiveMessage() noexcept {
-  auto msg_info = NBN_GameServer_GetMessageInfo();
-  switch (msg_info.type) {
-    case UDP_PLAYER_POS_CLIENT: {
-      HandlePositionUpdate(msg_info);
-      break;
-    }
-    case UDP_PROJECTILE: {
-      HandleProjectileState((UDP_Projectile*)msg_info.data);
-      break;
-    }
-  }
-
-  return 0;
 }
 inline static void HandleNewConnection() {
-  if (connected_clients == MG2_MAX_CLIENTS) {
+  if (1 == MG2_MAX_CLIENTS) {
     Log(NET_LOG_INFO, "Connection rejected | Limit reached");
     NBN_GameServer_RejectIncomingConnectionWithCode(MG2_SERVER_BUSY);
     return;
@@ -128,7 +95,6 @@ inline static void HandleNewConnection() {
   // NBN_GameServer_SendReliableMessageTo(
   //  connection, UDP_PLAYER_NAME,
   //   new UDP_PlayerName(PLAYER_NAME.size() + 1, const_cast<char*>(PLAYER_NAME.c_str())));
-  connected_clients++;
   Log(NET_LOG_INFO, "Client accepted (ID: %d)", connection->id);
 }
 inline static void HandleClientDisconnect() noexcept {
@@ -138,27 +104,12 @@ inline static void HandleClientDisconnect() noexcept {
 
   delete OTHER_PLAYERS[cli_conn->id % MG2_MAX_CLIENTS];
   OTHER_PLAYERS[cli_conn->id % MG2_MAX_CLIENTS] = nullptr;
-  connected_clients--;
   NBN_Connection_Destroy(cli_conn);
 }
-static void poll_events() noexcept {
-  NBN_GameServer_AddTime(MG2_TICK_TIME);
-  while ((MP_EVENT_CODE = NBN_GameServer_Poll()) != NBN_NO_EVENT &&
-         connected_clients > 0) {
-    switch (MP_EVENT_CODE) {
-      case NBN_NEW_CONNECTION:
-        HandleNewConnection();
-        break;
+static void PollPackets() noexcept {
+  auto pInterface = SteamNetworkingMessages();
 
-      case NBN_CLIENT_DISCONNECTED:
-        HandleClientDisconnect();
-        break;
-
-      case NBN_CLIENT_MESSAGE_RECEIVED:
-        HandleReceiveMessage();
-        break;
-    }
-  }
+  HandlePositionUpdates(pInterface);
 }
 
 }  // namespace Server

@@ -14,7 +14,7 @@ struct BlastHammer_Skill final : public Skill {
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X- BlastHammer::width/2, PLAYER_Y + MOUSE_POS.y - CAMERA_Y- BlastHammer::height/2};
     float damage = PLAYER_STATS.get_ability_dmg(damage_stats);
 
-    SEND_UDP_PROJECTILE(BLAST_HAMMER, pos.x_, pos.y_, 0, 0, 0, damage);
+    Multiplayer::UDP_SEND_PROJECTILE(BLAST_HAMMER, pos.x_, pos.y_, 0, 0, 0, damage);
     if (MP_TYPE == MultiplayerType::CLIENT) return;
 
     PROJECTILES.emplace_back(new BlastHammer(pos, from_player, lifespan, 0,
