@@ -43,13 +43,20 @@ inline static void remove(CSteamID steam_id) noexcept {
   }
 }
 inline static void CloseMultiplayer() noexcept {
+  for (auto& np : OTHER_PLAYERS) {
+    delete np;
+    np = nullptr;
+  }
   SteamMatchmaking()->LeaveLobby(LOBBY_ID);
   MP_TYPE = MultiplayerType::OFFLINE;
 }
-inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept{
+inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept {
   switch (channel) {
     case UDP_PROJECTILE:
       delete (UDP_Projectile*)msg;
+      break;
+    case UDP_PLAYER_POS_BROADCAST:
+      delete (UDP_PlayerPositionBroadcast*)msg;
       break;
   }
 }
@@ -62,21 +69,25 @@ inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept{
 namespace Multiplayer {
 inline static NBN_ConnectionStats client_stats;
 inline static NBN_GameServerStats server_stats;
-
-inline static void UDP_SEND_PROJECTILE(ProjectileType type,int16_t x, int16_t  y, float pov, float mx, float my, float dmg) {
-  if(MP_TYPE == MultiplayerType::CLIENT){
-    Client::SendMsgToHost(UDP_PROJECTILE,new UDP_Projectile(type,x,y,pov,mx,my,dmg),sizeof (UDP_Projectile));
-  }else if(MP_TYPE == MultiplayerType::SERVER){
-    Server::SendMsgToAllUsers(UDP_PROJECTILE,new UDP_Projectile(type,x,y,pov,mx,my,dmg),sizeof (UDP_Projectile));
+inline static void UDP_SEND_PROJECTILE(ProjectileType type, int16_t x, int16_t y,
+                                       float pov, float mx, float my, float dmg) {
+  if (MP_TYPE == MultiplayerType::CLIENT) {
+    Client::SendMsgToHost(UDP_PROJECTILE,
+                          new UDP_Projectile(type, x, y, pov, mx, my, dmg),
+                          sizeof(UDP_Projectile));
+  } else if (MP_TYPE == MultiplayerType::SERVER) {
+    Server::SendMsgToAllUsers(UDP_PROJECTILE,
+                              new UDP_Projectile(type, x, y, pov, mx, my, dmg),
+                              sizeof(UDP_Projectile));
   }
 }
 
-inline static void UDP_SEND_POSITION(uint8_t x, uint8_t y) {
-  if (MP_TYPE == MultiplayerType::CLIENT){
-    Client::SendMsgToHost(UDP_PLAYER_POS_CLIENT,new UDP_PlayerPos(x,y),sizeof (UDP_PlayerPos));
+inline static void UDP_SEND_POSITION(uint16_t x, uint16_t y) {
+  if (MP_TYPE == MultiplayerType::CLIENT) {
+    Client::SendMsgToHost(UDP_PLAYER_POS_UPDATE, new UDP_PlayerPos(x, y),
+                          sizeof(UDP_PlayerPos));
   }
 }
-
 inline static void PollPackets() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     Server::PollPackets();
@@ -85,15 +96,8 @@ inline static void PollPackets() noexcept {
   }
 }
 
-inline static void SendPacket(UDP_Channel channel, void* data, uint32_t size) noexcept {
-  if (MP_TYPE == MultiplayerType::SERVER) {
-    Server::SendMsgToAllUsers(channel, data, size);
-  } else if (MP_TYPE == MultiplayerType::CLIENT) {
-    Client::SendMsgToHost(channel, data, size);
-  }
-}
-inline static void BroadCastGameState() noexcept{
-  //Server::BroadCastGameState();
+inline static void BroadCastGameState() noexcept {
+  Server::BroadCastGameState();
 }
 inline static void draw_stats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {

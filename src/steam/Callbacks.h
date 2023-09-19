@@ -62,8 +62,9 @@ void SteamCallbacks::OnLobbyChatUpdate(LobbyChatUpdate_t* pCallback) {
 void SteamCallbacks::OnLobbyJoinRequest(GameLobbyJoinRequested_t* pParam) {
   SteamMatchmaking()->JoinLobby(pParam->m_steamIDLobby);
   MP_TYPE = MultiplayerType::CLIENT;
+  PROJECTILES.clear();
+  MONSTERS.clear();
 }
-
 void SteamCallbacks::OnConnectionRequested(
     SteamNetworkingMessagesSessionRequest_t* pParam) {
   //TODO enable public lobbies
@@ -75,7 +76,6 @@ void SteamCallbacks::OnConnectionRequested(
   }
 }
 void SteamCallbacks::OnConnectionFailed(SteamNetworkingMessagesSessionFailed_t* pParam) {
-  std::cout<< "failed" << std::endl;
   Multiplayer::remove(pParam->m_info.m_identityRemote.GetSteamID());
 }
 }  // namespace Steam

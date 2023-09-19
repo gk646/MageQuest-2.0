@@ -2,7 +2,6 @@
 #define MAGEQUEST_SRC_MULTIPLAYER_NETPLAYER_H_
 
 struct NetPlayer final : public Entity {
-  int client_id;
   EntityStats stats;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
   std::string name;
@@ -11,13 +10,13 @@ struct NetPlayer final : public Entity {
   Zone zone = Zone::Woodland_Edge;
   int sprite_counter = 0;
   bool moving = false;
+  bool prev_moving = false;
   int action_state = 0;
   bool flip = false;
   explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id, int client_id,
                      const Point& size = {28, 50})
       : Entity(pos, size, ShapeType::RECT),
         zone(zone),
-        client_id(client_id),
         name(SteamFriends()->GetFriendPersonaName(steam_id)) {
     identity.SetSteamID(steam_id);
   }
@@ -56,19 +55,27 @@ struct NetPlayer final : public Entity {
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
   }
-  inline void update_state(int x, int y) noexcept {
-    moving = false;
-    if (pos.x_ != x || pos.y_ != y) {
+  inline void update_state(uint16_t x, uint16_t y) noexcept {
+    if(pos.x_ == x && pos.y_ == y){
+      if(prev_moving){
+        prev_moving = false;
+      }else{
+        moving = false;
+      }
+    }else {
       moving = true;
+      prev_moving = moving;
     }
 
     if (x < pos.x_) {
       flip = true;
-    } else if (x > pos.y_) {
+    } else if (x > pos.x_) {
       flip = false;
     }
+
     pos.x_ = x;
     pos.y_ = y;
+
   }
   void hit(Projectile& p) noexcept {
     if (!p.from_player) {

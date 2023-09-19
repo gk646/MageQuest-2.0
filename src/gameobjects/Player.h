@@ -53,7 +53,7 @@ struct Player final : public Entity {
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
 
-    Multiplayer::UDP_SEND_POSITION((uint8_t)pos.x_, (uint8_t)pos.y_);
+    Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_), static_cast<int16_t>(pos.y_));
     sprite_counter++;
   }
   void draw() final {

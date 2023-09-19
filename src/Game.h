@@ -8,7 +8,7 @@ class Game {
   std::thread logic_thread;
 
 #define UPDATE_AND_COLLISION()                                        \
-                                                                      \
+  std::unique_lock<std::shared_mutex> lock(rwLock);                   \
   SIMD_PRAGMA                                                         \
   for (const auto net_player : OTHER_PLAYERS) {                       \
     if (net_player) {                                                 \
@@ -74,7 +74,6 @@ class Game {
     auto targetDuration = std::chrono::milliseconds(16);
 
     while (logic_thread_running) {
-
       auto currentTime = std::chrono::high_resolution_clock::now();
 
       if (currentTime >= nextUpdate) {
@@ -104,25 +103,20 @@ class Game {
           PLAYER_STATS.update();
           PLAYER_HOTBAR.update();
           PLAYER.update();
-          std::unique_lock<std::shared_mutex> lock(rwLock);
           UPDATE_AND_COLLISION()
-          break;
         }
+        break;
       case GameState::GameMenu: {
         UI_MANAGER.update();
         PLAYER_EFFECTS.update();
         PLAYER_STATS.update();
         PLAYER_HOTBAR.update();
-        std::unique_lock<std::shared_mutex> lock(rwLock);
         UPDATE_AND_COLLISION()
-        break;
-      }
+      } break;
       case GameState::Loading: {
-        break;
-      }
+      } break;
       case GameState::GameOver: {
-        break;
-      }
+      } break;
     }
     Multiplayer::BroadCastGameState();
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
@@ -135,7 +129,6 @@ class Game {
   CAMERA_Y = SCREEN_HEIGHT / 2;
 
 #define DRAW_ENTITIES()                             \
-                                                    \
   std::shared_lock<std::shared_mutex> lock(rwLock); \
   for (auto object : WORLD_OBJECTS) {               \
     object->draw();                                 \
@@ -219,6 +212,7 @@ class Game {
 
  public:
   Game() noexcept {
+    PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
     NBN_UDP_Register();
     RNG_RANDOM.seed(std::random_device()());
@@ -233,7 +227,7 @@ class Game {
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
     for (uint_fast32_t i = 0; i < 1; i++) {
-    MONSTERS.push_back(new SkeletonWarrior({250.0F, 150}, 150));
+      MONSTERS.push_back(new SkeletonWarrior({250.0F, 150}, 150));
     }
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();
