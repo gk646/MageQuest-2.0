@@ -42,25 +42,27 @@ static void SendMsgToAllUsersExcept(uint8_t channel, const void* msg, uint32_t l
   Multiplayer::CleanUpMessage(channel, msg);
 }
 static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
-  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES_POS];
   int numMsgs;
 
   if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_PLAYER_POS_UPDATE, pMessages,
-                                               MP_MAX_MESSAGES)) > 0) {
+                                               MP_MAX_MESSAGES_POS)) > 0) {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_PlayerPos*)pMessages[i]->GetData();
-      Multiplayer::get(pMessages[i]->m_identityPeer.GetSteamID())
-          ->update_state(data->x, data->y);
+      NetPlayer* p;
+      if ((p = Multiplayer::get(pMessages[i]->m_identityPeer.GetSteamID())) != nullptr) {
+        p->update_state(data->x, data->y);
+      }
       pMessages[i]->Release();
     }
   }
 }
 static void HandleProjectileState(ISteamNetworkingMessages* api) noexcept {
-  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES_MONSTER];
   int numMsgs;
 
   if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_PROJECTILE, pMessages,
-                                               MP_MAX_MESSAGES)) > 0) {
+                                               MP_MAX_MESSAGES_MONSTER)) > 0) {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_Projectile*)pMessages[i]->GetData();
       Multiplayer::HandleProjectile(data);

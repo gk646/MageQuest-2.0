@@ -45,6 +45,6 @@ struct UDP_MonsterUpdate {
   uint16_t x;
   uint16_t y;
   uint16_t new_health;
-  uint8_t action_state;
+  int8_t action_state;
 };
 #endif  //MAGEQUEST_SRC_MULTIPLAYER_MESSAGETYPES_H_

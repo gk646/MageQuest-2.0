@@ -30,10 +30,10 @@ inline static void SendMsgToHost(uint8_t channel, const void* msg,
 }
 inline static void UpdateMonsters(UDP_MonsterUpdate* data) noexcept;
 static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
-  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES_POS];
   int numMsgs;
   if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_PLAYER_POS_BROADCAST, pMessages,
-                                               MP_MAX_MESSAGES)) > 0) {
+                                               MP_MAX_MESSAGES_POS)) > 0) {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_PlayerPositionBroadcast*)pMessages[i]->GetData();
       for (uint8_t j = 0; j < data->client_count; j++) {
@@ -48,11 +48,11 @@ static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
   }
 }
 static void HandleProjectileState(ISteamNetworkingMessages* api) noexcept {
-  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES_MONSTER];
   int numMsgs;
 
   if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_PROJECTILE, pMessages,
-                                               MP_MAX_MESSAGES)) > 0) {
+                                               MP_MAX_MESSAGES_MONSTER)) > 0) {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_Projectile*)pMessages[i]->GetData();
       Multiplayer::HandleProjectile(data);
@@ -74,11 +74,11 @@ static void HandleMonsterSpawns(ISteamNetworkingMessages* api) noexcept {
   }
 }
 static void HandleMonsterUpdates(ISteamNetworkingMessages* api) noexcept {
-  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES_MONSTER];
   int numMsgs;
 
   if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_MONSTER_UPDATE, pMessages,
-                                               MP_MAX_MESSAGES)) > 0) {
+                                               MP_MAX_MESSAGES_MONSTER)) > 0) {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_MonsterUpdate*)pMessages[i]->GetData();
       UpdateMonsters(data);

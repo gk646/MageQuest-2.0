@@ -93,8 +93,17 @@ struct Monster : public Entity {
     return true;
   }
   inline void update_state(UDP_MonsterUpdate* data) noexcept {
-    stats.health = data->new_health;
-    attack = data->action_state;
+    if (stats.health != data->new_health) {
+      stats.health = data->new_health;
+      health_bar.hit();
+    }
+
+    if ((attack == 0 && sprite_counter > 100) || data->action_state == -100) {
+      sprite_counter = 0;
+      attack = data->action_state;
+    }
+
+    flip = (data->x < pos.x_);
     if (pos.x_ == data->x && pos.y_ == data->y) {
       if (prev_moving) {
         prev_moving = false;
@@ -105,8 +114,6 @@ struct Monster : public Entity {
       moving = true;
       prev_moving = true;
     }
-
-    //flip = (x < pos.x_);
     pos.x_ = data->x;
     pos.y_ = data->y;
   }
@@ -124,11 +131,12 @@ void Server::SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexce
 }
 void Server::BroadCastMonsterUpdates() noexcept {
   for (auto m : MONSTERS) {
-    if (m->moving || m->health_bar.delay > 0) {
+    if (m->moving || m->health_bar.delay > 0 || m->attack != 0) {
       Server::SendMsgToAllUsers(
           UDP_MONSTER_UPDATE,
           new UDP_MonsterUpdate(m->u_id, static_cast<uint16_t>(m->pos.x_),
-                                  static_cast<uint16_t>(m->pos.y_),m->stats.health,m->attack),
+                                static_cast<uint16_t>(m->pos.y_), m->stats.health,
+                                static_cast<int8_t>(m->attack)),
           sizeof(UDP_MonsterUpdate));
     }
   }
@@ -171,8 +179,8 @@ void Multiplayer::HandleMonsterSpawn(UDP_MonsterSpawn* data) noexcept {
 }
 void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
   //TODO optimize
-  for(auto m : MONSTERS){
-    if(m->u_id == data->monster_id){
+  for (auto m : MONSTERS) {
+    if (m->u_id == data->monster_id) {
       m->update_state(data);
     }
   }
