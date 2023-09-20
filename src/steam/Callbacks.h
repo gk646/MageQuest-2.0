@@ -14,6 +14,7 @@ class SteamCallbacks {
                  SteamNetworkingMessagesSessionRequest_t);
   STEAM_CALLBACK(SteamCallbacks, OnConnectionFailed,
                  SteamNetworkingMessagesSessionFailed_t);
+  STEAM_CALLBACK(SteamCallbacks, OnGameJoinRequest, GameRichPresenceJoinRequested_t);
 };
 SteamCallbacks STEAM_CALLBACKS = SteamCallbacks();
 
@@ -77,6 +78,10 @@ void SteamCallbacks::OnConnectionRequested(
 }
 void SteamCallbacks::OnConnectionFailed(SteamNetworkingMessagesSessionFailed_t* pParam) {
   Multiplayer::remove(pParam->m_info.m_identityRemote.GetSteamID());
+}
+void SteamCallbacks::OnGameJoinRequest(GameRichPresenceJoinRequested_t* pParam) {
+  auto friend_id = pParam->m_steamIDFriend;
+  std::cout << pParam->m_rgchConnect << std::endl;
 }
 }  // namespace Steam
 #endif  //MAGEQUEST_SRC_STEAM_CALLBACKS_H_

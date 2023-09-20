@@ -5,6 +5,7 @@
 #include "NetPlayer.h"
 
 namespace Multiplayer {
+inline static bool CONNECTED = false;  //used for client to have more precise control
 inline static void HandleProjectile(UDP_Projectile* data) noexcept;
 inline static int count() noexcept {
   int ret = 0;
@@ -49,6 +50,7 @@ inline static void CloseMultiplayer() noexcept {
   }
   SteamMatchmaking()->LeaveLobby(LOBBY_ID);
   MP_TYPE = MultiplayerType::OFFLINE;
+  CONNECTED = false;
 }
 inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept {
   switch (channel) {
@@ -70,7 +72,8 @@ namespace Multiplayer {
 inline static SteamNetConnectionRealTimeStatus_t connect_status =
     SteamNetConnectionRealTimeStatus_t();
 inline static void UDP_SEND_PROJECTILE(ProjectileType type, int16_t x, int16_t y,
-                                       float pov, float mx, float my, float dmg) {
+                                       float pov, float mx, float my,
+                                       float dmg) noexcept {
   if (MP_TYPE == MultiplayerType::CLIENT) {
     Client::SendMsgToHost(UDP_PROJECTILE,
                           new UDP_Projectile(type, x, y, pov, mx, my, dmg),
@@ -90,7 +93,7 @@ inline static void UDP_SEND_POSITION(uint16_t x, uint16_t y) {
 inline static void PollPackets() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     Server::PollPackets();
-  } else if (MP_TYPE == MultiplayerType::CLIENT) {
+  } else if (MP_TYPE == MultiplayerType::CLIENT&& CONNECTED) {
     Client::PollPackets();
   }
 }
@@ -124,6 +127,5 @@ inline static void draw_stats(char* buffer) noexcept {
     DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.35, 20, GREEN);
   }
 }
-
 }  // namespace Multiplayer
 #endif  //MAGE_QUEST_SRC_NETCODE_MULTIPLAYER_H_

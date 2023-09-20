@@ -90,8 +90,8 @@ class Game {
   }
   static inline void game_tick() noexcept {
     cxstructs::now();
-    SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
+    SteamAPI_RunCallbacks();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
