@@ -80,8 +80,8 @@
 
 // Type required before windows.h inclusion
 typedef struct tagMSG* LPMSG;
-#include <winsock2.h>
-#include <windows.h>
+#include <WinSock2.h>
+#include <Windows.h>
 #endif  // WINDOWS
 
 /* |-----------------------------------------------------|
@@ -95,13 +95,6 @@ typedef struct tagMSG* LPMSG;
  * |-----------------------------------------------------|
  */
 #include <sqlite3.h>
-
-/* |-----------------------------------------------------|
- * |                    NBNET                            |
- * |-----------------------------------------------------|
- */
-#include "system/NBNet.h"
-
 /* |-----------------------------------------------------|
  * |                      CXSTRUCTS                      |
  * |-----------------------------------------------------|

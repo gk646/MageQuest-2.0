@@ -13,7 +13,7 @@ struct NetPlayer final : public Entity {
   bool prev_moving = false;
   int action_state = 0;
   bool flip = false;
-  explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id, int client_id,
+  explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id,
                      const Point& size = {28, 50})
       : Entity(pos, size, ShapeType::RECT),
         zone(zone),
@@ -48,7 +48,7 @@ struct NetPlayer final : public Entity {
     DrawTextPro(
         ANT_PARTY, name.c_str(),
         {pos.x_ + DRAW_X - MeasureTextEx(MINECRAFT_REGULAR, name.c_str(), 14, 0.5).x / 2,
-         pos.y_ + DRAW_Y-15},
+         pos.y_ + DRAW_Y - 15},
         {0, 0}, 0, 14, 0.5, WHITE);
   }
   void update() final {
@@ -57,36 +57,30 @@ struct NetPlayer final : public Entity {
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
   }
   inline void update_state(uint16_t x, uint16_t y) noexcept {
-    if(pos.x_ == x && pos.y_ == y){
-      if(prev_moving){
+    if (pos.x_ == x && pos.y_ == y) {
+      if (prev_moving) {
         prev_moving = false;
-      }else{
-        moving = false;
+        return;
       }
-    }else {
+      moving = false;
+    } else {
       moving = true;
-      prev_moving = moving;
+      prev_moving = true;
     }
 
-    if (x < pos.x_) {
-      flip = true;
-    } else if (x > pos.x_) {
-      flip = false;
-    }
-
+    flip = (x < pos.x_);
     pos.x_ = x;
     pos.y_ = y;
-
   }
   void hit(Projectile& p) noexcept {
     if (!p.from_player) {
       status_effects.add_effects(p.status_effects);
       stats.take_damage(p.damage_stats);
-      p.dead = p.projectile_type == HitType::ONE_HIT;
+      p.dead = action_state != -100 && p.projectile_type == HitType::ONE_HIT;
     }
   }
-  inline void draw_direction_indicator()noexcept{
-
+  inline void draw_direction_indicator() noexcept {
+    //TODO mouse direction indicator
   }
   inline void draw_death() noexcept {
     int num = sprite_counter % 75 / 15;

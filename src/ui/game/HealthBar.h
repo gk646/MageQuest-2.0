@@ -2,9 +2,9 @@
 #define MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_
 
 struct HealthBar {
-  int delay = 0;
-  int width = 50;
-  int height = 10;
+  int16_t delay = 0;
+  uint8_t width = 50;
+  uint8_t height = 10;
   static char buffer[15];
   HealthBar(int width, int height) noexcept : width(width), height(height) {}
   void draw(float x, float y, const EntityStats& stats) const noexcept {

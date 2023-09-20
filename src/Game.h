@@ -10,17 +10,6 @@ class Game {
 #define UPDATE_AND_COLLISION()                                        \
   std::unique_lock<std::shared_mutex> lock(rwLock);                   \
   SIMD_PRAGMA                                                         \
-  for (const auto net_player : OTHER_PLAYERS) {                       \
-    if (net_player) {                                                 \
-      net_player->update();                                           \
-    }                                                                 \
-  }                                                                   \
-  SIMD_PRAGMA                                                         \
-  for (const auto npc : NPCS) {                                       \
-    npc->update();                                                    \
-  }                                                                   \
-                                                                      \
-  SIMD_PRAGMA                                                         \
   for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) { \
     if ((*it)->dead) {                                                \
       delete *it;                                                     \
@@ -34,6 +23,23 @@ class Game {
   }                                                                   \
                                                                       \
   SIMD_PRAGMA                                                         \
+  for (const auto net_player : OTHER_PLAYERS) {                       \
+    if (net_player) {                                                 \
+      net_player->update();                                           \
+    }                                                                 \
+  }                                                                   \
+                                                                      \
+  SIMD_PRAGMA                                                         \
+  for (auto it = NPCS.begin(); it != NPCS.end();) {                   \
+    if ((*it)->dead) {                                                \
+      it = NPCS.erase(it);                                            \
+    } else {                                                          \
+      (*it)->update();                                                \
+      ++it;                                                           \
+    }                                                                 \
+  }                                                                   \
+                                                                      \
+  SIMD_PRAGMA                                                         \
   for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {           \
     if ((*it)->dead) {                                                \
       it = MONSTERS.erase(it);                                        \
@@ -42,6 +48,7 @@ class Game {
       ++it;                                                           \
     }                                                                 \
   }                                                                   \
+                                                                      \
   for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {     \
     (*it)->update();                                                  \
                                                                       \
@@ -60,6 +67,13 @@ class Game {
             (*m_it)->hit(**it);                                       \
           }                                                           \
           ++m_it;                                                     \
+        }                                                             \
+      }                                                               \
+      for (auto np : OTHER_PLAYERS) {                                 \
+        if (np) {                                                     \
+          if ((*it)->intersects(*np)) {                               \
+            np->hit(**it);                                            \
+          }                                                           \
         }                                                             \
       }                                                               \
       if ((*it)->intersects(PLAYER)) [[unlikely]] {                   \
@@ -150,16 +164,6 @@ class Game {
   lock.unlock();                                    \
   PLAYER.draw();
 
-#define DRAW_GAME_UI()         \
-  UI_MANAGER.player_ui.draw(); \
-  UI_MANAGER.game_menu.draw();
-
-#define DRAW_LOADING()                    \
-  LoadingScreen::draw();                  \
-  if (GameLoader::finished_cpu_loading) { \
-    GameLoader::finish_loading();         \
-  }
-
   static void render_loop() noexcept {
     while (!WindowShouldClose()) {
       BeginDrawing();
@@ -186,17 +190,20 @@ class Game {
           DRAW_ENTITIES()
           WorldRender::draw_fore_ground();
           UI_MANAGER.player_ui.draw();
-          break;
         }
+        break;
       case GameState::GameMenu: {
         WorldRender::draw();
         DRAW_ENTITIES()
         WorldRender::draw_fore_ground();
-        DRAW_GAME_UI()
-        break;
-      }
+        UI_MANAGER.player_ui.draw();
+        UI_MANAGER.game_menu.draw();
+      } break;
       case GameState::Loading: {
-        DRAW_LOADING()
+        LoadingScreen::draw();
+        if (GameLoader::finished_cpu_loading) {
+          GameLoader::finish_loading();
+        }
         break;
       }
       case GameState::GameOver:
@@ -214,7 +221,6 @@ class Game {
   Game() noexcept {
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
-    NBN_UDP_Register();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
