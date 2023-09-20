@@ -27,6 +27,8 @@ inline std::string ASSET_PATH = "../res/";
 //codes
 #define MG2_SERVER_BUSY 401
 #define MG2_HOST_CLOSED_GAMED 402
+#define MP_MAX_MESSAGES_POS 4
+#define MP_MAX_MESSAGES_MONSTER 60
 #define MP_MAX_MESSAGES 20
 
 /* |-----------------------------------------------------|

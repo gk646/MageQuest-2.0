@@ -70,9 +70,12 @@ inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept {
     case UDP_MONSTER_UPDATE:
       delete (UDP_MonsterUpdate*)msg;
       break;
+    case UDP_MONSTER_SPAWN:
+      delete (UDP_MonsterSpawn*)msg;
+      break;
     default:
       std::cout << "not deleted" << std::endl;
-      std::cout << channel << std::endl;
+      std::cout << (int)channel << std::endl;
   }
 }
 }  // namespace Multiplayer
