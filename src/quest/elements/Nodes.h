@@ -63,9 +63,9 @@ struct SPEAK final : public QuestNode {
   }
 };
 struct KILL final : public QuestNode {
-  Monster_ID target;
+  MonsterType target;
   int amount = 0;
-  explicit KILL(Monster_ID target, int amount, std::string obj_txt)
+  explicit KILL(MonsterType target, int amount, std::string obj_txt)
       : QuestNode(std::move(obj_txt), NodeType::KILL), amount(amount), target(target) {}
   bool progress() noexcept final { return false; }
 };

@@ -16,7 +16,6 @@ set(OPENGL_VERSION "4.3" CACHE STRING "OpenGL Version to build raylib with")
 
 add_subdirectory(C:/Users/gk646/Documents/Libaries/raylib-4.5.0 raylib)
 add_library(sqlite3 STATIC C:/Users/gk646/Documents/Libaries/SQLiteCpp-3.3.1/sqlite3/sqlite3.c)
-include_directories(C:/Users/gk646/Documents/Libaries/nbnet-1.1.3/src)
 include_directories(C:/Users/gk646/Documents/Libaries/sdk/public)
 
 file(GLOB_RECURSE PROJECT_SOURCES
@@ -33,7 +32,6 @@ include_directories(${PROJECT_NAME} PUBLIC
 )
 
 
-#target_link_libraries(MageQuest raylib sqlite3 wsock32 ws2_32 opengl32 gdi32 winmm)
 target_link_libraries(${PROJECT_NAME} PUBLIC
         C:/Users/gk646/Documents/Libaries/sdk/redistributable_bin/win64/steam_api64.lib
         raylib

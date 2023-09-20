@@ -6,7 +6,7 @@ struct SkeletonSpear final : public Monster {
   static constexpr float base_speed = 2;
   SkeletonSpear(const Point& pos, int level) noexcept
       : Monster(pos, EntityStats{base_health, level,per_level, base_speed},
-                &textures::SKELETON_SPEAR, {30, 50}) {
+                &textures::SKELETON_SPEAR, MonsterType::SKEL_SPEAR,{30, 50}) {
     attack_cd = 120;
   }
 

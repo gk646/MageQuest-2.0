@@ -2,6 +2,8 @@
 #define MAGEQUEST_SRC_MULTIPLAYER_SERVER_H_
 
 namespace Server {
+static void SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexcept;
+
 static void SendMsgToAllUsers(uint8_t channel, const void* msg,
                               uint32_t length) noexcept {
   for (auto p : OTHER_PLAYERS) {
@@ -15,8 +17,19 @@ static void SendMsgToAllUsers(uint8_t channel, const void* msg,
   }
   Multiplayer::CleanUpMessage(channel, msg);
 }
+static void SendMsgToUser(const SteamNetworkingIdentity& identity, uint8_t channel,
+                          const void* msg, uint32_t length) noexcept {
+  auto res = SteamNetworkingMessages()->SendMessageToUser(
+      identity, msg, length, k_nSteamNetworkingSend_Reliable, channel);
+  if (res != k_EResultOK) {
+    Multiplayer::remove(identity.GetSteamID());
+  }
+
+  Multiplayer::CleanUpMessage(channel, msg);
+}
+
 static void SendMsgToAllUsersExcept(uint8_t channel, const void* msg, uint32_t length,
-                                    SteamNetworkingIdentity blacklist) noexcept {
+                                    const SteamNetworkingIdentity& blacklist) noexcept {
   for (auto p : OTHER_PLAYERS) {
     if (p && p->identity != blacklist) {
       auto res = SteamNetworkingMessages()->SendMessageToUser(
@@ -60,8 +73,8 @@ static void HandleProjectileState(ISteamNetworkingMessages* api) noexcept {
     }
   }
 }
-inline static void BroadCastGameState() noexcept {
-  UDP_PlayerPos_Update pos_arr[MG2_MAX_PLAYERS];
+inline static void BroadCastPlayerPositions() noexcept {
+  UDP_PlayerPosNamed pos_arr[MG2_MAX_PLAYERS];
 
   pos_arr[0].steam_id = SteamUser()->GetSteamID().ConvertToUint64();
   pos_arr[0].x = static_cast<uint16_t>(PLAYER_X);
@@ -79,6 +92,11 @@ inline static void BroadCastGameState() noexcept {
   msg->client_count = i;
   memcpy(msg->clients_pos, pos_arr, sizeof(pos_arr));
   SendMsgToAllUsers(UDP_PLAYER_POS_BROADCAST, msg, sizeof(UDP_PlayerPositionBroadcast));
+}
+inline static void BroadCastMonsterUpdates() noexcept;
+inline static void BroadCastGameState() noexcept {
+  BroadCastPlayerPositions();
+  BroadCastMonsterUpdates();
 }
 static void PollPackets() noexcept {
   auto pInterface = SteamNetworkingMessages();

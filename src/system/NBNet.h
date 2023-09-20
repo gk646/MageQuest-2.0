@@ -9,7 +9,7 @@ enum LogCode {
 };
 class NetPlayer;
 static const char* log_type_strings[] = {"INFO", "ERROR", "DEBUG", "TRACE", "WARNING"};
-inline static std::array<NetPlayer*, 3> OTHER_PLAYERS = {0};
+
 #define NBN_LogInfo(...) Log(NET_LOG_INFO, __VA_ARGS__)
 #define NBN_LogError(...) Log(NET_LOG_ERROR, __VA_ARGS__)
 #define NBN_LogDebug(...) Log(NET_LOG_DEBUG, __VA_ARGS__)

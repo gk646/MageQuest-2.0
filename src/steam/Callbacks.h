@@ -34,7 +34,6 @@ void SteamCallbacks::OnLobbyCreated(LobbyCreated_t* pParam) {
     MP_TYPE = MultiplayerType::SERVER;
   }
 }
-
 void SteamCallbacks::OnLobbyEnter(LobbyEnter_t* pCallback) {
   if (pCallback->m_EChatRoomEnterResponse == k_EChatRoomEnterResponseSuccess) {
     LOBBY_ID = pCallback->m_ulSteamIDLobby;
@@ -54,6 +53,10 @@ void SteamCallbacks::OnLobbyDataUpdated(LobbyDataUpdate_t* pCallback) {}
 void SteamCallbacks::OnLobbyChatUpdate(LobbyChatUpdate_t* pCallback) {
   if (pCallback->m_rgfChatMemberStateChange & k_EChatMemberStateChangeEntered) {
     Multiplayer::add(pCallback->m_ulSteamIDUserChanged);
+    if (MP_TYPE == MultiplayerType::SERVER) {
+      Server::SynchronizeMonsters(
+          Multiplayer::get(pCallback->m_ulSteamIDUserChanged)->identity);
+    }
   } else if (pCallback->m_rgfChatMemberStateChange & k_EChatMemberStateChangeLeft ||
              pCallback->m_rgfChatMemberStateChange &
                  k_EChatMemberStateChangeDisconnected) {

@@ -2,11 +2,15 @@
 #define MAGE_QUEST_SRC_NETCODE_MULTIPLAYER_H_
 
 #include "MessageTypes.h"
-#include "NetPlayer.h"
 
 namespace Multiplayer {
-inline static bool CONNECTED = false;  //used for client to have more precise control
 inline static void HandleProjectile(UDP_Projectile* data) noexcept;
+inline static void HandleMonsterSpawn(UDP_MonsterSpawn* data) noexcept;
+}  // namespace Multiplayer
+#include "NetPlayer.h"
+inline static std::array<NetPlayer*, 3> OTHER_PLAYERS = {0};
+namespace Multiplayer {
+inline static bool CONNECTED = false;  //used for client to have more precise control
 inline static int count() noexcept {
   int ret = 0;
   for (auto p : OTHER_PLAYERS) {
@@ -28,7 +32,7 @@ inline static void add(CSteamID steam_id) noexcept {
   if (!get(steam_id)) {
     for (auto& np : OTHER_PLAYERS) {
       if (!np) {
-        np = new NetPlayer({150, 150}, Zone::Woodland_Edge, steam_id, 0);
+        np = new NetPlayer({150, 150}, Zone::Woodland_Edge, steam_id);
         break;
       }
     }
@@ -60,6 +64,15 @@ inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept {
     case UDP_PLAYER_POS_BROADCAST:
       delete (UDP_PlayerPositionBroadcast*)msg;
       break;
+    case UDP_PLAYER_POS_UPDATE:
+      delete (UDP_PlayerPosNamed*)msg;
+      break;
+    case UDP_MONSTER_UPDATE:
+      delete (UDP_MonsterUpdate*)msg;
+      break;
+    default:
+      std::cout << "not deleted" << std::endl;
+      std::cout << channel << std::endl;
   }
 }
 }  // namespace Multiplayer
@@ -93,12 +106,14 @@ inline static void UDP_SEND_POSITION(uint16_t x, uint16_t y) {
 inline static void PollPackets() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     Server::PollPackets();
-  } else if (MP_TYPE == MultiplayerType::CLIENT&& CONNECTED) {
+  } else if (MP_TYPE == MultiplayerType::CLIENT && CONNECTED) {
     Client::PollPackets();
   }
 }
 inline static void BroadCastGameState() noexcept {
-  Server::BroadCastGameState();
+  if (MP_TYPE == MultiplayerType::SERVER) {
+    Server::BroadCastGameState();
+  }
 }
 inline static void draw_stats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
