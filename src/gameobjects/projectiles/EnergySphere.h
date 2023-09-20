@@ -4,8 +4,7 @@ struct EnergySphere final : Projectile {
   static constexpr int width = 15;
   static constexpr int height = 15;
   EnergySphere(const Point& pos, bool from_player, int life_span, float speed,
-               float damage, HitType hit_type, const vector<StatusEffect*>& effects,
-               float pov, const Vector2& move)
+               float damage, HitType hit_type, const vector<StatusEffect*>& effects,const Vector2& move)
       : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, life_span, speed,
                    {DamageType::ARCANE, damage}, hit_type, effects, move, 0, nullptr,
                    &textures::ENERGY_SPHERE) {}

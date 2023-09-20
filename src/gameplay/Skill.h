@@ -64,10 +64,38 @@ struct Skill {
     PLAYER_STATS.use_skill(skill_stats);
   }
 };
-
 #include "skills/Dummy.h"
 #include "skills/FireBall_Skill.h"
 #include "skills/BlastHammer_Skill.h"
 #include "skills/EnergySphere_Skill.h"
 #include "skills/FireStrike_Skill.h"
+
+inline static void Multiplayer::HandleProjectile(UDP_Projectile* data) noexcept {
+  switch (data->p_type) {
+    case FIRE_BALL: {
+      PROJECTILES.emplace_back(new FireBall(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireBall_Skill::LIFE_SPAN, FireBall_Skill::SPEED, data->damage,
+          HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
+      break;
+    }
+    case FIRE_STRIKE: {
+      PROJECTILES.emplace_back(new FireBall(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireStrike_Skill::LIFE_SPAN, FireStrike_Skill::SPEED, data->damage,
+          HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
+      break;
+    }
+    case BLAST_HAMMER: {
+      PROJECTILES.emplace_back(new BlastHammer(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, BlastHammer_Skill::LIFE_SPAN, 0, data->damage,
+          HitType::ONE_TICK, {}, data->pov, {0,0}, RANGE_01(RNG_RANDOM)>0.5F));
+      break;
+    }
+    case ENERGY_SPHERE: {
+      PROJECTILES.emplace_back(new EnergySphere(
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, EnergySphere_Skill::LIFESPAN, EnergySphere_Skill::SPEED, data->damage,
+          HitType::CONTINUOUS, {},  {data->move_x,data->move_y}));
+      break;
+    }
+  }
+}
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

@@ -47,19 +47,16 @@ static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
     }
   }
 }
-inline static void HandleProjectileUpdate(UDP_Projectile* data) noexcept {
-  switch (data->p_type) {
-    case FIRE_BALL: {
-      PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 250, 4, data->damage,
-          HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
-      break;
-    }
-    case FIRE_STRIKE: {
-      PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 120, 2, data->damage,
-          HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
-      break;
+static void HandleProjectileState(ISteamNetworkingMessages* api) noexcept {
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  int numMsgs;
+
+  if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_PROJECTILE, pMessages,
+                                               MP_MAX_MESSAGES)) > 0) {
+    for (int i = 0; i < numMsgs; ++i) {
+      auto data = (UDP_Projectile*)pMessages[i]->GetData();
+      Multiplayer::HandleProjectile(data);
+      pMessages[i]->Release();
     }
   }
 }
@@ -67,6 +64,7 @@ static void PollPackets() noexcept {
   auto pInterface = SteamNetworkingMessages();
 
   HandlePositionUpdates(pInterface);
+  HandleProjectileState(pInterface);
 }
 }  // namespace Client
 #endif  //MAGEQUEST_SRC_MULTIPLAYER_CLIENT_H_
