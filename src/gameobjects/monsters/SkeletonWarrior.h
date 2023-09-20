@@ -6,13 +6,13 @@ struct SkeletonWarrior final : public Monster {
   static constexpr int per_level = 5;
   static constexpr float base_speed = 1.5;
   SkeletonWarrior(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level,per_level, base_speed},
+      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
                 &textures::SKELETON_WARRIOR, {30, 47}) {
     attack_cd = 50;
   }
 
   void draw() final {
-    if (attack == -100) [[unlikely]]{
+    if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {
       draw_attack1();
@@ -47,7 +47,7 @@ struct SkeletonWarrior final : public Monster {
       } else {
         attack = 3;
       }
-    }else{
+    } else {
       attack_cd--;
     }
   }
@@ -77,10 +77,13 @@ struct SkeletonWarrior final : public Monster {
     if (num < 5) {
       if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
         auto texture = resource->attack1[num];
-        DrawTexturePro(texture, {0, 0, static_cast<float>(-texture.width),
-                                 static_cast<float>(texture.height)}, {pos.x_ + DRAW_X - 40, pos.y_ + DRAW_Y - 13,
-                        static_cast<float>(texture.width),
-                        static_cast<float>(texture.height)}, {0, 0}, 0, WHITE);
+        DrawTexturePro(
+            texture,
+            {0, 0, static_cast<float>(-texture.width),
+             static_cast<float>(texture.height)},
+            {pos.x_ + DRAW_X - 40, pos.y_ + DRAW_Y - 13,
+             static_cast<float>(texture.width), static_cast<float>(texture.height)},
+            {0, 0}, 0, WHITE);
       } else {
         DrawTextureProFast(resource->attack1[num], pos.x_ + DRAW_X - 23,
                            pos.y_ + DRAW_Y - 13, 0, WHITE);
@@ -142,19 +145,9 @@ struct SkeletonWarrior final : public Monster {
     }
   }
   inline void draw_idle() noexcept {
-    if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-      auto texture = resource->idle[sprite_counter % 112 / 16];
-      DrawTexturePro(
-          texture,
-          {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
-          {pos.x_ + DRAW_X, pos.y_ + DRAW_Y, static_cast<float>(texture.width),
-           static_cast<float>(texture.height)},
-          {0, 0}, 0, WHITE);
-    } else {
-      DrawTextureProFast(resource->idle[sprite_counter % 112 / 16], pos.x_ + DRAW_X,
-                         pos.y_ + DRAW_Y, 0, WHITE);
-    }
+    DrawTextureProFastEx(resource->idle[sprite_counter % 112 / 16], pos.x_ + DRAW_X,
+                         pos.y_ + DRAW_Y, -10, 0, pos.x_ + size.x_ / 2 > MIRROR_POINT,
+                         WHITE);
   }
-
 };
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_MONSTERS_SKELETONWARRIOR_H_

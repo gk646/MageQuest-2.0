@@ -2,14 +2,27 @@
 #define MAGEQUEST_SRC_MULTIPLAYER_SERVER_H_
 
 namespace Server {
-static void SendMsgToAllUsers(uint8_t channel, const void* msg, uint32_t length) {
+static void SendMsgToAllUsers(uint8_t channel, const void* msg,
+                              uint32_t length) noexcept {
   for (auto p : OTHER_PLAYERS) {
     if (p) {
       auto res = SteamNetworkingMessages()->SendMessageToUser(
           p->identity, msg, length, k_nSteamNetworkingSend_Reliable, channel);
       if (res != k_EResultOK) {
-        std::cout<< "hey" << std::endl;
-        //Multiplayer::remove(p->identity.GetSteamID());
+        Multiplayer::remove(p->identity.GetSteamID());
+      }
+    }
+  }
+  Multiplayer::CleanUpMessage(channel, msg);
+}
+static void SendMsgToAllUsersExcept(uint8_t channel, const void* msg, uint32_t length,
+                                    SteamNetworkingIdentity blacklist) noexcept {
+  for (auto p : OTHER_PLAYERS) {
+    if (p && p->identity != blacklist) {
+      auto res = SteamNetworkingMessages()->SendMessageToUser(
+          p->identity, msg, length, k_nSteamNetworkingSend_Reliable, channel);
+      if (res != k_EResultOK) {
+        Multiplayer::remove(p->identity.GetSteamID());
       }
     }
   }
@@ -29,24 +42,21 @@ static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
     }
   }
 }
-static void HandleProjectileState(UDP_Projectile* data) noexcept {
-  switch (data->p_type) {
-    case FIRE_BALL: {
-      PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 250, 4, data->damage,
-          HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
-      break;
-    }
-    case FIRE_STRIKE: {
-      PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, 120, 2, data->damage,
-          HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
-      break;
-    }
-  }
-  for (auto net_player : OTHER_PLAYERS) {
-    if (net_player) {
-      // NBN_GameServer_SendReliableMessageTo(net_player->connection, UDP_PROJECTILE, prj);
+static void HandleProjectileState(ISteamNetworkingMessages* api) noexcept {
+  SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES];
+  int numMsgs;
+
+  if ((numMsgs = api->ReceiveMessagesOnChannel(UDP_PROJECTILE, pMessages,
+                                               MP_MAX_MESSAGES)) > 0) {
+    for (int i = 0; i < numMsgs; ++i) {
+      auto data = (UDP_Projectile*)pMessages[i]->GetData();
+      Multiplayer::HandleProjectile(data);
+      auto new_data = new UDP_Projectile();
+      memcpy(new_data, data,
+             sizeof(UDP_Projectile));  //SendMsgToAllUsers cleans up the data
+      SendMsgToAllUsersExcept(UDP_PROJECTILE, new_data, sizeof(UDP_Projectile),
+                              pMessages[i]->m_identityPeer);
+      pMessages[i]->Release();
     }
   }
 }
@@ -74,6 +84,7 @@ static void PollPackets() noexcept {
   auto pInterface = SteamNetworkingMessages();
 
   HandlePositionUpdates(pInterface);
+  HandleProjectileState(pInterface);
 }
 }  // namespace Server
 

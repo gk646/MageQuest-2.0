@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEPLAY_SKILLS_BLASTHAMMER_SKILL_H_
 struct BlastHammer_Skill final : public Skill {
   static constexpr float base_dmg = 20;
-  static constexpr float lifespan = 110;
+  static constexpr float LIFE_SPAN = 110;
   static constexpr float cooldown = 15*60;
   static constexpr float mana_cost = 20;
   explicit BlastHammer_Skill(bool from_player)
@@ -15,9 +15,8 @@ struct BlastHammer_Skill final : public Skill {
     float damage = PLAYER_STATS.get_ability_dmg(damage_stats);
 
     Multiplayer::UDP_SEND_PROJECTILE(BLAST_HAMMER, pos.x_, pos.y_, 0, 0, 0, damage);
-    if (MP_TYPE == MultiplayerType::CLIENT) return;
 
-    PROJECTILES.emplace_back(new BlastHammer(pos, from_player, lifespan, 0,
+    PROJECTILES.emplace_back(new BlastHammer(pos, from_player, LIFE_SPAN, 0,
                                           damage, HitType::ONE_TICK, {}, 0,
                                           {0, 0},pos.x_ < MIRROR_POINT));
   }

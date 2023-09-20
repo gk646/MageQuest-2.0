@@ -5,6 +5,7 @@
 #include "NetPlayer.h"
 
 namespace Multiplayer {
+inline static void HandleProjectile(UDP_Projectile* data) noexcept;
 inline static int count() noexcept {
   int ret = 0;
   for (auto p : OTHER_PLAYERS) {
@@ -30,7 +31,6 @@ inline static void add(CSteamID steam_id) noexcept {
         break;
       }
     }
-    std::cout << "added" << std::endl;
   }
 }
 inline static void remove(CSteamID steam_id) noexcept {
@@ -67,8 +67,8 @@ inline static void CleanUpMessage(uint8_t channel, const void* msg) noexcept {
 #include "menus/HostMenu.h"
 
 namespace Multiplayer {
-inline static NBN_ConnectionStats client_stats;
-inline static NBN_GameServerStats server_stats;
+inline static SteamNetConnectionRealTimeStatus_t connect_status =
+    SteamNetConnectionRealTimeStatus_t();
 inline static void UDP_SEND_PROJECTILE(ProjectileType type, int16_t x, int16_t y,
                                        float pov, float mx, float my, float dmg) {
   if (MP_TYPE == MultiplayerType::CLIENT) {
@@ -81,7 +81,6 @@ inline static void UDP_SEND_PROJECTILE(ProjectileType type, int16_t x, int16_t y
                               sizeof(UDP_Projectile));
   }
 }
-
 inline static void UDP_SEND_POSITION(uint16_t x, uint16_t y) {
   if (MP_TYPE == MultiplayerType::CLIENT) {
     Client::SendMsgToHost(UDP_PLAYER_POS_UPDATE, new UDP_PlayerPos(x, y),
@@ -95,24 +94,33 @@ inline static void PollPackets() noexcept {
     Client::PollPackets();
   }
 }
-
 inline static void BroadCastGameState() noexcept {
   Server::BroadCastGameState();
 }
 inline static void draw_stats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
-    sprintf(buffer, "Upload: %.1f Bps", server_stats.upload_bandwidth);
+    float download = 0;
+    float upload = 0;
+    for (auto np : OTHER_PLAYERS) {
+      if (np) {
+        SteamNetworkingMessages()->GetSessionConnectionInfo(np->identity, nullptr,
+                                                            &connect_status);
+        download += connect_status.m_flInBytesPerSec;
+        upload += connect_status.m_flOutBytesPerSec;
+      }
+    }
+    sprintf(buffer, "Upload: %.1f Bps", upload);
     DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 20, GREEN);
-    sprintf(buffer, "Download: %.1f Bps", server_stats.download_bandwidth);
+    sprintf(buffer, "Download: %.1f Bps", download);
     DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.25, 20, GREEN);
   } else if (MP_TYPE == MultiplayerType::CLIENT) {
-    sprintf(buffer, "Upload: %.1f Bps", client_stats.upload_bandwidth);
+    SteamNetworkingMessages()->GetSessionConnectionInfo(HOST_ID, nullptr,
+                                                        &connect_status);
+    sprintf(buffer, "Upload: %.1f Bps", connect_status.m_flOutBytesPerSec);
     DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 20, GREEN);
-    sprintf(buffer, "Download: %.1f Bps", client_stats.download_bandwidth);
+    sprintf(buffer, "Download: %.1f Bps", connect_status.m_flInBytesPerSec);
     DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.25, 20, GREEN);
-    sprintf(buffer, "Packet loss: %d %%", (int)client_stats.packet_loss);
-    DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.3, 20, GREEN);
-    sprintf(buffer, "Ping: %d ms", (int)client_stats.ping);
+    sprintf(buffer, "Ping: %d ms", connect_status.m_nPing);
     DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.35, 20, GREEN);
   }
 }
