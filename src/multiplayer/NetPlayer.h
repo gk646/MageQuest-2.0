@@ -24,6 +24,7 @@ struct NetPlayer final : public Entity {
     if (zone != CURRENT_ZONE) {
       return;
     }
+    draw_direction_indicator();
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
@@ -46,9 +47,9 @@ struct NetPlayer final : public Entity {
 #endif
     DrawTextPro(
         ANT_PARTY, name.c_str(),
-        {pos.x_ + DRAW_X - MeasureTextEx(MINECRAFT_REGULAR, name.c_str(), 15, 0.5).x / 2,
-         pos.y_ + DRAW_Y},
-        {0, 0}, 0, 15, 0.5, WHITE);
+        {pos.x_ + DRAW_X - MeasureTextEx(MINECRAFT_REGULAR, name.c_str(), 14, 0.5).x / 2,
+         pos.y_ + DRAW_Y-15},
+        {0, 0}, 0, 14, 0.5, WHITE);
   }
   void update() final {
     sprite_counter++;
@@ -83,6 +84,9 @@ struct NetPlayer final : public Entity {
       stats.take_damage(p.damage_stats);
       p.dead = p.projectile_type == HitType::ONE_HIT;
     }
+  }
+  inline void draw_direction_indicator()noexcept{
+
   }
   inline void draw_death() noexcept {
     int num = sprite_counter % 75 / 15;

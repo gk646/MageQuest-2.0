@@ -10,12 +10,11 @@ static void SyncPlayers() noexcept {
     if (memberId != SteamUser()->GetSteamID()) {
       const char* inGameName =
           SteamMatchmaking()->GetLobbyMemberData(LOBBY_ID, memberId, "InGameName");
-      if (inGameName && *inGameName) {
-        Multiplayer::add(memberId);
-        Multiplayer::get(memberId)->name = inGameName;
-      }
+      Multiplayer::add(memberId);
+      Multiplayer::get(memberId)->name = inGameName;
     }
   }
+  Multiplayer::CONNECTED = true;
 }
 //Takes ownership of the passed msg pointer and deletes it
 inline static void SendMsgToHost(uint8_t channel, const void* msg,
@@ -37,7 +36,7 @@ static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_PlayerPositionBroadcast*)pMessages[i]->GetData();
       for (uint8_t j = 0; j < data->client_count; j++) {
-        CSteamID steam_id = CSteamID(data->clients_pos[j].steam_id);
+        auto steam_id = CSteamID(data->clients_pos[j].steam_id);
         if (steam_id != PLAYER_ID) {
           Multiplayer::get(steam_id)->update_state(data->clients_pos[j].x,
                                                    data->clients_pos[j].y);
