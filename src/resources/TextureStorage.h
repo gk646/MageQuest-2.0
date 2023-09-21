@@ -2,17 +2,17 @@
 #define MAGEQUEST_SRC_SYSTEM_TEXTURESTORAGE_H_
 
 namespace textures {
-//player
+
 inline MonsterResource PLAYER_RESOURCE;
 
-
-//npcs
+namespace npc {
 inline MonsterResource OLD_MAN;
 inline MonsterResource ARIA;
 inline MonsterResource NIETZSCHE;
 inline MonsterResource realmKeeper;
+}  // namespace npc
 
-//monsters
+namespace monsters {
 inline MonsterResource SKELETON_WARRIOR;
 inline MonsterResource SKELETON_SPEAR;
 inline MonsterResource SKELETON_SHIELD;
@@ -25,9 +25,9 @@ inline MonsterResource KNIGHT;
 inline MonsterResource MUSHROOM;
 inline MonsterResource SNAKE;
 inline MonsterResource WOLF;
+}  // namespace monsters
 
-
-//projectiles
+namespace projectile {
 inline ProjectileResources BLAST_HAMMER;
 inline ProjectileResources ENERGY_SPHERE;
 inline ProjectileResources ETHER_PORTAL;
@@ -47,15 +47,53 @@ inline ProjectileResources THUNDER_STRIKE;
 inline ProjectileResources VOID_ERUPTION;
 inline ProjectileResources VOID_FIELD;
 inline ProjectileResources DUMMY;
+}  // namespace projectile
 
-
-//UI
+namespace ui {
 inline Texture STATUS_BAR;
 inline Texture CROSS_HAIR_AIM;
 inline Texture CROSS_HAIR_SELECT;
 inline Texture ETHER_MARK;
 inline Texture HEALTH_BAR;
 inline Texture KEY_MAP;
+inline static Texture bossbar;
+
+namespace skillbar {
+inline static Texture slot;
+inline static Texture bag;
+inline static Texture abilities;
+inline static Texture character;
+inline static Texture map;
+inline static Texture mouseleft;
+inline static Texture mouseright;
+inline static Texture setting;
+inline static Texture skilltree;
+inline static Texture tooltip;
+inline static Texture xpbar;
+
+namespace icons {
+inline static Texture iceLance;
+inline static Texture infernoRay;
+inline static Texture inspiration;
+inline static Texture lightning;
+inline static Texture powerSurge;
+inline static Texture pyroBlast;
+inline static Texture regenAura;
+inline static Texture ring_salvo;
+inline static Texture slimeBall;
+inline static Texture solarFlare;
+inline static Texture thunderSplash;
+inline static Texture thunderStrike;
+inline static Texture voidEruption;
+inline static Texture voidField;
+inline static Texture blastHammer;
+inline static Texture energy_sphere;
+inline static Texture fireBurst;
+inline static Texture fireSword;
+}  // namespace icons
+}  // namespace skillbar
+
+}  // namespace ui
 
 inline std::vector<Texture> DISCORD_ANIMATION;
 inline std::vector<Texture> GITHUB_ANIMATION;
@@ -70,9 +108,6 @@ inline Texture pants;
 inline Texture relic;
 inline Texture ring;
 inline Texture weapon;
-
-
-
 
 //TALENTS
 inline Texture TALENT_BACKGROUND_TILE;

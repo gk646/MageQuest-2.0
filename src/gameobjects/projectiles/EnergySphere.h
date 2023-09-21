@@ -7,7 +7,7 @@ struct EnergySphere final : Projectile {
                float damage, HitType hit_type, const vector<StatusEffect*>& effects,const Vector2& move)
       : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, life_span, speed,
                    {DamageType::ARCANE, damage}, hit_type, effects, move, 0, nullptr,
-                   &textures::ENERGY_SPHERE) {}
+                   &textures::projectile::ENERGY_SPHERE) {}
   void draw() final {
     DrawTextureProFast(resources->frames[sprite_counter % 42 / 7],pos.x_ + DRAW_X -5, pos.y_ + DRAW_Y-3,0,WHITE);
 #ifdef DRAW_HITBOXES

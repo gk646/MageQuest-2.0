@@ -5,45 +5,45 @@ struct EntityLoader {
   static void load() {
     textures::PLAYER_RESOURCE.load("player/");
 
-    textures::SKELETON_WARRIOR.load("enemies/skeletonWarrior/");
-    textures::SKELETON_SPEAR.load("enemies/skeletonSpear/");
-    textures::SKELETON_SHIELD.load("enemies/skeletonShield/");
-    textures::SKELETON_ARCHER.load("enemies/skeletonArcher/");
-    textures::BOSS_DEATH_BRINGER.load("enemies/BOSSDeathBringer/");
-    textures::BOSS_KNIGHT.load("enemies/BOSSKnight/");
-    textures::BOSS_SLIME.load("enemies/BossSlime/");
-    textures::GOBLIN.load("enemies/goblin/");
-    textures::KNIGHT.load("enemies/Knight/");
-    textures::MUSHROOM.load("enemies/mushroom/");
-    textures::SNAKE.load("enemies/snake/");
-    textures::WOLF.load("enemies/wolf/");
+    textures::monsters::SKELETON_WARRIOR.load("enemies/skeletonWarrior/");
+    textures::monsters::SKELETON_SPEAR.load("enemies/skeletonSpear/");
+    textures::monsters::SKELETON_SHIELD.load("enemies/skeletonShield/");
+    textures::monsters::SKELETON_ARCHER.load("enemies/skeletonArcher/");
+    textures::monsters::BOSS_DEATH_BRINGER.load("enemies/BOSSDeathBringer/");
+    textures::monsters::BOSS_KNIGHT.load("enemies/BOSSKnight/");
+    textures::monsters::BOSS_SLIME.load("enemies/BossSlime/");
+    textures::monsters::GOBLIN.load("enemies/goblin/");
+    textures::monsters::KNIGHT.load("enemies/Knight/");
+    textures::monsters::MUSHROOM.load("enemies/mushroom/");
+    textures::monsters::SNAKE.load("enemies/snake/");
+    textures::monsters::WOLF.load("enemies/wolf/");
 
-    textures::BLAST_HAMMER.load("blastHammer/");
-    textures::ENERGY_SPHERE.load("EnergySphere/");
-    textures::ETHER_PORTAL.load("etherPortal/");
-    textures::FIRE_BURST.load("fireBurst/");
-    textures::FIRE_EXPLOSION.load("fireExplosion/");
-    textures::FIRE_SWORD.load("fireSword/");
-    textures::FROST_NOVA.load("frostNova/");
-    textures::GATE_1.load("gate1/");
-    textures::ICE_LANCE.load("iceLance/");
-    textures::INFERNO_RAY.load("infernoRay/");
-    textures::LIGHTNING_STRIKE.load("Lightning/");
-    textures::POWER_SURGE.load("powerSurge/");
-    textures::PYRO_BLAST.load("pyroBlast/");
-    textures::SOLAR_FLARE.load("solarFlare/");
-    textures::THUNDER_SPLASH.load("thunderSplash/");
-    textures::THUNDER_STRIKE.load("thunderStrike/");
-    textures::VOID_ERUPTION.load("voidEruption/");
-    textures::VOID_FIELD.load("voidField/");
-    textures::DUMMY.load("dummy/");
+    textures::projectile::BLAST_HAMMER.load("blastHammer/");
+    textures::projectile::ENERGY_SPHERE.load("EnergySphere/");
+    textures::projectile::ETHER_PORTAL.load("etherPortal/");
+    textures::projectile::FIRE_BURST.load("fireBurst/");
+    textures::projectile::FIRE_EXPLOSION.load("fireExplosion/");
+    textures::projectile::FIRE_SWORD.load("fireSword/");
+    textures::projectile::FROST_NOVA.load("frostNova/");
+    textures::projectile::GATE_1.load("gate1/");
+    textures::projectile::ICE_LANCE.load("iceLance/");
+    textures::projectile::INFERNO_RAY.load("infernoRay/");
+    textures::projectile::LIGHTNING_STRIKE.load("Lightning/");
+    textures::projectile::POWER_SURGE.load("powerSurge/");
+    textures::projectile::PYRO_BLAST.load("pyroBlast/");
+    textures::projectile::SOLAR_FLARE.load("solarFlare/");
+    textures::projectile::THUNDER_SPLASH.load("thunderSplash/");
+    textures::projectile::THUNDER_STRIKE.load("thunderStrike/");
+    textures::projectile::VOID_ERUPTION.load("voidEruption/");
+    textures::projectile::VOID_FIELD.load("voidField/");
+    textures::projectile::DUMMY.load("dummy/");
 
 
     //npcs
-    textures::ARIA.load("npc/aria/");
-    textures::OLD_MAN.load("npc/oldman/");
-    textures::realmKeeper.load("npc/realmKeeper/");
-    textures::NIETZSCHE.load("npc/nietzsche/");
+    textures::npc::ARIA.load("npc/aria/");
+    textures::npc::OLD_MAN.load("npc/oldman/");
+    textures::npc::realmKeeper.load("npc/realmKeeper/");
+    textures::npc::NIETZSCHE.load("npc/nietzsche/");
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ENTITYLOADER_H_

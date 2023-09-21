@@ -18,7 +18,7 @@ struct HealthBar {
     std::sprintf(buffer,"%.0f/%.0f",stats.health,stats.effects[MAX_HEALTH]);
     DrawRectanglePro(startX + 1, startY + 2, healthWidth, scaledHeight-2, {0, 0}, 0,
                      Colors::Red);
-    DrawTexturePro(textures::HEALTH_BAR, {0, 0, 50, 10},
+    DrawTexturePro(textures::ui::HEALTH_BAR, {0, 0, 50, 10},
                    {startX, startY, scaledWidth, scaledHeight}, {0, 0}, 0, WHITE);
     DrawTextExR(MINECRAFT_BOLD,buffer,{startX+scaledWidth/2- GetTextWidth(buffer)/2,startY-height},15,0.5,WHITE);
   }

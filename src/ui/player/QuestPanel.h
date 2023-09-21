@@ -2,7 +2,6 @@
 #define MAGEQUEST_SRC_UI_PLAYER_QUESTPANEL_H_
 
 
-
 struct QuestPanel final : public Window {
   static constexpr int width = 500;
   QuestPanel() noexcept

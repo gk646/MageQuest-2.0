@@ -4,23 +4,24 @@
 #include "../../gameplay/Skill.h"
 
 struct HotBar {
-  int columns = 6;
-  int rows = 1;
+  static constexpr int SKILL_SIZE = 64;
   std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
                                new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
-  HotBar(int columns, int rows) noexcept : columns(columns), rows(rows) {}
-  void draw() const noexcept {
-    const float slotSize = 30 * UI_SCALE;
-    const float slotSpacing = 5 * UI_SCALE;
+  std::array<Texture*, 6> icons{new Texture(),
+                                new Texture(),
+                                new Texture(),
+                                new Texture(),
+                                &textures::ui::skillbar::mouseleft,
+                                &textures::ui::skillbar::mouseright};
+  HotBar() noexcept {}
 
-    const float startX =
-        (SCREEN_WIDTH - columns * (slotSize + slotSpacing) - slotSpacing) / 2.0F;
-    const float startY =
-        SCREEN_HEIGHT -
-        (SCREEN_HEIGHT - rows * (slotSize + slotSpacing) - slotSpacing) / 8.0F;
-
-    for (int col = 0; col < columns; ++col) {
-      skills[col]->draw(startX + col * (slotSize + slotSpacing), startY, slotSize);
+  void draw() noexcept {
+    float dx = (SCREEN_WIDTH - 6 * (69) - 5) / 2.0F;
+    float dy = SCREEN_HEIGHT * 0.9;
+    for (uint_fast32_t i = 0; i < 6; i++) {
+      skills[i]->draw(dx, dy, 50);
+      DrawTextureProFast(*icons[i], dx + 32 - icons[i]->width / 2, dy + 60, 0, WHITE);
+      dx += 69;
     }
   }
   void update() noexcept {

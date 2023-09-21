@@ -51,7 +51,7 @@ struct GameLoader {
     finished_cpu_loading = false;
     delete RAYLIB_LOGO;
     delete NBNET_LOGO;
-    PLAYER_QUESTS.add_quest(QuestResources::TUTORIAL);
+    PLAYER_QUESTS.add_quest(Quests::TUTORIAL);
     PLAYER_QUESTS.get_quest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
   }
 };

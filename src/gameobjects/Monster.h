@@ -10,7 +10,7 @@ struct Monster : public Entity {
   int16_t attack_cd = 0;
   bool moving = false;
   bool prev_moving = false;
-  bool flip;
+  bool flip = false;
   Entity* target = nullptr;
   MonsterResource* resource;
   std::string name;
@@ -23,7 +23,15 @@ struct Monster : public Entity {
         health_bar(size.x_, 10),
         stats(stats),
         resource(resource),
-        type(type) {}
+        type(type) {
+    if (MP_TYPE == MultiplayerType::SERVER) {
+      Server::SendMsgToAllUsers(
+          UDP_MONSTER_SPAWN,
+          new UDP_MonsterSpawn(u_id, type, stats.level, static_cast<uint16_t>(pos.x_),
+                               static_cast<uint16_t>(pos.y_)),
+          sizeof(UDP_MonsterSpawn));
+    }
+  }
   Monster(const Monster& other)
       : Entity(other),
         stats(other.stats),
@@ -120,6 +128,8 @@ struct Monster : public Entity {
 };
 #include "monsters/SkeletonSpear.h"
 #include "monsters/SkeletonWarrior.h"
+#include "monsters/Wolf.h"
+
 void Server::SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexcept {
   for (auto m : MONSTERS) {
     SendMsgToUser(identity, UDP_MONSTER_SPAWN,

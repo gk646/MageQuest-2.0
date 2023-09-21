@@ -42,12 +42,12 @@ enum class MonsterType : uint8_t {
   SNAKE
 };
 
-enum class StatusEffectType { BUFF, DE_BUFF };
-enum class ShapeType { CIRCLE, RECT, TRIANGLE };
-enum class DamageType { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
-enum class HitType { CONTINUOUS, ONE_HIT, ONE_TICK };
-enum class Difficulty { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
-enum class ItemType : uint8_t{
+enum class StatusEffectType : uint8_t{ BUFF, DE_BUFF };
+enum class ShapeType : uint8_t{ CIRCLE, RECT, TRIANGLE };
+enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
+enum class HitType : uint8_t{ CONTINUOUS, ONE_HIT, ONE_TICK };
+enum class Difficulty : uint8_t{ EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
+enum class ItemType : uint8_t {
   HEAD = 5,
   CHEST = 4,
   PANTS = 8,
@@ -62,7 +62,7 @@ enum class ItemType : uint8_t{
   EMPTY = 0,
   MISC = 12
 };
-enum class ItemRarity: uint8_t {
+enum class ItemRarity : uint8_t {
   NORMAL = 1,
   RARE = 2,
   EPIC = 3,
@@ -70,7 +70,7 @@ enum class ItemRarity: uint8_t {
   SET_ITEM = 5,
   UNIQUE = 10
 };
-enum class Zone : uint8_t{
+enum class Zone : uint8_t {
   Woodland_Edge,
   EtherRealm,
   DeadPlains,
@@ -86,7 +86,7 @@ enum class Zone : uint8_t{
   Hillcrest_Hermit_Cave
 };
 //_P = percentile => 0.5, 0.05
-enum Stat : uint8_t{
+enum Stat : uint8_t {
   STRENGTH,
   INTELLIGENCE,
   WISDOM,
@@ -127,9 +127,10 @@ enum Stat : uint8_t{
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
  */
-enum class NodeType : uint8_t{
+enum class NodeType : uint8_t {
   GOTO,
   KILL,
+  SPAWN,
   SPEAK,
   COLLECT,
   REQUIRE,
@@ -141,15 +142,21 @@ enum class NodeType : uint8_t{
   TILE_ACTION
 };
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
-    {"NPC_SAY", NodeType::NPC_SAY},  {"TILE_ACTION", NodeType::TILE_ACTION},
-    {"GOTO", NodeType::GOTO},        {"KILL", NodeType::KILL},
-    {"SPEAK", NodeType::SPEAK},      {"COLLECT", NodeType::COLLECT},
-    {"REQUIRE", NodeType::REQUIRE},  {"PROTECT", NodeType::PROTECT},
-    {"ESCORT", NodeType::ESCORT},    {"MIX", NodeType::MIX},
+    {"SPAWN", NodeType::SPAWN},
+    {"NPC_SAY", NodeType::NPC_SAY},
+    {"TILE_ACTION", NodeType::TILE_ACTION},
+    {"GOTO", NodeType::GOTO},
+    {"KILL", NodeType::KILL},
+    {"SPEAK", NodeType::SPEAK},
+    {"COLLECT", NodeType::COLLECT},
+    {"REQUIRE", NodeType::REQUIRE},
+    {"PROTECT", NodeType::PROTECT},
+    {"ESCORT", NodeType::ESCORT},
+    {"MIX", NodeType::MIX},
     {"NPC_MOVE", NodeType::NPC_MOVE}};
 enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID { TUTORIAL, MARLA, END };
-enum class NPC_ID :  uint8_t {
+enum class NPC_ID : uint8_t {
   DECKARD,
   MARLA,
   ARIA,

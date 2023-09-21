@@ -9,7 +9,7 @@ struct FireBall final : Projectile {
            const Vector2& move)
       : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
                    {DamageType::FIRE, damage}, hit_type, effects, move, pov, nullptr,
-                   &textures::FIRE_BURST) {}
+                   &textures::projectile::FIRE_BURST) {}
 
   void draw() final {
     DrawTextureProFastRotOffset(resources->frames[sprite_counter % 60 / 15],

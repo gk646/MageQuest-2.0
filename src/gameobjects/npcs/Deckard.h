@@ -3,7 +3,7 @@
 
 struct Deckard final : public NPC {
   Deckard(int x, int y)
-      : NPC({(float)x * TILE_SIZE,(float) y * TILE_SIZE}, &textures::OLD_MAN, NPC_ID::DECKARD, 1.5) {}
+      : NPC({(float)x * TILE_SIZE,(float) y * TILE_SIZE}, &textures::npc::OLD_MAN, NPC_ID::DECKARD, 1.5) {}
   void draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 78 / 13], pos.x_ + DRAW_X,

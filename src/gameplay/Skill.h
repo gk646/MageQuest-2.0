@@ -7,23 +7,28 @@ struct Skill {
   int cool_down_ticks = 0;
   bool from_player;
   int attack_animation = 0;
-  // Texture2D texture;
+  Texture* icon = nullptr;
   Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player,
-        int attack_animation) noexcept
+        int attack_animation, Texture* icon) noexcept
       : damage_stats(damage_stats),
         skill_stats(ability_stats),
         from_player(from_player),
-        attack_animation(attack_animation) {
+        attack_animation(attack_animation),
+        icon(icon) {
     cool_down_ticks = ability_stats.cool_down;
   }
   inline virtual void activate() = 0;
   inline void update() noexcept { cool_down_ticks++; };
   void draw(float x, float y, float size) const noexcept {
-    DrawRectanglePro(x, y, size, size, {0, 0}, 0, RED);
-    if (!PLAYER_STATS.skill_useable(skill_stats, cool_down_ticks)) {
+    DrawTextureProFast(textures::ui::skillbar::slot, x, y, 0, WHITE);
+    DrawTextureProFast(*icon, x + 7, y + 7, 0, WHITE);
+    int rcd = PLAYER_STATS.GetRemainingCD(skill_stats);
+    if (cool_down_ticks < rcd) {
+      x+=7;
+      y+=7;
       float side1, side2, side3, side4, side5;
       float coolDownCoefficient;
-      coolDownCoefficient = cool_down_ticks * (size * 4 / skill_stats.cool_down);
+      coolDownCoefficient = cool_down_ticks * (size * 4 / rcd);
       side1 = size / 2;
       side2 = 0;
       side3 = 0;
@@ -73,27 +78,31 @@ struct Skill {
 inline static void Multiplayer::HandleProjectile(UDP_Projectile* data) noexcept {
   switch (data->p_type) {
     case FIRE_BALL: {
-      PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireBall_Skill::LIFE_SPAN, FireBall_Skill::SPEED, data->damage,
-          HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
+      PROJECTILES.emplace_back(
+          new FireBall({(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
+                       FireBall_Skill::LIFE_SPAN, FireBall_Skill::SPEED, data->damage,
+                       HitType::ONE_HIT, {}, data->pov, {data->move_x, data->move_y}));
       break;
     }
     case FIRE_STRIKE: {
-      PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireStrike_Skill::LIFE_SPAN, FireStrike_Skill::SPEED, data->damage,
-          HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
+      PROJECTILES.emplace_back(
+          new FireBall({(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
+                       FireStrike_Skill::LIFE_SPAN, FireStrike_Skill::SPEED, data->damage,
+                       HitType::CONTINUOUS, {}, data->pov, {data->move_x, data->move_y}));
       break;
     }
     case BLAST_HAMMER: {
       PROJECTILES.emplace_back(new BlastHammer(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, BlastHammer_Skill::LIFE_SPAN, 0, data->damage,
-          HitType::ONE_TICK, {}, data->pov, {0,0}, RANGE_01(RNG_RANDOM)>0.5F));
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, BlastHammer_Skill::LIFE_SPAN,
+          0, data->damage, HitType::ONE_TICK, {}, data->pov, {0, 0},
+          RANGE_01(RNG_RANDOM) > 0.5F));
       break;
     }
     case ENERGY_SPHERE: {
       PROJECTILES.emplace_back(new EnergySphere(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, EnergySphere_Skill::LIFESPAN, EnergySphere_Skill::SPEED, data->damage,
-          HitType::CONTINUOUS, {},  {data->move_x,data->move_y}));
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, EnergySphere_Skill::LIFESPAN,
+          EnergySphere_Skill::SPEED, data->damage, HitType::CONTINUOUS, {},
+          {data->move_x, data->move_y}));
       break;
     }
   }
