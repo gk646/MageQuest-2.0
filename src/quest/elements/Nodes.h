@@ -11,7 +11,7 @@ struct QuestNode {
   [[nodiscard]] inline bool suitable(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
-  virtual bool progress(NPC* npc) noexcept {return false;};
+  virtual bool progress(NPC* npc) noexcept { return false; };
   virtual bool progress() noexcept { return false; };
 };
 
@@ -74,11 +74,12 @@ struct TILE_ACTION final : public QuestNode {
   PointI pos;
   int new_tile;
   int layer;
-   TILE_ACTION(Zone zone, int layer, PointI pos, int new_tile)
+  TILE_ACTION(Zone zone, int layer, PointI pos, int new_tile)
       : QuestNode("", NodeType::TILE_ACTION),
         layer(layer),
         pos(pos),
-        new_tile(new_tile),zone(zone) {}
+        new_tile(new_tile),
+        zone(zone) {}
   bool progress() noexcept final {
     if (CURRENT_ZONE == zone) {
       if (layer == 0) {
@@ -99,5 +100,48 @@ struct MIX final : public QuestNode {
   std::vector<QuestNode*> objectives;
   explicit MIX(std::string obj_txt) : QuestNode(std::move(obj_txt), NodeType::MIX) {}
 };
-
+struct SPAWN final : public QuestNode {
+  MonsterType type;
+  std::vector<PointI> positions;
+  int level;
+  explicit SPAWN(MonsterType type, int level)
+      : QuestNode("", NodeType::SPAWN),
+        level(level == 0 ? PLAYER_STATS.level : level),
+        type(type) {}
+  bool progress() noexcept final {
+    for (auto p : positions) {
+      switch (type)
+      case MonsterType::SKEL_WAR: {
+        MONSTERS.push_back(new SkeletonWarrior({(float)p.x * 48, (float)p.y * 48}, level));
+        break;
+        case MonsterType::ANY:
+          break;
+        case MonsterType::SKEL_SPEAR:
+          MONSTERS.push_back(new SkeletonSpear({(float)p.x * 48, (float)p.y * 48}, level));
+          break;
+        case MonsterType::WOLF:
+          break;
+        case MonsterType::BOSS_DEATH_BRINGER:
+          break;
+        case MonsterType::BOSS_KNIGHT:
+          break;
+        case MonsterType::BOSS_SLIME:
+          break;
+        case MonsterType::GOBLIN:
+          break;
+        case MonsterType::KNIGHT:
+          break;
+        case MonsterType::MUSHROOM:
+          break;
+        case MonsterType::SKEL_ARCHER:
+          break;
+        case MonsterType::SKEL_SHIELD:
+          break;
+        case MonsterType::SNAKE:
+          break;
+      }
+    }
+    return true;
+  }
+};
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

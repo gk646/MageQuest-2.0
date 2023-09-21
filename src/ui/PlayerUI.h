@@ -6,6 +6,7 @@
 #include "game/MiniMap.h"
 #include "game/RegionMap.h"
 #include "player/CharacterPanel.h"
+#include "ui/player/QuestPanel.h"
 #include "player/StatusBar.h"
 
 struct PlayerUI {

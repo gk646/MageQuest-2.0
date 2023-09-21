@@ -27,7 +27,7 @@ struct StatusBar {
           Colors::Red);
       DrawRectangleRounded({beginX + 82, beginY + 57, (mana / max_mana) * mana_width, 10},
                            0.3F, 20, Colors::Blue);
-      DrawTextureProFast(textures::STATUS_BAR, beginX, beginY, 0, WHITE);
+      DrawTextureProFast(textures::ui::STATUS_BAR, beginX, beginY, 0, WHITE);
       DrawRectangleRounded({beginX + 82, beginY + 27,
                             (shield / stats.effects[MAX_SHIELD]) * health_width, 13},
                            0.5F, 20, Colors::shield);
@@ -43,7 +43,7 @@ struct StatusBar {
                        {0, 0}, 0, Colors::Red);
       DrawRectanglePro(beginX + 82, beginY + 57, (mana / max_mana) * mana_width, 10,
                        {0, 0}, 0, Colors::Blue);
-      DrawTextureProFast(textures::STATUS_BAR, beginX, beginY, 0, WHITE);
+      DrawTextureProFast(textures::ui::STATUS_BAR, beginX, beginY, 0, WHITE);
       DrawTextExR(EDIT_UNDO, health_buffer, {beginX + 160, beginY + 15}, 16, 1,
                  Colors::white_smoke);
       DrawTextExR(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2,

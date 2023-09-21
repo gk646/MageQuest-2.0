@@ -48,5 +48,6 @@ struct Quest final {
     }
   }
 };
+#include "QuestStorage.h"
 #include "ScriptParser.h"
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

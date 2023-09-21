@@ -10,7 +10,7 @@ struct BlastHammer final : Projectile {
               float pov, const Vector2& move, bool flip)
       : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
                    {DamageType::FIRE, damage}, hit_type, effects, move, pov, nullptr,
-                   &textures::BLAST_HAMMER),
+                   &textures::projectile::BLAST_HAMMER),
         flip(flip) {
     does_damage = false;
   }

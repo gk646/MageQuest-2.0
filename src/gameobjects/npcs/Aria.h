@@ -3,7 +3,7 @@
 
 struct Aria final : public NPC {
 
-  Aria(float x, float y) : NPC({x*48, y*48}, &textures::ARIA) {}
+  Aria(float x, float y) : NPC({x*48, y*48}, &textures::npc::ARIA) {}
   void draw() final {}
   void update() final { NPC::update(); }
 };

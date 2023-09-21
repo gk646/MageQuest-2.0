@@ -7,7 +7,7 @@ struct EnergySphere_Skill final : public Skill {
   static constexpr float CONTINUOUS_DIVISOR = 50;
   explicit EnergySphere_Skill(bool from_player)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::ARCANE, BASE_DMG},
-              from_player, 1) {}
+              from_player, 1, &textures::ui::skillbar::icons::energy_sphere) {}
 
   void activate() final {
     use();

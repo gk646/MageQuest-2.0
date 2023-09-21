@@ -1,15 +1,14 @@
-#ifndef MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
-#define MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
-struct SkeletonSpear final : public Monster {
-  static constexpr int base_health = 5;
-  static constexpr float per_level = 3.5;
-  static constexpr float base_speed = 2;
-  SkeletonSpear(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level,per_level, base_speed},
-                &textures::monsters::SKELETON_SPEAR, MonsterType::SKEL_SPEAR,{30, 50}) {
+#ifndef MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_WOLF_H_
+#define MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_WOLF_H_
+struct Wolf final : public Monster {
+  static constexpr int base_health = 3;
+  static constexpr float per_level = 2.5;
+  static constexpr float base_speed = 3;
+  Wolf(const Point& pos, int level) noexcept
+      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
+                &textures::monsters::WOLF, MonsterType::SKEL_SPEAR, {30, 50}) {
     attack_cd = 120;
   }
-
   void draw() final {
     if (attack == -100) [[unlikely]] {
       draw_death();
@@ -119,4 +118,4 @@ struct SkeletonSpear final : public Monster {
     }
   }
 };
-#endif  //MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
+#endif  //MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_WOLF_H_

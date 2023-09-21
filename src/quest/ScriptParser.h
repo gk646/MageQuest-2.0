@@ -1,18 +1,21 @@
 #ifndef MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
 #define MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
 namespace ScriptParser {
-std::vector<std::string> split(const std::string& s, char delim) {
+std::vector<std::string> split(const std::string& s, char delim) noexcept {
   std::vector<std::string> result;
-  std::stringstream ss(s);
-  std::string item;
-
-  while (getline(ss, item, delim)) {
-    result.push_back(item);
+  std::string_view sv(s);
+  while (!sv.empty()) {
+    size_t pos = sv.find(delim);
+    if (pos == std::string_view::npos) {
+      result.emplace_back(sv);
+      break;
+    } else {
+      result.emplace_back(sv.substr(0, pos));
+      sv.remove_prefix(pos + 1);
+    }
   }
-
   return result;
 }
-
 Quest* load(const std::string& path, Quest_ID id) {
   auto quest = new Quest(id);
   std::ifstream file(ASSET_PATH + path);
@@ -97,6 +100,13 @@ Quest* load(const std::string& path, Quest_ID id) {
       } break;
       case NodeType::NPC_SAY:
         return quest;
+      case NodeType::SPAWN:
+        auto obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
+        for (uint_fast32_t i = 3; i < parts.size(); i++) {
+          obj->positions.emplace_back(std::stoi(split(parts[i], ',')[0]),
+                                      std::stoi(split(parts[i], ',')[1]));
+        }
+        break;
     }
   }
   return quest;

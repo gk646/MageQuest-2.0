@@ -5,7 +5,7 @@ struct Dummy_Skill final : public Skill {
   static constexpr float base_dmg = 0.5;
   explicit Dummy_Skill(bool from_player = true)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::FIRE, base_dmg},
-              from_player, 1) {}
+              from_player, 1, new Texture()) {}
 
   void activate() final {
     use();

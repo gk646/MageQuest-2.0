@@ -7,7 +7,7 @@ struct FireBall_Skill final : public Skill {
   static constexpr float SPEED = 3;
   explicit FireBall_Skill(bool from_player)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::FIRE, BASE_DMG},
-              from_player, 1) {}
+              from_player, 1,&textures::ui::skillbar::icons::pyroBlast) {}
 
   void activate() final {
     use();
