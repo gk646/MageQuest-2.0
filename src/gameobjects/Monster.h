@@ -14,13 +14,13 @@ struct Monster : public Entity {
   Entity* target = nullptr;
   MonsterResource* resource;
   std::string name;
-  HealthBar health_bar{50, 10};
+  HealthBar health_bar;
   MonsterType type;
   Monster(const Point& pos, const EntityStats& stats, MonsterResource* resource,
           MonsterType type, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)
       : Entity(pos, size, shape_type),
-        health_bar(size.x_, 10),
+        health_bar(size.x_),
         stats(stats),
         resource(resource),
         type(type) {
@@ -53,6 +53,9 @@ struct Monster : public Entity {
     pov = other.pov;
 
     return *this;
+  }
+  ~Monster() override {
+    XPBar::AddPlayerExperience(stats.level);
   }
   void update() override {
     sprite_counter++;

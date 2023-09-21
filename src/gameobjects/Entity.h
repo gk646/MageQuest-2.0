@@ -28,7 +28,7 @@ struct Entity {
 
     return *this;
   }
-  virtual ~Entity() = default;
+  virtual ~Entity()= default;
   virtual void update() = 0;
   virtual void draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {

@@ -41,7 +41,8 @@ class Game {
                                                                       \
   SIMD_PRAGMA                                                         \
   for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {           \
-    if ((*it)->dead) {                                                \
+    if ((*it)->dead) [[unlikely]] {                                   \
+      delete *it;                                                     \
       it = MONSTERS.erase(it);                                        \
     } else {                                                          \
       (*it)->update();                                                \
@@ -232,8 +233,8 @@ class Game {
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
-    for (uint_fast32_t i = 0; i < 50; i++) {
-      MONSTERS.push_back(new SkeletonWarrior({250.0F, 150}, 150));
+    for (uint_fast32_t i = 0; i < 100; i++) {
+      MONSTERS.push_back(new SkeletonWarrior({250.0F+i, 150}, 10));
     }
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();

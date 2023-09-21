@@ -56,11 +56,11 @@ struct RegionMap final : public Window {
         if (window_bounds(draw_x, draw_y)) [[likely]] {
           if (COLLISIONS[CURRENT_BACK_GROUND[i][j]] == C_SOLID ||
               COLLISIONS[CURRENT_MIDDLE_GROUND[i][j]] == C_SOLID) {
-            DrawRectangleProFast(draw_x, draw_y, zoom, Colors::darkBackground);
+            DrawSquareProFast(draw_x, draw_y, zoom, Colors::darkBackground);
           } else if (i == player_tile.x && j == player_tile.y) {
-            DrawRectangleProFast(draw_x, draw_y, zoom, Colors::Blue);
+            DrawSquareProFast(draw_x, draw_y, zoom, Colors::Blue);
           } else {
-            DrawRectangleProFast(draw_x, draw_y, zoom, Colors::map_green);
+            DrawSquareProFast(draw_x, draw_y, zoom, Colors::map_green);
           }
         }
       }
@@ -71,17 +71,17 @@ struct RegionMap final : public Window {
     std::shared_lock<std::shared_mutex> lock(rwLock);
     for (const auto monster : MONSTERS) {
       if (monster->tile_pos.dist(player_tile) < 20) {
-        DrawRectangleProFast(base_x + monster->tile_pos.x * zoom,
-                             base_y + monster->tile_pos.y * zoom, zoom, Colors::Red);
+        DrawSquareProFast(base_x + monster->tile_pos.x * zoom,
+                          base_y + monster->tile_pos.y * zoom, zoom, Colors::Red);
       }
     }
     for (const auto projectile : PROJECTILES) {
       if (projectile->from_player) {
-        DrawRectangleProFast(base_x + projectile->tile_pos.x * zoom,
-                             base_y + projectile->tile_pos.y * zoom, 3, Colors::Blue);
+        DrawSquareProFast(base_x + projectile->tile_pos.x * zoom,
+                          base_y + projectile->tile_pos.y * zoom, 3, Colors::Blue);
       } else {
-        DrawRectangleProFast(base_x + projectile->tile_pos.x * zoom,
-                             base_y + projectile->tile_pos.y * zoom, 3, Colors::Red);
+        DrawSquareProFast(base_x + projectile->tile_pos.x * zoom,
+                          base_y + projectile->tile_pos.y * zoom, 3, Colors::Red);
       }
     }
   }

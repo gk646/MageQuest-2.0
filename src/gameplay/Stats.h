@@ -33,7 +33,7 @@ struct EntityStats {
   };
   EntityStats(float base_health, int level, float per_level, float speed) noexcept
       : level(level), speed(speed) {
-    effects[MAX_HEALTH] = base_health + ((level-1) * per_level * std::sqrt(level));
+    effects[MAX_HEALTH] = base_health + ((level - 1) * per_level * std::sqrt(level));
     effects[MAX_HEALTH] *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
     health = effects[MAX_HEALTH];
   }
@@ -60,13 +60,15 @@ struct EntityStats {
       shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
     }
   }
-  [[nodiscard]] inline bool skill_useable(const SkillStats& stats, int ticks_done) const noexcept {
+  [[nodiscard]] inline bool skill_useable(const SkillStats& stats,
+                                          int ticks_done) const noexcept {
     return !stunned && ticks_done >= stats.cool_down * (1 - effects[CDR_P]) &&
            mana >= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
-  inline int GetRemainingCD(const SkillStats& stats)noexcept{
+  inline int GetRemainingCD(const SkillStats& stats) noexcept {
     return stats.cool_down * (1 - effects[CDR_P]);
   }
+
   inline void use_skill(const SkillStats& stats) noexcept {
     mana -= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
