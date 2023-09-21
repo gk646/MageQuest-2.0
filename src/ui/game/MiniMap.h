@@ -38,21 +38,20 @@ struct MiniMap {
           if (COLLISIONS[CURRENT_BACK_GROUND[tile_x + i][tile_y + j]] == C_SOLID ||
               COLLISIONS[CURRENT_MIDDLE_GROUND[tile_x + i][tile_y + j]] == C_SOLID)
               [[unlikely]] {
-            DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
-                                 Colors::darkBackground);
+            DrawSquareProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
+                              Colors::darkBackground);
           } else {
             if (tile_x + i == player_tile.x && tile_y + j == player_tile.y) {
-              DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
-                                   Colors::Blue);
+              DrawSquareProFast(draw_x + i * zoom, draw_y + j * zoom, zoom, Colors::Blue);
 
             } else {
-              DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
-                                   Colors::map_green);
+              DrawSquareProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
+                                Colors::map_green);
             }
           }
         } else {
-          DrawRectangleProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
-                               Colors::lightGreyMiddleAlpha);
+          DrawSquareProFast(draw_x + i * zoom, draw_y + j * zoom, zoom,
+                            Colors::lightGreyMiddleAlpha);
         }
       }
     }
@@ -62,32 +61,32 @@ struct MiniMap {
     std::shared_lock<std::shared_mutex> lock(rwLock);
     for (const auto projectile : PROJECTILES) {
       if(projectile->from_player){
-        DrawRectangleProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,
-                             draw_y + (projectile->tile_pos.y - tile_y) * zoom, 3,
-                             Colors::Blue);
+        DrawSquareProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,
+                          draw_y + (projectile->tile_pos.y - tile_y) * zoom, 3,
+                          Colors::Blue);
       }else{
-        DrawRectangleProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,
-                             draw_y + (projectile->tile_pos.y - tile_y) * zoom, 3,
-                             Colors::Red);
+        DrawSquareProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,
+                          draw_y + (projectile->tile_pos.y - tile_y) * zoom, 3,
+                          Colors::Red);
       }
     }
     for (const auto monster : MONSTERS) {
       if (monster->tile_pos.dist(player_tile) < 20) {
-        DrawRectangleProFast(draw_x + (monster->tile_pos.x - tile_x) * zoom,
-                             draw_y + (monster->tile_pos.y - tile_y) * zoom, zoom,
-                             Colors::Red);
+        DrawSquareProFast(draw_x + (monster->tile_pos.x - tile_x) * zoom,
+                          draw_y + (monster->tile_pos.y - tile_y) * zoom, zoom,
+                          Colors::Red);
       }
     }
     for(const auto npc : NPCS){
       if (npc->tile_pos.dist(player_tile) < 20) {
         if(npc->id == NPC_ID::RANDOM || npc->id == NPC_ID::VILLAGER){
-          DrawRectangleProFast(draw_x + (npc->tile_pos.x - tile_x) * zoom,
-                               draw_y + (npc->tile_pos.y - tile_y) * zoom, zoom,
-                               Colors::green_npc);
+          DrawSquareProFast(draw_x + (npc->tile_pos.x - tile_x) * zoom,
+                            draw_y + (npc->tile_pos.y - tile_y) * zoom, zoom,
+                            Colors::green_npc);
         }else {
-          DrawRectangleProFast(draw_x + (npc->tile_pos.x - tile_x) * zoom,
-                               draw_y + (npc->tile_pos.y - tile_y) * zoom, zoom,
-                               Colors::blue_npc);
+          DrawSquareProFast(draw_x + (npc->tile_pos.x - tile_x) * zoom,
+                            draw_y + (npc->tile_pos.y - tile_y) * zoom, zoom,
+                            Colors::blue_npc);
         }
       }
     }

@@ -2,9 +2,10 @@
 #define MAGE_QUEST_SRC_UI_HOTBAR_H_
 
 #include "../../gameplay/Skill.h"
+#include "elements/XPBar.h"
 
 struct HotBar {
-  static constexpr int SKILL_SIZE = 64;
+  XPBar xp_bar;
   std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
                                new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
   std::array<Texture*, 6> icons{new Texture(),
@@ -13,18 +14,19 @@ struct HotBar {
                                 new Texture(),
                                 &textures::ui::skillbar::mouseleft,
                                 &textures::ui::skillbar::mouseright};
-  HotBar() noexcept {}
-
+  HotBar() noexcept = default;
   void draw() noexcept {
     float dx = (SCREEN_WIDTH - 6 * (69) - 5) / 2.0F;
-    float dy = SCREEN_HEIGHT * 0.9;
+    float dy = SCREEN_HEIGHT * 0.90;
+    xp_bar.draw(dx,dy,410*UI_SCALE);
     for (uint_fast32_t i = 0; i < 6; i++) {
       skills[i]->draw(dx, dy, 50);
-      DrawTextureProFast(*icons[i], dx + 32 - icons[i]->width / 2, dy + 60, 0, WHITE);
+      DrawTextureProFast(*icons[i], dx + 32 - icons[i]->width / 2, dy + 65, 0, WHITE);
       dx += 69;
     }
   }
   void update() noexcept {
+    xp_bar.update();
     for (const auto& skill : skills) {
       skill->update();
     }

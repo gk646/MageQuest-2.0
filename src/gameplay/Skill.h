@@ -41,20 +41,20 @@ struct Skill {
       if (coolDownCoefficient > size * 3.5F) side5 += coolDownCoefficient - size * 3.5F;
 
       for (int i = side1; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumVeryLight);
+        DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumLightGreyTransparent);
       }
       for (int i = side2; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + size, y + i, Colors::mediumVeryLight);
+        DrawLine(x + size / 2, y + size / 2, x + size, y + i, Colors::mediumLightGreyTransparent);
       }
       for (int i = side3; i <= size; i++) {
         DrawLine(x + size / 2, y + size / 2, x + size - i, y + size,
-                 Colors::mediumVeryLight);
+                 Colors::mediumLightGreyTransparent);
       }
       for (int i = side4; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x, y + size - i, Colors::mediumVeryLight);
+        DrawLine(x + size / 2, y + size / 2, x, y + size - i, Colors::mediumLightGreyTransparent);
       }
       for (int i = side5; i <= size / 2; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumVeryLight);
+        DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumLightGreyTransparent);
       }
     }
   }

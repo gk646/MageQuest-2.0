@@ -57,7 +57,7 @@ struct SkeletonWarrior final : public Monster {
   inline void draw_death() noexcept {
     int num = sprite_counter % 175 / 35;
     if (num < 4) {
-      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, -10, 0,
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y-20, -30, 0,
                            flip, WHITE);
     } else {
       dead = true;
