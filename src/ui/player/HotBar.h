@@ -5,6 +5,8 @@
 #include "elements/XPBar.h"
 
 struct HotBar {
+
+  RectangleR BASE_RECT = {0, 0, 381, 81};
   XPBar xp_bar;
   std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
                                new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
@@ -16,13 +18,18 @@ struct HotBar {
                                 &textures::ui::skillbar::mouseright};
   HotBar() noexcept = default;
   void draw() noexcept {
-    float dx = (SCREEN_WIDTH - 6 * (69) - 5) / 2.0F;
-    float dy = SCREEN_HEIGHT * 0.90;
-    xp_bar.draw(dx,dy,410*UI_SCALE);
+    float size = SCALE(50);
+    float width = SCALE(BASE_RECT.width);
+    float height = SCALE(BASE_RECT.height);
+    float dx = (SCREEN_WIDTH - width) / 2.0F;
+    float dy = SCREEN_HEIGHT - height * 1.3;
+    xp_bar.draw(dx, dy, width);
+    DrawTexturePro(textures::ui::skillbar::skillbar, BASE_RECT, {dx, dy, width, height},
+                   {0, 0}, 0, WHITE);
     for (uint_fast32_t i = 0; i < 6; i++) {
-      skills[i]->draw(dx, dy, 50);
-      DrawTextureProFast(*icons[i], dx + 32 - icons[i]->width / 2, dy + 65, 0, WHITE);
-      dx += 69;
+      skills[i]->draw(dx+SCALE(35), dy+ SCALE(14), size);
+      DrawTextureProFast(*icons[i], dx +SCALE(35)+ size/2 - icons[i]->width / 2, dy +height*0.95, 0, WHITE);
+      dx += SCALE(57);
     }
   }
   void update() noexcept {

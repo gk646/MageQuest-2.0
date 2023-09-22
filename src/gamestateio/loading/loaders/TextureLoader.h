@@ -58,8 +58,6 @@ struct TextureLoader {
 
     textures::ui::bossbar =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bossbar.png").c_str());
-    textures::ui::skillbar::slot =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/slot.png").c_str());
     textures::ui::skillbar::bag =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
     textures::ui::skillbar::abilities =
@@ -78,7 +76,9 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/skilltree.png").c_str());
     textures::ui::skillbar::tooltip =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/tooltip_fancy.png").c_str());
+    textures::ui::skillbar::skillbar =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/skillbar.png").c_str());
     textures::ui::skillbar::xpbar =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/xpbar.png").c_str());
+    textures::ui::skillbar::tooltip =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/xp_tooltip.png").c_str());
 
     textures::ui::skillbar::icons::infernoRay    = LoadTexture((ASSET_PATH+"ui/skillbar/icons/infernoRay.png").c_str());
     textures::ui::skillbar::icons::inspiration   = LoadTexture((ASSET_PATH+"ui/skillbar/icons/inspiration.png").c_str());
