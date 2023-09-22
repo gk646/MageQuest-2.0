@@ -47,12 +47,11 @@ inline std::string ASSET_PATH = "../res/";
 
 //UI
 #define SLOT_SIZE 45
-
 /* |-----------------------------------------------------|
  * |                       DEBUG                         |
  * |-----------------------------------------------------|
  */
-//#define MG2_DEBUG
+#define MG2_DEBUG
 
 #ifdef MG2_DEBUG
 #define DRAW_HITBOXES     //Draws an outline around hitboxes
