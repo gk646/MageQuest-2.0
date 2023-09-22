@@ -233,7 +233,7 @@ class Game {
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
-    for (uint_fast32_t i = 0; i < 100; i++) {
+    for (uint_fast32_t i = 0; i < 10; i++) {
       MONSTERS.push_back(new SkeletonWarrior({250.0F+i*5, 150}, 10));
     }
     NPCS.push_back(new Deckard(11, 4));

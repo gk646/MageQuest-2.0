@@ -2,6 +2,7 @@
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_XPBAR_H_
 struct XPBar {
   static constexpr float HEIGHT = 20;
+  static constexpr float WIDTH = 415;
   bool collision = false;
   RectangleR xp_bar = {2, 2, 2, 13};
   static int prev_req;
@@ -9,24 +10,26 @@ struct XPBar {
   static float PLAYER_EXPERIENCE;
   static char tx_buf[15];
   XPBar() { UpdateRequirements(1); }
-  void draw(float x, float y, float size) noexcept {
-    xp_bar.x = x;
-    xp_bar.y = y - HEIGHT;
-    xp_bar.width = ((PLAYER_EXPERIENCE - prev_req) / next_req) * size - 6,
+  void draw(float x, float y) noexcept {
+    xp_bar.x = x + SCALE(28);
+    xp_bar.y = y - SCALE(13);
+    xp_bar.width = ((PLAYER_EXPERIENCE - prev_req) / next_req) * WIDTH,
     DrawRectangleRounded(xp_bar, 2.5F, ROUND_SEGMENTS, Colors::questMarkerYellow);
     DrawTextureProFast(textures::ui::skillbar::xpbar, x - 2, y - HEIGHT, 0, WHITE);
     if (collision) {
       DrawTooltip(MOUSE_POS);
     }
   }
-   inline void DrawTooltip(Vector2 m) noexcept {
+  inline void DrawTooltip(Vector2 m) noexcept {
     DrawTextureProFast(textures::ui::skillbar::tooltip, m.x - 84, m.y - 72, 0, WHITE);
-    sprintf(tx_buf,"Level: %d",PLAYER_STATS.level);
-    DrawTextExR(MINECRAFT_BOLD,tx_buf,{m.x - 40,m.y - 32},15,1,WHITE);
+    sprintf(tx_buf, "%d / %d", (int)PLAYER_EXPERIENCE - prev_req, next_req);
+    DrawTextExR(VARNISHED, tx_buf, {m.x - 75, m.y - 55}, 13, 0.5, WHITE);
 
-    sprintf(tx_buf,"Total XP: %.1f",PLAYER_EXPERIENCE);
-    DrawTextExR(MINECRAFT_BOLD,tx_buf,{m.x - 40,m.y - 15},15,1,WHITE);
+    sprintf(tx_buf, "Collected: %d%%", (int)((PLAYER_EXPERIENCE - prev_req) * 100.0 / next_req));
+    DrawTextExR(VARNISHED, tx_buf, {m.x - 10, m.y - 55}, 13, 0.5, WHITE);
 
+    sprintf(tx_buf, "Total XP: %.1f", PLAYER_EXPERIENCE);
+    DrawTextExR(VARNISHED, tx_buf, {m.x - 75, m.y - 30}, 13, 0.5, WHITE);
   }
   void update() noexcept {
     if (PLAYER_EXPERIENCE - prev_req >= next_req) {
