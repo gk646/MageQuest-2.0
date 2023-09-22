@@ -140,6 +140,7 @@ struct Entity {
            tile_collision_left(speed) || tile_collision_down(speed);
   }
   void decideMovement(PointI next, float speed) noexcept {
+    return;
     bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
     bool canMoveLeft = tile_pos.x > next.x && !tile_collision_left(speed);
     bool canMoveUp = tile_pos.y > next.y && !tile_collision_up(speed);

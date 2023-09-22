@@ -21,7 +21,7 @@ struct EntityStats {
   float health = 10;
   float mana = 20;
   float speed = 3;
-  int level = 1;
+  uint8_t level = 1;
   float shield = 0;
   bool stunned = false;
   EntityStats() {

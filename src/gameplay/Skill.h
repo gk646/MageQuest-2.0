@@ -20,12 +20,9 @@ struct Skill {
   inline virtual void activate() = 0;
   inline void update() noexcept { cool_down_ticks++; };
   void draw(float x, float y, float size) const noexcept {
-    DrawTextureProFast(textures::ui::skillbar::slot, x, y, 0, WHITE);
-    DrawTextureProFast(*icon, x + 7, y + 7, 0, WHITE);
+    DrawTextureProFast(*icon, x , y , 0, WHITE);
     int rcd = PLAYER_STATS.GetRemainingCD(skill_stats);
     if (cool_down_ticks < rcd) {
-      x+=7;
-      y+=7;
       float side1, side2, side3, side4, side5;
       float coolDownCoefficient;
       coolDownCoefficient = cool_down_ticks * (size * 4 / rcd);

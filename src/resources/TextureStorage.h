@@ -59,16 +59,16 @@ inline Texture KEY_MAP;
 inline static Texture bossbar;
 
 namespace skillbar {
-inline static Texture slot;
 inline static Texture bag;
 inline static Texture abilities;
 inline static Texture character;
 inline static Texture map;
 inline static Texture mouseleft;
 inline static Texture mouseright;
+inline static Texture tooltip;
 inline static Texture setting;
 inline static Texture skilltree;
-inline static Texture tooltip;
+inline static Texture skillbar;
 inline static Texture xpbar;
 
 namespace icons {
