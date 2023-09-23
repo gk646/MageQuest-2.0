@@ -38,26 +38,16 @@ struct SkeletonWarrior final : public Monster {
 #endif
   }
   void update() final {
-    Monster::update();
-    if (move_to_player() && attack == 0 && attack_cd < 0) {
-      int num = RANGE_100(RNG_ENGINE);
-      attack_cd = 160;
-      sprite_counter = 0;
-      if (num < 33) {
-        attack = 1;
-      } else if (num < 66) {
-        attack = 2;
-      } else {
-        attack = 3;
-      }
-    } else {
-      attack_cd--;
+    BASIC_UPDATE();
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && WalkToEntity(target)) {
+      AttackPlayer3Attacks();
     }
   }
   inline void draw_death() noexcept {
     int num = sprite_counter % 175 / 35;
     if (num < 4) {
-      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y-20, -30, 0,
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X-27, pos.y_ + DRAW_Y-48, -20, 0,
                            flip, WHITE);
     } else {
       dead = true;

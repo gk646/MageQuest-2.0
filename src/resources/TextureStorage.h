@@ -25,6 +25,7 @@ inline MonsterResource KNIGHT;
 inline MonsterResource MUSHROOM;
 inline MonsterResource SNAKE;
 inline MonsterResource WOLF;
+inline MonsterResource GHOST;
 }  // namespace monsters
 
 namespace projectile {

@@ -1,15 +1,19 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_ENERGYSPHERE_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_ENERGYSPHERE_H_
 struct EnergySphere final : Projectile {
-  static constexpr int width = 15;
-  static constexpr int height = 15;
-  EnergySphere(const Point& pos, bool from_player, int life_span, float speed,
-               float damage, HitType hit_type, const vector<StatusEffect*>& effects,const Vector2& move)
-      : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, life_span, speed,
-                   {DamageType::ARCANE, damage}, hit_type, effects, move, 0, nullptr,
-                   &textures::projectile::ENERGY_SPHERE) {}
+  static constexpr int WIDTH = 15;
+  static constexpr int HEIGHT = 15;
+  EnergySphere(const Point& position, bool isFromPlayer, int lifespan,
+               float projectileSpeed, float damageValue, HitType hitType,
+               const std::vector<StatusEffect*>& statusEffects,
+               const Vector2& movementDirection, const Entity* sender)
+      : Projectile(isFromPlayer, position, {WIDTH, HEIGHT}, ShapeType::CIRCLE, lifespan,
+                   projectileSpeed, {DamageType::ARCANE, damageValue}, hitType,
+                   statusEffects, movementDirection, 0, nullptr,
+                   &textures::projectile::ENERGY_SPHERE,sender) {}
   void draw() final {
-    DrawTextureProFast(resources->frames[sprite_counter % 42 / 7],pos.x_ + DRAW_X -5, pos.y_ + DRAW_Y-3,0,WHITE);
+    DrawTextureProFast(resources->frames[sprite_counter % 42 / 7], pos.x_ + DRAW_X - 5,
+                       pos.y_ + DRAW_Y - 3, 0, WHITE);
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif

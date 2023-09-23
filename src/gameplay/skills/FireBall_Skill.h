@@ -24,8 +24,8 @@ struct FireBall_Skill final : public Skill {
     Multiplayer::UDP_SEND_PROJECTILE(FIRE_BALL, posX, posY, pov, x_move, y_move, damage);
 
     PROJECTILES.emplace_back(new FireBall({posX, posY}, from_player, LIFE_SPAN, SPEED,
-                                          damage, HitType::ONE_HIT, {}, pov,
-                                          {x_move, y_move}));
+                                           damage, HitType::ONE_HIT, {}, pov,
+                                          {x_move, y_move},&PLAYER));
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ABILITIES_FIREBALL_H_

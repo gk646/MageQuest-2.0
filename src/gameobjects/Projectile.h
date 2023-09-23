@@ -8,27 +8,17 @@ struct Projectile : public Entity {
   float speed;
   int life_span;
   int sprite_counter = 0;
+  const Entity* Sender = nullptr;
   HitType projectile_type = HitType::ONE_HIT;
   Vector2 move_vector;
   ProjectileResources* resources = nullptr;
   std::vector<StatusEffect*> status_effects{};
   Sound* sound = nullptr;
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             const Vector2& destination, int life_span, float speed,
-             const DamageStats& damage_stats, HitType type,
-             const std::vector<StatusEffect*>& effects) noexcept
-      : Entity(pos, size, shape_type),
-        life_span(life_span),
-        speed(speed),
-        damage_stats(damage_stats),
-        from_player(from_player),
-        projectile_type(type),
-        status_effects(effects),
-        move_vector(get_move_vector(destination)) {}
-  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, const DamageStats& damage_stats, HitType type,
              const std::vector<StatusEffect*>& effects, const Vector2& move_vector,
-             float pov,Sound* sound,ProjectileResources * res) noexcept
+             float pov, Sound* sound, ProjectileResources* res,
+             const Entity* sender) noexcept
       : Entity(pos, size, shape_type, pov),
         life_span(life_span),
         speed(speed),
@@ -36,7 +26,10 @@ struct Projectile : public Entity {
         from_player(from_player),
         projectile_type(type),
         status_effects(effects),
-        move_vector(move_vector) ,resources(res),sound(sound){}
+        move_vector(move_vector),
+        resources(res),
+        sound(sound),
+        Sender(sender) {}
   Projectile(const Projectile& p) noexcept
       : Entity(p),
         move_vector(p.move_vector),
@@ -81,10 +74,9 @@ struct Projectile : public Entity {
       delete ptr;
     }
   }
-  inline Vector2 get_move_vector(const Vector2& mouse_pos) noexcept {
-    float angle =
-        std::atan2(mouse_pos.y - (pos.y_ + DRAW_Y), mouse_pos.x - (pos.x_ + DRAW_X));
-    pov = angle * (180.0f / M_PI);
+  inline Vector2 get_move_vector() noexcept {
+    float angle = std::atan2(MOUSE_POS.y - pos.y_ - DRAW_Y - size.y_ / 2,
+                             MOUSE_POS.x - pos.x_ - DRAW_X - size.x_ / 2);
     return {std::cos(angle), std::sin(angle)};
   }
   [[nodiscard]] inline bool active() const noexcept { return !dead && does_damage; }

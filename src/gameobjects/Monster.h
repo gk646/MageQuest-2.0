@@ -13,8 +13,11 @@ struct Monster : public Entity {
   bool flip = false;
   Entity* target = nullptr;
   MonsterResource* resource;
+  uint8_t AttackRange = 10;
+  uint8_t ChaseRange = 15;
   std::string name;
   HealthBar health_bar;
+  ThreatManager threatManager{*this};
   MonsterType type;
   Monster(const Point& pos, const EntityStats& stats, MonsterResource* resource,
           MonsterType type, const Point& size = {50, 50},
@@ -54,50 +57,52 @@ struct Monster : public Entity {
 
     return *this;
   }
-  ~Monster() override {
-    XPBar::AddPlayerExperience(stats.level);
-  }
-  void update() override {
-    sprite_counter++;
-    if (stats.health <= 0) {
-      attack = -100;
-    }
-    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
-    health_bar.update();
-    status_effects.update();
-  };
+  ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
+  //sender pointer
+#define BASIC_UPDATE()                                           \
+  sprite_counter++;                                              \
+  tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;               \
+  tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;               \
+  health_bar.update();                                           \
+  status_effects.update();                                       \
+  if (MP_TYPE == MultiplayerType::CLIENT || attack != 0) return; \
+  flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;                    \
+  threatManager.Update();                                        \
+  attack_cd -= attack == 0;                                      \
+  moving = false;
+
   void draw() override = 0;
   void hit(Projectile& p) noexcept {
-    if (p.from_player && p.active()) {
+    if (p.from_player && p.active() && attack != -100) {
       health_bar.hit();
       status_effects.add_effects(p.status_effects);
-      stats.take_damage(p.damage_stats);
-      p.dead = attack != -100 && p.projectile_type == HitType::ONE_HIT;
+      float dmg = stats.take_damage(p.damage_stats);
+      threatManager.AddThreat(p.Sender, dmg);
+      if (stats.health <= 0) {
+        sprite_counter = 0;
+        attack = -100;
+      }
+      p.dead = p.projectile_type == HitType::ONE_HIT;
     }
   }
-  bool move_to_player() noexcept {
-    if (attack != 0 || MP_TYPE == MultiplayerType::CLIENT) {
-      return false;
-    }
-    flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;
+  bool WalkToEntity(const Entity* ent) noexcept {
+    if (attack != 0) return false;
     PointI point;
-    moving = false;
-    if ((point = astar_pathfinding(tile_pos, *PLAYER_TILE)) > 0) [[likely]] {
+
+    if ((point = astar_pathfinding(tile_pos, ent->tile_pos)) > 0) [[likely]] {
       decideMovement(point, stats.get_speed());
       moving = true;
       return false;
-    } else if (point == 0 && RANGE_01SMALL(RNG_RANDOM) > 30 &&
-               !this->intersects(PLAYER)) {
+    } else if (point == 0 && !this->intersects(*ent)) {
       float speed = stats.get_speed();
       moving = true;
-      if (pos.x_ < PLAYER_X) {
+      if (pos.x_ < ent->pos.x_) {
         pos.x_ += speed;
-      } else if (pos.x_ > PLAYER_X) {
+      } else if (pos.x_ > ent->pos.x_) {
         pos.x_ -= speed;
-      } else if (pos.y_ > PLAYER_Y) {
+      } else if (pos.y_ > ent->pos.y_) {
         pos.y_ -= speed;
-      } else if (pos.y_ < PLAYER_Y) {
+      } else if (pos.y_ < ent->pos.y_) {
         pos.y_ += speed;
       }
     }
@@ -128,10 +133,26 @@ struct Monster : public Entity {
     pos.x_ = data->x;
     pos.y_ = data->y;
   }
+  inline void AttackPlayer3Attacks() noexcept {
+    if (attack == 0 && attack_cd <= 0) {
+      int num = RANGE_100(RNG_ENGINE);
+      attack_cd = 160;
+      sprite_counter = 0;
+      if (num < 33) {
+        attack = 1;
+      } else if (num < 66) {
+        attack = 2;
+      } else {
+        attack = 3;
+      }
+    }
+  }
 };
+
 #include "monsters/SkeletonSpear.h"
 #include "monsters/SkeletonWarrior.h"
 #include "monsters/Wolf.h"
+#include "monsters/Ghost.h"
 
 void Server::SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexcept {
   for (auto m : MONSTERS) {
@@ -195,6 +216,31 @@ void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
   for (auto m : MONSTERS) {
     if (m->u_id == data->monster_id) {
       m->update_state(data);
+    }
+  }
+}
+
+void ThreatManager::Update() noexcept {
+  if (TargetCount > 0) {
+    for (auto& te : targets) {
+      if (te.entity && te.entity->tile_pos.dist(Self.tile_pos) > Self.AttackRange) {
+        te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
+        if (te.threat <= 0) {
+          RemoveTarget(te.entity);
+        }
+      }
+    }
+  } else {
+    if (PLAYER.tile_pos.dist(Self.tile_pos) <= Self.AttackRange) {
+      AddTarget(&PLAYER, PLAYER_STATS.level);
+    }
+
+    for (const auto np : OTHER_PLAYERS) {
+      if (np) {
+        if (np->tile_pos.dist(Self.tile_pos) <= Self.AttackRange) {
+          AddTarget(np, np->stats.level);
+        }
+      }
     }
   }
 }

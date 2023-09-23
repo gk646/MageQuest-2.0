@@ -11,8 +11,8 @@ struct Dummy_Skill final : public Skill {
     use();
 
     PROJECTILES.push_back(
-        new Dummy({PLAYER.pos.x_ + PLAYER.size.x_ / 2,
-                   PLAYER.pos.y_ + PLAYER.size.y_ / 2 - FireBall::height / 2},
+        new Dummy({PLAYER_X + PLAYER.size.x_ / 2,
+                        PLAYER_Y + (PLAYER.size.y_ - FireBall::height) / 2},
                   true, PLAYER_STATS.get_ability_dmg(damage_stats)));
   }
 };

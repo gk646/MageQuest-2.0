@@ -5,8 +5,8 @@ struct SkeletonSpear final : public Monster {
   static constexpr float per_level = 3.5;
   static constexpr float base_speed = 2;
   SkeletonSpear(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level,per_level, base_speed},
-                &textures::monsters::SKELETON_SPEAR, MonsterType::SKEL_SPEAR,{30, 50}) {
+      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
+                &textures::monsters::SKELETON_SPEAR, MonsterType::SKEL_SPEAR, {30, 50}) {
     attack_cd = 120;
   }
 
@@ -102,20 +102,10 @@ struct SkeletonSpear final : public Monster {
     }
   }
   void update() final {
-    Monster::update();
-    if (move_to_player() && attack == 0 && attack_cd < 0) {
-      int num = RANGE_100(RNG_ENGINE);
-      attack_cd = 160;
-      sprite_counter = 0;
-      if (num < 33) {
-        attack = 1;
-      } else if (num < 66) {
-        attack = 2;
-      } else {
-        attack = 3;
-      }
-    } else {
-      attack_cd--;
+    BASIC_UPDATE();
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && WalkToEntity(target)) {
+      AttackPlayer3Attacks();
     }
   }
 };
