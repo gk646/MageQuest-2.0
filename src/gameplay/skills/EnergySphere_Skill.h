@@ -8,15 +8,19 @@ struct EnergySphere_Skill final : public Skill {
   explicit EnergySphere_Skill(bool from_player)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::ARCANE, BASE_DMG},
               from_player, 1, &textures::ui::skillbar::icons::energy_sphere) {}
-
+  void draw(float x, float y, float size) const noexcept final {
+    Skill::draw(x, y, size);
+    if(cool_down_ticks < LIFESPAN){
+      DrawSupportBar(x, y, 1- cool_down_ticks / LIFESPAN);
+    }
+  }
   void activate() final {
     use();
-    auto mouse_pos = MOUSE_POS;
-    float angle = std::atan2(mouse_pos.y - (PLAYER_Y + DRAW_Y) - EnergySphere::width,
-                             mouse_pos.x - (PLAYER_X + DRAW_X) - EnergySphere::height);
-    float damage = PLAYER_STATS.get_ability_dmg(damage_stats) / CONTINUOUS_DIVISOR;
     float posX = PLAYER_X + PLAYER.size.x_ / 2;
-    float posY = PLAYER_Y + PLAYER.size.y_ / 2 - EnergySphere::height / 2;
+    float posY = PLAYER_Y + (PLAYER.size.y_ - EnergySphere::HEIGHT) / 2;
+    float angle = std::atan2(MOUSE_POS.y - posY - DRAW_Y  - EnergySphere::HEIGHT/2,
+                             MOUSE_POS.x - posX  -DRAW_X - EnergySphere::WIDTH/2);
+    float damage = PLAYER_STATS.get_ability_dmg(damage_stats) / CONTINUOUS_DIVISOR;
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
 
@@ -26,7 +30,7 @@ struct EnergySphere_Skill final : public Skill {
 
     PROJECTILES.emplace_back(new EnergySphere({posX, posY}, from_player, LIFESPAN, SPEED,
                                               damage, HitType::CONTINUOUS, {},
-                                              {x_move, y_move}));
+                                              {x_move, y_move},&PLAYER));
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILLS_ENERGYSPHERE_SKILL_H_

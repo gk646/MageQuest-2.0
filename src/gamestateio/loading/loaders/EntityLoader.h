@@ -17,6 +17,7 @@ struct EntityLoader {
     textures::monsters::MUSHROOM.load("enemies/mushroom/");
     textures::monsters::SNAKE.load("enemies/snake/");
     textures::monsters::WOLF.load("enemies/wolf/");
+    textures::monsters::GHOST.load("enemies/Ghost/");
 
     textures::projectile::BLAST_HAMMER.load("blastHammer/");
     textures::projectile::ENERGY_SPHERE.load("EnergySphere/");

@@ -28,7 +28,7 @@ struct FireStrike_Skill final : public Skill {
 
       PROJECTILES.emplace_back(new FireBall(pos, from_player, LIFE_SPAN, SPEED,
                                             damagePerFireball, HitType::CONTINUOUS, {},
-                                            pov, {x_component, y_component}));
+                                            pov, {x_component, y_component},&PLAYER));
     }
   }
 };

@@ -5,9 +5,9 @@ struct Lightning final : Projectile {
   static constexpr int height = 25;
   Lightning(const Point& pos, bool from_player, int life_span, float speed, float damage,
            HitType hit_type, const vector<StatusEffect*>& effects, float pov,
-           const Vector2& move)
+           const Vector2& move,const Entity* sender)
       : Projectile(from_player, pos, {25, 25}, ShapeType::RECT, life_span, speed,
-                   {DamageType::FIRE, damage}, hit_type, effects, move, pov,nullptr, nullptr) {
+                   {DamageType::FIRE, damage}, hit_type, effects, move, pov,nullptr, nullptr,sender) {
   }
 
   void draw() final {

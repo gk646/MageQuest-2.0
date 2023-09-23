@@ -116,6 +116,7 @@ struct Player final : public Entity {
   }
 };
 inline static Player PLAYER({150, 150});
+#include "elements/ThreatManager.h"
 #include "../ui/player/HotBar.h"
 inline static HotBar PLAYER_HOTBAR{};
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

@@ -55,7 +55,7 @@ static void HandleProjectileState(ISteamNetworkingMessages* api) noexcept {
                                                MP_MAX_MESSAGES_MONSTER)) > 0) {
     for (int i = 0; i < numMsgs; ++i) {
       auto data = (UDP_Projectile*)pMessages[i]->GetData();
-      Multiplayer::HandleProjectile(data);
+      Multiplayer::HandleProjectile(data, nullptr);
       pMessages[i]->Release();
     }
   }

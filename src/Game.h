@@ -220,6 +220,7 @@ class Game {
 
  public:
   Game() noexcept {
+    SetMouseCursorImage((ASSET_PATH+"ui/cursor.png").c_str(),0,0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
     RNG_RANDOM.seed(std::random_device()());
@@ -233,7 +234,7 @@ class Game {
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
-    for (uint_fast32_t i = 0; i < 10; i++) {
+    for (uint_fast32_t i = 0; i < 1; i++) {
       MONSTERS.push_back(new SkeletonWarrior({250.0F+i*5, 150}, 10));
     }
     NPCS.push_back(new Deckard(11, 4));

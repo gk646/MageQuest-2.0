@@ -100,7 +100,7 @@ struct EntityStats {
         return stats.damage + effects[WEAPON_DAMAGE];
     }
   }
-  inline void take_damage(const DamageStats& stats) {
+  inline float take_damage(const DamageStats& stats) {
     float& armour = effects[ARMOUR];
     float& armour_mult = effects[ARMOUR_MULT_P];
 
@@ -111,7 +111,7 @@ struct EntityStats {
     } else if (stats.damage_type != DamageType::TRUE_DMG) {
       if (shield >= total_damage) {
         shield -= total_damage;
-        return;
+        return total_damage;
       } else {
         total_damage -= shield;
         shield = 0;
@@ -119,6 +119,7 @@ struct EntityStats {
     }
 
     health -= total_damage;
+    return total_damage;
   }
   inline void refill_stats() noexcept {
     mana = get_max_mana();

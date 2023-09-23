@@ -18,7 +18,7 @@ struct BlastHammer_Skill final : public Skill {
 
     PROJECTILES.emplace_back(new BlastHammer(pos, from_player, LIFE_SPAN, 0,
                                           damage, HitType::ONE_TICK, {}, 0,
-                                          {0, 0},pos.x_ < MIRROR_POINT));
+                                          {0, 0},pos.x_ < MIRROR_POINT,&PLAYER));
   }
 
 };

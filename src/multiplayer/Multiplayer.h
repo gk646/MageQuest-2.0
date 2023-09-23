@@ -4,7 +4,7 @@
 #include "MessageTypes.h"
 
 namespace Multiplayer {
-inline static void HandleProjectile(UDP_Projectile* data) noexcept;
+inline static void HandleProjectile(UDP_Projectile* data, const Entity* ptr) noexcept;
 inline static void HandleMonsterSpawn(UDP_MonsterSpawn* data) noexcept;
 }  // namespace Multiplayer
 #include "NetPlayer.h"
@@ -23,6 +23,14 @@ inline static int count() noexcept {
 inline static NetPlayer* get(CSteamID steam_id) noexcept {
   for (auto& np : OTHER_PLAYERS) {
     if (np && np->identity.GetSteamID() == steam_id) {
+      return np;
+    }
+  }
+  return nullptr;
+}
+inline static const Entity* get(SteamNetworkingIdentity identity) noexcept {
+  for (auto& np : OTHER_PLAYERS) {
+    if (np && np->identity == identity) {
       return np;
     }
   }

@@ -3,26 +3,29 @@
 struct Wolf final : public Monster {
   static constexpr int base_health = 3;
   static constexpr float per_level = 2.5;
-  static constexpr float base_speed = 3;
+  static constexpr float base_speed = 2.4;
+  static constexpr float ATTACK_CD = 120;
+  static constexpr uint8_t ATTACK_RANGE = 2;
+  static constexpr uint8_t CHASE_RANGE = 10;
   Wolf(const Point& pos, int level) noexcept
       : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
-                &textures::monsters::WOLF, MonsterType::SKEL_SPEAR, {30, 50}) {
-    attack_cd = 120;
+                &textures::monsters::WOLF, MonsterType::WOLF, {45, 30}) {
+    attack_cd = ATTACK_CD;
+    AttackRange = ATTACK_RANGE;
+    ChaseRange = CHASE_RANGE;
   }
   void draw() final {
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {
       draw_attack1();
-    } else if (attack == 2) {
-      draw_attack2();
-    } else if (attack == 3) {
-      draw_attack3();
     } else {
       if (moving) {
-        draw_walk();
+        DrawTextureProFastEx(resource->walk[sprite_counter % 60 / 10],
+                             pos.x_ + DRAW_X-2, pos.y_ + DRAW_Y-19, 2, 0, !flip, WHITE);
       } else {
-        draw_idle();
+        DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 20], pos.x_ + DRAW_X-5,
+                             pos.y_ + DRAW_Y-17, 5, 0, !flip, WHITE);
       }
     }
     if (health_bar.delay > 0) {
@@ -32,89 +35,35 @@ struct Wolf final : public Monster {
     draw_hitbox();
 #endif
   }
+  void update() final {
+    BASIC_UPDATE();
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && WalkToEntity(target)) {
+      if ( attack == 0 && attack_cd < 0) {
+        attack_cd = ATTACK_CD;
+        sprite_counter = 0;
+        attack = 1;
+      } else {
+        attack_cd--;
+      }
+    }
+  }
   inline void draw_death() noexcept {
-    int num = sprite_counter % 120 / 20;
+    int num = sprite_counter % 140 / 20;
     if (num < 5) {
-      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
-                           pos.y_ + DRAW_Y - 46, 0, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X -5,
+                           pos.y_ + DRAW_Y - 19, 3, 0, !flip, WHITE);
     } else {
       dead = true;
     }
   }
   inline void draw_attack1() noexcept {
-    int num = sprite_counter % 75 / 15;
-    if (num < 4) {
-      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
-                           pos.y_ + DRAW_Y - 46, -30, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
-    } else {
-      attack = 0;
-    }
-  }
-  inline void draw_attack2() noexcept {
-    int num = sprite_counter % 75 / 15;
-    if (num < 4) {
-      DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 46, -10, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
-    } else {
-      attack = 0;
-    }
-  }
-  inline void draw_attack3() noexcept {
-    int num = sprite_counter % 72 / 12;
+    int num = sprite_counter % 140 / 20;
     if (num < 5) {
-      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 16,
-                           pos.y_ + DRAW_Y - 46, -32, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
+                           pos.y_ + DRAW_Y - 19, 10, 0, !flip, WHITE);
     } else {
       attack = 0;
-    }
-  }
-  inline void draw_walk() noexcept {
-    if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-      auto texture = resource->walk[sprite_counter % 105 / 15];
-      DrawTexturePro(
-          texture,
-          {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
-          {pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 45, static_cast<float>(texture.width),
-           static_cast<float>(texture.height)},
-          {0, 0}, 0, WHITE);
-    } else {
-      DrawTextureProFast(resource->walk[sprite_counter % 105 / 15], pos.x_ + DRAW_X - 30,
-                         pos.y_ + DRAW_Y - 45, 0, WHITE);
-    }
-  }
-  inline void draw_idle() noexcept {
-    if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-      auto texture = resource->idle[sprite_counter % 84 / 12];
-      DrawTexturePro(
-          texture,
-          {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
-          {pos.x_ + DRAW_X - 38, pos.y_ + DRAW_Y - 45, static_cast<float>(texture.width),
-           static_cast<float>(texture.height)},
-          {0, 0}, 0, WHITE);
-    } else {
-      DrawTextureProFast(resource->idle[sprite_counter % 84 / 12], pos.x_ + DRAW_X - 28,
-                         pos.y_ + DRAW_Y - 45, 0, WHITE);
-    }
-  }
-  void update() final {
-    Monster::update();
-    if (move_to_player() && attack == 0 && attack_cd < 0) {
-      int num = RANGE_100(RNG_ENGINE);
-      attack_cd = 160;
-      sprite_counter = 0;
-      if (num < 33) {
-        attack = 1;
-      } else if (num < 66) {
-        attack = 2;
-      } else {
-        attack = 3;
-      }
-    } else {
-      attack_cd--;
     }
   }
 };
