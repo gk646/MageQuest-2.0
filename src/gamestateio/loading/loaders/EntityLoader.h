@@ -38,6 +38,7 @@ struct EntityLoader {
     textures::projectile::VOID_ERUPTION.load("voidEruption/");
     textures::projectile::VOID_FIELD.load("voidField/");
     textures::projectile::DUMMY.load("dummy/");
+    textures::projectile::PSYCHIC_SCREAM.load("PsychicScream/");
 
 
     //npcs

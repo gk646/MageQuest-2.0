@@ -94,6 +94,7 @@ struct Projectile : public Entity {
 };
 
 #include "projectiles/FireBall.h"
+#include "projectiles/PsychicScream.h"
 #include "projectiles/Dummy.h"
 #include "projectiles/PoisonBall.h"
 #include "projectiles/BlastHammer.h"

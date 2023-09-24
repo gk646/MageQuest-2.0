@@ -5,6 +5,8 @@ struct Ghost final : public Monster {
   static constexpr float per_level = 3.5;
   static constexpr float base_speed = 2.2;
   static constexpr float ATTACK_CD = 120;
+  bool teleported = false;
+  bool disappeared = true;
   Ghost(const Point& pos, int level) noexcept
       : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
                 &textures::monsters::GHOST, MonsterType::WOLF, {30, 40}) {
@@ -14,7 +16,11 @@ struct Ghost final : public Monster {
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {
-      draw_attack1();
+      DrawAttack1();
+    } else if (attack == 2) {
+      DrawAppear();
+    } else if (attack == 3) {
+      DrawDisappear();
     } else {
       DrawTextureProFastEx(resource->idle[sprite_counter % 105 / 15],
                            pos.x_ + DRAW_X - 17, pos.y_ + DRAW_Y - 20, -3, 0, !flip,
@@ -29,42 +35,78 @@ struct Ghost final : public Monster {
   }
   void update() final {
     BASIC_UPDATE();
-    flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && attack_cd <= 0 && attack == 0) {
+      if (!disappeared) {
+        attack = 3;
+        sprite_counter = 0;
+      } else if (!teleported) {
+        sprite_counter = 0;
+        TeleportToTarget(target);
+      }
+    }
   }
-  void GhostAttackScript() {}
-
+  inline void TeleportToTarget(const Entity* ent) noexcept {
+    if (!CheckTileCollision(ent->tile_pos.x - 1, ent->tile_pos.y)) {
+      pos.x_ = (ent->tile_pos.x - 1) * 48 + 24;
+      pos.y_ = ent->tile_pos.y * 48;
+      attack = 2;
+      teleported = true;
+    } else if (!CheckTileCollision(ent->tile_pos.x + 1, ent->tile_pos.y)) {
+      pos.x_ = (ent->tile_pos.x + 1) * 48 - 24;
+      pos.y_ = ent->tile_pos.y * 48;
+      attack = 2;
+      teleported = true;
+    } else if (!CheckTileCollision(ent->tile_pos.x, ent->tile_pos.y - 1)) {
+      pos.x_ = ent->tile_pos.x * 48;
+      pos.y_ = (ent->tile_pos.y - 1) * 48 + 24;
+      attack = 2;
+      teleported = true;
+    } else if (!CheckTileCollision(ent->tile_pos.x, ent->tile_pos.y + 1)) {
+      pos.x_ = ent->tile_pos.x * 48;
+      pos.y_ = (ent->tile_pos.y + 1) * 48 - 24;
+      attack = 2;
+      teleported = true;
+    }
+  }
   inline void draw_death() noexcept {
-    int num = sprite_counter % 140 / 20;
+    int num = sprite_counter % 70 / 10;
     if (num < 6) {
-      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 0, 0,
-                           !flip, WHITE);
+      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
+                           pos.y_ + DRAW_Y - 15, 0, 0, !flip, WHITE);
     } else {
       dead = true;
     }
   }
   inline void DrawAppear() noexcept {
-    int num = sprite_counter % 140 / 20;
+    int num = sprite_counter % 56 / 8;
     if (num < 6) {
-      DrawTextureProFastEx(resource->walk[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 0, 0,
-                           !flip, WHITE);
+      DrawTextureProFastEx(resource->walk[num], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y, 0,
+                           0, !flip, WHITE);
     } else {
-      dead = true;
+      attack = 1;
+      teleported = false;
+      PROJECTILES.push_back(new PsychicScream(pos, false, 5, HitType::CONTINUOUS, {}));
+      sprite_counter = 0;
+      disappeared = false;
+      attack_cd = ATTACK_CD;
     }
   }
   inline void DrawDisappear() noexcept {
-    int num = sprite_counter % 140 / 20;
+    int num = sprite_counter % 56 / 8;
     if (num < 6) {
-      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 0, 0,
-                           !flip, WHITE);
+      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
+                           pos.y_ + DRAW_Y - 15, 0, 0, !flip, WHITE);
     } else {
-      dead = true;
+      attack = 0;
+      disappeared = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = sprite_counter % 100 / 20;
     if (num < 4) {
-      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
-                           pos.y_ + DRAW_Y - 19, 10, 0, !flip, WHITE);
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 14,
+                           pos.y_ + DRAW_Y - 16, -2, 0, !flip, WHITE);
     } else {
       attack = 0;
     }

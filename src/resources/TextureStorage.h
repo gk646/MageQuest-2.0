@@ -48,6 +48,7 @@ inline ProjectileResources THUNDER_STRIKE;
 inline ProjectileResources VOID_ERUPTION;
 inline ProjectileResources VOID_FIELD;
 inline ProjectileResources DUMMY;
+inline ProjectileResources PSYCHIC_SCREAM;
 }  // namespace projectile
 
 namespace ui {

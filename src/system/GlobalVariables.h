@@ -83,4 +83,9 @@ inline static std::vector<Projectile*> PROJECTILES;
 inline static std::vector<WorldObject*> WORLD_OBJECTS;
 inline static std::vector<NPC*> NPCS;
 inline static std::vector<Monster*> MONSTERS;
+
+inline static bool CheckTileCollision(int x, int y ) noexcept {
+  return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID &&
+         COLLISIONS[CURRENT_MIDDLE_GROUND[x][y]] == C_SOLID;
+}
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_
