@@ -4,7 +4,6 @@
 struct TileLoader {
   static constexpr int TEXTURE_COUNT = 5589;
   static std::vector<Image> images;
-
   static void load() {
     load_texture_span(0, TEXTURE_COUNT);
     load_tile_collision();
@@ -17,14 +16,13 @@ struct TileLoader {
     images.clear();
     images.shrink_to_fit();
   }
-
  private:
   static void load_texture_span(int start, int end) {
     for (uint_fast32_t i = start; i < end; ++i) {
-      images.push_back(LoadImageR((ASSET_PATH+"textures/" + std::to_string(i) + ".png").c_str()));
+      images.push_back(
+          LoadImageR((ASSET_PATH + "textures/" + std::to_string(i) + ".png").c_str()));
     }
   }
-
   static void load_tile_collision() {
     COLLISIONS[1093] = C_SOLID;
     COLLISIONS[1093] = C_SOLID;

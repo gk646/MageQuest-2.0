@@ -112,14 +112,17 @@ struct SPAWN final : public QuestNode {
     for (auto p : positions) {
       switch (type)
       case MonsterType::SKEL_WAR: {
-        MONSTERS.push_back(new SkeletonWarrior({(float)p.x * 48, (float)p.y * 48}, level));
+        MONSTERS.push_back(
+            new SkeletonWarrior({(float)p.x * 48, (float)p.y * 48}, level));
         break;
         case MonsterType::ANY:
           break;
         case MonsterType::SKEL_SPEAR:
-          MONSTERS.push_back(new SkeletonSpear({(float)p.x * 48, (float)p.y * 48}, level));
+          MONSTERS.push_back(
+              new SkeletonSpear({(float)p.x * 48, (float)p.y * 48}, level));
           break;
         case MonsterType::WOLF:
+          MONSTERS.push_back(new Wolf({(float)p.x * 48, (float)p.y * 48}, level));
           break;
         case MonsterType::BOSS_DEATH_BRINGER:
           break;
@@ -138,6 +141,9 @@ struct SPAWN final : public QuestNode {
         case MonsterType::SKEL_SHIELD:
           break;
         case MonsterType::SNAKE:
+          break;
+        case MonsterType::GHOST:
+          MONSTERS.push_back(new Ghost({(float)p.x * 48, (float)p.y * 48}, level));
           break;
       }
     }

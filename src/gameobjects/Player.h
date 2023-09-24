@@ -19,7 +19,7 @@ struct Player final : public Entity {
     return *this;
   }
   static void hit(Projectile& p) noexcept {
-    if (!p.from_player) {
+    if (!p.from_player && p.active()) {
       PLAYER_EFFECTS.add_effects(p.status_effects);
       PLAYER_STATS.take_damage(p.damage_stats);
       p.dead = p.projectile_type == HitType::ONE_HIT;
