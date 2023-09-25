@@ -1,7 +1,11 @@
 #ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
+#include "elements/Button.h"
 #include "PlayerUI.h"
+#include "menus/SettingsMenu.h"
+#include "menus/MainMenu.h"
+#include "menus/GameMenu.h"
 
 struct UIManager {
   PlayerUI player_ui;
@@ -19,8 +23,7 @@ struct UIManager {
       }
     }
     if (IsKeyPressed(KEY_ESCAPE)) {
-      if (GAME_STATE == GameState::GameMenu &&
-          game_menu.menu_state == MenuState::Main) {
+      if (GAME_STATE == GameState::GameMenu && game_menu.menu_state == MenuState::Main) {
         GAME_STATE = GameState::Game;
       } else if (GAME_STATE == GameState::Game) {
         if (!player_ui.window_closeable()) {

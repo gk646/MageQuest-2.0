@@ -1,8 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_
 #define MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_
 
-#include "player/elements/ToolTip.h"
-
 #include "game/MiniMap.h"
 #include "game/RegionMap.h"
 #include "player/CharacterPanel.h"
@@ -58,7 +56,7 @@ struct PlayerUI {
     }
   }
   inline bool window_closeable() noexcept {
-    if (char_panel.open || char_bag.open|| region_map.open) {
+    if (char_panel.open || char_bag.open || region_map.open) {
       char_panel.open = false;
       char_bag.open = false;
       region_map.open = false;

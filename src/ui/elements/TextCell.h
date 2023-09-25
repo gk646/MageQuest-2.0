@@ -18,10 +18,12 @@ struct TextCell {
 
   inline void DrawStatCell(float x, float y, char* txt, float rightVal) noexcept {
     Update(x, y);
-    DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, Colors::darkBackground);
+    Color drawColor = Colors::darkBackground;
+    if (isHovered) drawColor = Colors::mediumLightGreyDarker;
+    DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, drawColor);
     sprintf(txt, "%i", (int)rightVal);
     DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
-                         Colors::darkBackground);
+                         drawColor);
     DrawToolTip();
   }
   static std::array<TextCell, 9> CreateCharacterCells(float width, float height,
@@ -52,8 +54,8 @@ struct TextCell {
                          txtBounds.x + 25, txtBounds.y + 5},
                         0, false, 0, WHITE);
       DrawTextExR(font, toolTip.c_str(),
-                  {MOUSE_POS.x + 12, MOUSE_POS.y - bounds.height * 1.3F}, SCALE(fontSize), 1,
-                  Colors::mediumVeryLight);
+                  {MOUSE_POS.x + 12, MOUSE_POS.y - bounds.height * 1.3F}, SCALE(fontSize),
+                  1, Colors::mediumVeryLight);
     }
   }
   inline void Update(float x, float y) noexcept {

@@ -107,13 +107,13 @@ class Game {
     cxstructs::now();
     Multiplayer::PollPackets();
     SteamAPI_RunCallbacks();
+    UI_MANAGER.update();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
       }
       case GameState::Game:
         [[likely]] {
-          UI_MANAGER.update();
           PLAYER_EFFECTS.update();
           PLAYER_STATS.update();
           PLAYER_HOTBAR.update();
@@ -122,7 +122,6 @@ class Game {
         }
         break;
       case GameState::GameMenu: {
-        UI_MANAGER.update();
         PLAYER_EFFECTS.update();
         PLAYER_STATS.update();
         PLAYER_HOTBAR.update();
