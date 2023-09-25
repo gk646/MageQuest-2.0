@@ -100,6 +100,9 @@ struct TextureLoader {
 
 
     textures::ui::toolTip = LoadTexture((ASSET_PATH+"ui/toolTip.png").c_str());
+    textures::ui::buttonNormal = LoadTexture((ASSET_PATH+"ui/button_normal.png").c_str());
+    textures::ui::buttonHovered = LoadTexture((ASSET_PATH+"ui/button_hovered.png").c_str());
+    textures::ui::buttonPressed = LoadTexture((ASSET_PATH+"ui/button_pressed.png").c_str());
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_

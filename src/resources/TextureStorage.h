@@ -60,6 +60,11 @@ inline Texture HEALTH_BAR;
 inline Texture KEY_MAP;
 inline static Texture bossbar;
 inline static Texture toolTip;
+inline static Texture buttonNormal;
+inline static Texture buttonHovered;
+inline static Texture buttonPressed;
+
+
 namespace skillbar {
 inline static Texture bag;
 inline static Texture abilities;
