@@ -6,14 +6,14 @@ struct Window {
   RectangleR header_bar;
   Vector2 lastMousePos = {0};
   bool isDragging = false;
-  const char* header_text;
+  char* header_text;
   int open_key;
   float font_size = 17;
   bool open = false;
   bool header_hover = false;
   Vector2 base_pos;
   Window(int start_x, int start_y, int width, int height, int header_height,
-         const char* header_text, int open_key)
+         char* header_text, int open_key)
       : whole_window(start_x, start_y, width, height),
         header_bar(start_x, start_y + 2, width, header_height),
         header_text(header_text),
@@ -71,12 +71,9 @@ struct Window {
                               Colors::darkBackground);
     DrawRectangleRoundedLines(scaled_head, 1.5F, ROUND_SEGMENTS, 2,
                               Colors::darkBackground);
-
-    DrawTextExR(ANT_PARTY, header_text,
-                {scaled_whole.x + scaled_whole.width / 2 -
-                     GetTextWidth(header_text, font_size * UI_SCALE) / 2.0F,
-                 scaled_whole.y + scaled_head.height / 4},
-                font_size * UI_SCALE, 1, Colors::darkBackground);
+    DrawCenteredText(ANT_PARTY, SCALE(font_size), header_text,
+                     scaled_whole.x + scaled_whole.width / 2,
+                     scaled_whole.y + scaled_head.height / 4, Colors::darkBackground);
   }
 #define WINDOW_UPDATE()                                                             \
   if (!open) {                                                                      \

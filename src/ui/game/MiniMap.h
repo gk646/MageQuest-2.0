@@ -29,7 +29,7 @@ struct MiniMap {
 
     DrawRectangleLinesEx({(float)draw_x - 3, draw_y - 3, width + 6, height + 6}, 3,
                          Colors::LightGrey);
-    if (*region_map_open) {
+    if (*region_map_open && FAST_UI) {
       return;
     }
     for (int_fast32_t i = 0; i < tile_width; i++) {
