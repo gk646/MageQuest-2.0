@@ -223,6 +223,7 @@ class Game {
     SetMouseCursorImage((ASSET_PATH+"ui/cursor.png").c_str(),0,0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
+    UI_MANAGER.player_ui.char_panel.header_text = PLAYER_NAME.data();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());

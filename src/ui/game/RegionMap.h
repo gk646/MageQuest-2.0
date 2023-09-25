@@ -2,12 +2,13 @@
 #define MAGEQUEST_SRC_UI_GAME_REGIONMAP_H_
 
 struct RegionMap final : public Window {
+  static inline char HEADER[] = "Map";
   float zoom = 5;
   bool dragged = false;
   PointI tile_offset{};
   Vector2 last_mouse_pos{};
   RegionMap()
-      : Window(100, 100, SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.9, 20, "Region Map",
+      : Window(100, 100, SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.9, 20, HEADER,
                KEY_M) {}
   void draw() noexcept {
     WINDOW_LOGIC();

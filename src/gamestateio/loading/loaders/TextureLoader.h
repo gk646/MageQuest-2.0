@@ -98,6 +98,8 @@ struct TextureLoader {
     textures::ui::skillbar::icons::fireBurst     = LoadTexture((ASSET_PATH+"ui/skillbar/icons/fireBurst.png").c_str());
     textures::ui::skillbar::icons::fireSword     = LoadTexture((ASSET_PATH+"ui/skillbar/icons/fireSword.png").c_str());
 
+
+    textures::ui::toolTip = LoadTexture((ASSET_PATH+"ui/toolTip.png").c_str());
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_

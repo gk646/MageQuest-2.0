@@ -13,6 +13,10 @@
 #define SCALE(val) ((val)*UI_SCALE)
 #define SCALE_RECT(rect) \
   { SCALE((rect).x), SCALE((rect).y), SCALE((rect).width), SCALE((rect).height) }
+
+#define SCALE_VEC(vec) \
+  { SCALE((vec).x), SCALE((vec).y) }
+
 inline std::string ASSET_PATH = "../res/";
 /* |-----------------------------------------------------|
  * |                    MULTIPLAYER                      |
