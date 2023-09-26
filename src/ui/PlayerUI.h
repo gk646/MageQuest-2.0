@@ -4,8 +4,9 @@
 #include "game/MiniMap.h"
 #include "game/RegionMap.h"
 #include "player/CharacterPanel.h"
-#include "ui/player/QuestPanel.h"
+#include "player/CharacterBag.h"
 #include "player/StatusBar.h"
+#include "ui/player/QuestPanel.h"
 
 struct PlayerUI {
   RegionMap region_map{};
@@ -13,10 +14,13 @@ struct PlayerUI {
   CharacterPanel char_panel{};
   CharacterBag char_bag{};
   StatusBar status_bar{};
+  QuestPanel questPanel{};
+
   void draw() noexcept {
     DRAW_NPC_DIALOGUE()
     PLAYER_EFFECTS.draw();
     PLAYER_HOTBAR.draw();
+    questPanel.Draw();
     status_bar.draw();
     mini_map.draw();
     char_panel.draw();
@@ -26,12 +30,12 @@ struct PlayerUI {
   }
   void update() noexcept {
     WINDOW_FOCUSED = false;
+    questPanel.Update();
     mini_map.update();
     status_bar.update();
     char_panel.update();
     char_bag.update();
     region_map.update();
-    PLAYER_QUESTS.update();
     IsKeyPressedU::update();
     update_special_items();
   }

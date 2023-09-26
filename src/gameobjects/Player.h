@@ -49,7 +49,9 @@ struct Player final : public Entity {
       flip = false;
       moving = true;
     }
-
+    if(moving){
+      GAME_STATISTICS.WalkPixels(speed);
+    }
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
 

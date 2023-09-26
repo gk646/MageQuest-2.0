@@ -6,13 +6,16 @@ struct Map {
   int16_t** map_back_ground;
   int16_t** map_middle_ground;
   int16_t** map_fore_ground;
+  bool** map_cover;
 
   int16_t map_size;
 
-  Map(std::string name, int size, Zone zone) noexcept : map_size(size), zone(zone) {
+  Map(const std::string& name, int size, Zone zone) noexcept
+      : map_size(size), zone(zone) {
     map_back_ground = load_map_data(name + "/" + name + "_BG");
     map_middle_ground = load_map_data(name + "/" + name + "_BG1");
     map_fore_ground = load_map_data(name + "/" + name + "_FG");
+    map_cover = load_map_cover("");
   }
   ~Map() {
     delete_2D_array(map_back_ground, map_size);
@@ -21,7 +24,7 @@ struct Map {
   }
 
   [[nodiscard]] int16_t** load_map_data(const std::string& name) const noexcept {
-    std::string filepath = ASSET_PATH+"Maps/" + name + ".csv";
+    std::string filepath = ASSET_PATH + "Maps/" + name + ".csv";
     std::ifstream infile(filepath);
 
     if (!infile.is_open()) {
@@ -36,13 +39,22 @@ struct Map {
         std::string token;
         for (int b = 0; b < map_size; ++b) {
           if (std::getline(iss, token, ',')) {
-            arr[b][i] = std::stoi(token);
+            arr[b][i] = static_cast<int16_t>(std::stoi(token));
           }
         }
       }
     }
 
     infile.close();
+    return arr;
+  }
+  [[nodiscard]] bool** load_map_cover(const std::string& name) const noexcept {
+    auto arr = get_2D_array<bool>(map_size, map_size);
+    for (uint_fast32_t i = 0; i < map_size; i++) {
+      for (uint_fast32_t j = 0; j < map_size; j++) {
+        arr[i][j] = true;
+      }
+    }
     return arr;
   }
 };

@@ -28,7 +28,7 @@ struct Entity {
 
     return *this;
   }
-  virtual ~Entity()= default;
+  virtual ~Entity() = default;
   virtual void update() = 0;
   virtual void draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {
@@ -48,8 +48,8 @@ struct Entity {
       } else if (shape_type == ShapeType::CIRCLE) {
         float radius_sq = size.x_ * size.x_;
         if (o.shape_type == ShapeType::RECT) {
-          float newX = pos.x_+size.x_/2;
-          float newY = pos.y_+size.x_/2;
+          float newX = pos.x_ + size.x_ / 2;
+          float newY = pos.y_ + size.x_ / 2;
           const float closestX = std::clamp(newX, o.pos.x_, o.pos.x_ + o.size.x_);
           const float closestY = std::clamp(newY, o.pos.y_, o.pos.y_ + o.size.y_);
 
@@ -65,8 +65,8 @@ struct Entity {
     } else {
       if (shape_type == ShapeType::RECT) {
         if (o.shape_type == ShapeType::RECT) {
-          return  SAT::rectanglesIntersect({pos.x_,pos.y_}, size.x_, size.y_, pov, o.pos, o.size.x_,
-                                          o.size.y_, o.pov);
+          return SAT::rectanglesIntersect({pos.x_, pos.y_}, size.x_, size.y_, pov, o.pos,
+                                          o.size.x_, o.size.y_, o.pov);
         }
       }
     }
@@ -78,8 +78,9 @@ struct Entity {
                                 {0, 0}, pov, 3, GREEN);
         break;
       case ShapeType::CIRCLE:
-        DrawCircleSectorLines({pos.x_ + DRAW_X+size.x_/2, pos.y_ + DRAW_Y+size.x_/2}, size.x_, 0, 360, 50,
-                              GREEN);
+        DrawCircleSectorLines(
+            {pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y + size.x_ / 2}, size.x_, 0,
+            360, 50, GREEN);
         break;
     }
   };

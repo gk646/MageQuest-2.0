@@ -12,7 +12,7 @@ struct PsychicScream final : Projectile {
   }
 
   void draw() final {
-    DrawTextureProFast(resources->frames[sprite_counter % 56 / 8],
+    DrawTextureProFast(resources->frames[sprite_counter % 42 / 6],
                        pos.x_ + DRAW_X-65, pos.y_ + DRAW_Y-55,0,WHITE);
 #ifdef DRAW_HITBOXES
     draw_hitbox();

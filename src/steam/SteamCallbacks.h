@@ -1,5 +1,5 @@
-#ifndef MAGEQUEST_SRC_STEAM_CALLBACKS_H_
-#define MAGEQUEST_SRC_STEAM_CALLBACKS_H_
+#ifndef MAGEQUEST_SRC_STEAM_STEAMCALLBACKS_H_
+#define MAGEQUEST_SRC_STEAM_STEAMCALLBACKS_H_
 namespace Steam {
 class SteamCallbacks {
  private:
@@ -87,4 +87,4 @@ void SteamCallbacks::OnGameJoinRequest(GameRichPresenceJoinRequested_t* pParam) 
   std::cout << pParam->m_rgchConnect << std::endl;
 }
 }  // namespace Steam
-#endif  //MAGEQUEST_SRC_STEAM_CALLBACKS_H_
+#endif  //MAGEQUEST_SRC_STEAM_STEAMCALLBACKS_H_

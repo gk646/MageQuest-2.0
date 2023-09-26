@@ -24,19 +24,19 @@ struct NPC : public Entity {
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
   }
-  bool move_to(const PointI& next) noexcept{
-    moving= false;
+  bool move_to(const PointI& next) noexcept {
+    moving = false;
     PointI next_pos;
     if ((next_pos = astar_pathfinding(tile_pos, next)) > 0) {
       decideMovement(next_pos, speed);
       moving = true;
     } else if (next_pos == 0) {
-      moving= false;
+      moving = false;
       return true;
     }
     return false;
   }
-  void draw_dialogue()  noexcept{
+  void draw_dialogue() noexcept {
     if (show_dial_delay > 0) {
       if (dialogue) {
         DialogueRender::render_npc(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
@@ -55,7 +55,7 @@ struct NPC : public Entity {
 #define INTERACT_WITH_PLAYER()                          \
   if (IsKeyPressedU::E() && this->intersects(PLAYER)) { \
     if (!dialogue) {                                    \
-      PLAYER_QUESTS.interact_npc(this);                 \
+      PLAYER_QUESTS.InteractWithNPC(this);                 \
       dial_count = 0;                                   \
       show_dial_delay = 400;                            \
     } else if (show_dial_delay < 0) {                   \
@@ -64,14 +64,17 @@ struct NPC : public Entity {
     } else if (dial_count < 1000) {                     \
       dial_count = 1000;                                \
     } else {                                            \
-      PLAYER_QUESTS.interact_npc(this);                 \
+      PLAYER_QUESTS.InteractWithNPC(this);              \
     }                                                   \
   }
 #define DRAW_NPC_DIALOGUE() \
   for (auto npc : NPCS) {   \
-    npc->draw_dialogue();    \
+    npc->draw_dialogue();   \
   }
-
+void Monster::MonsterDiedCallback(MonsterType type) noexcept {
+  PLAYER_QUESTS.MonsterKilled(type);
+  GAME_STATISTICS.MonsterKilled(type);
+}
 #include "npcs/Deckard.h"
 #include "npcs/Aria.h"
 

@@ -79,6 +79,7 @@ struct Monster : public Entity {
       float dmg = stats.take_damage(p.damage_stats);
       threatManager.AddThreat(p.Sender, dmg);
       if (stats.health <= 0) {
+        MonsterDiedCallback(type);
         sprite_counter = 0;
         attack = -100;
       }
@@ -147,6 +148,7 @@ struct Monster : public Entity {
       }
     }
   }
+  static inline void MonsterDiedCallback(MonsterType type) noexcept;
 };
 
 #include "monsters/SkeletonSpear.h"
@@ -219,7 +221,6 @@ void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
     }
   }
 }
-
 void ThreatManager::Update() noexcept {
   if (TargetCount > 0) {
     for (auto& te : targets) {

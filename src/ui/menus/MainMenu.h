@@ -7,14 +7,16 @@ struct MainMenu {
   SettingsMenu& settings_menu;
   MenuState menu_state = MenuState::Main;
   Button playGame{144, 46, "Play Game", 20};
+  Button hostGame{144, 46, "Host Game", 20};
+  Button joinGame{144, 46, "Join Game", 20};
+  Button settings{144, 46, "Settings", 20};
+  Button exit{144, 46, "Quit", 20};
   explicit MainMenu(SettingsMenu& settings_menu) noexcept
       : settings_menu(settings_menu) {}
   void draw() noexcept {
-    const float scaled_width = 110 * UI_SCALE;
-    const float scaled_height = 30 * UI_SCALE;
-    const float vertical_gap = 10 * UI_SCALE;
-    const float xOffset = SCREEN_WIDTH / 2.0F - (scaled_width / 2.0);
-    const float baseYOffset = SCREEN_HEIGHT / 2.0F - 3 * scaled_height - 4 * vertical_gap;
+    const float scaled_height = SCALE(46);
+    const float vertical_gap = SCALE(8);
+    const float baseYOffset = SCREEN_HEIGHT / 2.0F - 2 * scaled_height - 4 * vertical_gap;
     DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0, Colors::LightGrey);
     if (!IsSoundPlaying(sound::intro)) {
       PlaySoundR(sound::intro);
@@ -25,25 +27,17 @@ struct MainMenu {
         GAME_STATE = GameState::Game;
         StopSound(sound::intro);
       }
-      if (GuiButton({xOffset, baseYOffset + (scaled_height + vertical_gap), scaled_width,
-                     scaled_height},
-                    "Host Game")) {
+      if (hostGame.Draw(SCREEN_WIDTH / 2.0F, baseYOffset + (scaled_height + vertical_gap))) {
         menu_state = MenuState::HostGame;
         SteamMatchmaking()->CreateLobby(k_ELobbyTypeFriendsOnly, 3);
       }
-      if (GuiButton({xOffset, baseYOffset + 2 * (scaled_height + vertical_gap),
-                     scaled_width, scaled_height},
-                    "Join Game")) {
+      if (joinGame.Draw(SCREEN_WIDTH / 2.0F, baseYOffset + 2 * (scaled_height + vertical_gap))) {
         menu_state = MenuState::ServerBrowser;
       }
-      if (GuiButton({xOffset, baseYOffset + 3 * (scaled_height + vertical_gap),
-                     scaled_width, scaled_height},
-                    "Settings")) {
+      if (settings.Draw(SCREEN_WIDTH / 2.0F, baseYOffset + 3 * (scaled_height + vertical_gap))) {
         menu_state = MenuState::Settings;
       }
-      if (GuiButton({xOffset, baseYOffset + 4 * (scaled_height + vertical_gap),
-                     scaled_width, scaled_height},
-                    "Exit")) {
+      if (exit.Draw(SCREEN_WIDTH / 2.0F, baseYOffset + 4 * (scaled_height + vertical_gap))) {
         SetWindowCloseFlagTrue(1);
       }
     } else if (menu_state == MenuState::Settings) {

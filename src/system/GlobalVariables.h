@@ -3,6 +3,7 @@
 
 #include "../graphics/GifDrawer.h"
 
+
 /* |-----------------------------------------------------|
  * |                        SYSTEM                       |
  * |-----------------------------------------------------|
@@ -14,7 +15,6 @@ inline static GameState GAME_STATE = GameState::Loading;
 inline static std::shared_mutex rwLock;
 inline static std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
 inline static GifDrawer* RAYLIB_LOGO = nullptr;
-inline static LogoDrawer* NBNET_LOGO = nullptr;
 inline static std::random_device e;
 inline static std::mt19937 RNG_ENGINE(e());
 inline static std::default_random_engine RNG_RANDOM;
@@ -31,6 +31,8 @@ inline static long long GAME_TICK_TIME = 0;
 inline static long long FRAME_TIME = 0;
 inline static Vector2 MOUSE_POS = GetMousePosition();
 inline static bool FRIENDLY_FIRE = false;
+#include "../gameplay/GameStatistics.h"
+inline static GameStatistics GAME_STATISTICS{};
 
 /* |-----------------------------------------------------|
  * |                      STEAM                          |
@@ -68,11 +70,10 @@ class NPC;
 class Monster;
 class Player;
 inline uint_fast32_t MONSTER_ID = 1;
-inline uint_fast32_t PROJECTILE_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND;
 inline static int16_t** CURRENT_MIDDLE_GROUND;
 inline static int16_t** CURRENT_FORE_GROUND;
-inline static int8_t** CURRENT_MAP_COVER;
+inline static bool ** CURRENT_MAP_COVER;
 inline static Zone CURRENT_ZONE = Zone::Hillcrest;
 inline static int CURRENT_MAP_SIZE = 100;
 inline static int8_t COLLISIONS[6000];

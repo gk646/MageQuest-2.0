@@ -44,7 +44,7 @@ enum class MonsterType : uint8_t {
 };
 
 enum class StatusEffectType : uint8_t{ BUFF, DE_BUFF };
-enum class ShapeType : uint8_t{ CIRCLE, RECT, TRIANGLE };
+enum class ShapeType : uint8_t{ CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class HitType : uint8_t{ CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t{ EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
@@ -86,6 +86,17 @@ enum class Zone : uint8_t {
   Goblin_Cave,
   Hillcrest_Hermit_Cave
 };
+enum GameStatistic : uint8_t {
+  PIXELS_WALKED,
+  MONSTERS_KILLED,
+  QUESTS_COMPLETED,
+  COINS_EARNED,
+  GAME_TICK_SPLAYED,
+  BOSSES_KILLED,
+  ITEMS_PICKED_UP,
+  END
+};
+
 //_P = percentile => 0.5, 0.05
 enum Stat : uint8_t {
   STRENGTH,
