@@ -22,29 +22,34 @@ struct Quest final {
   [[nodiscard]] inline bool progressable(NodeType type) const noexcept {
     return state == QuestState::ACTIVE && objectives[stage]->suitable(type);
   }
-  void progress(NPC* npc) {
-    if (objectives[stage]->progress(npc)) {
-      finish_stage(objectives[stage]);
+  void Progress(NPC* npc) noexcept {
+    if (((SPEAK*)objectives[stage])->progress(npc)) {
+      FinishStage(objectives[stage]);
     }
   }
-  void update() {
+  void Progress(MonsterType type)noexcept {
+    if (((KILL*)objectives[stage])->progress(type)) {
+      FinishStage(objectives[stage]);
+    }
+  }
+  void Update() {
     if (objectives[stage]->progress()) {
-      finish_stage(objectives[stage]);
+      FinishStage(objectives[stage]);
     }
   }
-  [[nodiscard]] inline const std::string& get_objective_text() const noexcept {
+  [[nodiscard]] inline const std::string& GetActiveObjective() const noexcept {
     return objectives[stage]->objective_text;
   }
 
  private:
-  void complete_quest() noexcept { state = QuestState::COMPLETED; }
-  inline void finish_stage(const QuestNode* obj) noexcept {
+  void CompleteQuest() noexcept { state = QuestState::COMPLETED; }
+  inline void FinishStage(const QuestNode* obj) noexcept {
     if (obj->major_objective) {
       //play sound
     }
     stage++;
     if (stage == objectives.size()) {
-      complete_quest();
+      CompleteQuest();
     }
   }
 };

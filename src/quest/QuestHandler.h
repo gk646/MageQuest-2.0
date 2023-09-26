@@ -18,18 +18,24 @@ struct QuestHandler {
     }
     return nullptr;
   }
-  void interact_npc(NPC* npc) {
+  void InteractWithNPC(NPC* npc) {
     for (auto quest : quests) {
       if (quest->progressable(NodeType::SPEAK)) {
-        quest->progress(npc);
+        quest->Progress(npc);
       }
     }
   }
-  void killed_monster() {}
-  void update() {
+  void MonsterKilled(MonsterType type) {
+    for (auto quest : quests) {
+      if (quest->progressable(NodeType::KILL)) {
+        quest->Progress(type);
+      }
+    }
+  }
+  void Update() {
     for (auto quest : quests) {
       if (quest->state == QuestState::ACTIVE) {
-        quest->update();
+        quest->Update();
       }
     }
   }

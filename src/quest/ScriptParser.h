@@ -106,6 +106,7 @@ Quest* load(const std::string& path, Quest_ID id) {
           obj->positions.emplace_back(std::stoi(split(parts[i], ',')[0]),
                                       std::stoi(split(parts[i], ',')[1]));
         }
+        quest->objectives.push_back(obj);
         break;
     }
   }

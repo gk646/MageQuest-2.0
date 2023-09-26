@@ -25,9 +25,6 @@ struct LoadingScreen {
 
     if (RAYLIB_LOGO) {
       RAYLIB_LOGO->draw();
-      if (RAYLIB_LOGO->finished && NBNET_LOGO) {
-        NBNET_LOGO->draw();
-      }
     }
   }
 };

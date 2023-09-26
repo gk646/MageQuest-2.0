@@ -2,6 +2,9 @@
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
 #include "elements/Button.h"
+#include "elements/Panel.h"
+
+
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"
 #include "menus/MainMenu.h"
@@ -14,6 +17,7 @@ struct UIManager {
   MainMenu main_menu{settings_menu};
 
   void ui_update() noexcept {
+    MOUSE_POS = GetMousePosition();
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH) {
         SCREEN_WIDTH = GetScreenWidth();
@@ -33,10 +37,7 @@ struct UIManager {
     }
   }
 
-  inline void update() noexcept {
-    MOUSE_POS = GetMousePosition();
-    player_ui.update();
-  }
+  inline void update() noexcept { player_ui.update(); }
 };
 
 inline UIManager UI_MANAGER{};

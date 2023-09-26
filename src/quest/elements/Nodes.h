@@ -11,7 +11,6 @@ struct QuestNode {
   [[nodiscard]] inline bool suitable(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
-  virtual bool progress(NPC* npc) noexcept { return false; };
   virtual bool progress() noexcept { return false; };
 };
 
@@ -48,7 +47,7 @@ struct SPEAK final : public QuestNode {
   std::vector<std::string> lines;
   explicit SPEAK(std::string obj_txt, NPC_ID target)
       : QuestNode(std::move(obj_txt), NodeType::SPEAK), target(target) {}
-  bool progress(NPC* npc) noexcept final {
+  bool progress(NPC* npc) noexcept {
     if (npc->id == target) {
       if (stage < lines.size()) {
         npc->update_dialogue(&lines[stage]);
@@ -68,6 +67,12 @@ struct KILL final : public QuestNode {
   explicit KILL(MonsterType target, int amount, std::string obj_txt)
       : QuestNode(std::move(obj_txt), NodeType::KILL), amount(amount), target(target) {}
   bool progress() noexcept final { return false; }
+  bool progress(MonsterType type) noexcept {
+    if (type == target) {
+      amount--;
+    }
+    return amount <= 0;
+  }
 };
 struct TILE_ACTION final : public QuestNode {
   Zone zone;

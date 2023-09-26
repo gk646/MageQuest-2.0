@@ -77,13 +77,7 @@
 #define NOPROFILER        // Profiler interface.
 #define NODEFERWINDOWPOS  // DeferWindowPos routines
 #define NOMCX             // Modem Configuration Extensions
-
-// Type required before windows.h inclusion
-typedef struct tagMSG* LPMSG;
-#include <WinSock2.h>
-#include <Windows.h>
-#endif  // WINDOWS
-
+#endif
 /* |-----------------------------------------------------|
  * |                        STEAM                        |
  * |-----------------------------------------------------|
@@ -119,12 +113,12 @@ using namespace cxstructs;
 #include "system/KeyPressUpdateTickRate.h"
 #include "gameplay/Stats.h"
 #include "system/GameSettings.h"
-#include "system/Util.h"
 #include "gameplay/StatusEffect.h"
 #include "gameplay/handlers/StatusEffectHandler.h"
-#include "world/maps/Map.h"
 #include "resources/FontStorage.h"
 #include "graphics/LogoDrawer.h"
+#include "system/Util.h"
+#include "world/maps/Map.h"
 #include "gamestateio/loading/EntityResource.h"
 #include "system/GlobalVariables.h"
 #include "gameplay/Item.h"
@@ -139,7 +133,7 @@ using namespace cxstructs;
 #include "ui/game/DialogueRender.h"
 #include "gameobjects/Projectile.h"
 #include "multiplayer/Multiplayer.h"
-#include "steam/Callbacks.h"
+#include "steam/SteamCallbacks.h"
 #include "gameobjects/Player.h"
 #include "gameobjects/Monster.h"
 #include "gameobjects/NPC.h"

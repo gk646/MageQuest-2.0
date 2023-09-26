@@ -54,4 +54,5 @@ std::vector<std::string> loadStringsFromFile(const std::string& filePath) {
   file.close();
   return lines;
 }
+
 #endif  //MAGE_QUEST_SRC_UTIL_MATHUTIL_H_

@@ -105,15 +105,16 @@ class Game {
   }
   static inline void game_tick() noexcept {
     cxstructs::now();
-    Multiplayer::PollPackets();
     SteamAPI_RunCallbacks();
-    UI_MANAGER.update();
+    Multiplayer::PollPackets();
+    GAME_STATISTICS.Update();
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
       }
       case GameState::Game:
         [[likely]] {
+          UI_MANAGER.update();
           PLAYER_EFFECTS.update();
           PLAYER_STATS.update();
           PLAYER_HOTBAR.update();
@@ -122,6 +123,7 @@ class Game {
         }
         break;
       case GameState::GameMenu: {
+        UI_MANAGER.update();
         PLAYER_EFFECTS.update();
         PLAYER_STATS.update();
         PLAYER_HOTBAR.update();
@@ -219,7 +221,7 @@ class Game {
 
  public:
   Game() noexcept {
-    SetMouseCursorImage((ASSET_PATH+"ui/cursor.png").c_str(),0,0);
+    SetMouseCursorImage((ASSET_PATH + "ui/cursor.png").c_str(), 0, 0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
     UI_MANAGER.player_ui.char_panel.header_text = PLAYER_NAME.data();
@@ -235,7 +237,7 @@ class Game {
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
     for (uint_fast32_t i = 0; i < 1; i++) {
-      MONSTERS.push_back(new Ghost({250.0F+i*5, 150}, 10));
+      MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }
     NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();
