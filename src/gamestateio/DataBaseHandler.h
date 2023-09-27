@@ -17,7 +17,7 @@ struct DataBaseHandler {
     for (const auto& name : table_names) {
       create_items_from_table(name);
     }
-
+    RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, ITEMS.size()-1);
     load_items_from_table(PLAYER_EQUIPPED, "PLAYER_INV", 10);
     CharacterBag::add_slots(8);
     load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_BAG_SIZE);
@@ -36,8 +36,7 @@ struct DataBaseHandler {
  private:
   static void create_items_from_table(const std::string& table) noexcept {
     sqlite3_stmt* stmt;
-    if (!prepare_stmt("SELECT * FROM " + table, database, &stmt))
-      return;
+    if (!prepare_stmt("SELECT * FROM " + table, database, &stmt)) return;
 
     while (sqlite3_step(stmt) == SQLITE_ROW) {
       const char* name_ptr = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
@@ -63,8 +62,7 @@ struct DataBaseHandler {
   static void load_items_from_table(InventorySlot* slots, const std::string& table,
                                     int length = 100) noexcept {
     sqlite3_stmt* stmt;
-    if (!prepare_stmt("SELECT * FROM " + table, gamesave, &stmt))
-      return;
+    if (!prepare_stmt("SELECT * FROM " + table, gamesave, &stmt)) return;
 
     for (int i = 0; i < length && sqlite3_step(stmt) == SQLITE_ROW; ++i) {
       slots[i].item = get_matching_item(
@@ -77,7 +75,8 @@ struct DataBaseHandler {
   inline static Item* get_matching_item(int id, ItemType type, int quality, int level) {
     for (const auto& item : ITEMS) {
       if (item.id == id && item.type == type) {
-        return new Item(item.id,item.name,item.rarity,item.type,item.description,item.texture,quality,level);
+        return new Item(item.id, item.name, item.rarity, item.type, item.description,
+                        item.texture, quality, level);
       }
     }
     return nullptr;
