@@ -17,6 +17,13 @@ inline Sound read_book;
 inline Sound sell;
 inline Sound zipTabs;
 
+
+
+//quests
+inline static Sound majorObjective;
+inline static Sound completeQuest;
+inline static Sound interact;
+inline static Sound speak;
 /* |-----------------------------------------------------|
  * |                    PROJECTILES                      |
  * |-----------------------------------------------------|

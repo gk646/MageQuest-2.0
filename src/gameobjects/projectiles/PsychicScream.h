@@ -5,7 +5,7 @@ struct PsychicScream final : Projectile {
   static constexpr int height = 25;
   PsychicScream(const Point& pos, bool from_player, float damage,
            HitType hit_type, const vector<StatusEffect*>& effects)
-      : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, 70, 0,
+      : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, 42, 0,
                    {DamageType::ARCANE, damage}, hit_type, effects, {0,0}, 0, nullptr,
                    &textures::projectile::PSYCHIC_SCREAM,nullptr) {
     does_damage = false;

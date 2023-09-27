@@ -48,7 +48,7 @@ struct CharacterPanel : public Window {
       y += baseStats[i].bounds.height + 1;
     }
     for (auto& slot : equip_slots) {
-      slot.draw(whole_window.x, whole_window.y);
+      slot.DrawCharacterSlot(whole_window.x, whole_window.y);
       if (!slot.item) {
         slot.draw_inventory_icons();
       }

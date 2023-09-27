@@ -4,9 +4,12 @@
 struct DataBaseHandler {
   static sqlite3* database;
   static sqlite3* gamesave;
+  inline static void init() noexcept {
+    sqlite3_open("../DataBase.sqlite", &database);
+    sqlite3_open("../GameSave.sqlite", &gamesave);
+  }
   static void load() noexcept {
-    init();
-    cxstructs::now();
+    ITEMS.reserve(80);
     std::array<std::string, 11> table_names = {
         "ARM_AMULET", "ARM_BAG",     "ARM_BOOTS",   "ARM_CHEST",
         "ARM_HEAD",   "ARM_OFFHAND", "ARM_ONEHAND", "ARM_PANTS",
@@ -18,7 +21,6 @@ struct DataBaseHandler {
     load_items_from_table(PLAYER_EQUIPPED, "PLAYER_INV", 10);
     CharacterBag::add_slots(8);
     load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_BAG_SIZE);
-    cxstructs::printTime<std::chrono::nanoseconds>();
   }
   static bool prepare_stmt(const std::string& sql, sqlite3* db,
                            sqlite3_stmt** stmt) noexcept {
@@ -32,11 +34,6 @@ struct DataBaseHandler {
   }
 
  private:
-  static void init() noexcept {
-    ITEMS.reserve(80);
-    sqlite3_open("../DataBase.sqlite", &database);
-    sqlite3_open("../GameSave.sqlite", &gamesave);
-  }
   static void create_items_from_table(const std::string& table) noexcept {
     sqlite3_stmt* stmt;
     if (!prepare_stmt("SELECT * FROM " + table, database, &stmt))

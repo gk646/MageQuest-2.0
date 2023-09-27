@@ -14,6 +14,13 @@ struct SoundLoader{
     sound::sell = LoadSound((ASSET_PATH+"sound/effects/inventory/sell.wav").c_str());
     sound::zipTabs = LoadSound((ASSET_PATH+"sound/effects/inventory/zipTabs.wav").c_str());
 
+
+
+    sound::completeQuest = LoadSound((ASSET_PATH+"sound/effects/quest/complete.wav").c_str());
+    sound::majorObjective = LoadSound((ASSET_PATH+"sound/effects/quest/finish_objective.wav").c_str());
+    sound::interact = LoadSound((ASSET_PATH+"sound/effects/quest/interact.wav").c_str());
+    sound::speak = LoadSound((ASSET_PATH+"sound/effects/quest/speak.wav").c_str());
+
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

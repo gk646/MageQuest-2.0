@@ -32,6 +32,22 @@ struct InventorySlot {
       }
     }
   }
+  void DrawCharacterSlot(float x, float y) {
+    draw(x, y);
+    auto ptr = item;
+    if (!ptr) return;
+    sprintf(ptr->text_buffer, "%i", ptr->level);
+    if (base_x < 175) {
+      DrawRightAlignedText(
+          MINECRAFT_BOLD, SCALE(14), ptr->text_buffer, hit_box.x - SCALE(4),
+          hit_box.y + (hit_box.height - SCALE(14)) / 2, rarity_to_color[ptr->rarity]);
+    } else {
+      DrawTextExR(MINECRAFT_BOLD, ptr->text_buffer,
+                  {hit_box.x + hit_box.width + SCALE(4),
+                   hit_box.y + (hit_box.height - SCALE(14)) / 2},
+                  SCALE(14), 0, rarity_to_color[ptr->rarity]);
+    }
+  }
   static void place_item_back() noexcept {
     if (DRAGGED_SLOT->item_type == ItemType::EMPTY) {
       DRAGGED_SLOT->item = DRAGGED_ITEM;
