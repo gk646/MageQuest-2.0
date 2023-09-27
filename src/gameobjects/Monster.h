@@ -149,12 +149,50 @@ struct Monster : public Entity {
     }
   }
   static inline void MonsterDiedCallback(MonsterType type) noexcept;
+  inline static Monster* GetMonster(float x, float y, MonsterType type,
+                                    int level) noexcept;
 };
 
 #include "monsters/SkeletonSpear.h"
 #include "monsters/SkeletonWarrior.h"
 #include "monsters/Wolf.h"
+#include "monsters/BloodHound.h"
 #include "monsters/Ghost.h"
+
+Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noexcept {
+  switch (type) {
+    case MonsterType::SKEL_WAR:
+      return new SkeletonWarrior({x, y}, level);
+    case MonsterType::ANY:
+      break;
+    case MonsterType::SKEL_SPEAR:
+      return new SkeletonSpear({x, y}, level);
+    case MonsterType::WOLF:
+      return new Wolf({x, y}, level);
+    case MonsterType::BOSS_DEATH_BRINGER:
+      break;
+    case MonsterType::BOSS_KNIGHT:
+      break;
+    case MonsterType::BOSS_SLIME:
+      break;
+    case MonsterType::GOBLIN:
+      break;
+    case MonsterType::KNIGHT:
+      break;
+    case MonsterType::MUSHROOM:
+      break;
+    case MonsterType::SKEL_ARCHER:
+      break;
+    case MonsterType::SKEL_SHIELD:
+      break;
+    case MonsterType::SNAKE:
+      break;
+    case MonsterType::GHOST:
+      break;
+    case MonsterType::BLOOD_HOUND:
+      return new BloodHound({x, y}, level);
+  }
+}
 
 void Server::SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexcept {
   for (auto m : MONSTERS) {
@@ -178,40 +216,9 @@ void Server::BroadCastMonsterUpdates() noexcept {
   }
 }
 void Multiplayer::HandleMonsterSpawn(UDP_MonsterSpawn* data) noexcept {
-  switch (data->type) {
-    case MonsterType::SKEL_WAR: {
-      auto m = new SkeletonWarrior({(float)data->x, (float)data->y}, data->level);
-      m->u_id = data->monster_id;
-      MONSTERS.push_back(m);
-    } break;
-    case MonsterType::ANY:
-      break;
-    case MonsterType::SKEL_SPEAR: {
-      auto m = new SkeletonSpear({(float)data->x, (float)data->y}, data->level);
-      m->u_id = data->monster_id;
-      MONSTERS.push_back(m);
-    } break;
-    case MonsterType::WOLF:
-      break;
-    case MonsterType::BOSS_DEATH_BRINGER:
-      break;
-    case MonsterType::BOSS_KNIGHT:
-      break;
-    case MonsterType::BOSS_SLIME:
-      break;
-    case MonsterType::GOBLIN:
-      break;
-    case MonsterType::KNIGHT:
-      break;
-    case MonsterType::MUSHROOM:
-      break;
-    case MonsterType::SKEL_ARCHER:
-      break;
-    case MonsterType::SKEL_SHIELD:
-      break;
-    case MonsterType::SNAKE:
-      break;
-  }
+  auto ptr = Monster::GetMonster(data->x, data->y, data->type, data->level);
+  ptr->u_id = data->monster_id;
+  MONSTERS.push_back(ptr);
 }
 void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
   //TODO optimize

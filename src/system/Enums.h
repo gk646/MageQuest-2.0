@@ -28,6 +28,7 @@ enum class Class {
 };
 enum class MonsterType : uint8_t {
   ANY,
+  BLOOD_HOUND,
   GHOST,
   SKEL_WAR,
   SKEL_SPEAR,

@@ -92,8 +92,8 @@ struct TILE_ACTION final : public QuestNode {
         zone(zone) {}
   bool progress() noexcept final {
     if (CURRENT_ZONE == zone) {
-      std::cout<< pos.x << std::endl;
-      std::cout<< pos.y << std::endl;
+      std::cout << pos.x << std::endl;
+      std::cout << pos.y << std::endl;
       if (layer == 0) {
         CURRENT_BACK_GROUND[pos.x][pos.y] = new_tile;
         return true;
@@ -122,42 +122,7 @@ struct SPAWN final : public QuestNode {
         type(type) {}
   bool progress() noexcept final {
     for (auto p : positions) {
-      switch (type)
-      case MonsterType::SKEL_WAR: {
-        MONSTERS.push_back(
-            new SkeletonWarrior({(float)p.x * 48, (float)p.y * 48}, level));
-        break;
-        case MonsterType::ANY:
-          break;
-        case MonsterType::SKEL_SPEAR:
-          MONSTERS.push_back(
-              new SkeletonSpear({(float)p.x * 48, (float)p.y * 48}, level));
-          break;
-        case MonsterType::WOLF:
-          MONSTERS.push_back(new Wolf({(float)p.x * 48, (float)p.y * 48}, level));
-          break;
-        case MonsterType::BOSS_DEATH_BRINGER:
-          break;
-        case MonsterType::BOSS_KNIGHT:
-          break;
-        case MonsterType::BOSS_SLIME:
-          break;
-        case MonsterType::GOBLIN:
-          break;
-        case MonsterType::KNIGHT:
-          break;
-        case MonsterType::MUSHROOM:
-          break;
-        case MonsterType::SKEL_ARCHER:
-          break;
-        case MonsterType::SKEL_SHIELD:
-          break;
-        case MonsterType::SNAKE:
-          break;
-        case MonsterType::GHOST:
-          MONSTERS.push_back(new Ghost({(float)p.x * 48, (float)p.y * 48}, level));
-          break;
-      }
+      MONSTERS.push_back(Monster::GetMonster(p.x * 48, p.y * 48, type, level));
     }
     return true;
   }

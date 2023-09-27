@@ -25,6 +25,7 @@ inline MonsterResource KNIGHT;
 inline MonsterResource MUSHROOM;
 inline MonsterResource SNAKE;
 inline MonsterResource WOLF;
+inline MonsterResource BLOOD_HOUND;
 inline MonsterResource GHOST;
 }  // namespace monsters
 
@@ -71,6 +72,9 @@ inline static Texture buttonCollapseHovered;
 inline static Texture dialogContinue;
 inline static Texture dialogContinue2;
 inline static Texture dialogContinue3;
+
+
+inline static Texture notificationWindow;
 
 
 

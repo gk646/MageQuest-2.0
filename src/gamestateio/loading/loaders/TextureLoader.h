@@ -113,6 +113,10 @@ struct TextureLoader {
     textures::ui::dialogContinue = LoadTexture((ASSET_PATH+"ui/questpanel/dialog_continue.png").c_str());
     textures::ui::dialogContinue2 = LoadTexture((ASSET_PATH+"ui/questpanel/dialog_continue_2.png").c_str());
     textures::ui::dialogContinue3 = LoadTexture((ASSET_PATH+"ui/questpanel/dialog_continue_3.png").c_str());
+
+    textures::ui::notificationWindow = LoadTexture((ASSET_PATH+"ui/prompts/notification_window.png").c_str());
+
+
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_
