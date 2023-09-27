@@ -17,6 +17,7 @@ struct EntityLoader {
     textures::monsters::MUSHROOM.load("enemies/mushroom/");
     textures::monsters::SNAKE.load("enemies/snake/");
     textures::monsters::WOLF.load("enemies/wolf/");
+    textures::monsters::BLOOD_HOUND.load("enemies/bloodHound/");
     textures::monsters::GHOST.load("enemies/Ghost/");
 
     textures::projectile::BLAST_HAMMER.load("blastHammer/");
@@ -39,7 +40,6 @@ struct EntityLoader {
     textures::projectile::VOID_FIELD.load("voidField/");
     textures::projectile::DUMMY.load("dummy/");
     textures::projectile::PSYCHIC_SCREAM.load("PsychicScream/");
-
 
     //npcs
     textures::npc::ARIA.load("npc/aria/");
