@@ -65,6 +65,7 @@ struct Monster : public Entity {
   tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;               \
   health_bar.update();                                           \
   status_effects.update();                                       \
+  CheckForDeath();                                               \
   if (MP_TYPE == MultiplayerType::CLIENT || attack != 0) return; \
   flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;                    \
   threatManager.Update();                                        \
@@ -78,12 +79,14 @@ struct Monster : public Entity {
       status_effects.add_effects(p.status_effects);
       float dmg = stats.take_damage(p.damage_stats);
       threatManager.AddThreat(p.Sender, dmg);
-      if (stats.health <= 0) {
-        MonsterDiedCallback(type);
-        sprite_counter = 0;
-        attack = -100;
-      }
       p.dead = p.projectile_type == HitType::ONE_HIT;
+    }
+  }
+  inline void CheckForDeath() noexcept {
+    if (stats.health <= 0 && attack != -100) {
+      MonsterDiedCallback();
+      sprite_counter = 0;
+      attack = -100;
     }
   }
   bool WalkToEntity(const Entity* ent) noexcept {
@@ -148,7 +151,7 @@ struct Monster : public Entity {
       }
     }
   }
-  static inline void MonsterDiedCallback(MonsterType type) noexcept;
+  inline void MonsterDiedCallback() noexcept;
   inline static Monster* GetMonster(float x, float y, MonsterType type,
                                     int level) noexcept;
 };

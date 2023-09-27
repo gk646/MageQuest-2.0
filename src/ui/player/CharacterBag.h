@@ -56,13 +56,14 @@ struct CharacterBag final : public Window {
       exist_y = PLAYER_BAG_SIZE / per_row;
     }
   }
-  static void add_item(Item* new_item) noexcept {
+  static bool AddItem(Item* new_item) noexcept {
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
       if (!PLAYER_BAG[i].item) {
         PLAYER_BAG[i].item = new_item;
-        break;
+        return true;
       }
     }
+    return false;
   }
 };
 #endif  //MAGEQUEST_SRC_UI_PLAYER_CHARACTERBAG_H_

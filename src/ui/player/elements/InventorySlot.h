@@ -131,10 +131,11 @@ struct InventorySlot {
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 DRAGGED_SLOT->item_type == item->type) {
+                 DRAGGED_ITEM->type == item_type) {
+        PLAYER_STATS.un_equip_item(item->effects);
+        PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
         DRAGGED_SLOT->item = item;
         item = DRAGGED_ITEM;
-        PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       }
@@ -170,6 +171,7 @@ struct InventorySlot {
                  (DRAGGED_SLOT->item_type == ItemType::EMPTY ||
                   DRAGGED_SLOT->item_type == item->type)) {
         DRAGGED_SLOT->item = item;
+        PLAYER_STATS.equip_item(item->effects);
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;

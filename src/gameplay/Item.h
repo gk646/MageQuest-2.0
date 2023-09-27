@@ -6,7 +6,7 @@ struct Item {
   static constexpr int tooltip_y = 350;
   static char text_buffer[10];
   uint8_t quality = 70;
-  int8_t durability = 100;
+  uint8_t durability = 100;
   uint8_t level = 1;
   uint8_t id = 0;
   Texture texture;
@@ -97,8 +97,7 @@ struct Item {
     return *this;
   }
   void draw(const RectangleR& rect) const noexcept {
-    DrawTexturePro(texture, {0, 0, (float)texture.width, (float)texture.height}, rect,
-                   {0, 0}, 0, WHITE);
+    DrawTextureScaled(texture,rect, 0, false, 0, WHITE);
   }
   void draw_tooltip() const noexcept {
     auto mouse = MOUSE_POS;

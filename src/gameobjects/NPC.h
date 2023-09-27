@@ -2,6 +2,7 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_NPC_H_
 
 struct NPC : public Entity {
+  //TODO npc scripting
   NPC_ID id;
   bool flip = false;
   bool moving = false;
@@ -76,7 +77,8 @@ struct NPC : public Entity {
   for (auto npc : NPCS) {   \
     npc->draw_dialogue();   \
   }
-void Monster::MonsterDiedCallback(MonsterType type) noexcept {
+void Monster::MonsterDiedCallback() noexcept {
+  ItemDropHandler::DropItem(pos.x_ + size.x_ / 2, pos.y_ + size.y_ / 2, stats.level);
   PLAYER_QUESTS.MonsterKilled(type);
   GAME_STATISTICS.MonsterKilled(type);
 }
