@@ -51,6 +51,11 @@ struct SPEAK final : public QuestNode {
     if (npc->id == target) {
       if (stage < lines.size()) {
         npc->update_dialogue(&lines[stage]);
+        if (stage == 0) {
+          npc->last = false;
+        } else if (stage == lines.size() - 1) {
+          npc->last = true;
+        }
         stage++;
         return false;
       } else {
@@ -68,7 +73,7 @@ struct KILL final : public QuestNode {
       : QuestNode(std::move(obj_txt), NodeType::KILL), amount(amount), target(target) {}
   bool progress() noexcept final { return false; }
   bool progress(MonsterType type) noexcept {
-    if (type == target) {
+    if (type == target || target == MonsterType::ANY) {
       amount--;
     }
     return amount <= 0;
@@ -87,6 +92,8 @@ struct TILE_ACTION final : public QuestNode {
         zone(zone) {}
   bool progress() noexcept final {
     if (CURRENT_ZONE == zone) {
+      std::cout<< pos.x << std::endl;
+      std::cout<< pos.y << std::endl;
       if (layer == 0) {
         CURRENT_BACK_GROUND[pos.x][pos.y] = new_tile;
         return true;

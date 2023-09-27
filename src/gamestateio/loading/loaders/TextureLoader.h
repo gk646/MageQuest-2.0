@@ -103,6 +103,16 @@ struct TextureLoader {
     textures::ui::buttonNormal = LoadTexture((ASSET_PATH+"ui/button_normal.png").c_str());
     textures::ui::buttonHovered = LoadTexture((ASSET_PATH+"ui/button_hovered.png").c_str());
     textures::ui::buttonPressed = LoadTexture((ASSET_PATH+"ui/button_pressed.png").c_str());
+
+
+    textures::ui::buttonExpand = LoadTexture((ASSET_PATH+"ui/questpanel/button_expand.png").c_str());
+    textures::ui::buttonExpandHovered = LoadTexture((ASSET_PATH+"ui/questpanel/button_expand_hovered.png").c_str());
+    textures::ui::buttonCollapse = LoadTexture((ASSET_PATH+"ui/questpanel/button_collapse.png").c_str());
+    textures::ui::buttonCollapseHovered = LoadTexture((ASSET_PATH+"ui/questpanel/button_collapse_hovered.png").c_str());
+
+    textures::ui::dialogContinue = LoadTexture((ASSET_PATH+"ui/questpanel/dialog_continue.png").c_str());
+    textures::ui::dialogContinue2 = LoadTexture((ASSET_PATH+"ui/questpanel/dialog_continue_2.png").c_str());
+    textures::ui::dialogContinue3 = LoadTexture((ASSET_PATH+"ui/questpanel/dialog_continue_3.png").c_str());
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_

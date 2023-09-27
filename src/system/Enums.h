@@ -169,7 +169,10 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"NPC_MOVE", NodeType::NPC_MOVE}};
 enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID { TUTORIAL, MARLA, END };
+
+
 enum class NPC_ID : uint8_t {
+  //only add to bottom as number is needed when saving
   DECKARD,
   MARLA,
   ARIA,

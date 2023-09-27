@@ -221,6 +221,13 @@ class Game {
 
  public:
   Game() noexcept {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetTargetFPS(TARGET_FPS);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest II");
+    InitAudioDevice();
+    SetExitKey(0);
+
     SetMouseCursorImage((ASSET_PATH + "ui/cursor.png").c_str(), 0, 0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
@@ -239,7 +246,6 @@ class Game {
     for (uint_fast32_t i = 0; i < 1; i++) {
       MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }
-    NPCS.push_back(new Deckard(11, 4));
     //SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {

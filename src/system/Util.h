@@ -27,16 +27,16 @@ std::string read_string_from_uint8(uint8_t* arr, int offset) {
   return {reinterpret_cast<char*>(arr + offset)};
 }
 
-inline static void DrawRightAlignedText(const Font& font, float fontsize, const char* txt,
-                                       float align, float y, const Color& color) {
-  DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontsize, 0.5F).x, y},
-              fontsize, 0.5F, color);
+inline static void DrawRightAlignedText(const Font& font, float fontSize, const char* txt,
+                                        float align, float y, const Color& color) {
+  DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x, y},
+              fontSize, 0.5F, color);
 }
 
-inline static void DrawCenteredText(const Font& font, float fontsize, const char* txt,
+inline static void DrawCenteredText(const Font& font, float fontSize, const char* txt,
                                     float align, float y, const Color& color) {
-  DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontsize, 1).x / 2, y},
-              fontsize, 1, color);
+  DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 1).x / 2, y},
+              fontSize, 1, color);
 }
 std::vector<std::string> loadStringsFromFile(const std::string& filePath) {
   std::vector<std::string> lines;
@@ -54,5 +54,17 @@ std::vector<std::string> loadStringsFromFile(const std::string& filePath) {
   file.close();
   return lines;
 }
+inline static void DrawOutlineText(const Font& font, float fontSize, const char* txt,
+                                   float dx, float dy, int thickness,const Color& textColor,
+                                   const Color& outlineColor) noexcept {
+  for (int x = -thickness; x <= thickness; x++) {
+    for (int y = -thickness; y <= thickness; y++) {
+      if (x != 0 || y != 0) {
+        DrawTextExR(font, txt, {dx + x, dy + y}, fontSize, 0.5F, outlineColor);
+      }
+    }
+  }
 
+  DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
+}
 #endif  //MAGE_QUEST_SRC_UTIL_MATHUTIL_H_

@@ -8,6 +8,7 @@
 #include "loading/loaders/TextureLoader.h"
 #include "loading/loaders/TileLoader.h"
 #include "loading/loaders/FontLoader.h"
+#include "loading/loaders/EntityStateLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -31,6 +32,7 @@ struct GameLoader {
 
  private:
   static void load_game() {
+    load_step(NPCLoader::LoadNamedNPCs);
     load_step(QuestLoader::load);
     load_step(SoundLoader::load);
     load_step(TileLoader::load);
@@ -52,6 +54,7 @@ struct GameLoader {
     delete RAYLIB_LOGO;
     PLAYER_QUESTS.add_quest(Quests::TUTORIAL);
     PLAYER_QUESTS.get_quest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
+    PLAYER_QUESTS.SetActive(Quest_ID::TUTORIAL);
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

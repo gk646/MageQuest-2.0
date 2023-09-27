@@ -64,6 +64,15 @@ inline static Texture buttonNormal;
 inline static Texture buttonHovered;
 inline static Texture buttonPressed;
 
+inline static Texture buttonExpand;
+inline static Texture buttonExpandHovered;
+inline static Texture buttonCollapse;
+inline static Texture buttonCollapseHovered;
+inline static Texture dialogContinue;
+inline static Texture dialogContinue2;
+inline static Texture dialogContinue3;
+
+
 
 namespace skillbar {
 inline static Texture bag;

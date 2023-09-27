@@ -4,6 +4,7 @@
 #include "Quest.h"
 
 struct QuestHandler {
+  Quest* activeQuest = nullptr;
   std::vector<Quest*> quests;
   ~QuestHandler() {
     for (auto q : quests) {
@@ -11,7 +12,7 @@ struct QuestHandler {
     }
   }
   inline Quest* get_quest(Quest_ID id) {
-    for (auto quest : quests) {
+    for (auto& quest : quests) {
       if (quest->id == id) {
         return quest;
       }
@@ -38,6 +39,23 @@ struct QuestHandler {
         quest->Update();
       }
     }
+  }
+  inline void SetActive(Quest_ID id) noexcept {
+    for (auto& quest : quests) {
+      if (quest->id == id) {
+        activeQuest = quest;
+      }
+    }
+  }
+  inline void ClearActive() noexcept { activeQuest = nullptr; }
+  [[nodiscard]] inline bool HaveActiveQuest() const noexcept {
+    return activeQuest != nullptr;
+  }
+  [[nodiscard]] inline const std::string& GetObjectiveText() const noexcept {
+    if (activeQuest) {
+      return activeQuest->GetActiveObjective();
+    }
+    return "";
   }
   inline void add_quest(Quest* q) noexcept { quests.push_back(q); }
 };
