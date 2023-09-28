@@ -34,6 +34,7 @@ inline const Color shield = {98, 210, 245, 182};
 inline const Color milk = {253, 255, 245, 200};
 inline const Color white_smoke = {237, 242, 244, 200};
 inline const Color SUPPORT_BAR_ORANGE = {207, 152, 27, 255};
+inline const Color StatGreen = {24,145,21,255};
 
 // MAP
 inline const Color map_green = {99, 199, 77, 255};

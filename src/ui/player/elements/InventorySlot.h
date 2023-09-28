@@ -1,10 +1,10 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
 class InventorySlot;
-inline InventorySlot* DRAGGED_SLOT;
-inline InventorySlot* PLAYER_EQUIPPED;
-inline InventorySlot* PLAYER_BAG;
-inline int PLAYER_BAG_SIZE = 0;
+inline static InventorySlot* DRAGGED_SLOT;
+inline static InventorySlot* PLAYER_EQUIPPED;
+inline static InventorySlot* PLAYER_BAG;
+inline static int PLAYER_BAG_SIZE = 0;
 struct InventorySlot {
   static constexpr int tool_tip_delay = 12;
   int tool_tip_counter = 0;
@@ -132,7 +132,7 @@ struct InventorySlot {
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  DRAGGED_ITEM->type == item_type) {
-        if(DRAGGED_SLOT->item_type== ItemType::EMPTY){
+        if (DRAGGED_SLOT->item_type == ItemType::EMPTY) {
           PLAYER_STATS.un_equip_item(item->effects);
         }
         PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
@@ -172,7 +172,7 @@ struct InventorySlot {
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  (DRAGGED_SLOT->item_type == ItemType::EMPTY ||
                   DRAGGED_SLOT->item_type == item->type)) {
-        if(DRAGGED_SLOT->item_type!= ItemType::EMPTY){
+        if (DRAGGED_SLOT->item_type != ItemType::EMPTY) {
           PLAYER_STATS.equip_item(item->effects);
         }
         DRAGGED_SLOT->item = item;

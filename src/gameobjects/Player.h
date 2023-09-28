@@ -64,7 +64,7 @@ struct Player final : public Entity {
   }
   void draw() final {
     if (moving) {
-      DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
+      DrawTextureProFastEx(resource->walk[sprite_counter % 56 / 7], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
       action_state = 0;
     } else if (action_state == 1) {

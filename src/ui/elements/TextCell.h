@@ -16,14 +16,20 @@ struct TextCell {
         base_width(width),
         base_height(height) {}
 
-  inline void DrawStatCell(float x, float y, char* txt, float rightVal) noexcept {
+  inline void DrawStatCell(float x, float y, char* txt, float rightVal,
+                           const Color& leftColor = Colors::darkBackground,
+                           const Color& rightColor = Colors::darkBackground) noexcept {
     Update(x, y);
-    Color drawColor = Colors::darkBackground;
-    if (isHovered) drawColor = Colors::mediumLightGreyDarker;
-    DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, drawColor);
+
+    if (isHovered) {
+      DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1,
+                  Colors::mediumLightGreyDarker);
+    } else {
+      DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
+    }
     sprintf(txt, "%i", (int)rightVal);
     DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
-                         drawColor);
+                         rightColor);
     DrawToolTip();
   }
   static std::array<TextCell, 9> CreateCharacterCells(float width, float height,
