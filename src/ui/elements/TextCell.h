@@ -17,8 +17,8 @@ struct TextCell {
         base_height(height) {}
 
   inline void DrawStatCell(float x, float y, char* txt, float rightVal,
-                           const Color& leftColor = Colors::darkBackground,
-                           const Color& rightColor = Colors::darkBackground) noexcept {
+                           const Color& rightColor = Colors::darkBackground,
+                           const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
 
     if (isHovered) {
@@ -27,16 +27,34 @@ struct TextCell {
     } else {
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
     }
+
+    sprintf(txt, "%.1f", rightVal);
+    DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
+                         rightColor);
+    DrawToolTip();
+  }
+  inline void DrawStatCell(float x, float y, char* txt, int rightVal,
+                           const Color& rightColor = Colors::darkBackground,
+                           const Color& leftColor = Colors::darkBackground) noexcept {
+    Update(x, y);
+
+    if (isHovered) {
+      DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1,
+                  Colors::mediumLightGreyDarker);
+    } else {
+      DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
+    }
+
     sprintf(txt, "%i", (int)rightVal);
     DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
                          rightColor);
     DrawToolTip();
   }
-  static std::array<TextCell, 9> CreateCharacterCells(float width, float height,
-                                                      const Font& font,
-                                                      float fontSize) noexcept {
+  static std::array<TextCell, 18> CreateCharacterCells(float width, float height,
+                                                       const Font& font,
+                                                       float fontSize) noexcept {
     auto toolTips = loadStringsFromFile(ASSET_PATH + "Text/Codex/StatsToolTip.txt");
-    std::array<TextCell, 9> cells{
+    std::array<TextCell, 18> cells{
         TextCell(width, height, toolTips[0], font, fontSize),
         TextCell(width, height, toolTips[1], font, fontSize),
         TextCell(width, height, toolTips[2], font, fontSize),
@@ -46,6 +64,16 @@ struct TextCell {
         TextCell(width, height, toolTips[6], font, fontSize),
         TextCell(width, height, toolTips[7], font, fontSize),
         TextCell(width, height, toolTips[8], font, fontSize),
+
+        TextCell(width+25, height, toolTips[9], font, fontSize),
+        TextCell(width+25, height, toolTips[10], font, fontSize),
+        TextCell(width+25, height, toolTips[11], font, fontSize),
+        TextCell(width+25, height, toolTips[12], font, fontSize),
+        TextCell(width+25, height, toolTips[13], font, fontSize),
+        TextCell(width+25, height, toolTips[14], font, fontSize),
+        TextCell(width+25, height, toolTips[15], font, fontSize),
+        TextCell(width+25, height, toolTips[16], font, fontSize),
+        TextCell(width+25, height, toolTips[17], font, fontSize),
     };
     return cells;
   }

@@ -8,7 +8,7 @@ struct CharacterPanel : public Window {
   static constexpr int begin_y = 60;
   static constexpr int right_x = 290;
   static constexpr int vertical_gap = 55;
-  static char buffer[25];
+  static char buffer[30];
   std::array<InventorySlot, 10> equip_slots = {
       // left, from top to bottom
       InventorySlot(left_x, begin_y, ItemType::HEAD),
@@ -27,29 +27,31 @@ struct CharacterPanel : public Window {
                     ItemType::ONE_HAND),
       InventorySlot(WIDTH / 2 + SLOT_SIZE / 2, begin_y + vertical_gap * 6.2F,
                     ItemType::OFF_HAND)};
-  std::array<TextCell, 9> baseStats =
+  std::array<TextCell, 18> baseStats =
       TextCell::CreateCharacterCells(WIDTH / 2.5F, 12, MINECRAFT_BOLD, 15);
+
+  Button spendPoint{14,
+                    14,
+                    "",
+                    0,
+                    textures::ui::spendButtonNormal,
+                    textures::ui::spendButtonHovered,
+                    textures::ui::spendButtonPressed};
+
   CharacterPanel() noexcept
       : Window(SCREEN_WIDTH * 0.1F, SCREEN_HEIGHT * 0.2F, WIDTH, 450, 18,
                PLAYER_NAME.data(), KEY_C) {
     PLAYER_EQUIPPED = equip_slots.data();
   }
-  //TODO make buffed stats green
   void draw() {
     WINDOW_LOGIC()
     draw_window();
     RectangleR scaled_whole = SCALE_RECT(whole_window);
-    float x = scaled_whole.x + SCALE(left_x);
+    float x = scaled_whole.x + SCALE(left_x/2);
     float y = scaled_whole.y + SCALE(275);
-
+    DrawStatCells(x, y);
     DrawHeaderText(scaled_whole.x, scaled_whole.y, scaled_whole.width);
     DrawPlayer(scaled_whole);
-    for (uint_fast32_t i = 0; i < 9; i++) {
-      Stat stat = Stat(i);
-      sprintf(buffer, "%s:", statToName[stat].c_str());
-      baseStats[i].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[i], Colors::darkBackground, PLAYER_SPENT_POINTS.IsDefaultValue(stat) ? Colors::darkBackground: Colors::StatGreen);
-      y += baseStats[i].bounds.height + 1;
-    }
     for (auto& slot : equip_slots) {
       slot.DrawCharacterSlot(whole_window.x, whole_window.y);
       if (!slot.item) {
@@ -108,9 +110,44 @@ struct CharacterPanel : public Window {
         0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
+    if (PLAYER_SPENT_POINTS.HasPointsToSpend()) {
+      sprintf(buffer, "Unspent Attribute Points!: %i", PLAYER_SPENT_POINTS.pointsToSpend);
+      DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2, y + SCALE(40),
+                       Colors::darkBackground);
+    }
     sprintf(buffer, "Level:%i", (int)PLAYER_STATS.level);
     DrawCenteredText(MINECRAFT_REGULAR, 16, buffer, x + size / 2, y + SCALE(25),
                      Colors::darkBackground);
+  }
+  void DrawStatCells(float x, float y) noexcept {
+    x += baseStats[0].bounds.width + SCALE(22);
+    int i = 9;
+    DrawSingleStatCell(MAX_HEALTH, x, y, i);
+    DrawSingleStatCell(MAX_MANA, x, y, i);
+    DrawSingleStatCell(HEALTH_REGEN, x, y, i);
+    DrawSingleStatCell(MANA_REGEN, x, y, i);
+    DrawSingleStatCell(ARMOUR, x, y, i);
+    DrawSingleStatCell(CRIT_CHANCE, x, y, i);
+    DrawSingleStatCell(DODGE_CHANCE, x, y, i);
+    DrawSingleStatCell(SPEED_MULT_P, x, y, i);
+    DrawSingleStatCell(WEAPON_DAMAGE, x, y, i);
+
+    y -= 9 * (baseStats[0].bounds.height + 1);
+    x -= baseStats[0].bounds.width + SCALE(22);
+    for (uint_fast32_t i = 0; i < 9; i++) {
+      Stat stat = Stat(i);
+      if (PLAYER_SPENT_POINTS.HasPointsToSpend() &&
+          spendPoint.Draw(x + WIDTH / 2.5F + SCALE(10), y)) {
+        PLAYER_STATS.SpendAttributePoint(i);
+      }
+      sprintf(buffer, "%s:", statToName[stat].c_str());
+      baseStats[i].DrawStatCell(x, y, buffer, (int)PLAYER_STATS.effects[i],
+                                PLAYER_SPENT_POINTS.IsDefaultValue(stat)
+                                    ? Colors::darkBackground
+                                    : Colors::StatGreen);
+
+      y += baseStats[i].bounds.height + 1;
+    }
   }
   void update() noexcept {
     WINDOW_UPDATE();
@@ -118,6 +155,12 @@ struct CharacterPanel : public Window {
       slot.update_player_inv();
     }
   }
+ private:
+  inline void DrawSingleStatCell(Stat stat,float x, float& y, int& i) noexcept{
+    sprintf(buffer, "%s:", statToName[stat].c_str());
+    baseStats[i++].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[stat]);
+    y += baseStats[0].bounds.height + 1;
+  }
 };
-char CharacterPanel::buffer[25];
+char CharacterPanel::buffer[30];
 #endif  //MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_

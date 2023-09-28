@@ -116,6 +116,10 @@ struct TextureLoader {
 
     textures::ui::notificationWindow = LoadTexture((ASSET_PATH+"ui/prompts/notification_window.png").c_str());
 
+    textures::ui::spendButtonNormal = LoadTexture((ASSET_PATH+"ui/inventory/characterPanel/plus_stat.png").c_str());
+    textures::ui::spendButtonHovered = LoadTexture((ASSET_PATH+"ui/inventory/characterPanel/plus_stat_hovered.png").c_str());
+    textures::ui::spendButtonPressed = LoadTexture((ASSET_PATH+"ui/inventory/characterPanel/plus_stat_pressed.png").c_str());
+
 
   }
 };

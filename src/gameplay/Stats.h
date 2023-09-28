@@ -17,10 +17,21 @@ struct DamageStats {
 };
 
 struct SpentAttributePoints {
-  float spentPoints[9];
-  inline float operator[](const uint8_t i) const noexcept { return spentPoints[i]; }
-  inline void SpendPoint(uint8_t i) noexcept { spentPoints[i]++; }
+  float spentPoints[9] = {0};
+  uint16_t pointsToSpend = 0;
+  inline bool SpendPoint(uint8_t i) noexcept {
+    if (pointsToSpend >= 1) {
+      spentPoints[i]++;
+      pointsToSpend--;
+      return true;
+    }
+    return false;
+  }
+  inline void LevelUP() noexcept { pointsToSpend += 3; }
   [[nodiscard]] inline bool IsDefaultValue(Stat stat) const noexcept;
+  [[nodiscard]] inline bool HasPointsToSpend() const noexcept {
+    return pointsToSpend >= 1;
+  }
 };
 inline static SpentAttributePoints PLAYER_SPENT_POINTS{};
 
@@ -33,6 +44,7 @@ struct EntityStats {
   float shield = 0;
   bool stunned = false;
   EntityStats() {
+    Init();
     effects[HEALTH_REGEN] = 0.2F;
     effects[MANA_REGEN] = 1;
     effects[MAX_HEALTH] = 10;
@@ -41,6 +53,7 @@ struct EntityStats {
   };
   EntityStats(float base_health, int level, float per_level, float speed) noexcept
       : level(level), speed(speed) {
+    Init();
     effects[MAX_HEALTH] = base_health + ((level - 1) * per_level * std::sqrt(level));
     effects[MAX_HEALTH] *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
     health = effects[MAX_HEALTH];
@@ -113,7 +126,7 @@ struct EntityStats {
     float& armour = effects[ARMOUR];
     float& armour_mult = effects[ARMOUR_MULT_P];
 
-    float total_damage = stats.damage;
+    float total_damage = RollCriticalHit(stats.damage);
 
     if (stats.damage_type == DamageType::PHYSICAL) {
       total_damage *= (armour * (1 + armour_mult)) / (level * 50.0F);
@@ -156,6 +169,23 @@ struct EntityStats {
 
     effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
     ApplyEffects();
+  }
+  inline void SpendAttributePoint(uint8_t i) noexcept {
+
+    if (PLAYER_SPENT_POINTS.SpendPoint(i)) {
+      effects[i]++;
+      ReCalculatePlayerStats();
+    }
+  }
+ private:
+  inline float RollCriticalHit(float damage) const noexcept{
+    if(RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]){
+      return damage* (1 + effects[CRIT_DAMAGE_P]);
+    }
+  }
+  inline void Init()noexcept{
+    effects[CRIT_CHANCE] = 5;
+    effects[CRIT_DAMAGE_P] = 0.5F;
   }
 };
 inline EntityStats PLAYER_STATS;

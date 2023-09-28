@@ -46,6 +46,9 @@ inline static CSteamID PLAYER_ID;
  * |                    PLAYER                      |
  * |-----------------------------------------------------|
  */
+#include "../gameplay/Stats.h"
+#include "../gameplay/StatusEffect.h"
+#include "../gameplay/handlers/StatusEffectHandler.h"
 inline static float CAMERA_X = SCREEN_WIDTH / 2;
 inline static float CAMERA_Y = SCREEN_HEIGHT / 2;
 inline static float PLAYER_X = 0;

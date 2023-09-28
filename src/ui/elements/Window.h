@@ -1,6 +1,9 @@
 #ifndef MAGEQUEST_SRC_UI_WINDOW_H_
 #define MAGEQUEST_SRC_UI_WINDOW_H_
 
+#include "Button.h"
+#include "Panel.h"
+
 struct Window {
   RectangleR whole_window;
   RectangleR header_bar;

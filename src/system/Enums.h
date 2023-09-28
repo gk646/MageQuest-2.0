@@ -44,11 +44,11 @@ enum class MonsterType : uint8_t {
   SNAKE
 };
 
-enum class StatusEffectType : uint8_t{ BUFF, DE_BUFF };
-enum class ShapeType : uint8_t{ CIRCLE, RECT };
+enum class StatusEffectType : uint8_t { BUFF, DE_BUFF };
+enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
-enum class HitType : uint8_t{ CONTINUOUS, ONE_HIT, ONE_TICK };
-enum class Difficulty : uint8_t{ EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
+enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
+enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class ItemType : uint8_t {
   HEAD = 5,
   CHEST = 4,
@@ -124,14 +124,15 @@ enum Stat : uint8_t {
   CDR_P,
   ARMOUR_MULT_P,
   HEALTH_MULT_P,
-  MANA_MULT_P,  //other percentile only before mana mult
-  WEAPON_DAMAGE,
+  MANA_MULT_P,
+  WEAPON_DAMAGE,  // the first after _P enums || other percentile only before mana mult
+  DODGE_CHANCE,
+  CRIT_CHANCE,
   ARMOUR,
   MAX_SHIELD,
   MAGIC_FIND,
   MAX_HEALTH,
   MAX_MANA,
-  CRIT_CHANCE,
   HEALTH_REGEN,
   MANA_REGEN,
   STATS_ENDING
@@ -170,7 +171,6 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"NPC_MOVE", NodeType::NPC_MOVE}};
 enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID { TUTORIAL, MARLA, END };
-
 
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving
@@ -251,9 +251,9 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {POISON_DMG_P, "Poison Damage (%)"},
     {FIRE_DMG_P, "Fire Damage (%)"},
     {ICE_DMG_P, "Ice Damage (%)"},
-    {DOT_LENGTH_P, "DoT Length (%)"},
-    {DOT_DAMAGE_P, "DoT Damage (%)"},
-    {CRIT_CHANCE, "Crit Chance (%)"},
+    {DOT_LENGTH_P, "DoT Length"},
+    {DOT_DAMAGE_P, "DoT Damage"},
+    {CRIT_CHANCE, "Crit Chance"},
     {CRIT_DAMAGE_P, "Crit Damage (%)"},
     {STRENGTH, "Strength"},
     {INTELLIGENCE, "Intelligence"},
@@ -265,8 +265,8 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {CHARISMA, "Charisma"},
     {ENDURANCE, "Endurance"},
     {BUFF_LENGTH_P, "Buff Length (%)"},
-    {HEALTH_REGEN, "Health Regen (%)"},
-    {MANA_REGEN, "Mana Regen (%)"},
+    {HEALTH_REGEN, "Health Regen"},
+    {MANA_REGEN, "Mana Regen"},
     {MANA_COST_REDUCTION_P, "Mana Cost Reduction (%)"},
     {CDR_P, "Cooldown Reduction (%)"},
     {ARMOUR_MULT_P, "Armour (%)"},
@@ -279,6 +279,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {ARMOUR, "Armour"},
     {MAX_SHIELD, "Max Shield"},
     {SPEED_MULT_P, "Speed (%)"},
+    {DODGE_CHANCE,"Dodge Chance"}
 };
 
 inline static std::unordered_map<Zone, std::string> zoneMap = {
