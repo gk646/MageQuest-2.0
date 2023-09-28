@@ -10,7 +10,7 @@ struct TileLoader {
   }
   static void load_to_vram() {
     for (uint_fast32_t i = 0; i < TEXTURE_COUNT; i++) {
-      TEXTURES[i] = LoadTextureFromImage(images[i]);
+      TEXTURES[i] = LoadTextureFromImage(images[i]).id;
       UnloadImage(images[i]);
     }
     images.clear();

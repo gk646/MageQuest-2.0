@@ -39,13 +39,15 @@ struct CharacterPanel : public Window {
     WINDOW_LOGIC()
     draw_window();
     RectangleR scaled_whole = SCALE_RECT(whole_window);
-    DrawHeaderText(scaled_whole.x, scaled_whole.y, scaled_whole.width);
-    DrawPlayer(scaled_whole);
     float x = scaled_whole.x + SCALE(left_x);
     float y = scaled_whole.y + SCALE(275);
+
+    DrawHeaderText(scaled_whole.x, scaled_whole.y, scaled_whole.width);
+    DrawPlayer(scaled_whole);
     for (uint_fast32_t i = 0; i < 9; i++) {
-      sprintf(buffer, "%s:", statToName[Stat(i)].c_str());
-      baseStats[i].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[i]);
+      Stat stat = Stat(i);
+      sprintf(buffer, "%s:", statToName[stat].c_str());
+      baseStats[i].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[i], Colors::darkBackground, PLAYER_SPENT_POINTS.IsDefaultValue(stat) ? Colors::darkBackground: Colors::StatGreen);
       y += baseStats[i].bounds.height + 1;
     }
     for (auto& slot : equip_slots) {

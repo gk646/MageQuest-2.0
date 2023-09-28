@@ -6,6 +6,7 @@ struct Button {
   bool entered = false;
   const char* txt = nullptr;
   float fontSize = 15;
+  
   Button(float width, float height, const char* txt, float fontSize)
       : bounds(0, 0, width, height),
         base_width(width),

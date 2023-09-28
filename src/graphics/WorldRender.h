@@ -39,13 +39,13 @@ struct WorldRender {
         y_base = b * TILE_SIZE + DRAW_Y;
 
 
-        DrawTextureProFastUltra(TEXTURES[CURRENT_BACK_GROUND[i][b]].id, x_base, y_base);
+        DrawTextureProFastUltra(TEXTURES[CURRENT_BACK_GROUND[i][b]], x_base, y_base);
 #ifdef DRAW_TILE_BORDER
         DrawRectangleLines(x_base, y_base, TILE_SIZE, TILE_SIZE, RED);
 #endif
         int num2 = CURRENT_MIDDLE_GROUND[i][b];
         if (num2 != -1) {
-          DrawTextureProFastUltra(TEXTURES[num2].id, x_base, y_base);
+          DrawTextureProFastUltra(TEXTURES[num2], x_base, y_base);
         }
       }
     }
@@ -64,7 +64,7 @@ struct WorldRender {
 
         int num1 = CURRENT_FORE_GROUND[i][b];
         if (num1 != -1) {
-          DrawTextureProFastUltra(TEXTURES[num1].id, x_base, y_base);
+          DrawTextureProFastUltra(TEXTURES[num1], x_base, y_base);
         }
       }
     }

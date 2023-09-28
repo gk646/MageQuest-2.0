@@ -252,8 +252,8 @@ class Game {
     GameSaver::save();
     Multiplayer::CloseMultiplayer();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
-    for (uint_fast32_t i = 0; i < 5589; i++) {
-      UnloadTexture(TEXTURES[i]);
+    for (uint16_t i = 0; i < TileLoader::TEXTURE_COUNT+1500; i++) {
+      UnloadTextureI(i);
     }
     logic_thread_running = false;
     logic_thread.join();

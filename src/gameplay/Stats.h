@@ -16,6 +16,14 @@ struct DamageStats {
   }
 };
 
+struct SpentAttributePoints {
+  float spentPoints[9];
+  inline float operator[](const uint8_t i) const noexcept { return spentPoints[i]; }
+  inline void SpendPoint(uint8_t i) noexcept { spentPoints[i]++; }
+  [[nodiscard]] inline bool IsDefaultValue(Stat stat) const noexcept;
+};
+inline static SpentAttributePoints PLAYER_SPENT_POINTS{};
+
 struct EntityStats {
   float effects[STATS_ENDING] = {0};
   float health = 10;
@@ -68,7 +76,6 @@ struct EntityStats {
   inline int GetRemainingCD(const SkillStats& stats) noexcept {
     return stats.cool_down * (1 - effects[CDR_P]);
   }
-
   inline void use_skill(const SkillStats& stats) noexcept {
     mana -= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
@@ -153,4 +160,7 @@ struct EntityStats {
 };
 inline EntityStats PLAYER_STATS;
 
+bool SpentAttributePoints::IsDefaultValue(Stat stat) const noexcept {
+  return spentPoints[stat] == PLAYER_STATS.effects[stat];
+}
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
