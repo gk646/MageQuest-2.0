@@ -64,7 +64,7 @@ struct Monster : public Entity {
   tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;               \
   tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;               \
   health_bar.update();                                           \
-  status_effects.update();                                       \
+  status_effects.Update();                                       \
   CheckForDeath();                                               \
   if (MP_TYPE == MultiplayerType::CLIENT || attack != 0) return; \
   flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;                    \
@@ -76,7 +76,7 @@ struct Monster : public Entity {
   void hit(Projectile& p) noexcept {
     if (p.from_player && p.active() && attack != -100) {
       health_bar.hit();
-      status_effects.add_effects(p.status_effects);
+      status_effects.AddEffects(p.status_effects);
       float dmg = stats.take_damage(p.damage_stats);
       threatManager.AddThreat(p.Sender, dmg);
       p.dead = p.projectile_type == HitType::ONE_HIT;

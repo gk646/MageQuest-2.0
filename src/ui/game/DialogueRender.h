@@ -5,6 +5,25 @@ namespace DialogueRender {
 inline static constexpr int base_width = 365;
 inline static constexpr int base_height = 120;
 int spriteCounter = 0;
+std::string WrapText(const std::string& txt, float width, const Font& font,
+                     float fontSize) {
+  std::istringstream iss(txt);
+  std::string word;
+  std::string wrappedText;
+  float currentLineWidth = 0;
+  float spaceWidth = MeasureTextEx(font, " ", fontSize, 0.5).x;
+
+  while (iss >> word) {
+    float wordWidth = MeasureTextEx(font, word.c_str(), fontSize, 0.5).x;
+    if (currentLineWidth + wordWidth + spaceWidth > width) {
+      wrappedText += '\n';
+      currentLineWidth = 0;
+    }
+    wrappedText += word + " ";
+    currentLineWidth += wordWidth + spaceWidth;
+  }
+  return wrappedText;
+}
 inline static void DrawContinueButton(float startX, float width, float startY,
                                       float height) noexcept {
   int num = spriteCounter % 160 / 40;
@@ -58,23 +77,8 @@ void render_npc(int x, int y, const std::string* text, float& count, bool last) 
     }
   }
 
-  std::string toRender = text->substr(0, count);
-
-  std::istringstream iss(toRender);
-  std::string word;
-  std::string wrappedText;
-  float currentLineWidth = 0;
-  float spaceWidth = MeasureTextEx(MINECRAFT_REGULAR, " ", 17, 0.5).x;
-
-  while (iss >> word) {
-    float wordWidth = MeasureTextEx(MINECRAFT_REGULAR, word.c_str(), 17, 0.5).x;
-    if (currentLineWidth + wordWidth + spaceWidth > width - 3) {
-      wrappedText += '\n';
-      currentLineWidth = 0;
-    }
-    wrappedText += word + " ";
-    currentLineWidth += wordWidth + spaceWidth;
-  }
+  auto wrappedText =
+      WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, SCALE(17));
 
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);

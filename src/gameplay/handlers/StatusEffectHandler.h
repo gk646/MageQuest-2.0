@@ -3,7 +3,6 @@
 
 struct StatusEffectHandler {
   EntityStats& stats;
-  bool effects_changed = false;
   std::vector<StatusEffect*> status_effects{};
   explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
   ~StatusEffectHandler(){
@@ -11,7 +10,18 @@ struct StatusEffectHandler {
       delete effect;
     }
   }
-  void add_effects(const std::vector<StatusEffect*>& o) {
+  inline void ApplyEffects() const noexcept{
+    for(auto effect : status_effects){
+      effect->ApplyEffect(stats);
+    }
+  }
+  inline void RemoveEffects() const noexcept{
+    for(auto effect : status_effects){
+      effect->RemoveEffect(stats);
+    }
+  }
+
+  void AddEffects(const std::vector<StatusEffect*>& o) {
     for (const auto& new_effect : o) {
       bool is_new = true;
       for (auto& curr_effect : status_effects) {
@@ -22,28 +32,19 @@ struct StatusEffectHandler {
       }
       if (is_new) {
         auto new_copy = new_effect->clone();
-        new_copy->activate(stats);
+        new_copy->ApplyEffect(stats);
         status_effects.push_back(new_copy);
-        effects_changed = true;
       }
     }
   }
-  void update() noexcept {
-    if (effects_changed) {
-      for (const auto& effect : status_effects) {
-        effect->activate(stats);
-      }
-      effects_changed = false;
-    }
-
+  void Update() noexcept {
     for (auto it = status_effects.begin(); it != status_effects.end();) {
-      if ((*it)->expired()) {
-        (*it)->deactivate(stats);
+      if ((*it)->duration <= 0) {
+        (*it)->RemoveEffect(stats);
         delete *it;
         it = status_effects.erase(it);
-        effects_changed = true;
       } else {
-        (*it)->tick(stats);
+        (*it)->TickEffect(stats);
         ++it;
       }
     }
@@ -57,4 +58,5 @@ struct StatusEffectHandler {
     }
   }
 };
+
 #endif  //MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECTHANDLER_H_

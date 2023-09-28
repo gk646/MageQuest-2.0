@@ -115,7 +115,7 @@ class Game {
       case GameState::Game:
         [[likely]] {
           UI_MANAGER.update();
-          PLAYER_EFFECTS.update();
+          PLAYER_EFFECTS.Update();
           PLAYER_STATS.update();
           PLAYER_HOTBAR.update();
           PLAYER.update();
@@ -124,7 +124,7 @@ class Game {
         break;
       case GameState::GameMenu: {
         UI_MANAGER.update();
-        PLAYER_EFFECTS.update();
+        PLAYER_EFFECTS.Update();
         PLAYER_STATS.update();
         PLAYER_HOTBAR.update();
         UPDATE_AND_COLLISION()
@@ -243,7 +243,7 @@ class Game {
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
-    for (uint_fast32_t i = 0; i < 100; i++) {
+    for (uint_fast32_t i = 0; i < 3; i++) {
       MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }
     SettingsMenu::set_full_screen();

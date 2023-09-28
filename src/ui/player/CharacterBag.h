@@ -58,7 +58,7 @@ struct CharacterBag final : public Window {
   }
   static bool AddItem(Item* new_item) noexcept {
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
-      if (!PLAYER_BAG[i].item) {
+      if (!PLAYER_BAG[i].item && &PLAYER_BAG[i] != DRAGGED_SLOT) {
         PLAYER_BAG[i].item = new_item;
         return true;
       }
