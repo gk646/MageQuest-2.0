@@ -6,24 +6,27 @@ struct Button {
   bool entered = false;
   const char* txt = nullptr;
   float fontSize = 15;
-  
-  Button(float width, float height, const char* txt, float fontSize)
+  const Texture& normal;
+  const Texture& hovered;
+  const Texture& pressed;
+  Button(float width, float height, const char* txt, float fontSize,const Texture& normal,const Texture& hovered,const Texture& pressed)
       : bounds(0, 0, width, height),
         base_width(width),
         base_height(height),
         txt(txt),
-        fontSize(fontSize) {}
-  bool Draw(float x, float y) noexcept {
+        fontSize(fontSize), normal(normal), hovered(hovered), pressed(pressed){}
+  bool Draw(float x, float y, bool* hoverStatus = nullptr) noexcept {
     Update(x, y);
     if (CheckCollisionPointRec(MOUSE_POS, bounds)) {
       PlayerEnterSound();
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        DrawTextureScaled(textures::ui::buttonPressed, bounds, 0, false, 0, WHITE);
+        DrawTextureScaled(pressed, bounds, 0, false, 0, WHITE);
       } else {
-        DrawTextureScaled(textures::ui::buttonHovered, bounds, 0, false, 0, WHITE);
+        if(hoverStatus) *hoverStatus = true;
+        DrawTextureScaled(hovered, bounds, 0, false, 0, WHITE);
       }
     } else {
-      DrawTextureScaled(textures::ui::buttonNormal, bounds, 0, false, 0, WHITE);
+      DrawTextureScaled(normal, bounds, 0, false, 0, WHITE);
       entered = false;
     }
     DrawCenteredText(VARNISHED, fontSize, txt, bounds.x + bounds.width / 2.0F,

@@ -20,7 +20,7 @@ struct XPBar {
       DrawTooltip(MOUSE_POS);
     }
   }
-  inline void DrawTooltip(Vector2 m) noexcept {
+  static inline void DrawTooltip(Vector2 m) noexcept {
     DrawTextureProFast(textures::ui::skillbar::tooltip, m.x - 84, m.y - 72, 0, WHITE);
     sprintf(tx_buf, "%d / %d", (int)PLAYER_EXPERIENCE - prev_req, next_req);
     DrawTextExR(VARNISHED, tx_buf, {m.x - 75, m.y - 55}, 13, 0.5, WHITE);
@@ -45,7 +45,7 @@ struct XPBar {
       LevelUP();
     }
   }
-  void PrintEnemiesToKillForLevels(int maxLevel) {
+  static void PrintEnemiesToKillForLevels(int maxLevel) {
     int currentXP = 0;
 
     for (int level = 1; level <= maxLevel; ++level) {
@@ -81,6 +81,7 @@ struct XPBar {
   static inline void LevelUP() noexcept {
     PLAYER_STATS.level++;
     UpdateRequirements(PLAYER_STATS.level);
+    PLAYER_SPENT_POINTS.LevelUP();
     //TODO animation
   }
 };

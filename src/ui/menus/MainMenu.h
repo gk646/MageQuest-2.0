@@ -6,11 +6,11 @@ struct MainMenu {
   HostMenu host_menu{};
   SettingsMenu& settings_menu;
   MenuState menu_state = MenuState::Main;
-  Button playGame{144, 46, "Play Game", 20};
-  Button hostGame{144, 46, "Host Game", 20};
-  Button joinGame{144, 46, "Join Game", 20};
-  Button settings{144, 46, "Settings", 20};
-  Button exit{144, 46, "Quit", 20};
+  Button playGame{144, 46, "Play Game", 20, textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
+  Button hostGame{144, 46, "Host Game", 20, textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
+  Button joinGame{144, 46, "Join Game", 20, textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
+  Button settings{144, 46, "Settings", 20,  textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
+  Button exit{144, 46, "Quit", 20,  textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
   explicit MainMenu(SettingsMenu& settings_menu) noexcept
       : settings_menu(settings_menu) {}
   void draw() noexcept {

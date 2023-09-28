@@ -75,6 +75,9 @@ inline static Texture dialogContinue3;
 
 
 inline static Texture notificationWindow;
+inline static Texture spendButtonNormal;
+inline static Texture spendButtonHovered;
+inline static Texture spendButtonPressed;
 
 
 
