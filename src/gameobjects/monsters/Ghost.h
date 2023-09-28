@@ -5,6 +5,8 @@ struct Ghost final : public Monster {
   static constexpr float per_level = 3.5;
   static constexpr float base_speed = 2.2;
   static constexpr float ATTACK_CD = 120;
+  static constexpr Vector2 directions[9] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1},
+                                            {-1, 1}, {1, 1}, {-1, 1}, {1, -1},{-1,-1}};
   bool teleported = false;
   bool disappeared = true;
   Ghost(const Point& pos, int level) noexcept
@@ -47,26 +49,23 @@ struct Ghost final : public Monster {
     }
   }
   inline void TeleportToTarget(const Entity* ent) noexcept {
-    if (!CheckTileCollision(ent->tile_pos.x - 1, ent->tile_pos.y)) {
-      pos.x_ = (ent->tile_pos.x - 1) * 48 + 24;
-      pos.y_ = ent->tile_pos.y * 48;
-      attack = 2;
-      teleported = true;
-    } else if (!CheckTileCollision(ent->tile_pos.x + 1, ent->tile_pos.y)) {
-      pos.x_ = (ent->tile_pos.x + 1) * 48 - 24;
-      pos.y_ = ent->tile_pos.y * 48;
-      attack = 2;
-      teleported = true;
-    } else if (!CheckTileCollision(ent->tile_pos.x, ent->tile_pos.y - 1)) {
-      pos.x_ = ent->tile_pos.x * 48;
-      pos.y_ = (ent->tile_pos.y - 1) * 48 + 24;
-      attack = 2;
-      teleported = true;
-    } else if (!CheckTileCollision(ent->tile_pos.x, ent->tile_pos.y + 1)) {
-      pos.x_ = ent->tile_pos.x * 48;
-      pos.y_ = (ent->tile_pos.y + 1) * 48 - 24;
-      attack = 2;
-      teleported = true;
+    int num = RANGE_100_FLOAT(RNG_ENGINE) - 1;
+    num /= 10;
+
+    for (int i = 0; i < 9; ++i) {
+      int idx = (num + i) % 9;
+      auto dir = directions[idx];
+
+      float newX = ent->pos.x_ + 24 * dir.x;
+      float newY = ent->pos.y_ + 24 * dir.y;
+
+      if (!CheckTileCollision((newX +size.x_/2)/ 48, (newY +size.y_/2)/ 48)) {
+        pos.x_ = newX;
+        pos.y_ = newY;
+        attack = 2;
+        teleported = true;
+        break;
+      }
     }
   }
   inline void draw_death() noexcept {
@@ -86,7 +85,7 @@ struct Ghost final : public Monster {
     } else {
       attack = 1;
       teleported = false;
-      PROJECTILES.push_back(new PsychicScream(pos, false, 5, HitType::CONTINUOUS, {}));
+      PROJECTILES.push_back(new PsychicScream(pos, false, 5, HitType::CONTINUOUS));
       sprite_counter = 0;
       disappeared = false;
       attack_cd = ATTACK_CD;

@@ -42,17 +42,17 @@ struct EntityStats {
     if (mana < max_mana_value) {
       mana = std::min(mana + effects[MANA_REGEN] / 60, max_mana_value);
     } else {
-      mana = std::max(mana - effects[MANA_REGEN] / 60, max_mana_value);
+      mana = max_mana_value;
     }
 
     float max_health_value = get_max_health();
     if (health < max_health_value) {
       health = std::min(health + effects[HEALTH_REGEN] / 60, max_health_value);
     } else {
-      health = std::max(health - effects[HEALTH_REGEN] / 60, max_health_value);
+      health = max_health_value;
     }
 
-    float& max_shield = effects[MAX_SHIELD];
+    float max_shield = effects[MAX_SHIELD];
     if (shield < max_shield && mana > 0) {
       shield += effects[MANA_REGEN] / 60;
       mana -= effects[MANA_REGEN] / 60;
@@ -76,11 +76,13 @@ struct EntityStats {
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
       effects[i] += effect_arr[i];
     }
+    ReCalculatePlayerStats();
   }
   inline void un_equip_item(const float* effect_arr) noexcept {
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
       effects[i] -= effect_arr[i];
     }
+    ReCalculatePlayerStats();
   }
   inline float get_ability_dmg(DamageStats stats) noexcept {
     switch (stats.damage_type) {
@@ -134,6 +136,19 @@ struct EntityStats {
   }
   [[nodiscard]] inline float get_speed() const noexcept {
     return speed * (1 + effects[SPEED_MULT_P]);
+  }
+  static inline void RemoveEffects() noexcept;
+  static inline void ApplyEffects() noexcept;
+  inline void ReCalculatePlayerStats() noexcept {
+    RemoveEffects();
+    effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
+    effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
+
+    effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
+    effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
+
+    effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
+    ApplyEffects();
   }
 };
 inline EntityStats PLAYER_STATS;

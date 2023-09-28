@@ -220,12 +220,10 @@ struct Item {
 
     //description
     off_sety = 240 * UI_SCALE;
-    std::vector<std::string> lines = WrapText(description, width);
-    for (const auto& line : lines) {
-      DrawTextExR(MINECRAFT_ITALIC, line.c_str(), {startX + off_setX, startY + off_sety},
-                  15 * UI_SCALE, 0.5F, Colors::darkBackground);
-      off_sety += 15;
-    }
+    std::string wrappedText = DialogueRender::WrapText(description,width-5,MINECRAFT_ITALIC,SCALE(15));
+      DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {startX + off_setX, startY + off_sety},
+                SCALE(15), 0.5F, Colors::darkBackground);
+
 
     //durability
     snprintf(text_buffer, 10, "D:%d", durability);
@@ -254,30 +252,7 @@ struct Item {
       return Colors::mediumQuality;
     }
   }
-  static std::vector<std::string> WrapText(const std::string& str, int width) {
-    std::vector<std::string> lines;
-    std::istringstream stream(str);
-    std::string word;
 
-    std::string currentLine;
-    while (stream >> word) {
-      if (GetTextWidth((currentLine + word).c_str()) + 5 <= width) {
-        if (!currentLine.empty()) {
-          currentLine += " ";
-        }
-        currentLine += word;
-      } else {
-        lines.push_back(currentLine);
-        currentLine = word;
-      }
-    }
-
-    if (!currentLine.empty()) {
-      lines.push_back(currentLine);
-    }
-
-    return lines;
-  }
   inline static void scale(int quality, int level) {}
   [[nodiscard]] Item* scale_clone(int new_level, int new_quality) const noexcept {
     auto new_item = new Item(*this);

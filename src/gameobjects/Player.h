@@ -20,7 +20,7 @@ struct Player final : public Entity {
   }
   static void hit(Projectile& p) noexcept {
     if (!p.from_player && p.active()) {
-      PLAYER_EFFECTS.add_effects(p.status_effects);
+      PLAYER_EFFECTS.AddEffects(p.status_effects);
       PLAYER_STATS.take_damage(p.damage_stats);
       p.dead = p.projectile_type == HitType::ONE_HIT;
     }
@@ -30,6 +30,10 @@ struct Player final : public Entity {
       GAME_STATE = GameState::GameOver;
     }
     float speed = PLAYER_STATS.get_speed();
+    if(PLAYER_STATS.stunned) {
+     return;
+    }
+
     moving = false;
     if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
       pos.y_ -= speed;
@@ -121,4 +125,10 @@ inline static Player PLAYER({150, 150});
 #include "elements/ThreatManager.h"
 #include "../ui/player/HotBar.h"
 inline static HotBar PLAYER_HOTBAR{};
+void EntityStats::RemoveEffects() noexcept {
+  PLAYER_EFFECTS.RemoveEffects();
+}
+void EntityStats::ApplyEffects() noexcept {
+  PLAYER_EFFECTS.ApplyEffects();
+}
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

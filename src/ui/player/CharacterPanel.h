@@ -34,6 +34,7 @@ struct CharacterPanel : public Window {
                PLAYER_NAME.data(), KEY_C) {
     PLAYER_EQUIPPED = equip_slots.data();
   }
+  //TODO make buffed stats green
   void draw() {
     WINDOW_LOGIC()
     draw_window();

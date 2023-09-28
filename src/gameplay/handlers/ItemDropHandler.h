@@ -33,8 +33,12 @@ inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
   Item* newItem = new Item(ptr, quality, level);
   float levelMult = std::sqrt(level);
   float rarityMult = std::min(4, (int)ptr->rarity);
+  float qualityMult = quality/100.0F;
+  if(qualityMult == 1) {
+    qualityMult = 1.1F;
+  }
   for (float& effect : newItem->effects) {
-    effect *= levelMult * rarityMult;
+    effect *= levelMult * rarityMult * qualityMult;
   }
   return newItem;
 }
