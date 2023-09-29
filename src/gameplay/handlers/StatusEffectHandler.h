@@ -25,7 +25,7 @@ struct StatusEffectHandler {
     for (const auto& new_effect : o) {
       bool is_new = true;
       for (auto& curr_effect : status_effects) {
-        if (*curr_effect == *new_effect) {
+        if (curr_effect->type == new_effect->type) {
           curr_effect->duration = new_effect->duration;
           is_new = false;
         }

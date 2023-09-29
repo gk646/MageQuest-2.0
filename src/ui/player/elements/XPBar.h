@@ -82,6 +82,7 @@ struct XPBar {
     PLAYER_STATS.level++;
     UpdateRequirements(PLAYER_STATS.level);
     PLAYER_SPENT_POINTS.LevelUP();
+    PLAYER_STATS.ReCalculatePlayerStats();
     //TODO animation
   }
 };

@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STUN_H_
 struct Stun final :public StatusEffect {
   explicit Stun(int duration)
-      : StatusEffect(StatusEffectType::DE_BUFF, 0, duration, false) {}
+      : StatusEffect(true, 0, duration, false,EffectType::STUN) {}
   [[nodiscard]] Stun* clone() const final { return new Stun(*this); }
   void ApplyEffect(EntityStats& stats) const noexcept final { stats.stunned = true; }
   void TickEffect(EntityStats& stats) final { duration--; }

@@ -3,16 +3,19 @@
 struct Ghost final : public Monster {
   static constexpr int base_health = 4;
   static constexpr float per_level = 3.5;
-  static constexpr float base_speed = 2.2;
   static constexpr float ATTACK_CD = 120;
+  static constexpr uint8_t ATTACK_RANGE = 6;
+  static constexpr uint8_t CHASE_RANGE = 10;
   static constexpr Vector2 directions[9] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1},
                                             {-1, 1}, {1, 1}, {-1, 1}, {1, -1},{-1,-1}};
   bool teleported = false;
   bool disappeared = true;
   Ghost(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
+      : Monster(pos, EntityStats{base_health, level, per_level, 0},
                 &textures::monsters::GHOST, MonsterType::WOLF, {30, 40}) {
-    attack_cd = 50;
+    attack_cd = ATTACK_CD;
+    AttackRange = ATTACK_RANGE;
+    ChaseRange = CHASE_RANGE;
   }
   void draw() final {
     if (attack == -100) [[unlikely]] {

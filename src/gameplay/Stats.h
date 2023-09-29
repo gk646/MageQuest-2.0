@@ -182,6 +182,7 @@ struct EntityStats {
     if(RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]){
       return damage* (1 + effects[CRIT_DAMAGE_P]);
     }
+    return damage;
   }
   inline void Init()noexcept{
     effects[CRIT_CHANCE] = 5;

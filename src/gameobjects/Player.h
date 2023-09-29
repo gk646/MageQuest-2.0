@@ -19,6 +19,7 @@ struct Player final : public Entity {
     return *this;
   }
   static void hit(Projectile& p) noexcept {
+    //TODO dodge chance
     if (!p.from_player && p.active()) {
       PLAYER_EFFECTS.AddEffects(p.status_effects);
       PLAYER_STATS.take_damage(p.damage_stats);
@@ -122,7 +123,6 @@ struct Player final : public Entity {
   }
 };
 inline static Player PLAYER({150, 150});
-#include "elements/ThreatManager.h"
 #include "../ui/player/HotBar.h"
 inline static HotBar PLAYER_HOTBAR{};
 void EntityStats::RemoveEffects() noexcept {

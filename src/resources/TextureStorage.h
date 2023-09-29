@@ -50,8 +50,14 @@ inline ProjectileResources VOID_ERUPTION;
 inline ProjectileResources VOID_FIELD;
 inline ProjectileResources DUMMY;
 inline ProjectileResources PSYCHIC_SCREAM;
+
 }  // namespace projectile
 
+namespace misc {
+inline static Texture blueGlow;
+inline static Texture redGlow;
+inline static Texture purpleGlow;
+}
 namespace ui {
 inline Texture STATUS_BAR;
 inline Texture CROSS_HAIR_AIM;

@@ -234,7 +234,7 @@ void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
 void ThreatManager::Update() noexcept {
   if (TargetCount > 0) {
     for (auto& te : targets) {
-      if (te.entity && te.entity->tile_pos.dist(Self.tile_pos) > Self.AttackRange) {
+      if (te.entity && te.entity->tile_pos.dist(Self.tile_pos) > Self.ChaseRange) {
         te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
         if (te.threat <= 0) {
           RemoveTarget(te.entity);

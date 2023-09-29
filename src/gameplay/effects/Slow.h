@@ -4,7 +4,7 @@
 struct Slow final :public StatusEffect {
   float slow_percent;
   Slow(float value, int duration)
-      : StatusEffect(StatusEffectType::DE_BUFF, 0, duration, false),
+      : StatusEffect(true, 0, duration, false, EffectType::SLOW),
         slow_percent(value / 100) {}
    [[nodiscard]] Slow* clone() const final { return new Slow(*this); }
   void ApplyEffect(EntityStats& stats) const noexcept final {

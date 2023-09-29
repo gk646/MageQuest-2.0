@@ -35,7 +35,6 @@ struct QuestPanel final : public Window {
     side_panel.Update();
     PLAYER_QUESTS.Update();
   }
-
 };
 
 struct PlayerUI {
