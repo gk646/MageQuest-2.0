@@ -121,6 +121,9 @@ struct TextureLoader {
     textures::ui::spendButtonPressed = LoadTexture((ASSET_PATH+"ui/inventory/characterPanel/plus_stat_pressed.png").c_str());
 
 
+    textures::misc::blueGlow = LoadTexture((ASSET_PATH+"ui/glows/blue_glow.png").c_str());
+    textures::misc::redGlow = LoadTexture((ASSET_PATH+"ui/glows/red_glow.png").c_str());
+
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_

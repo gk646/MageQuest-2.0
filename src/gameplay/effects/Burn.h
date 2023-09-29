@@ -4,7 +4,7 @@
 struct Burn final : public StatusEffect {
   DamageStats damage_stats{};
   Burn(float damage, int duration, int tick_speed)
-      : StatusEffect(StatusEffectType::DE_BUFF,  tick_speed, duration, false),
+      : StatusEffect(true,  tick_speed, duration, false, EffectType::BURN),
         damage_stats({DamageType::FIRE, damage}) {}
   [[nodiscard]] Burn* clone() const final { return new Burn(*this); }
   void ApplyEffect(EntityStats& stats) const noexcept final {}

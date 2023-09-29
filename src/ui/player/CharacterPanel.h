@@ -158,7 +158,13 @@ struct CharacterPanel : public Window {
  private:
   inline void DrawSingleStatCell(Stat stat,float x, float& y, int& i) noexcept{
     sprintf(buffer, "%s:", statToName[stat].c_str());
-    baseStats[i++].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[stat]);
+
+    if(i== 16){
+      baseStats[i++].DrawStatCell(x, y, buffer, 1+PLAYER_STATS.effects[stat]);
+    } else{
+      baseStats[i++].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[stat]);
+    }
+
     y += baseStats[0].bounds.height + 1;
   }
 };

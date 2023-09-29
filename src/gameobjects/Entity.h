@@ -178,4 +178,5 @@ struct Entity {
   }
 };
 #include "WorldObject.h"
+#include "elements/ThreatManager.h"
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

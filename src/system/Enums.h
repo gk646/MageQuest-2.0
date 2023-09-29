@@ -43,8 +43,7 @@ enum class MonsterType : uint8_t {
   SKEL_SHIELD,
   SNAKE
 };
-
-enum class StatusEffectType : uint8_t { BUFF, DE_BUFF };
+enum class EffectType: uint8_t{STUN, BURN, SLOW} ;
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
@@ -222,6 +221,7 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"MUSHROOM", MonsterType::MUSHROOM},
     {"SKEL_ARCHER", MonsterType::SKEL_ARCHER},
     {"SKEL_SHIELD", MonsterType::SKEL_SHIELD},
+    {"BLOOD_HOUND", MonsterType::BLOOD_HOUND},
     {"SNAKE", MonsterType::SNAKE}};
 
 enum ProjectileType : uint8_t {

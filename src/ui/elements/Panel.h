@@ -21,6 +21,8 @@ struct Panel {
 
   void Draw(float x, float y) {
     UpdateInternal(x, y);
+    DrawOutlineText(font, SCALE(16), headerText, x + 5, y + 4, 1, Colors::LightGrey,
+                    Colors::black);
     if (expanded) {
       DrawTextureScaled(textures::ui::buttonCollapse, button, 0, false, 0, WHITE);
       if (isHovered) {
@@ -35,8 +37,6 @@ struct Panel {
         DrawTextureScaled(textures::ui::buttonExpandHovered, button, 0, false, 0, WHITE);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) expanded = true;
       }
-      DrawOutlineText(font, SCALE(16), headerText, x + 5, y + 4, 1, Colors::LightGrey,
-                      Colors::black);
     }
   }
   virtual void DrawContent() noexcept = 0;

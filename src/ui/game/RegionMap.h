@@ -69,7 +69,7 @@ struct RegionMap final : public Window {
     if(FAST_UI){
       return;
     }
-    std::shared_lock<std::shared_mutex> lock(rwLock);
+    std::unique_lock<std::shared_mutex> lock(rwLock);
     for (const auto monster : MONSTERS) {
       if (monster->tile_pos.dist(player_tile) < 20) {
         DrawSquareProFast(base_x + monster->tile_pos.x * zoom,

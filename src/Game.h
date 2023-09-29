@@ -145,7 +145,7 @@ class Game {
   CAMERA_Y = SCREEN_HEIGHT / 2;
 
 #define DRAW_ENTITIES()                             \
-  std::shared_lock<std::shared_mutex> lock(rwLock); \
+  std::unique_lock<std::shared_mutex> lock(rwLock);   \
   for (auto object : WORLD_OBJECTS) {               \
     object->draw();                                 \
   }                                                 \
@@ -189,7 +189,26 @@ class Game {
       case GameState::Game:
         [[likely]] {
           WorldRender::draw();
-          DRAW_ENTITIES()
+          std::unique_lock<std::shared_mutex> lock(rwLock);
+          for (auto object : WORLD_OBJECTS) {
+            object->draw();                                 \
+          }                                                 \
+          for (auto projectile : PROJECTILES) {             \
+            projectile->draw();                             \
+          }                                                 \
+          for (auto monster : MONSTERS) {                   \
+            monster->draw();                                \
+          }                                                 \
+          for (auto npc : NPCS) {                           \
+            npc->draw();                                    \
+          }                                                 \
+          for (auto net_player : OTHER_PLAYERS) {           \
+            if (net_player) {                               \
+              net_player->draw();                           \
+            }                                               \
+          }                                                 \
+          lock.unlock();                                    \
+          PLAYER.draw();
           WorldRender::draw_fore_ground();
           UI_MANAGER.player_ui.draw();
         }
@@ -243,7 +262,7 @@ class Game {
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
-    for (uint_fast32_t i = 0; i < 3; i++) {
+    for (uint_fast32_t i = 0; i < 300; i++) {
       MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }
     SettingsMenu::set_full_screen();

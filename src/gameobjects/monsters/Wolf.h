@@ -1,14 +1,15 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_WOLF_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_WOLF_H_
 struct Wolf final : public Monster {
+  static constexpr int MAX_SCALED_LEVEL = 15;
+  static constexpr uint8_t ATTACK_RANGE = 3;
+  static constexpr uint8_t CHASE_RANGE = 10;
+  static constexpr float ATTACK_CD = 120;
   static constexpr int base_health = 3;
   static constexpr float per_level = 2.5;
   static constexpr float base_speed = 2.4;
-  static constexpr float ATTACK_CD = 120;
-  static constexpr uint8_t ATTACK_RANGE = 2;
-  static constexpr uint8_t CHASE_RANGE = 10;
   Wolf(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
+      : Monster(pos, EntityStats{base_health, std::min(MAX_SCALED_LEVEL,level), per_level, base_speed},
                 &textures::monsters::WOLF, MonsterType::WOLF, {45, 30}) {
     attack_cd = ATTACK_CD;
     AttackRange = ATTACK_RANGE;
