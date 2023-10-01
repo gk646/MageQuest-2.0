@@ -4,11 +4,11 @@ struct EntitySaver {};
 
 namespace NPCSaver {
 inline static constexpr int NAMED_LIMIT = 20;
-inline static void AddNULLRow(sqlite3_stmt* stmt, int i) noexcept {
-  sqlite3_bind_null(stmt, 1);
-  sqlite3_bind_null(stmt, 2);
-  sqlite3_bind_null(stmt, 3);
-  sqlite3_bind_int(stmt, 4, i);
+inline static void AddNULLRow(sqlite3_stmt* stmt, int columns, int row) noexcept {
+  for (uint_fast32_t i = 0; i < row; i++) {
+    sqlite3_bind_null(stmt, i);
+  }
+  sqlite3_bind_int(stmt, columns, row);
 }
 inline static void SaveNPC(const NPC* npc, sqlite3_stmt* stmt, int i) noexcept {
   sqlite3_bind_int(stmt, 1, (int)npc->id);
@@ -20,7 +20,6 @@ inline static void SaveNPC(const NPC* npc, sqlite3_stmt* stmt, int i) noexcept {
   sqlite3_step(stmt);
   sqlite3_reset(stmt);
 }
-
 static void SaveNamedNPCs() noexcept {
   sqlite3_stmt* stmt;
   std::string sql =
@@ -36,7 +35,7 @@ static void SaveNamedNPCs() noexcept {
     }
   }
   for (int j = i; j < NAMED_LIMIT; j++) {
-    AddNULLRow(stmt, j);
+    AddNULLRow(stmt, 4,j);
   }
   sqlite3_finalize(stmt);
 }

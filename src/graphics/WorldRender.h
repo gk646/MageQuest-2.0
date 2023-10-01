@@ -1,6 +1,9 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
 
+#include "ScreenEffects.h"
+#include "WorldAnimations.h"
+
 struct WorldRender {
   static void draw() noexcept {
     int worldCol = std::max(PLAYER_TILE->x - 21, 0);
@@ -67,6 +70,7 @@ struct WorldRender {
         }
       }
     }
+
   }
 };
 
