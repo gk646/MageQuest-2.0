@@ -14,7 +14,8 @@ inline static void SaveNPC(const NPC* npc, sqlite3_stmt* stmt, int i) noexcept {
   sqlite3_bind_int(stmt, 1, (int)npc->id);
   sqlite3_bind_int(stmt, 2, (int)npc->pos.x_);
   sqlite3_bind_int(stmt, 3, (int)npc->pos.y_);
-  sqlite3_bind_int(stmt, 4, i);
+  sqlite3_bind_int(stmt, 4, (int)npc->zone);
+  sqlite3_bind_int(stmt, 5, i);
 
   sqlite3_step(stmt);
   sqlite3_reset(stmt);
@@ -23,7 +24,7 @@ inline static void SaveNPC(const NPC* npc, sqlite3_stmt* stmt, int i) noexcept {
 static void SaveNamedNPCs() noexcept {
   sqlite3_stmt* stmt;
   std::string sql =
-      "UPDATE NPC_STATES SET TYPE = ?, X_POS = ?, Y_POS = ? WHERE ROWID = ?";
+      "UPDATE NPC_STATES SET TYPE = ?, X_POS = ?, Y_POS = ?, ZONE = ? WHERE ROWID = ?";
 
   if (!DataBaseHandler::prepare_stmt(sql, DataBaseHandler::gamesave, &stmt)) return;
   int i = 1;

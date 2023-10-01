@@ -98,15 +98,26 @@ Quest* load(const std::string& path, Quest_ID id) {
             std::stoi(parts[4]));
         quest->objectives.push_back(obj);
       } break;
-      case NodeType::NPC_SAY:
-        return quest;
-      case NodeType::SPAWN:
+      case NodeType::NPC_SAY: {
+        auto obj = new NPC_SAY(npcIdMap[parts[1]]);
+        if (parts.size() > 2) {
+          if (parts[2] == "TRUE") {
+            obj->blockingUntilLineFinished = true;
+          }
+        }
+        std::getline(file, obj->txt);
+        std::getline(file, line);
+        quest->objectives.push_back(obj);
+      } break;
+      case NodeType::SPAWN: {
         auto obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
         for (uint_fast32_t i = 3; i < parts.size(); i++) {
           obj->positions.emplace_back(std::stoi(split(parts[i], ',')[0]),
                                       std::stoi(split(parts[i], ',')[1]));
         }
         quest->objectives.push_back(obj);
+      }break;
+      default:
         break;
     }
   }

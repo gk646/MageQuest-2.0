@@ -16,11 +16,15 @@ struct NPC : public Entity {
   bool last = false;
   float dial_count = 1000;
   std::string* dialogue = nullptr;
-  NPC(const Point& pos, MonsterResource* resource, NPC_ID id = NPC_ID::RANDOM,
+  NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
       float speed = 2, const Point& size = {30, 48})
-      : Entity(pos, size, ShapeType::RECT), resource(resource), id(id), speed(speed) {}
+      : Entity(pos, size, ShapeType::RECT, 0, zone),
+        resource(resource),
+        id(id),
+        speed(speed) {}
   void draw() override = 0;
   void update() override {
+    ENTITY_UPDATE();
     sprite_counter++;
     if (dial_count < 1000) {
       dial_count += 0.4F;
@@ -78,11 +82,13 @@ struct NPC : public Entity {
     npc->draw_dialogue();   \
   }
 void Monster::MonsterDiedCallback() noexcept {
-  ItemDropHandler::DropItem(pos.x_ + size.x_ / 2, pos.y_ + size.y_ / 2, stats.level);
+  ItemDropHandler::RollForItemDrop(pos.x_ + size.x_ / 2, pos.y_ + size.y_ / 2,
+                                   stats.level);
   PLAYER_QUESTS.MonsterKilled(type);
   GAME_STATISTICS.MonsterKilled(type);
 }
 #include "npcs/Deckard.h"
 #include "npcs/Aria.h"
+#include "npcs/Marla.h"
 
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_NPC_H_

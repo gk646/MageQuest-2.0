@@ -47,7 +47,7 @@ struct GameLoader {
       }
     }
     PLAYER_STATS.refill_stats();
-    WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
+    WorldManager::load_map(Zone::Hillcrest, {24, 24});
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
     finished_cpu_loading = false;

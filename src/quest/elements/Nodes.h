@@ -127,4 +127,27 @@ struct SPAWN final : public QuestNode {
     return true;
   }
 };
+
+struct NPC_SAY final : public QuestNode {
+  NPC_ID target;
+  std::string txt;
+  bool blockingUntilLineFinished = false;
+  bool startedTalking = false;
+  explicit NPC_SAY(NPC_ID target)
+      : QuestNode("", NodeType::MIX), target(target) {}
+  bool progress() noexcept final {
+    for (auto npc : NPCS) {
+      if (npc->id == target) {
+        if(!startedTalking){
+          npc->update_dialogue(&txt);
+          startedTalking = true;
+        }else if(npc->dial_count == 1000 || !blockingUntilLineFinished){
+          return true;
+        }
+        return false;
+      }
+    }
+    return false;
+  }
+};
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

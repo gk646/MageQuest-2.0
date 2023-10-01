@@ -39,7 +39,7 @@ struct Ghost final : public Monster {
 #endif
   }
   void update() final {
-    BASIC_UPDATE();
+    MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && attack_cd <= 0 && attack == 0) {
       if (!disappeared) {

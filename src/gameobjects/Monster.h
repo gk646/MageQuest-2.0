@@ -58,8 +58,8 @@ struct Monster : public Entity {
     return *this;
   }
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
-  //sender pointer
-#define BASIC_UPDATE()                                           \
+#define MONSTER_UPDATE()                                         \
+  ENTITY_UPDATE()                                                \
   sprite_counter++;                                              \
   tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;               \
   tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;               \
@@ -74,7 +74,7 @@ struct Monster : public Entity {
 
   void draw() override = 0;
   void hit(Projectile& p) noexcept {
-    if (p.from_player && p.active() && attack != -100) {
+    if (p.from_player && p.IsActive() && attack != -100) {
       health_bar.hit();
       status_effects.AddEffects(p.status_effects);
       float dmg = stats.take_damage(p.damage_stats);

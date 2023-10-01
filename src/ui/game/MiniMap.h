@@ -58,7 +58,7 @@ struct MiniMap {
     if(FAST_UI){
       return;
     }
-    std::unique_lock<std::shared_mutex> lock(rwLock);
+
     for (const auto projectile : PROJECTILES) {
       if(projectile->from_player){
         DrawSquareProFast(draw_x + (projectile->tile_pos.x - tile_x) * zoom,

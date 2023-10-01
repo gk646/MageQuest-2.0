@@ -8,16 +8,13 @@ class Game {
   std::thread logic_thread;
 
 #define UPDATE_AND_COLLISION()                                        \
-  std::unique_lock<std::shared_mutex> lock(rwLock);                   \
   SIMD_PRAGMA                                                         \
   for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) { \
     if ((*it)->dead) {                                                \
       delete *it;                                                     \
       it = WORLD_OBJECTS.erase(it);                                   \
     } else {                                                          \
-      if ((*it)->intersects(PLAYER)) {                                \
-        (*it)->collision();                                           \
-      }                                                               \
+      (*it)->update();                                                \
       ++it;                                                           \
     }                                                                 \
   }                                                                   \
@@ -108,6 +105,7 @@ class Game {
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
     GAME_STATISTICS.Update();
+    std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         break;
@@ -144,26 +142,30 @@ class Game {
   CAMERA_X = SCREEN_WIDTH / 2; \
   CAMERA_Y = SCREEN_HEIGHT / 2;
 
-#define DRAW_ENTITIES()                             \
-  std::unique_lock<std::shared_mutex> lock(rwLock);   \
-  for (auto object : WORLD_OBJECTS) {               \
-    object->draw();                                 \
-  }                                                 \
-  for (auto projectile : PROJECTILES) {             \
-    projectile->draw();                             \
-  }                                                 \
-  for (auto monster : MONSTERS) {                   \
-    monster->draw();                                \
-  }                                                 \
-  for (auto npc : NPCS) {                           \
-    npc->draw();                                    \
-  }                                                 \
-  for (auto net_player : OTHER_PLAYERS) {           \
-    if (net_player) {                               \
-      net_player->draw();                           \
-    }                                               \
-  }                                                 \
-  lock.unlock();                                    \
+#define DRAW_ENTITIES()                   \
+  for (auto object : WORLD_OBJECTS) {     \
+    if (object->active) {                  \
+      object->draw();                     \
+    }                                     \
+  }                                       \
+  for (auto projectile : PROJECTILES) {   \
+    projectile->draw();                   \
+  }                                       \
+  for (auto monster : MONSTERS) {         \
+    if (monster->active) {                \
+      monster->draw();                    \
+    }                                     \
+  }                                       \
+  for (auto npc : NPCS) {                 \
+    if (npc->active) {                    \
+      npc->draw();                        \
+    }                                     \
+  }                                       \
+  for (auto net_player : OTHER_PLAYERS) { \
+    if (net_player) {                     \
+      net_player->draw();                 \
+    }                                     \
+  }                                       \
   PLAYER.draw();
 
   static void render_loop() noexcept {
@@ -181,6 +183,7 @@ class Game {
     cxstructs::now(0);
     RESET_CAMERA()
     UI_MANAGER.ui_update();
+    std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
         UI_MANAGER.main_menu.draw();
@@ -189,26 +192,7 @@ class Game {
       case GameState::Game:
         [[likely]] {
           WorldRender::draw();
-          std::unique_lock<std::shared_mutex> lock(rwLock);
-          for (auto object : WORLD_OBJECTS) {
-            object->draw();                                 \
-          }                                                 \
-          for (auto projectile : PROJECTILES) {             \
-            projectile->draw();                             \
-          }                                                 \
-          for (auto monster : MONSTERS) {                   \
-            monster->draw();                                \
-          }                                                 \
-          for (auto npc : NPCS) {                           \
-            npc->draw();                                    \
-          }                                                 \
-          for (auto net_player : OTHER_PLAYERS) {           \
-            if (net_player) {                               \
-              net_player->draw();                           \
-            }                                               \
-          }                                                 \
-          lock.unlock();                                    \
-          PLAYER.draw();
+          DRAW_ENTITIES()
           WorldRender::draw_fore_ground();
           UI_MANAGER.player_ui.draw();
         }
@@ -262,7 +246,7 @@ class Game {
 #endif
     PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
     PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
-    for (uint_fast32_t i = 0; i < 300; i++) {
+    for (uint_fast32_t i = 0; i < 3; i++) {
       MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }
     SettingsMenu::set_full_screen();
@@ -271,7 +255,7 @@ class Game {
     GameSaver::save();
     Multiplayer::CloseMultiplayer();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
-    for (uint16_t i = 0; i < TileLoader::TEXTURE_COUNT+1500; i++) {
+    for (uint16_t i = 0; i < TileLoader::TEXTURE_COUNT + 1500; i++) {
       UnloadTextureI(i);
     }
     logic_thread_running = false;

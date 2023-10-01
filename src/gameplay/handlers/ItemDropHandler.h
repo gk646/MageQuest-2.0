@@ -42,7 +42,7 @@ inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
   }
   return newItem;
 }
-inline static void DropItem(float x, float y, int level) noexcept {
+inline static void RollForItemDrop(float x, float y, int level) noexcept {
   float luck = PLAYER_STATS.effects[LUCK] / (std::sqrt(level) * std::sqrt(level));
 
   if (RANGE_100(RNG_ENGINE) < 85 - luck) return;

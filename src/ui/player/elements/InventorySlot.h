@@ -20,7 +20,7 @@ struct InventorySlot {
     hit_box.y = (y + base_y) * UI_SCALE;
 
     auto ptr = item;  //thread safety
-    DrawRectangleRounded(hit_box, 0.4F, 40, Colors::LightGrey);
+    DrawRectangleRounded(hit_box, 0.4F, 40, Colors::mediumVeryLight);
     DrawRectangleRoundedLines(
         hit_box, 0.4F, 40, 2,
         ptr ? rarity_to_color[ptr->rarity] : Colors::darkBackground);

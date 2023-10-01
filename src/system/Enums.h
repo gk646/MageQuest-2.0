@@ -72,6 +72,7 @@ enum class ItemRarity : uint8_t {
   UNIQUE = 10
 };
 enum class Zone : uint8_t {
+  //only add to bottom as number is needed for saving
   Woodland_Edge,
   EtherRealm,
   DeadPlains,

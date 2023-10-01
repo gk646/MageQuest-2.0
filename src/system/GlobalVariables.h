@@ -76,7 +76,7 @@ inline static int16_t** CURRENT_BACK_GROUND;
 inline static int16_t** CURRENT_MIDDLE_GROUND;
 inline static int16_t** CURRENT_FORE_GROUND;
 inline static bool** CURRENT_MAP_COVER;
-inline static Zone CURRENT_ZONE = Zone::Hillcrest;
+inline static Zone CURRENT_ZONE = Zone::Woodland_Edge;
 inline static int CURRENT_MAP_SIZE = 100;
 inline static int8_t COLLISIONS[6000] = {0};
 inline static uint16_t TEXTURES[6000] = {0};
@@ -88,7 +88,7 @@ inline static std::vector<NPC*> NPCS;
 inline static std::vector<Monster*> MONSTERS;
 
 inline static bool CheckTileCollision(int x, int y) noexcept {
-  return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID &&
+  return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID ||
          COLLISIONS[CURRENT_MIDDLE_GROUND[x][y]] == C_SOLID;
 }
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

@@ -10,6 +10,7 @@ inline MonsterResource OLD_MAN;
 inline MonsterResource ARIA;
 inline MonsterResource NIETZSCHE;
 inline MonsterResource realmKeeper;
+inline MonsterResource MARLA;
 }  // namespace npc
 
 namespace monsters {
