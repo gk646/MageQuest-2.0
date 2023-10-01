@@ -79,13 +79,16 @@ struct Projectile : public Entity {
                              MOUSE_POS.x - pos.x_ - DRAW_X - size.x_ / 2);
     return {std::cos(angle), std::sin(angle)};
   }
-  [[nodiscard]] inline bool active() const noexcept { return !dead && does_damage; }
+  [[nodiscard]] inline bool IsActive() const noexcept { return !dead && does_damage; }
   void update() noexcept override {
     sprite_counter++;
     pos.x_ += move_vector.x * speed;
     pos.y_ += move_vector.y * speed;
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
+    if(CheckTileCollision(tile_pos.x, tile_pos.y)){
+      dead = true;
+    }
     life_span--;
     if (life_span <= 0) {
       dead = true;

@@ -38,7 +38,6 @@ struct WorldRender {
       for (int b = worldRow; b < maxRow; ++b) {
         y_base = b * TILE_SIZE + DRAW_Y;
 
-
         DrawTextureProFastUltra(TEXTURES[CURRENT_BACK_GROUND[i][b]], x_base, y_base);
 #ifdef DRAW_TILE_BORDER
         DrawRectangleLines(x_base, y_base, TILE_SIZE, TILE_SIZE, RED);

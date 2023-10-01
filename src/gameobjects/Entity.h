@@ -4,17 +4,20 @@
 #include "../pathfinding/PathFinder.h"
 
 struct Entity {
+  inline static constexpr float UPDATE_DISTANCE = 32;
   bool dead = false;
   float pov;
   Point pos;
   PointI tile_pos;
   Point size;
   ShapeType shape_type;
-  int sprite_counter = 0;
-  Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0)
-      : pos(pos), size(size), shape_type(shape_type), pov(pov) {}
+  uint16_t sprite_counter = 0;
+  Zone zone;
+  bool active = true;
+  Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0, Zone zone = CURRENT_ZONE)
+      : pos(pos), size(size), shape_type(shape_type), pov(pov) , zone(zone){}
   Entity(const Entity& o) noexcept
-      : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov), dead(o.dead) {}
+      : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov), dead(o.dead), zone(o.zone) {}
   Entity& operator=(const Entity& other) noexcept {
     if (this == &other) {
       return *this;
@@ -30,6 +33,11 @@ struct Entity {
   }
   virtual ~Entity() = default;
   virtual void update() = 0;
+#define ENTITY_UPDATE()                                                               \
+  active =                                                                            \
+      zone == CURRENT_ZONE && PLAYER.tile_pos.dist(this->tile_pos) < UPDATE_DISTANCE; \
+  if (!active) return;
+
   virtual void draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {
     if (pov == 0) {
@@ -177,6 +185,5 @@ struct Entity {
     }
   }
 };
-#include "WorldObject.h"
 #include "elements/ThreatManager.h"
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

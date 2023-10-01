@@ -4,17 +4,17 @@
 struct DroppedItem final : public WorldObject {
   Item* item;
   DroppedItem(const Point& pos, Item* item)
-      : WorldObject(pos, {40, 40}, ShapeType::RECT), item(item) {
+      : WorldObject(pos, {40, 40}, ShapeType::RECT), item(item) {}
 
+  void update() final {
+    ENTITY_UPDATE();
+    if (this->intersects(PLAYER)) {
+      dead = CharacterBag::AddItem(item);
+    }
   }
-
-  void update() final {}
   void draw() final {
-    DrawTextureScaled(item->texture,{pos.x_+DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_}, 0, false, 0, WHITE);
-
-  }
-  void collision() final {
-   dead =  CharacterBag::AddItem(item);
+    DrawTextureScaled(item->texture, {pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_},
+                      0, false, 0, WHITE);
   }
 };
 

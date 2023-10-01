@@ -46,6 +46,7 @@ struct EntityLoader {
     textures::npc::OLD_MAN.load("npc/oldman/");
     textures::npc::realmKeeper.load("npc/realmKeeper/");
     textures::npc::NIETZSCHE.load("npc/nietzsche/");
+    textures::npc::MARLA.load("npc/marla");
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ENTITYLOADER_H_

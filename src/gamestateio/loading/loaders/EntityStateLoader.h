@@ -13,10 +13,10 @@ static void LoadNamedNPCs() {
     auto id = NPC_ID(sqlite3_column_int(stmt, 0));
     auto x = static_cast<float>(sqlite3_column_double(stmt, 1));
     auto y = static_cast<float>(sqlite3_column_double(stmt, 2));
-
+    auto zone = Zone(sqlite3_column_int(stmt, 3));
     switch (id) {
       case NPC_ID::DECKARD:
-        NPCS.push_back(new Deckard(x, y));
+        NPCS.push_back(new Deckard(x, y, zone));
         break;
       case NPC_ID::MARLA:
         break;

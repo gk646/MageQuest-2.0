@@ -20,7 +20,7 @@ struct Player final : public Entity {
   }
   static void hit(Projectile& p) noexcept {
     //TODO dodge chance
-    if (!p.from_player && p.active()) {
+    if (!p.from_player && p.IsActive()) {
       PLAYER_EFFECTS.AddEffects(p.status_effects);
       PLAYER_STATS.take_damage(p.damage_stats);
       p.dead = p.projectile_type == HitType::ONE_HIT;
@@ -124,6 +124,7 @@ struct Player final : public Entity {
 };
 inline static Player PLAYER({150, 150});
 #include "../ui/player/HotBar.h"
+#include "WorldObject.h"
 inline static HotBar PLAYER_HOTBAR{};
 void EntityStats::RemoveEffects() noexcept {
   PLAYER_EFFECTS.RemoveEffects();

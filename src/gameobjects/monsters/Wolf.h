@@ -37,7 +37,7 @@ struct Wolf final : public Monster {
 #endif
   }
   void update() final {
-    BASIC_UPDATE();
+    MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       if ( attack == 0 && attack_cd < 0) {

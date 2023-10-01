@@ -2,8 +2,8 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_NPCS_DECKARD_H_
 
 struct Deckard final : public NPC {
-  Deckard(float x, float y)
-      : NPC({x,y}, &textures::npc::OLD_MAN, NPC_ID::DECKARD, 1.5) {}
+  Deckard(float x, float y, Zone zone)
+      : NPC({x, y}, &textures::npc::OLD_MAN, zone, NPC_ID::DECKARD, 1.5) {}
   void draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 78 / 13], pos.x_ + DRAW_X,

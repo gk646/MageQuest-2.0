@@ -20,7 +20,6 @@ struct StatusEffectHandler {
       effect->RemoveEffect(stats);
     }
   }
-
   void AddEffects(const std::vector<StatusEffect*>& o) {
     for (const auto& new_effect : o) {
       bool is_new = true;
