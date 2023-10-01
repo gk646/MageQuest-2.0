@@ -105,6 +105,7 @@ class Game {
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
     GAME_STATISTICS.Update();
+    WorldAnimations::ProgressAnimations();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
@@ -133,6 +134,7 @@ class Game {
       } break;
     }
     Multiplayer::BroadCastGameState();
+    ScreenEffects::UpdateScreenEffects();
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
     PERF_TIME += GAME_TICK_TIME;
     PERF_FRAMES++;
@@ -144,7 +146,7 @@ class Game {
 
 #define DRAW_ENTITIES()                   \
   for (auto object : WORLD_OBJECTS) {     \
-    if (object->active) {                  \
+    if (object->active) {                 \
       object->draw();                     \
     }                                     \
   }                                       \
@@ -214,6 +216,7 @@ class Game {
       case GameState::GameOver:
         break;
     }
+    ScreenEffects::DrawScreenEffects();
     if (SHOW_FPS) {
       DrawFPS(25, 25);
     }

@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_FONTLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_FONTLOADER_H_
 struct FontLoader{
-
   static void load(){
     ANT_PARTY =  LoadFont((ASSET_PATH+"Fonts/Ant Party.ttf").c_str());
     VARNISHED =  LoadFont((ASSET_PATH+"Fonts/Varnished.ttf").c_str());

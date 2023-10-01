@@ -14,10 +14,16 @@ struct Entity {
   uint16_t sprite_counter = 0;
   Zone zone;
   bool active = true;
-  Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0, Zone zone = CURRENT_ZONE)
-      : pos(pos), size(size), shape_type(shape_type), pov(pov) , zone(zone){}
+  Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0,
+         Zone zone = CURRENT_ZONE)
+      : pos(pos), size(size), shape_type(shape_type), pov(pov), zone(zone) {}
   Entity(const Entity& o) noexcept
-      : pos(o.pos), size(o.size), shape_type(o.shape_type), pov(o.pov), dead(o.dead), zone(o.zone) {}
+      : pos(o.pos),
+        size(o.size),
+        shape_type(o.shape_type),
+        pov(o.pov),
+        dead(o.dead),
+        zone(o.zone) {}
   Entity& operator=(const Entity& other) noexcept {
     if (this == &other) {
       return *this;
