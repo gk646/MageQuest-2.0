@@ -16,6 +16,12 @@ std::vector<std::string> split(const std::string& s, char delim) noexcept {
   }
   return result;
 }
+inline PointI ParsePointI(const std::string& string) noexcept {
+  return {std::stoi(split(string, ',')[0]), std::stoi(split(string, ',')[1])};
+}
+inline Point ParsePoint(const std::string& string) noexcept {
+  return {std::stof(split(string, ',')[0]), std::stof(split(string, ',')[1])};
+}
 Quest* load(const std::string& path, Quest_ID id) {
   auto quest = new Quest(id);
   std::ifstream file(ASSET_PATH + path);
@@ -38,8 +44,7 @@ Quest* load(const std::string& path, Quest_ID id) {
     type = node_to_type[parts[0]];
     switch (type) {
       case NodeType::GOTO: {
-        auto obj = new GOTO(parts[2], {std::stoi(split(parts[1], ',')[0]),
-                                       std::stoi(split(parts[1], ',')[1])});
+        auto obj = new GOTO(parts[2], ParsePointI(parts[1]));
         obj->major_objective = parts[parts.size() - 1] == "MAJOR";
         quest->objectives.push_back(obj);
 
@@ -92,10 +97,8 @@ Quest* load(const std::string& path, Quest_ID id) {
         } else if (parts[2] == "FORE") {
           layer = 2;
         }
-        auto obj = new TILE_ACTION(
-            stringToZoneMap[parts[1]], layer,
-            {std::stoi(split(parts[3], ',')[0]), std::stoi(split(parts[3], ',')[1])},
-            std::stoi(parts[4]));
+        auto obj = new TILE_ACTION(stringToZoneMap[parts[1]], layer,
+                                   ParsePointI(parts[3]), std::stoi(parts[4]));
         quest->objectives.push_back(obj);
       } break;
       case NodeType::NPC_SAY: {
@@ -112,11 +115,10 @@ Quest* load(const std::string& path, Quest_ID id) {
       case NodeType::SPAWN: {
         auto obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
         for (uint_fast32_t i = 3; i < parts.size(); i++) {
-          obj->positions.emplace_back(std::stoi(split(parts[i], ',')[0]),
-                                      std::stoi(split(parts[i], ',')[1]));
+          obj->positions.emplace_back(ParsePointI(parts[i]));
         }
         quest->objectives.push_back(obj);
-      }break;
+      } break;
       default:
         break;
     }

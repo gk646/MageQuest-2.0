@@ -1,7 +1,6 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
 
-#include "ScreenEffects.h"
 #include "WorldAnimations.h"
 
 struct WorldRender {
@@ -51,6 +50,7 @@ struct WorldRender {
         }
       }
     }
+    DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,ScreenEffects::currentDayFade);
   }
   static void draw_fore_ground() noexcept {
     const int worldCol = std::max(PLAYER_TILE->x - 21, 0);

@@ -38,7 +38,7 @@ struct SkeletonSpear final : public Monster {
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
                            pos.y_ + DRAW_Y - 46, 0, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.x_ + size.x_ / 2 > MIRROR_POINT, ScreenEffects::currentDayFade);
     } else {
       dead = true;
     }
@@ -48,7 +48,7 @@ struct SkeletonSpear final : public Monster {
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
                            pos.y_ + DRAW_Y - 46, -30, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.x_ + size.x_ / 2 > MIRROR_POINT, ScreenEffects::currentDayFade);
     } else {
       attack = 0;
     }
@@ -58,7 +58,7 @@ struct SkeletonSpear final : public Monster {
     if (num < 4) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 27,
                            pos.y_ + DRAW_Y - 46, -10, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.x_ + size.x_ / 2 > MIRROR_POINT, ScreenEffects::currentDayFade);
     } else {
       attack = 0;
     }
@@ -68,7 +68,7 @@ struct SkeletonSpear final : public Monster {
     if (num < 5) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 16,
                            pos.y_ + DRAW_Y - 46, -32, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.x_ + size.x_ / 2 > MIRROR_POINT, ScreenEffects::currentDayFade);
     } else {
       attack = 0;
     }
@@ -81,10 +81,10 @@ struct SkeletonSpear final : public Monster {
           {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
           {pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 45, static_cast<float>(texture.width),
            static_cast<float>(texture.height)},
-          {0, 0}, 0, WHITE);
+          {0, 0}, 0, ScreenEffects::currentDayFade);
     } else {
       DrawTextureProFast(resource->walk[sprite_counter % 105 / 15], pos.x_ + DRAW_X - 30,
-                         pos.y_ + DRAW_Y - 45, 0, WHITE);
+                         pos.y_ + DRAW_Y - 45, 0, ScreenEffects::currentDayFade);
     }
   }
   inline void draw_idle() noexcept {
@@ -95,10 +95,10 @@ struct SkeletonSpear final : public Monster {
           {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
           {pos.x_ + DRAW_X - 38, pos.y_ + DRAW_Y - 45, static_cast<float>(texture.width),
            static_cast<float>(texture.height)},
-          {0, 0}, 0, WHITE);
+          {0, 0}, 0, ScreenEffects::currentDayFade);
     } else {
       DrawTextureProFast(resource->idle[sprite_counter % 84 / 12], pos.x_ + DRAW_X - 28,
-                         pos.y_ + DRAW_Y - 45, 0, WHITE);
+                         pos.y_ + DRAW_Y - 45, 0, ScreenEffects::currentDayFade);
     }
   }
   void update() final {

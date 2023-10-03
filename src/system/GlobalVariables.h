@@ -76,7 +76,7 @@ inline static int16_t** CURRENT_BACK_GROUND;
 inline static int16_t** CURRENT_MIDDLE_GROUND;
 inline static int16_t** CURRENT_FORE_GROUND;
 inline static bool** CURRENT_MAP_COVER;
-inline static Zone CURRENT_ZONE = Zone::Woodland_Edge;
+inline static Zone CURRENT_ZONE = Zone::Tutorial;
 inline static int CURRENT_MAP_SIZE = 100;
 inline static int8_t COLLISIONS[6000] = {0};
 inline static uint16_t TEXTURES[6000] = {0};

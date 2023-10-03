@@ -40,7 +40,7 @@ inline static void add(CSteamID steam_id) noexcept {
   if (!get(steam_id)) {
     for (auto& np : OTHER_PLAYERS) {
       if (!np) {
-        np = new NetPlayer({150, 150}, Zone::Woodland_Edge, steam_id);
+        np = new NetPlayer({150, 150}, Zone::Tutorial, steam_id);
         break;
       }
     }
