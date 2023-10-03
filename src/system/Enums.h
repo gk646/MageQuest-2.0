@@ -74,19 +74,20 @@ enum class ItemRarity : uint8_t {
 };
 enum class Zone : uint8_t {
   //only add to bottom as number is needed for saving
-  Woodland_Edge,
+  Tutorial,
   EtherRealm,
   DeadPlains,
   GrassLands,
   City1,
   Ruin_Dungeon,
   Hillcrest,
-  Treasure_Cave,
+  Hillcrest_Treasure_Cave,
   Hillcrest_Mountain_Cave,
   The_Grove,
   TestRoom,
   Goblin_Cave,
-  Hillcrest_Hermit_Cave
+  Hillcrest_Hermit_Cave,
+  END
 };
 enum GameStatistic : uint8_t {
   PIXELS_WALKED,
@@ -285,14 +286,14 @@ inline std::unordered_map<Stat, std::string> statToName = {
 };
 
 inline static std::unordered_map<Zone, std::string> zoneMap = {
-    {Zone::Woodland_Edge, "Woodland Edge"},
+    {Zone::Tutorial, "Woodland Edge"},
     {Zone::EtherRealm, "EtherRealm"},
     {Zone::DeadPlains, "DeadPlains"},
     {Zone::GrassLands, "GrassLands"},
     {Zone::City1, "City1"},
     {Zone::Ruin_Dungeon, "Ruin Dungeon"},
     {Zone::Hillcrest, "Hillcrest"},
-    {Zone::Treasure_Cave, "Treasure Cave"},
+    {Zone::Hillcrest_Treasure_Cave, "Treasure Cave"},
     {Zone::Hillcrest_Mountain_Cave, "Hillcrest Mountain Cave"},
     {Zone::The_Grove, "The Grove"},
     {Zone::TestRoom, "TestRoom"},
@@ -330,19 +331,20 @@ inline std::unordered_map<ItemRarity, Color> rarity_to_color = {
     {ItemRarity::UNIQUE, Colors::highQuality},
 };
 inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
-    {"Woodland Edge", Zone::Woodland_Edge},
+    {"Tutorial", Zone::Tutorial},
     {"EtherRealm", Zone::EtherRealm},
     {"DeadPlains", Zone::DeadPlains},
     {"GrassLands", Zone::GrassLands},
     {"City1", Zone::City1},
     {"Ruin Dungeon", Zone::Ruin_Dungeon},
     {"Hillcrest", Zone::Hillcrest},
-    {"Treasure Cave", Zone::Treasure_Cave},
-    {"Hillcrest Mountain Cave", Zone::Hillcrest_Mountain_Cave},
-    {"The Grove", Zone::The_Grove},
+    {"Hillcrest_Treasure_Cave", Zone::Hillcrest_Treasure_Cave},
+    {"Hillcrest_Mountain_Cave", Zone::Hillcrest_Mountain_Cave},
+    {"TheGrove", Zone::The_Grove},
     {"TestRoom", Zone::TestRoom},
-    {"Goblin Cave", Zone::Goblin_Cave},
-    {"Hillcrest Hermit Cave", Zone::Hillcrest_Hermit_Cave}};
+    {"Goblin_Cave", Zone::Goblin_Cave},
+    {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave}};
+
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #endif  //MAGE_QUEST_SRC_ENUMS_ENUMS_H_

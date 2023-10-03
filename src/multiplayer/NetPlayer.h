@@ -7,7 +7,7 @@ struct NetPlayer final : public Entity {
   std::string name;
   StatusEffectHandler status_effects{stats};
   SteamNetworkingIdentity identity = SteamNetworkingIdentity();
-  Zone zone = Zone::Woodland_Edge;
+  Zone zone = Zone::Tutorial;
   int sprite_counter = 0;
   bool moving = false;
   bool prev_moving = false;

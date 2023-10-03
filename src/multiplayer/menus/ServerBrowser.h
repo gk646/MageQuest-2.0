@@ -54,7 +54,7 @@ struct ServerBrowser {
      Client::init("192.168.2.41");
       GAME_STATE = GameState::Game;
       StopSound(sound::intro);
-      WorldManager::load_map(Zone::Woodland_Edge, {4, 4});
+      WorldManager::LoadMap(Zone::Tutorial, {4, 4});
       */
     }
   }

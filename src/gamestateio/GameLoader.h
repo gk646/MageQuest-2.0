@@ -12,7 +12,7 @@
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
-  static std::array<std::function<void()>,6> load_functions;
+  static std::array<std::function<void()>, 6> load_functions;
   static void load() {
     std::thread worker(load_game);
     worker.detach();
@@ -20,11 +20,11 @@ struct GameLoader {
   static void finish_loading() {
     if (finished_cpu_loading &&
         load_util::current_step < load_functions.size() + load_util::cpu_steps) {
-      load_step(load_functions[load_util::current_step - load_util::cpu_steps]);
+      LoadStep(load_functions[load_util::current_step - load_util::cpu_steps]);
 #ifdef MG2_DEBUG
     } else if (true) {
 #else
-    }else if(RAYLIB_LOGO->finished){
+    } else if (RAYLIB_LOGO->finished) {
 #endif
       setup_game();
     }
@@ -32,22 +32,23 @@ struct GameLoader {
 
  private:
   static void load_game() {
-    load_step(NPCLoader::LoadNamedNPCs);
-    load_step(QuestLoader::load);
-    load_step(SoundLoader::load);
-    load_step(TileLoader::load);
-    load_step(MapLoader::load);
+    LoadStep(TransitionParser::ParseTransitionFile);
+    LoadStep(NPCLoader::LoadNamedNPCs);
+    LoadStep(QuestLoader::load);
+    LoadStep(SoundLoader::load);
+    LoadStep(TileLoader::load);
+    LoadStep(MapLoader::load);
     finished_cpu_loading = true;
   }
-  static void setup_game(){
+  static void setup_game() {
     PlaySoundR(sound::intro);
     for (uint_fast32_t i = 0; i < 10; i++) {
-      if(PLAYER_EQUIPPED[i].item){
+      if (PLAYER_EQUIPPED[i].item) {
         PLAYER_STATS.equip_item(PLAYER_EQUIPPED[i].item->effects);
       }
     }
     PLAYER_STATS.refill_stats();
-    WorldManager::load_map(Zone::Hillcrest, {24, 24});
+    WorldManager::LoadMap(Zone::Hillcrest, {94, 34});
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
     finished_cpu_loading = false;
@@ -58,7 +59,8 @@ struct GameLoader {
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
-std::array<std::function<void()>,6> GameLoader::load_functions = {
-    EntityLoader::load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load, FontLoader::load, DataBaseHandler::load};
+std::array<std::function<void()>, 6> GameLoader::load_functions = {
+    EntityLoader::load,  GuiLoadStyleAshes, TileLoader::load_to_vram,
+    TextureLoader::load, FontLoader::load,  DataBaseHandler::load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_
