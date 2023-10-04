@@ -29,7 +29,7 @@ struct NPC_MOVE final : public QuestNode {
   inline bool progress() noexcept final {
     for (auto npc : NPCS) {
       if (npc->id == target_id) {
-        if (npc->move_to(waypoints[waypoint])) {
+        if (npc->MoveToPointI(waypoints[waypoint])) {
           waypoint++;
           if (waypoint == waypoints.size()) {
             return true;
@@ -127,21 +127,19 @@ struct SPAWN final : public QuestNode {
     return true;
   }
 };
-
 struct NPC_SAY final : public QuestNode {
   NPC_ID target;
   std::string txt;
   bool blockingUntilLineFinished = false;
   bool startedTalking = false;
-  explicit NPC_SAY(NPC_ID target)
-      : QuestNode("", NodeType::MIX), target(target) {}
+  explicit NPC_SAY(NPC_ID target) : QuestNode("", NodeType::MIX), target(target) {}
   bool progress() noexcept final {
     for (auto npc : NPCS) {
       if (npc->id == target) {
-        if(!startedTalking){
+        if (!startedTalking) {
           npc->update_dialogue(&txt);
           startedTalking = true;
-        }else if(npc->dial_count == 1000 || !blockingUntilLineFinished){
+        } else if (npc->dial_count == 1000 || !blockingUntilLineFinished) {
           return true;
         }
         return false;

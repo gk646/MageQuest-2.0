@@ -114,7 +114,7 @@ using namespace cxstructs;
 #include "resources/FontStorage.h"
 #include "graphics/LogoDrawer.h"
 #include "system/Util.h"
-#include "world/maps/Map.h"
+#include "world/Map.h"
 #include "gamestateio/loading/EntityResource.h"
 #include "system/GlobalVariables.h"
 #include "resources/SoundStorage.h"

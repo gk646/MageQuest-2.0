@@ -8,9 +8,9 @@ struct TransitionPoint {
 };
 std::array<std::vector<TransitionPoint>, (int)Zone::END> zoneTPoints;
 }  // namespace WorldManager
-#include "TransitionParser.h"
+#include "elements/TransitionParser.h"
 namespace WorldManager {
-static void LoadMap(Zone zone, PointI pos) {
+static void LoadMap(Zone zone, const PointI& pos) {
   for (const auto& map : MAPS) {
     if (map.zone == zone) {
       CURRENT_BACK_GROUND = map.map_back_ground;
@@ -18,6 +18,7 @@ static void LoadMap(Zone zone, PointI pos) {
       CURRENT_FORE_GROUND = map.map_fore_ground;
       CURRENT_MAP_COVER = map.map_cover;
       CURRENT_MAP_SIZE = map.map_size;
+      CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
       PLAYER.pos = PointI::GetPoint(pos * 48);
       CURRENT_ZONE = zone;
       ScreenEffects::fadeAlpha = 200;
@@ -34,8 +35,17 @@ inline static void CheckTransitions() noexcept {
     }
   }
 }
+inline static void CheckSpawnTriggers() noexcept {
+  if(!CURRENT_SPAWN_TRIGGERS) return;
+  for (auto& t : *CURRENT_SPAWN_TRIGGERS) {
+    if (t.IsClose()) {
+      t.Trigger();
+    }
+  }
+}
 inline static void Update() noexcept {
   WorldAnimations::ProgressAnimations();
+  CheckSpawnTriggers();
   CheckTransitions();
 }
 }  // namespace WorldManager

@@ -65,7 +65,7 @@ struct PlayerUI {
     char_panel.update();
     char_bag.update();
     region_map.update();
-    IsKeyPressedU::update();
+    UpdateTickFunctions::update();
     update_special_items();
   }
   static inline void draw_special_items() noexcept {

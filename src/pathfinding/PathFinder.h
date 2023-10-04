@@ -51,7 +51,7 @@ static PointI AStarPathFinding(const PointI& start, const PointI& target) noexce
     }
     frontier.pop();
     closedSet.insert(current->position);
-    for (const auto& dir : cross_movement) {
+    for (const auto& dir : star_movement) {
       int newX = current->position.x + dir.x;
       int newY = current->position.y + dir.y;
       PointI new_pos(newX, newY);

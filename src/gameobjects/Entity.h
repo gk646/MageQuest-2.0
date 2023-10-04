@@ -4,7 +4,6 @@
 #include "../pathfinding/PathFinder.h"
 
 struct Entity {
-  inline static constexpr float UPDATE_DISTANCE = 32;
   bool dead = false;
   float pov;
   Point pos;
@@ -101,24 +100,36 @@ struct Entity {
     }
   };
   [[nodiscard]] inline bool tile_collision_left(float speed) const noexcept {
+#ifdef NO_CLIP
+    return false;
+#endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
   [[nodiscard]] inline bool tile_collision_right(float speed) const noexcept {
+#ifdef NO_CLIP
+    return false;
+#endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
   [[nodiscard]] inline bool tile_collision_down(float speed) const noexcept {
+#ifdef NO_CLIP
+    return false;
+#endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
            COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
   }
   [[nodiscard]] inline bool tile_collision_up(float speed) const noexcept {
+#ifdef NO_CLIP
+    return false;
+#endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
     return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
@@ -156,7 +167,7 @@ struct Entity {
            COLLISIONS[CURRENT_MIDDLE_GROUND[entXLeft][entYDown]] == C_SOLID ||
            tile_collision_left(speed) || tile_collision_down(speed);
   }
-  void decideMovement(PointI next, float speed) noexcept {
+  void decideMovement(const PointI& next, float speed) noexcept {
     bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
     bool canMoveLeft = tile_pos.x > next.x && !tile_collision_left(speed);
     bool canMoveUp = tile_pos.y > next.y && !tile_collision_up(speed);

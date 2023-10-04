@@ -32,6 +32,7 @@ inline static Vector2 MOUSE_POS = GetMousePosition();
 inline static bool FRIENDLY_FIRE = false;
 #include "../gameplay/GameStatistics.h"
 inline static GameStatistics GAME_STATISTICS{};
+inline static constexpr float UPDATE_DISTANCE = 32;
 
 /* |-----------------------------------------------------|
  * |                      STEAM                          |
@@ -72,10 +73,11 @@ class NPC;
 class Monster;
 class Player;
 inline static uint_fast32_t MONSTER_ID = 1;
-inline static int16_t** CURRENT_BACK_GROUND;
-inline static int16_t** CURRENT_MIDDLE_GROUND;
-inline static int16_t** CURRENT_FORE_GROUND;
-inline static bool** CURRENT_MAP_COVER;
+inline static int16_t** CURRENT_BACK_GROUND = nullptr;
+inline static int16_t** CURRENT_MIDDLE_GROUND= nullptr;
+inline static int16_t** CURRENT_FORE_GROUND= nullptr;
+inline static bool** CURRENT_MAP_COVER= nullptr;
+inline static std::vector<SpawnTrigger>* CURRENT_SPAWN_TRIGGERS;
 inline static Zone CURRENT_ZONE = Zone::Tutorial;
 inline static int CURRENT_MAP_SIZE = 100;
 inline static int8_t COLLISIONS[6000] = {0};
