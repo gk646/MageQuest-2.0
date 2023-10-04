@@ -67,4 +67,14 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
 
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
 }
+namespace IsKeyPressedU {
+inline static bool e_previous[2] = {false, false};
+inline static void update() noexcept {
+  e_previous[0] = e_previous[1];
+  e_previous[1] = IsKeyDown(KEY_E);
+}
+inline static bool E() noexcept {
+  return e_previous[0] && !e_previous[1];
+}
+}  // namespace IsKeyPressedU
 #endif  //MAGE_QUEST_SRC_UTIL_MATHUTIL_H_

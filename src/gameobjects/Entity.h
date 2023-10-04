@@ -40,6 +40,8 @@ struct Entity {
   virtual ~Entity() = default;
   virtual void update() = 0;
 #define ENTITY_UPDATE()                                                               \
+  tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;                    \
+  tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;                    \
   active =                                                                            \
       zone == CURRENT_ZONE && PLAYER.tile_pos.dist(this->tile_pos) < UPDATE_DISTANCE; \
   if (!active) return;

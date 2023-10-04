@@ -31,8 +31,8 @@ struct Player final : public Entity {
       GAME_STATE = GameState::GameOver;
     }
     float speed = PLAYER_STATS.get_speed();
-    if(PLAYER_STATS.stunned) {
-     return;
+    if (PLAYER_STATS.stunned) {
+      return;
     }
 
     moving = false;
@@ -54,13 +54,13 @@ struct Player final : public Entity {
       flip = false;
       moving = true;
     }
-    if(moving){
+    if (moving) {
       GAME_STATISTICS.WalkPixels(speed);
     }
-    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
-
-    Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_), static_cast<int16_t>(pos.y_));
+    tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
+    tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
+    Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
+                                   static_cast<int16_t>(pos.y_));
     sprite_counter++;
   }
   void draw() final {

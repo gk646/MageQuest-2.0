@@ -8,14 +8,14 @@ struct EnergySphere_Skill final : public Skill {
   explicit EnergySphere_Skill(bool from_player)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::ARCANE, BASE_DMG},
               from_player, 1, &textures::ui::skillbar::icons::energy_sphere) {}
-  void draw(float x, float y, float size) const noexcept final {
-    Skill::draw(x, y, size);
+  void Draw(float x, float y, float size) const noexcept final {
+    Skill::Draw(x, y, size);
     if(cool_down_ticks < LIFESPAN){
       DrawSupportBar(x, y, 1- cool_down_ticks / LIFESPAN);
     }
   }
   void activate() final {
-    use();
+    TriggerSkill();
     float posX = PLAYER_X + PLAYER.size.x_ / 2;
     float posY = PLAYER_Y + (PLAYER.size.y_ - EnergySphere::HEIGHT) / 2;
     float angle = std::atan2(MOUSE_POS.y - posY - DRAW_Y  - EnergySphere::HEIGHT/2,

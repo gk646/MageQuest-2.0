@@ -10,7 +10,7 @@ struct FireBall_Skill final : public Skill {
               from_player, 1,&textures::ui::skillbar::icons::pyroBlast) {}
 
   void activate() final {
-    use();
+    TriggerSkill();
     auto mouse_pos = MOUSE_POS;
     float angle =
         std::atan2(mouse_pos.y - (PLAYER_Y + DRAW_Y), mouse_pos.x - (PLAYER_X + DRAW_X));

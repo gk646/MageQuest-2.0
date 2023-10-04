@@ -5,6 +5,7 @@ struct SkillStats {
   float cool_down = 0;
   float mana_cost = 0;
   float health_cost = 0;
+  uint16_t range = 0;
 };
 
 struct DamageStats {
@@ -89,7 +90,7 @@ struct EntityStats {
   inline int GetRemainingCD(const SkillStats& stats) noexcept {
     return stats.cool_down * (1 - effects[CDR_P]);
   }
-  inline void use_skill(const SkillStats& stats) noexcept {
+  inline void UseSkill(const SkillStats& stats) noexcept {
     mana -= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline void equip_item(const float* effect_arr) noexcept {

@@ -8,7 +8,7 @@ struct Dummy_Skill final : public Skill {
               from_player, 1, new Texture()) {}
 
   void activate() final {
-    use();
+    TriggerSkill();
 
     PROJECTILES.push_back(
         new Dummy({PLAYER_X + PLAYER.size.x_ / 2,

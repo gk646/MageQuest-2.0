@@ -23,7 +23,7 @@ struct Monster : public Entity {
           MonsterType type, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)
       : Entity(pos, size, shape_type),
-        health_bar(size.x_),
+        health_bar((int)size.x_),
         stats(stats),
         resource(resource),
         type(type) {
@@ -61,8 +61,6 @@ struct Monster : public Entity {
 #define MONSTER_UPDATE()                                         \
   ENTITY_UPDATE()                                                \
   sprite_counter++;                                              \
-  tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;               \
-  tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;               \
   health_bar.update();                                           \
   status_effects.Update();                                       \
   CheckForDeath();                                               \
@@ -93,7 +91,7 @@ struct Monster : public Entity {
     if (attack != 0) return false;
     PointI point;
 
-    if ((point = astar_pathfinding(tile_pos, ent->tile_pos)) > 0) [[likely]] {
+    if ((point = PathFinding::AStarPathFinding(tile_pos, ent->tile_pos)) > 0) [[likely]] {
       decideMovement(point, stats.get_speed());
       moving = true;
       return false;
@@ -113,7 +111,7 @@ struct Monster : public Entity {
     return true;
   }
   inline void update_state(UDP_MonsterUpdate* data) noexcept {
-    if (stats.health != data->new_health) {
+    if (stats.health != (float)data->new_health) {
       stats.health = data->new_health;
       health_bar.hit();
     }
@@ -123,8 +121,8 @@ struct Monster : public Entity {
       attack = data->action_state;
     }
 
-    flip = (data->x < pos.x_);
-    if (pos.x_ == data->x && pos.y_ == data->y) {
+    flip = ((float)data->x < pos.x_);
+    if ((int)pos.x_ == data->x && (int)pos.y_ == data->y) {
       if (prev_moving) {
         prev_moving = false;
         return;
@@ -211,9 +209,9 @@ void Server::BroadCastMonsterUpdates() noexcept {
     if (m->moving || m->health_bar.delay > 0 || m->attack != 0) {
       Server::SendMsgToAllUsers(
           UDP_MONSTER_UPDATE,
-          new UDP_MonsterUpdate(m->u_id, static_cast<uint16_t>(m->pos.x_),
-                                static_cast<uint16_t>(m->pos.y_), m->stats.health,
-                                static_cast<int8_t>(m->attack)),
+          new UDP_MonsterUpdate(
+              m->u_id, static_cast<uint16_t>(m->pos.x_), static_cast<uint16_t>(m->pos.y_),
+              (uint16_t)m->stats.health, static_cast<int8_t>(m->attack)),
           sizeof(UDP_MonsterUpdate));
     }
   }

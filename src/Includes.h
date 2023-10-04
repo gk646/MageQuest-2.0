@@ -110,7 +110,6 @@ using namespace cxstructs;
 #include "system/Definitions.h"
 #include "resources/Colors.h"
 #include "system/Enums.h"
-#include "system/KeyPressUpdateTickRate.h"
 #include "system/GameSettings.h"
 #include "resources/FontStorage.h"
 #include "graphics/LogoDrawer.h"
