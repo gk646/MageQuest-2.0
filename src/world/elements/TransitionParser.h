@@ -16,12 +16,12 @@ static void ParseTransitionFile() {
   while (std::getline(file, line)) {
     if (line.empty()) break;
     parts.clear();
-    parts = ScriptParser::split(line, ':');
+    parts = split(line, ':');
     zone = stringToZoneMap[parts[0]];
-    PointI dest = ScriptParser::ParsePointI(parts[1]);
+    PointI dest = ParsePointI(parts[1]);
     Zone destZone = stringToZoneMap[parts[2]];
     for (uint_fast32_t i = 3; i < parts.size(); i++) {
-      tempPoints[(int)zone].emplace_back(ScriptParser::ParsePointI(parts[i]),dest,destZone);
+      tempPoints[(int)zone].emplace_back(ParsePointI(parts[i]),dest,destZone);
     }
   }
 

@@ -161,7 +161,6 @@ struct TileLoader {
     COLLISIONS[334] = C_SOLID;
     COLLISIONS[586] = -1;
     COLLISIONS[597] = -1;
-    COLLISIONS[590] = -1;
     for (uint_fast32_t i = 572; i < 636; i++) {
       COLLISIONS[i] = C_SOLID;
     }
@@ -639,7 +638,6 @@ struct TileLoader {
     COLLISIONS[2055] = C_SOLID;
     COLLISIONS[2057] = C_SOLID;
     COLLISIONS[2058] = C_SOLID;
-    COLLISIONS[2215] = C_SOLID;
     COLLISIONS[2298] = C_SOLID;
     COLLISIONS[2337] = C_SOLID;
     COLLISIONS[2338] = C_SOLID;

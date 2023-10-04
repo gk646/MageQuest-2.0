@@ -7,7 +7,7 @@
  */
 enum class GameState { MainMenu, GameMenu, Game, Loading, GameOver };
 enum class MenuState { Main, Settings, ServerBrowser, HostGame };
-enum class MapLayer : uint8_t { BACK_GROUND, MIDDLE_GROUND, FRONT};
+enum class MapLayer : uint8_t { BACK_GROUND, MIDDLE_GROUND, FRONT };
 
 /* |-----------------------------------------------------|
  * |                    GAMEPLAY                         |
@@ -44,11 +44,12 @@ enum class MonsterType : uint8_t {
   SKEL_SHIELD,
   SNAKE
 };
-enum class EffectType: uint8_t{STUN, BURN, SLOW} ;
+enum class EffectType : uint8_t { STUN, BURN, SLOW };
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
+enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
 enum class ItemType : uint8_t {
   HEAD = 5,
   CHEST = 4,
@@ -227,6 +228,11 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"BLOOD_HOUND", MonsterType::BLOOD_HOUND},
     {"SNAKE", MonsterType::SNAKE}};
 
+inline static std::unordered_map<std::string, TriggerSpreadType> stringToTriggerType = {
+    {"mixedGoblin", TriggerSpreadType::MIXED_GOBLIN},
+    {"mixeall", TriggerSpreadType::MIX_ALL},
+};
+
 enum ProjectileType : uint8_t {
   POISON_BALL,
   FIRE_STRIKE,
@@ -282,8 +288,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {ARMOUR, "Armour"},
     {MAX_SHIELD, "Max Shield"},
     {SPEED_MULT_P, "Speed (%)"},
-    {DODGE_CHANCE,"Dodge Chance"}
-};
+    {DODGE_CHANCE, "Dodge Chance"}};
 
 inline static std::unordered_map<Zone, std::string> zoneMap = {
     {Zone::Tutorial, "Woodland Edge"},
@@ -336,7 +341,7 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"DeadPlains", Zone::DeadPlains},
     {"GrassLands", Zone::GrassLands},
     {"City1", Zone::City1},
-    {"Ruin Dungeon", Zone::Ruin_Dungeon},
+    {"TutorialDungeon", Zone::Ruin_Dungeon},
     {"Hillcrest", Zone::Hillcrest},
     {"Hillcrest_Treasure_Cave", Zone::Hillcrest_Treasure_Cave},
     {"Hillcrest_Mountain_Cave", Zone::Hillcrest_Mountain_Cave},

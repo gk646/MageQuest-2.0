@@ -31,10 +31,8 @@ struct NPC : public Entity {
     } else {
       show_dial_delay--;
     }
-    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
   }
-  bool move_to(const PointI& next) noexcept {
+  bool MoveToPointI(const PointI& next) noexcept {
     moving = false;
     PointI next_pos;
     if ((next_pos = PathFinding::AStarPathFinding(tile_pos, next)) > 0) {
@@ -62,20 +60,20 @@ struct NPC : public Entity {
 };
 
 #include "../quest/QuestHandler.h"
-#define INTERACT_WITH_PLAYER()                          \
-  if (IsKeyPressedU::E() && this->intersects(PLAYER)) { \
-    if (!dialogue) {                                    \
-      PLAYER_QUESTS.InteractWithNPC(this);              \
-      dial_count = 0;                                   \
-      show_dial_delay = 400;                            \
-    } else if (show_dial_delay < 0) {                   \
-      dial_count = 0;                                   \
-      show_dial_delay = 400;                            \
-    } else if (dial_count < 1000) {                     \
-      dial_count = 1000;                                \
-    } else {                                            \
-      PLAYER_QUESTS.InteractWithNPC(this);              \
-    }                                                   \
+#define INTERACT_WITH_PLAYER()                                       \
+  if (UpdateTickFunctions::EPressed() && this->intersects(PLAYER)) { \
+    if (!dialogue) {                                                 \
+      PLAYER_QUESTS.InteractWithNPC(this);                           \
+      dial_count = 0;                                                \
+      show_dial_delay = 400;                                         \
+    } else if (show_dial_delay < 0) {                                \
+      dial_count = 0;                                                \
+      show_dial_delay = 400;                                         \
+    } else if (dial_count < 1000) {                                  \
+      dial_count = 1000;                                             \
+    } else {                                                         \
+      PLAYER_QUESTS.InteractWithNPC(this);                           \
+    }                                                                \
   }
 #define DRAW_NPC_DIALOGUE() \
   for (auto npc : NPCS) {   \

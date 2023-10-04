@@ -67,14 +67,37 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
 
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
 }
-namespace IsKeyPressedU {
+
+std::vector<std::string> split(const std::string& s, char delim) noexcept {
+  std::vector<std::string> result;
+  std::string_view sv(s);
+  while (!sv.empty()) {
+    size_t pos = sv.find(delim);
+    if (pos == std::string_view::npos) {
+      result.emplace_back(sv);
+      break;
+    } else {
+      result.emplace_back(sv.substr(0, pos));
+      sv.remove_prefix(pos + 1);
+    }
+  }
+  return result;
+}
+inline PointI ParsePointI(const std::string& string) noexcept {
+  return {std::stoi(split(string, ',')[0]), std::stoi(split(string, ',')[1])};
+}
+inline Point ParsePoint(const std::string& string) noexcept {
+  return {std::stof(split(string, ',')[0]), std::stof(split(string, ',')[1])};
+}
+
+namespace UpdateTickFunctions {
 inline static bool e_previous[2] = {false, false};
 inline static void update() noexcept {
   e_previous[0] = e_previous[1];
   e_previous[1] = IsKeyDown(KEY_E);
 }
-inline static bool E() noexcept {
+inline static bool EPressed() noexcept {
   return e_previous[0] && !e_previous[1];
 }
-}  // namespace IsKeyPressedU
+}  // namespace UpdateTickFunctions
 #endif  //MAGE_QUEST_SRC_UTIL_MATHUTIL_H_

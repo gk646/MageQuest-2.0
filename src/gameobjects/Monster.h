@@ -181,12 +181,14 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
     case MonsterType::KNIGHT:
       break;
     case MonsterType::MUSHROOM:
+      return new BloodHound({x, y}, level);
       break;
     case MonsterType::SKEL_ARCHER:
       break;
     case MonsterType::SKEL_SHIELD:
       break;
     case MonsterType::SNAKE:
+      return new BloodHound({x, y}, level);
       break;
     case MonsterType::GHOST:
       break;
@@ -251,6 +253,18 @@ void ThreatManager::Update() noexcept {
         }
       }
     }
+  }
+}
+
+void SpawnTrigger::Trigger() noexcept {
+  if (triggered) return;
+  triggered = true;
+
+  if (level == 0) level = PLAYER_STATS.level;
+  if(isSingular){
+    MONSTERS.push_back(Monster::GetMonster(pos.x,pos.y,type,level));
+  }else{
+
   }
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

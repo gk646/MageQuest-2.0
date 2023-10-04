@@ -29,33 +29,34 @@ struct Player final : public Entity {
   void update() final {
     if (dead) {
       GAME_STATE = GameState::GameOver;
-    }
-    float speed = PLAYER_STATS.get_speed();
-    if (PLAYER_STATS.stunned) {
+      return;
+    } else if (PLAYER_STATS.stunned) {
       return;
     }
+    float speed = PLAYER_STATS.get_speed();
 
     moving = false;
     if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
       pos.y_ -= speed;
+      GAME_STATISTICS.WalkPixels(speed);
       moving = true;
     }
     if (IsKeyDown(KEY_S) && !tile_collision_down(speed)) {
       pos.y_ += speed;
+      GAME_STATISTICS.WalkPixels(speed);
       moving = true;
     }
     if (IsKeyDown(KEY_A) && !tile_collision_left(speed)) {
       pos.x_ -= speed;
+      GAME_STATISTICS.WalkPixels(speed);
       flip = true;
       moving = true;
     }
     if (IsKeyDown(KEY_D) && !tile_collision_right(speed)) {
       pos.x_ += speed;
+      GAME_STATISTICS.WalkPixels(speed);
       flip = false;
       moving = true;
-    }
-    if (moving) {
-      GAME_STATISTICS.WalkPixels(speed);
     }
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
@@ -131,5 +132,9 @@ void EntityStats::RemoveEffects() noexcept {
 }
 void EntityStats::ApplyEffects() noexcept {
   PLAYER_EFFECTS.ApplyEffects();
+}
+
+bool SpawnTrigger::IsClose() const noexcept {
+  return PLAYER.pos.dist(pos.x + size.x / 2, pos.y + size.y / 2) < UPDATE_DISTANCE * 48;
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
