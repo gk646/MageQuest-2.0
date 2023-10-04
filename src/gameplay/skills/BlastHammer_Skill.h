@@ -10,7 +10,7 @@ struct BlastHammer_Skill final : public Skill {
               from_player, 1,&textures::ui::skillbar::icons::blastHammer) {}
 
   void activate() final {
-    use();
+    TriggerSkill();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X- BlastHammer::width/2, PLAYER_Y + MOUSE_POS.y - CAMERA_Y- BlastHammer::height/2};
     float damage = PLAYER_STATS.get_ability_dmg(damage_stats);
 

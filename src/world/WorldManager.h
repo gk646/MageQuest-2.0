@@ -13,18 +13,15 @@ namespace WorldManager {
 static void LoadMap(Zone zone, PointI pos) {
   for (const auto& map : MAPS) {
     if (map.zone == zone) {
-      GAME_STATE = GameState::Loading;
-      std::this_thread::sleep_for(std::chrono::milliseconds(16));
-      CURRENT_ZONE = zone;
       CURRENT_BACK_GROUND = map.map_back_ground;
       CURRENT_MIDDLE_GROUND = map.map_middle_ground;
       CURRENT_FORE_GROUND = map.map_fore_ground;
       CURRENT_MAP_COVER = map.map_cover;
       CURRENT_MAP_SIZE = map.map_size;
-      WorldAnimations::CacheAnimationTiles();
       PLAYER.pos = PointI::GetPoint(pos * 48);
-      ScreenEffects::fadeAlpha = 254;
-      GAME_STATE = GameState::Game;
+      CURRENT_ZONE = zone;
+      ScreenEffects::fadeAlpha = 200;
+      WorldAnimations::CacheAnimationTiles();
       return;
     }
   }

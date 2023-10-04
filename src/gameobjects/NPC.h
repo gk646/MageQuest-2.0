@@ -37,7 +37,7 @@ struct NPC : public Entity {
   bool move_to(const PointI& next) noexcept {
     moving = false;
     PointI next_pos;
-    if ((next_pos = astar_pathfinding(tile_pos, next)) > 0) {
+    if ((next_pos = PathFinding::AStarPathFinding(tile_pos, next)) > 0) {
       decideMovement(next_pos, speed);
       moving = true;
     } else if (next_pos == 0) {

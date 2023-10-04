@@ -46,28 +46,32 @@ inline static void CacheAnimationTiles() noexcept {
   for (auto& list : animationLists) {
     list.animatedTiles.clear();
   }
-  for (uint_fast32_t l = 0; l < 3; l++) {
-    auto layer = MapLayer(l);
-    for (int i = 0; i < CURRENT_MAP_SIZE; i++) {
-      for (int j = 0; j < CURRENT_MAP_SIZE; j++) {
-        for (auto& animList : animationLists) {
-          switch (layer) {
-            case MapLayer::BACK_GROUND:
-              if (animList.Contains(CURRENT_BACK_GROUND[i][j])) {
-                animList.animatedTiles.emplace_back(PointI{i, j}, 0, layer, 0);
-              }
-              break;
-            case MapLayer::MIDDLE_GROUND:
-              if (animList.Contains(CURRENT_MIDDLE_GROUND[i][j])) {
-                animList.animatedTiles.emplace_back(PointI{i, j}, 0, layer, 0);
-              }
-              break;
-            case MapLayer::FRONT:
-              if (animList.Contains(CURRENT_FORE_GROUND[i][j])) {
-                animList.animatedTiles.emplace_back(PointI{i, j}, 0, layer, 0);
-              }
-              break;
-          }
+
+  for (int i = 0; i < CURRENT_MAP_SIZE; i++) {
+    for (int j = 0; j < CURRENT_MAP_SIZE; j++) {
+      for (auto& animList : animationLists) {
+        if (animList.Contains(CURRENT_BACK_GROUND[i][j])) {
+          animList.animatedTiles.emplace_back(PointI{i, j}, 0, MapLayer::BACK_GROUND, (int)(RANGE_01(RNG_ENGINE)*(animList.tileNums.size()-1)));
+        }
+      }
+    }
+  }
+  for (int i = 0; i < CURRENT_MAP_SIZE; i++) {
+    for (int j = 0; j < CURRENT_MAP_SIZE; j++) {
+      for (auto& animList : animationLists) {
+        if (animList.Contains(CURRENT_MIDDLE_GROUND[i][j])) {
+          animList.animatedTiles.emplace_back(PointI{i, j}, 0, MapLayer::MIDDLE_GROUND,
+                                              (int)(RANGE_01(RNG_ENGINE)*(animList.tileNums.size()-1)));
+        }
+      }
+    }
+  }
+  for (int i = 0; i < CURRENT_MAP_SIZE; i++) {
+    for (int j = 0; j < CURRENT_MAP_SIZE; j++) {
+      for (auto& animList : animationLists) {
+
+        if (animList.Contains(CURRENT_FORE_GROUND[i][j])) {
+          animList.animatedTiles.emplace_back(PointI{i, j}, 0, MapLayer::FRONT, (int)(RANGE_01(RNG_ENGINE)*(animList.tileNums.size()-1)));
         }
       }
     }

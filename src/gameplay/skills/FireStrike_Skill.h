@@ -7,12 +7,13 @@ struct FireStrike_Skill final : public Skill {
   static constexpr float SPEED = 2;
   int num_fireballs;
   FireStrike_Skill(bool from_player, int num_fireballs)
-      : Skill(SkillStats{400, 10, 0}, DamageStats{DamageType::FIRE, BASE_DMG},
-              from_player, 2,&textures::ui::skillbar::icons::fireBurst),
+      : Skill(SkillStats{400, 10, 0, 384}, DamageStats{DamageType::FIRE, BASE_DMG},
+              from_player, 2, &textures::ui::skillbar::icons::fireBurst),
         num_fireballs(num_fireballs) {}
 
   void activate() final {
-    use();
+    if (!RangeLineOfSightCheck()) return;
+    TriggerSkill();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - FireBall::width / 2,
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - FireBall::height / 2};
     const float interval_angle = 360.0f / num_fireballs;
@@ -28,7 +29,7 @@ struct FireStrike_Skill final : public Skill {
 
       PROJECTILES.emplace_back(new FireBall(pos, from_player, LIFE_SPAN, SPEED,
                                             damagePerFireball, HitType::CONTINUOUS, {},
-                                            pov, {x_component, y_component},&PLAYER));
+                                            pov, {x_component, y_component}, &PLAYER));
     }
   }
 };
