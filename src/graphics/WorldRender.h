@@ -50,7 +50,7 @@ struct WorldRender {
         }
       }
     }
-    DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,ScreenEffects::currentDayFade);
+   // DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT, Lighting::currentDayFade);
   }
   static void draw_fore_ground() noexcept {
     const int worldCol = std::max(PLAYER_TILE->x - 21, 0);

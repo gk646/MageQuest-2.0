@@ -135,7 +135,7 @@ class Game {
     }
     lock.unlock();
     Multiplayer::BroadCastGameState();
-    ScreenEffects::UpdateScreenEffects();
+    Lighting::UpdateScreenEffects();
     GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
     PERF_TIME += GAME_TICK_TIME;
     PERF_FRAMES++;
@@ -174,7 +174,7 @@ class Game {
   static void render_loop() noexcept {
     while (!WindowShouldClose()) {
       BeginDrawing();
-      ClearBackground(WHITE);
+      ClearBackground(RED);
 
       draw_frame();
 
@@ -194,11 +194,18 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
+          Vector2 mousePosition = {(float)GetMouseX(),
+                                   (float)(GetScreenHeight() - GetMouseY())};
+          SetShaderValue(Lighting::Shaders::spotLight,
+                         Lighting::Shaders::SPOT_LIGHT_POSITION, &mousePosition,
+                         SHADER_UNIFORM_VEC2);
+          BeginShaderMode(Lighting::Shaders::spotLight);
           WorldRender::draw();
           DRAW_ENTITIES()
+          EndShaderMode();
           WorldRender::draw_fore_ground();
           UI_MANAGER.player_ui.draw();
-          ScreenEffects::DrawScreenEffects();
+          Lighting::DrawScreenEffects();
         }
         break;
       case GameState::GameMenu: {

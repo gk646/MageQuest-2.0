@@ -1,6 +1,12 @@
-#ifndef MAGEQUEST_SRC_GRAPHICS_SCREENEFFECTS_H_
-#define MAGEQUEST_SRC_GRAPHICS_SCREENEFFECTS_H_
-namespace ScreenEffects {
+#ifndef MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_
+#define MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_
+namespace Lighting {
+namespace Shaders {
+inline static Shader spotLight;
+inline static int SPOT_LIGHT_RADIUS;
+inline static int SPOT_LIGHT_POSITION;
+inline static int SPOT_LIGHT_COLOR;
+}  // namespace Shaders
 inline static constexpr uint16_t FULL_DAY_TICKS = 15 * 60 * 60;
 inline static uint16_t dayTicks = 0;
 inline static Color currentDayFade{24, 20, 37, 0};
@@ -27,5 +33,5 @@ inline static void UpdateScreenEffects() noexcept {
   dayTicks = (dayTicks + 1) % FULL_DAY_TICKS;
   currentDayFade.a = CalculateAlpha();
 }
-}  // namespace ScreenEffects
-#endif  //MAGEQUEST_SRC_GRAPHICS_SCREENEFFECTS_H_
+}  // namespace Lighting
+#endif  //MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_

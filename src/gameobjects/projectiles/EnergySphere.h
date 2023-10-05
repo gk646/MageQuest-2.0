@@ -12,8 +12,10 @@ struct EnergySphere final : Projectile {
                    statusEffects, movementDirection, 0, nullptr,
                    &textures::projectile::ENERGY_SPHERE,sender) {}
   void draw() final {
+
     DrawTextureProFast(resources->frames[sprite_counter % 42 / 7], pos.x_ + DRAW_X - 3,
                        pos.y_ + DRAW_Y - 3, 0, WHITE);
+
 #ifdef DRAW_HITBOXES
     draw_hitbox();
 #endif

@@ -182,14 +182,14 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
       break;
     case MonsterType::MUSHROOM:
       return new BloodHound({x, y}, level);
-      break;
+      //TODO new monsters
+      //TODO finish blood hound texture
     case MonsterType::SKEL_ARCHER:
       break;
     case MonsterType::SKEL_SHIELD:
       break;
     case MonsterType::SNAKE:
       return new BloodHound({x, y}, level);
-      break;
     case MonsterType::GHOST:
       break;
     case MonsterType::BLOOD_HOUND:
@@ -261,10 +261,9 @@ void SpawnTrigger::Trigger() noexcept {
   triggered = true;
 
   if (level == 0) level = PLAYER_STATS.level;
-  if(isSingular){
-    MONSTERS.push_back(Monster::GetMonster(pos.x,pos.y,type,level));
-  }else{
-
+  if (isSingular) {
+    MONSTERS.push_back(Monster::GetMonster(pos.x, pos.y, type, level));
+  } else {
   }
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

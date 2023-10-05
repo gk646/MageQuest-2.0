@@ -130,7 +130,7 @@ struct SPAWN final : public QuestNode {
 struct NPC_SAY final : public QuestNode {
   NPC_ID target;
   std::string txt;
-  bool blockingUntilLineFinished = false;
+  bool skipWait = false;
   bool startedTalking = false;
   explicit NPC_SAY(NPC_ID target) : QuestNode("", NodeType::MIX), target(target) {}
   bool progress() noexcept final {
@@ -139,7 +139,7 @@ struct NPC_SAY final : public QuestNode {
         if (!startedTalking) {
           npc->update_dialogue(&txt);
           startedTalking = true;
-        } else if (npc->dial_count == 1000 || !blockingUntilLineFinished) {
+        } else if (npc->dial_count == 1000 || skipWait) {
           return true;
         }
         return false;

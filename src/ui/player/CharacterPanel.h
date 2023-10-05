@@ -115,8 +115,8 @@ struct CharacterPanel : public Window {
       DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2, y + SCALE(40),
                        Colors::darkBackground);
     }
-    sprintf(buffer, "Level:%i", (int)PLAYER_STATS.level);
-    DrawCenteredText(MINECRAFT_REGULAR, 16, buffer, x + size / 2, y + SCALE(25),
+    sprintf(buffer, "Level: %i", (int)PLAYER_STATS.level);
+    DrawCenteredText(MINECRAFT_BOLD, SCALE(16), buffer, x + size / 2, y + SCALE(25),
                      Colors::darkBackground);
   }
   void DrawStatCells(float x, float y) noexcept {

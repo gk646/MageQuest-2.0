@@ -3,6 +3,7 @@
 namespace QuestLoader {
 static void load() noexcept {
   Quests::TUTORIAL = ScriptParser::load("Quests/Tutorial.mgqs", Quest_ID::TUTORIAL);
+  Quests::MARLA_LOST_NECKLACE = ScriptParser::load("Quests/Marla.mgqs", Quest_ID::MARLA);
 
 }
 }  // namespace QuestLoader
