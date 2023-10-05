@@ -21,7 +21,7 @@ static void LoadMap(Zone zone, const PointI& pos) {
       CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
       PLAYER.pos = PointI::GetPoint(pos * 48);
       CURRENT_ZONE = zone;
-      ScreenEffects::fadeAlpha = 200;
+      Lighting::fadeAlpha = 200;
       WorldAnimations::CacheAnimationTiles();
       return;
     }

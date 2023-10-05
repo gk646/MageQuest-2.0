@@ -113,7 +113,7 @@ PointI astar_pathfinding_visual(const PointI& start, const PointI& target) {
 }
  */
 inline static bool LineOfSightCheck(PointI start, const Point& endPoint) {
-  PointI end = {static_cast<int>(endPoint.x_/48),static_cast<int>(endPoint.y_/48)};
+  PointI end = {static_cast<int>(endPoint.x_ / 48), static_cast<int>(endPoint.y_ / 48)};
   int dx = abs(end.x - start.x), sx = start.x < end.x ? 1 : -1;
   int dy = -abs(end.y - start.y), sy = start.y < end.y ? 1 : -1;
   int err = dx + dy, e2;

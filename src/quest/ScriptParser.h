@@ -84,8 +84,8 @@ Quest* load(const std::string& path, Quest_ID id) {
       case NodeType::NPC_SAY: {
         auto obj = new NPC_SAY(npcIdMap[parts[1]]);
         if (parts.size() > 2) {
-          if (parts[2] == "TRUE") {
-            obj->blockingUntilLineFinished = true;
+          if (parts[2] == "SKIP") {
+            obj->skipWait = true;
           }
         }
         std::getline(file, obj->txt);
