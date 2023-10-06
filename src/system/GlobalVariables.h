@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_
 #define MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_
 
-#include "../graphics/GifDrawer.h"
+#include "../graphics/elements/GifDrawer.h"
 
 /* |-----------------------------------------------------|
  * |                        SYSTEM                       |

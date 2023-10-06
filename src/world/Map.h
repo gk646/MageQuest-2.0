@@ -37,7 +37,6 @@ struct Map {
     delete_2D_array(map_fore_ground, map_size);
     delete spawnTriggers;
   }
-
   [[nodiscard]] int16_t** LoadMapData(const std::string& name) const noexcept {
     std::string filepath = ASSET_PATH + "Maps/" + name + ".csv";
     std::ifstream infile(filepath);

@@ -3,17 +3,18 @@
 
 struct Projectile : public Entity {
   DamageStats damage_stats;
+  int16_t life_span;
+  uint16_t sprite_counter = 0;
   bool from_player;
   bool does_damage = true;
+  HitType hitType = HitType::ONE_HIT;
+  ProjectileType projectileType = ProjectileType::FIRE_BALL;
   float speed;
-  int life_span;
-  int sprite_counter = 0;
-  const Entity* Sender = nullptr;
-  HitType projectile_type = HitType::ONE_HIT;
   Vector2 move_vector;
-  ProjectileResources* resources = nullptr;
   std::vector<StatusEffect*> status_effects{};
-  Sound* sound = nullptr;
+  const Sound* sound = nullptr;
+  const ProjectileResources* resources = nullptr;
+  const Entity* Sender = nullptr;
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, const DamageStats& damage_stats, HitType type,
              const std::vector<StatusEffect*>& effects, const Vector2& move_vector,
@@ -24,7 +25,7 @@ struct Projectile : public Entity {
         speed(speed),
         damage_stats(damage_stats),
         from_player(from_player),
-        projectile_type(type),
+        hitType(type),
         status_effects(effects),
         move_vector(move_vector),
         resources(res),
@@ -37,7 +38,7 @@ struct Projectile : public Entity {
         life_span(p.life_span),
         damage_stats(p.damage_stats),
         from_player(p.from_player),
-        projectile_type(p.projectile_type) {
+        hitType(p.hitType) {
     for (const auto& effect : p.status_effects) {
       status_effects.push_back(effect->clone());
     }
@@ -65,7 +66,7 @@ struct Projectile : public Entity {
     life_span = other.life_span;
     damage_stats = other.damage_stats;
     from_player = other.from_player;
-    projectile_type = other.projectile_type;
+    hitType = other.hitType;
 
     return *this;
   }
@@ -86,7 +87,7 @@ struct Projectile : public Entity {
     pos.y_ += move_vector.y * speed;
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
-    if(CheckTileCollision(tile_pos.x, tile_pos.y)){
+    if (CheckTileCollision(tile_pos.x, tile_pos.y)) {
       dead = true;
     }
     life_span--;

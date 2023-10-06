@@ -10,7 +10,9 @@ struct EnergySphere final : Projectile {
       : Projectile(isFromPlayer, position, {WIDTH, HEIGHT}, ShapeType::CIRCLE, lifespan,
                    projectileSpeed, {DamageType::ARCANE, damageValue}, hitType,
                    statusEffects, movementDirection, 0, nullptr,
-                   &textures::projectile::ENERGY_SPHERE,sender) {}
+                   &textures::projectile::ENERGY_SPHERE,sender) {
+    projectileType = ProjectileType::ENERGY_SPHERE;
+  }
   void draw() final {
 
     DrawTextureProFast(resources->frames[sprite_counter % 42 / 7], pos.x_ + DRAW_X - 3,

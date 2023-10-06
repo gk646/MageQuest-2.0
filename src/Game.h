@@ -174,7 +174,7 @@ class Game {
   static void render_loop() noexcept {
     while (!WindowShouldClose()) {
       BeginDrawing();
-      ClearBackground(RED);
+      ClearBackground(BLACK);
 
       draw_frame();
 
@@ -194,12 +194,7 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
-          Vector2 mousePosition = {(float)GetMouseX(),
-                                   (float)(GetScreenHeight() - GetMouseY())};
-          SetShaderValue(Lighting::Shaders::spotLight,
-                         Lighting::Shaders::SPOT_LIGHT_POSITION, &mousePosition,
-                         SHADER_UNIFORM_VEC2);
-          BeginShaderMode(Lighting::Shaders::spotLight);
+          Lighting::StartDynamicLights();
           WorldRender::draw();
           DRAW_ENTITIES()
           EndShaderMode();

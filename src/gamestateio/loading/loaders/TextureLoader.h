@@ -4,20 +4,12 @@ struct TextureLoader {
 
   static void load() {
     Lighting::Shaders::spotLight = LoadShader(nullptr,(ASSET_PATH + "Shaders/spot_light.fs").c_str());
-    Lighting::Shaders::SPOT_LIGHT_COLOR = GetShaderLocation(Lighting::Shaders::spotLight,"lightColor");
-    Lighting::Shaders::SPOT_LIGHT_POSITION = GetShaderLocation(Lighting::Shaders::spotLight,"lightPosition");
-    Lighting::Shaders::SPOT_LIGHT_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"outerRadius");
+    Lighting::Shaders::SPOT_LIGHT_COLOR = GetShaderLocation(Lighting::Shaders::spotLight,"lightColors");
+    Lighting::Shaders::SPOT_LIGHT_POSITION = GetShaderLocation(Lighting::Shaders::spotLight,"lightPositions");
+    Lighting::Shaders::SPOT_LIGHT_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"outerRadii");
+    Lighting::Shaders::SPOT_LIGHT_INNER_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"innerRadii");
+    Lighting::Shaders::SPOT_LIGHT_NUM = GetShaderLocation(Lighting::Shaders::spotLight,"numLights");
 
-
-    float inner = 10.0f;
-    SetShaderValue( Lighting::Shaders::spotLight, GetShaderLocation(   Lighting::Shaders::spotLight, "innerRadius"), &inner, SHADER_UNIFORM_FLOAT);
-    float outer = 120.0f;
-    SetShaderValue( Lighting::Shaders::spotLight, GetShaderLocation(   Lighting::Shaders::spotLight, "outerRadius"), &outer, SHADER_UNIFORM_FLOAT);
-    float width = (float)GetScreenWidth();
-    SetShaderValue( Lighting::Shaders::spotLight, GetShaderLocation(   Lighting::Shaders::spotLight, "screenWidth"), &width, SHADER_UNIFORM_FLOAT);
-    Color lightCol = BLUE;
-    float lightColor[3] = { lightCol.r/255.0f, lightCol.g/255.0f, lightCol.b/255.0f };
-    SetShaderValue( Lighting::Shaders::spotLight, GetShaderLocation(   Lighting::Shaders::spotLight, "lightColor"), lightColor, SHADER_UNIFORM_VEC3);
 
     textures::ui::STATUS_BAR =
         LoadTexture((ASSET_PATH + "ui/player_ui3.png").c_str());

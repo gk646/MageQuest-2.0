@@ -23,7 +23,7 @@ struct Player final : public Entity {
     if (!p.from_player && p.IsActive()) {
       PLAYER_EFFECTS.AddEffects(p.status_effects);
       PLAYER_STATS.take_damage(p.damage_stats);
-      p.dead = p.projectile_type == HitType::ONE_HIT;
+      p.dead = p.hitType == HitType::ONE_HIT;
     }
   }
   void update() final {
