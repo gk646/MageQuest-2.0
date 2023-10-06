@@ -9,6 +9,7 @@ struct TextureLoader {
     Lighting::Shaders::SPOT_LIGHT_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"outerRadii");
     Lighting::Shaders::SPOT_LIGHT_INNER_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"innerRadii");
     Lighting::Shaders::SPOT_LIGHT_NUM = GetShaderLocation(Lighting::Shaders::spotLight,"numLights");
+    Lighting::Shaders::SPOT_LIGHT_TIME= GetShaderLocation(Lighting::Shaders::spotLight,"time");
 
 
     textures::ui::STATUS_BAR =

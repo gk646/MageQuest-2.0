@@ -106,6 +106,7 @@ using namespace cxstructs;
  * |-----------------------------------------------------|
  */
 #include "system/GameSettings.h"
+#include "raylib-extension/DrawFunctions.h"
 #include "system/CollisionDetection.h"
 #include "system/Definitions.h"
 #include "resources/Colors.h"
