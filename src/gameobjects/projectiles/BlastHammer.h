@@ -12,6 +12,7 @@ struct BlastHammer final : Projectile {
                    {DamageType::FIRE, damage}, hit_type, effects, move, pov, nullptr,
                    &textures::projectile::BLAST_HAMMER,sender),
         flip(flip) {
+
     does_damage = false;
   }
   void draw() final {

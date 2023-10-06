@@ -77,7 +77,7 @@ struct Monster : public Entity {
       status_effects.AddEffects(p.status_effects);
       float dmg = stats.take_damage(p.damage_stats);
       threatManager.AddThreat(p.Sender, dmg);
-      p.dead = p.projectile_type == HitType::ONE_HIT;
+      p.dead = p.hitType == HitType::ONE_HIT;
     }
   }
   inline void CheckForDeath() noexcept {

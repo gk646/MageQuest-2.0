@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEPLAY_SKILLS_ENERGYSPHERE_SKILL_H_
 struct EnergySphere_Skill final : public Skill {
   static constexpr float BASE_DMG = 1;
-  static constexpr float LIFESPAN = 180;
+  static constexpr float LIFESPAN = 240;
   static constexpr float SPEED = 2;
   static constexpr float CONTINUOUS_DIVISOR = 50;
   explicit EnergySphere_Skill(bool from_player)

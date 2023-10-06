@@ -76,7 +76,7 @@ struct NetPlayer final : public Entity {
     if (!p.from_player) {
       status_effects.AddEffects(p.status_effects);
       stats.take_damage(p.damage_stats);
-      p.dead = action_state != -100 && p.projectile_type == HitType::ONE_HIT;
+      p.dead = action_state != -100 && p.hitType == HitType::ONE_HIT;
     }
   }
   inline void draw_direction_indicator() noexcept {
