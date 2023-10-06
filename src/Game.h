@@ -89,7 +89,12 @@ class Game {
       auto currentTime = std::chrono::high_resolution_clock::now();
 
       if (currentTime >= nextUpdate) {
+        cxstructs::now();
         game_tick();
+        GAME_TICK_TIME = cxstructs::getTime<std::chrono::microseconds>();
+        PERF_TIME += GAME_TICK_TIME;
+        PERF_FRAMES++;
+
         nextUpdate = nextUpdate + targetDuration;
 
         while (nextUpdate < std::chrono::high_resolution_clock::now()) {
@@ -101,11 +106,11 @@ class Game {
     }
   }
   static inline void game_tick() noexcept {
-    cxstructs::now();
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
     GAME_STATISTICS.Update();
     WorldManager::Update();
+    Lighting::UpdateScreenEffects();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
@@ -135,10 +140,6 @@ class Game {
     }
     lock.unlock();
     Multiplayer::BroadCastGameState();
-    Lighting::UpdateScreenEffects();
-    GAME_TICK_TIME = cxstructs::getTime<std::chrono::nanoseconds>();
-    PERF_TIME += GAME_TICK_TIME;
-    PERF_FRAMES++;
   }
 
 #define RESET_CAMERA()         \
@@ -172,18 +173,22 @@ class Game {
   PLAYER.draw();
 
   static void render_loop() noexcept {
+    RenderTexture2D target = LoadRenderTexture(SCREEN_HEIGHT, SCREEN_WIDTH);
     while (!WindowShouldClose()) {
+      cxstructs::now(0);
       BeginDrawing();
-      ClearBackground(BLACK);
+      ClearBackground(RED);
 
       draw_frame();
 
       BenchMark::draw_stats();
       EndDrawing();
+      FRAME_TIME = cxstructs::getTime<std::chrono::microseconds>(0);
+      PERF_TIME += FRAME_TIME;
+      PERF_FRAMES++;
     }
   }
   static inline void draw_frame() noexcept {
-    cxstructs::now(0);
     RESET_CAMERA()
     UI_MANAGER.ui_update();
     std::unique_lock<std::shared_mutex> lock(rwLock);
@@ -194,17 +199,26 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
-          Lighting::StartDynamicLights();
+          Lighting::Shaders::StartDynamicLights();
           WorldRender::draw();
-          DRAW_ENTITIES()
           EndShaderMode();
+
+          BeginTextureMode(FIRST_LAYER_BUFFER);
+          ClearBackground(BLANK);
+          DRAW_ENTITIES()
           WorldRender::draw_fore_ground();
+          EndTextureMode();
+
+          DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0,0, true);
+
           UI_MANAGER.player_ui.draw();
           Lighting::DrawScreenEffects();
         }
         break;
       case GameState::GameMenu: {
+        Lighting::Shaders::StartDynamicLights();
         WorldRender::draw();
+        EndShaderMode();
         DRAW_ENTITIES()
         WorldRender::draw_fore_ground();
         UI_MANAGER.player_ui.draw();
@@ -223,9 +237,6 @@ class Game {
     if (SHOW_FPS) {
       DrawFPS(25, 25);
     }
-    FRAME_TIME = cxstructs::getTime<std::chrono::nanoseconds>(0);
-    PERF_TIME += FRAME_TIME;
-    PERF_FRAMES++;
   }
 
  public:
@@ -236,7 +247,7 @@ class Game {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest II");
     InitAudioDevice();
     SetExitKey(0);
-
+    FIRST_LAYER_BUFFER = LoadRenderTexture(1280, 960);
     SetMouseCursorImage((ASSET_PATH + "ui/cursor.png").c_str(), 0, 0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();

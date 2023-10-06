@@ -1,8 +1,8 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_ENERGYSPHERE_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_ENERGYSPHERE_H_
 struct EnergySphere final : Projectile {
-  static constexpr int WIDTH = 17;
-  static constexpr int HEIGHT = 17;
+  static constexpr int WIDTH = 30;
+  static constexpr int HEIGHT = 30;
   EnergySphere(const Point& position, bool isFromPlayer, int lifespan,
                float projectileSpeed, float damageValue, HitType hitType,
                const std::vector<StatusEffect*>& statusEffects,
@@ -14,9 +14,10 @@ struct EnergySphere final : Projectile {
     projectileType = ProjectileType::ENERGY_SPHERE;
   }
   void draw() final {
-
-    DrawTextureProFast(resources->frames[sprite_counter % 42 / 7], pos.x_ + DRAW_X - 3,
-                       pos.y_ + DRAW_Y - 3, 0, WHITE);
+    DrawTexture(resources->frames[sprite_counter % 42 / 7],pos.x_ + DRAW_X -8,
+                pos.y_ + DRAW_Y - 8, WHITE);
+    DrawTextureProFast(resources->frames[sprite_counter % 42 / 7], pos.x_ + DRAW_X -8,
+                       pos.y_ + DRAW_Y - 8,0, WHITE);
 
 #ifdef DRAW_HITBOXES
     draw_hitbox();

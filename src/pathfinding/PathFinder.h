@@ -55,10 +55,8 @@ static PointI AStarPathFinding(const PointI& start, const PointI& target) noexce
       int newX = current->position.x + dir.x;
       int newY = current->position.y + dir.y;
       PointI new_pos(newX, newY);
-      if (!closedSet.contains(new_pos) &&
-          COLLISIONS[CURRENT_BACK_GROUND[newX][newY]] != C_SOLID &&
-          COLLISIONS[CURRENT_MIDDLE_GROUND[newX][newY]] != C_SOLID && newX >= 0 &&
-          newY < CURRENT_MAP_SIZE && newY >= 0 && newX < CURRENT_MAP_SIZE) {
+      if (!closedSet.contains(new_pos) && newX >= 0 && newY < CURRENT_MAP_SIZE &&
+          newY >= 0 && newX < CURRENT_MAP_SIZE && !CheckTileCollision(newX, newY)) {
         uint16_t tentative_g_cost = current->g_cost + 1 + RANGE_01(RNG_RANDOM);
         uint16_t h_cost = abs(newX - target.x) + abs(newY - target.y);
         frontier.emplace(new_pos, tentative_g_cost, h_cost, current);

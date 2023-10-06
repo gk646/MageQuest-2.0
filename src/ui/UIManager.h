@@ -20,11 +20,11 @@ struct UIManager {
   void ui_update() noexcept {
     MOUSE_POS = GetMousePosition();
     if (!IsWindowFullscreen()) {
-      if (GetScreenWidth() != SCREEN_WIDTH) {
+      if (GetScreenWidth() != SCREEN_WIDTH || GetScreenHeight() != SCREEN_HEIGHT) {
         SCREEN_WIDTH = GetScreenWidth();
-      }
-      if (GetScreenHeight() != SCREEN_HEIGHT) {
         SCREEN_HEIGHT = GetScreenHeight();
+        UnloadRenderTexture(FIRST_LAYER_BUFFER);
+        FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
       }
     }
     if (IsKeyPressed(KEY_ESCAPE)) {

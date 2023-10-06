@@ -3,7 +3,7 @@
 
 struct FireStrike_Skill final : public Skill {
   static constexpr float BASE_DMG = 1;
-  static constexpr int LIFE_SPAN = 120;
+  static constexpr int LIFE_SPAN = 200;
   static constexpr float SPEED = 2;
   int num_fireballs;
   FireStrike_Skill(bool from_player, int num_fireballs)

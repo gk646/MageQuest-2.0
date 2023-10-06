@@ -112,6 +112,8 @@ struct SettingsMenu {
     SCREEN_WIDTH = GetMonitorWidth(0);
     SCREEN_HEIGHT = GetMonitorHeight(0);
     SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    UnloadRenderTexture(FIRST_LAYER_BUFFER);
+    FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     ToggleFullscreen();
   }
 };
