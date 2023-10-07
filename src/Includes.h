@@ -28,6 +28,7 @@
 #include <utility>
 #include <vector>
 
+using namespace std::chrono_literals;
 /* |-----------------------------------------------------|
  * |                         RAYLIB                      |
  * |-----------------------------------------------------|

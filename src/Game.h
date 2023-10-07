@@ -1,10 +1,9 @@
 #ifndef MAGE_QUEST_SRC_GAME_H_
 #define MAGE_QUEST_SRC_GAME_H_
 
-using namespace std::chrono_literals;
 
 class Game {
-  bool logic_thread_running = true;
+  static bool logic_thread_running;
   std::thread logic_thread;
 
 #define UPDATE_AND_COLLISION()                                        \
@@ -81,7 +80,7 @@ class Game {
     }                                                                 \
   }
 
-  void logic_loop() const noexcept {
+  inline static void LogicLoop() noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
     auto targetDuration = std::chrono::milliseconds(16);
 
@@ -90,7 +89,7 @@ class Game {
 
       if (currentTime >= nextUpdate) {
         cxstructs::now();
-        game_tick();
+        GameTick();
         GAME_TICK_TIME = cxstructs::getTime<std::chrono::microseconds>();
         PERF_TIME += GAME_TICK_TIME;
         PERF_FRAMES++;
@@ -105,7 +104,7 @@ class Game {
       }
     }
   }
-  static inline void game_tick() noexcept {
+  static inline void GameTick() noexcept {
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
     GAME_STATISTICS.Update();
@@ -172,23 +171,29 @@ class Game {
   }                                       \
   PLAYER.draw();
 
-  static void render_loop() noexcept {
-    RenderTexture2D target = LoadRenderTexture(SCREEN_HEIGHT, SCREEN_WIDTH);
-    while (!WindowShouldClose()) {
-      cxstructs::now(0);
-      BeginDrawing();
-      ClearBackground(RED);
-
-      draw_frame();
-
-      BenchMark::draw_stats();
-      EndDrawing();
-      FRAME_TIME = cxstructs::getTime<std::chrono::microseconds>(0);
-      PERF_TIME += FRAME_TIME;
-      PERF_FRAMES++;
+  inline static void DrawGame() noexcept {
+    if (!DISABLE_DYNAMIC_LIGHTING) [[likely]] {
+      Lighting::Shaders::StartDynamicLights();
+      WorldRender::DrawBackGround();
+      DRAW_ENTITIES();
+      EndShaderMode();
+      BeginTextureMode(FIRST_LAYER_BUFFER);
+      ClearBackground(BLANK);
+      Lighting::Shaders::StartNightShader();
+      WorldRender::DrawForeGround();
+      EndShaderMode();
+      EndTextureMode();
+      DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0, 0, true);
+      UI_MANAGER.player_ui.draw();
+      Lighting::DrawScreenEffects();
+    } else {
+      WorldRender::DrawBackGround();
+      DRAW_ENTITIES()
+      WorldRender::DrawForeGround();
+      UI_MANAGER.player_ui.draw();
     }
   }
-  static inline void draw_frame() noexcept {
+  static inline void DrawFrame() noexcept {
     RESET_CAMERA()
     UI_MANAGER.ui_update();
     std::unique_lock<std::shared_mutex> lock(rwLock);
@@ -199,29 +204,11 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
-          Lighting::Shaders::StartDynamicLights();
-          WorldRender::draw();
-          EndShaderMode();
-
-          BeginTextureMode(FIRST_LAYER_BUFFER);
-          ClearBackground(BLANK);
-          DRAW_ENTITIES()
-          WorldRender::draw_fore_ground();
-          EndTextureMode();
-
-          DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0,0, true);
-
-          UI_MANAGER.player_ui.draw();
-          Lighting::DrawScreenEffects();
+          DrawGame();
         }
         break;
       case GameState::GameMenu: {
-        Lighting::Shaders::StartDynamicLights();
-        WorldRender::draw();
-        EndShaderMode();
-        DRAW_ENTITIES()
-        WorldRender::draw_fore_ground();
-        UI_MANAGER.player_ui.draw();
+        DrawGame();
         UI_MANAGER.game_menu.draw();
       } break;
       case GameState::Loading: {
@@ -236,6 +223,21 @@ class Game {
     }
     if (SHOW_FPS) {
       DrawFPS(25, 25);
+    }
+  }
+  static void RenderLoop() noexcept {
+    while (!WindowShouldClose()) {
+      cxstructs::now(0);
+      BeginDrawing();
+      ClearBackground(RED);
+
+      DrawFrame();
+
+      BenchMark::draw_stats();
+      EndDrawing();
+      FRAME_TIME = cxstructs::getTime<std::chrono::microseconds>(0);
+      PERF_TIME += FRAME_TIME;
+      PERF_FRAMES++;
     }
   }
 
@@ -282,10 +284,10 @@ class Game {
     SteamAPI_Shutdown();
   }
   void start() noexcept {
-
     GameLoader::load();
-    logic_thread = std::thread(&Game::logic_loop, this);
-    render_loop();
+    logic_thread = std::thread(Game::LogicLoop);
+    RenderLoop();
   }
 };
+bool Game::logic_thread_running = true;
 #endif  //MAGE_QUEST_SRC_GAME_H_

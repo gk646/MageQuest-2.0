@@ -41,7 +41,7 @@ struct MainMenu {
         SetWindowCloseFlagTrue(1);
       }
     } else if (menu_state == MenuState::Settings) {
-      settings_menu.draw();
+      settings_menu.Draw();
     } else if (menu_state == MenuState::ServerBrowser) {
       server_browser.draw();
     } else if (menu_state == MenuState::HostGame) {

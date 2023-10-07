@@ -9,7 +9,7 @@ struct SettingsMenu {
   int baseHeight = 30;
   int offsetX = 70;
   int offsetY = 40;
-  void draw() noexcept {
+  void Draw() noexcept {
     DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0,
                      ColorAlpha(GRAY, 0.7));
 
@@ -51,7 +51,7 @@ struct SettingsMenu {
     CAMERA_Y = SCREEN_HEIGHT / 2;
     startY += verticalSpacing;
 
-    //show pfs
+    //show fps
     SHOW_FPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
                           "Show FPS", SHOW_FPS);
     startY += verticalSpacing;
@@ -65,6 +65,9 @@ struct SettingsMenu {
     }
     startY += verticalSpacing;
 
+    DISABLE_DYNAMIC_LIGHTING = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
+                           "Disable Dynamic Lighting", DISABLE_DYNAMIC_LIGHTING);
+    startY += verticalSpacing;
 
 
     TARGET_FPS = static_cast<int>(

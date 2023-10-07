@@ -12,6 +12,7 @@ struct EnergySphere final : Projectile {
                    statusEffects, movementDirection, 0, nullptr,
                    &textures::projectile::ENERGY_SPHERE,sender) {
     projectileType = ProjectileType::ENERGY_SPHERE;
+    illuminated = true;
   }
   void draw() final {
     DrawTexture(resources->frames[sprite_counter % 42 / 7],pos.x_ + DRAW_X -8,

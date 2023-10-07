@@ -4,7 +4,7 @@
 #include "WorldAnimations.h"
 
 struct WorldRender {
-  static void draw() noexcept {
+  static void DrawBackGround() noexcept {
     int worldCol = std::max(PLAYER_TILE->x - 21, 0);
     int worldRow = std::max(PLAYER_TILE->y - 12, 0);
     const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
@@ -50,9 +50,8 @@ struct WorldRender {
         }
       }
     }
-   // DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT, Lighting::currentDayFade);
   }
-  static void draw_fore_ground() noexcept {
+  static void DrawForeGround() noexcept {
     const int worldCol = std::max(PLAYER_TILE->x - 21, 0);
     const int worldRow = std::max(PLAYER_TILE->y - 12, 0);
     const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);

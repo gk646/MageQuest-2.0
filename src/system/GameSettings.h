@@ -3,8 +3,10 @@
 
 inline float UI_SCALE = 1;
 inline int TARGET_FPS = 120;
-inline bool FAST_UI;
-inline bool SHOW_FPS;
+inline bool FAST_UI = false;
+inline bool SHOW_FPS = false;
 inline int ROUND_SEGMENTS = 30;
 inline bool SHOW_HEALTH_NUMBERS = false;
+inline bool DISABLE_DYNAMIC_LIGHTING = false;
+
 #endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

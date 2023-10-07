@@ -23,11 +23,11 @@ struct SkeletonWarrior final : public Monster {
       if (moving) {
         DrawTextureProFastEx(resource->walk[sprite_counter % 140 / 20],
                              pos.x_ + DRAW_X - 33, pos.y_ + DRAW_Y - 6, 0, 0, flip,
-                             Lighting::currentDayFade);
+                            WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[sprite_counter % 112 / 16],
                              pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 2, -10, 0, flip,
-                             Lighting::currentDayFade);
+                            WHITE);
       }
     }
     if (health_bar.delay > 0) {
@@ -48,7 +48,7 @@ struct SkeletonWarrior final : public Monster {
     int num = sprite_counter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X-27, pos.y_ + DRAW_Y-48, -20, 0,
-                           flip, Lighting::currentDayFade);
+                           flip,WHITE);
     } else {
       dead = true;
     }
@@ -57,7 +57,7 @@ struct SkeletonWarrior final : public Monster {
     int num = sprite_counter % 96 / 16;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 12, -16, 0, flip, Lighting::currentDayFade);
+                           pos.y_ + DRAW_Y - 12, -16, 0, flip,WHITE);
     } else {
       attack = 0;
     }
@@ -66,7 +66,7 @@ struct SkeletonWarrior final : public Monster {
     int num = sprite_counter % 112 / 16;
     if (num < 6) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 22,
-                           pos.y_ + DRAW_Y - 20, -15, 0, flip, Lighting::currentDayFade);
+                           pos.y_ + DRAW_Y - 20, -15, 0, flip,WHITE);
     } else {
       attack = 0;
     }
@@ -75,7 +75,7 @@ struct SkeletonWarrior final : public Monster {
     int num = sprite_counter % 72 / 12;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 23,
-                           pos.y_ + DRAW_Y - 13, -18, 0, flip, Lighting::currentDayFade);
+                           pos.y_ + DRAW_Y - 13, -18, 0, flip,WHITE);
     } else {
       attack = 0;
     }
