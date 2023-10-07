@@ -185,6 +185,7 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
       //TODO new monsters
       //TODO finish blood hound texture
     case MonsterType::SKEL_ARCHER:
+      return new SkeletonSpear({x, y}, level);
       break;
     case MonsterType::SKEL_SHIELD:
       break;
@@ -195,6 +196,7 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
     case MonsterType::BLOOD_HOUND:
       return new BloodHound({x, y}, level);
   }
+  return nullptr;
 }
 
 void Server::SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexcept {

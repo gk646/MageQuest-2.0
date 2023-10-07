@@ -173,17 +173,32 @@ class Game {
 
   inline static void DrawGame() noexcept {
     if (!DISABLE_DYNAMIC_LIGHTING) [[likely]] {
+
+      BeginTextureMode(FIRST_LAYER_BUFFER);
+      ClearBackground(BLANK);
       Lighting::Shaders::StartDynamicLights();
       WorldRender::DrawBackGround();
       DRAW_ENTITIES();
       EndShaderMode();
+      EndTextureMode();
+
+      Lighting::Shaders::StartPostProcessing();
+      DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0, 0, true);
+      EndShaderMode();
+
       BeginTextureMode(FIRST_LAYER_BUFFER);
       ClearBackground(BLANK);
       Lighting::Shaders::StartNightShader();
       WorldRender::DrawForeGround();
       EndShaderMode();
       EndTextureMode();
+
+
+
+      Lighting::Shaders::StartPostProcessing();
       DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0, 0, true);
+      EndShaderMode();
+
       UI_MANAGER.player_ui.draw();
       Lighting::DrawScreenEffects();
     } else {
@@ -229,7 +244,7 @@ class Game {
     while (!WindowShouldClose()) {
       cxstructs::now(0);
       BeginDrawing();
-      ClearBackground(RED);
+      ClearBackground(BLANK);
 
       DrawFrame();
 
@@ -243,7 +258,12 @@ class Game {
 
  public:
   Game() noexcept {
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+    SetConfigFlags(FLAG_WINDOW_ALWAYS_RUN);
+    SetConfigFlags(FLAG_WINDOW_TOPMOST);
+    SetConfigFlags(FLAG_WINDOW_TOPMOST);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
     SetTargetFPS(TARGET_FPS);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest II");

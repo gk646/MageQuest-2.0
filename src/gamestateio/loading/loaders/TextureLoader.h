@@ -5,10 +5,10 @@ struct TextureLoader {
   static void load() {
     Lighting::Shaders::spotLight = LoadShader(nullptr,(ASSET_PATH + "Shaders/spot_light.fs").c_str());
     Lighting::Shaders::nightShader = LoadShader(nullptr,(ASSET_PATH + "Shaders/day_night.fs").c_str());
+    Lighting::Shaders::postProcessing = LoadShader(nullptr,(ASSET_PATH + "Shaders/post_processing.fs").c_str());
     Lighting::Shaders::SPOT_LIGHT_COLOR = GetShaderLocation(Lighting::Shaders::spotLight,"lightColors");
     Lighting::Shaders::SPOT_LIGHT_POSITION = GetShaderLocation(Lighting::Shaders::spotLight,"lightPositions");
-    Lighting::Shaders::SPOT_LIGHT_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"outerRadii");
-    Lighting::Shaders::SPOT_LIGHT_INNER_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"innerRadii");
+    Lighting::Shaders::SPOT_LIGHT_RADIUS = GetShaderLocation(Lighting::Shaders::spotLight,"radii");
     Lighting::Shaders::SPOT_LIGHT_NUM = GetShaderLocation(Lighting::Shaders::spotLight,"numLights");
     Lighting::Shaders::SPOT_LIGHT_TIME= GetShaderLocation(Lighting::Shaders::spotLight,"time");
     Lighting::Shaders::SPOT_LIGHT_ALPHA= GetShaderLocation(Lighting::Shaders::spotLight,"nightAlpha");
