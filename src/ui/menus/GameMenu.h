@@ -41,7 +41,7 @@ struct GameMenu {
         Multiplayer::CloseMultiplayer();
       }
     } else if (menu_state == MenuState::Settings) {
-      settings_menu.draw();
+      settings_menu.Draw();
     }
     if (IsKeyPressed(KEY_ESCAPE)) {
       menu_state = MenuState::Main;

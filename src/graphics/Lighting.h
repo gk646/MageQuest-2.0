@@ -7,22 +7,25 @@ struct SpotLightInfo {
   Vector3 lightColors;
 };
 inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
-    {FIRE_BALL, {7, 75, {0.8745f, 0.2431f, 0.1373f}}},
-    {ENERGY_SPHERE, {15, 150, {0.3804f, 0.6588f, 0.8902f}}}};
+    {FIRE_BALL, {7, 120, {0.8745f, 0.2431f, 0.1373f}}},
+    {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
 
 inline static constexpr uint16_t FULL_DAY_TICKS = 15 * 60 * 60;
-inline static uint16_t dayTicks = 0;
-inline static Color currentDayFade{24, 20, 37, 204};
-inline static uint8_t fadeAlpha = 150;
+inline static uint16_t dayTicks = 15000;
+inline static float currentNightAlpha = 0;
+inline static uint8_t fadeAlpha = 200;
 
 namespace Shaders {
 inline static Shader spotLight;
+inline static Shader nightShader;
 inline static int SPOT_LIGHT_RADIUS;
 inline static int SPOT_LIGHT_POSITION;
 inline static int SPOT_LIGHT_COLOR;
 inline static int SPOT_LIGHT_INNER_RADIUS;
 inline static int SPOT_LIGHT_NUM;
 inline static int SPOT_LIGHT_TIME;
+inline static int SPOT_LIGHT_ALPHA;
+inline static int NIGHT_SHADER_ALPHA;
 inline static int spotLightCount = 0;
 inline static float spotLightTime = 0;
 Vector2 lightPositions[MAX_DYNAMIC_LIGHTS];
@@ -54,15 +57,20 @@ inline static void StartDynamicLights() noexcept {
                   spotLightCount);
   SetShaderValue(spotLight, SPOT_LIGHT_NUM, &spotLightCount, SHADER_UNIFORM_INT);
   SetShaderValue(spotLight, SPOT_LIGHT_TIME, &spotLightTime, SHADER_UNIFORM_FLOAT);
-
+  SetShaderValue(spotLight, SPOT_LIGHT_ALPHA, &currentNightAlpha, SHADER_UNIFORM_FLOAT);
   BeginShaderMode(spotLight);
+}
+inline static void StartNightShader() noexcept {
+  SetShaderValue(nightShader, NIGHT_SHADER_ALPHA, &currentNightAlpha,
+                 SHADER_UNIFORM_FLOAT);
+  BeginShaderMode(nightShader);
 }
 }  // namespace Shaders
 
-uint8_t CalculateAlpha() {
-  double phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
-  double alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
-  return static_cast<uint8_t>(210 * alphaDouble);
+inline static float CalculateAlpha() noexcept{
+  float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
+  float alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
+  return alphaDouble * 0.82F;
 }
 inline static void DrawFade() noexcept {
   DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {24, 20, 37, fadeAlpha});
@@ -76,8 +84,11 @@ inline static void UpdateScreenEffects() noexcept {
   if (fadeAlpha < 255) {
     fadeAlpha--;
   }
-  dayTicks = (dayTicks + 1) % FULL_DAY_TICKS;
-  //currentDayFade.a = CalculateAlpha();
+  dayTicks++;
+  if (dayTicks >= FULL_DAY_TICKS) {
+    dayTicks = 0;
+  }
+  currentNightAlpha = CalculateAlpha();
 }
 }  // namespace Lighting
 #endif  //MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_

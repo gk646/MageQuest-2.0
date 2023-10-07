@@ -6,11 +6,12 @@ struct FireBall final : Projectile {
   static constexpr int height = 25;
   FireBall(const Point& pos, bool from_player, int life_span, float speed, float damage,
            HitType hit_type, const vector<StatusEffect*>& effects, float pov,
-           const Vector2& move,const Entity* sender)
+           const Vector2& move, const Entity* sender)
       : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
                    {DamageType::FIRE, damage}, hit_type, effects, move, pov, nullptr,
-                   &textures::projectile::FIRE_BURST,sender) {
+                   &textures::projectile::FIRE_BURST, sender) {
     projectileType = ProjectileType::FIRE_BALL;
+    illuminated = true;
   }
 
   void draw() final {
