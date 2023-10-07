@@ -6,18 +6,20 @@ struct SpotLightInfo {
   float outerRadius;
   Vector3 lightColors;
 };
+
 inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {FIRE_BALL, {7, 120, {0.8745f, 0.2431f, 0.1373f}}},
     {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
 
-inline static constexpr uint16_t FULL_DAY_TICKS = 15 * 60 * 60;
-inline static uint16_t dayTicks = 15000;
+inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
+inline static uint16_t dayTicks = 18000;
 inline static float currentNightAlpha = 0;
-inline static uint8_t fadeAlpha = 200;
+inline static uint8_t fadeAlpha = 150;
 
 namespace Shaders {
 inline static Shader spotLight;
 inline static Shader nightShader;
+inline static Shader postProcessing;
 inline static int SPOT_LIGHT_RADIUS;
 inline static int SPOT_LIGHT_POSITION;
 inline static int SPOT_LIGHT_COLOR;
@@ -65,12 +67,35 @@ inline static void StartNightShader() noexcept {
                  SHADER_UNIFORM_FLOAT);
   BeginShaderMode(nightShader);
 }
+inline static void StartPostProcessing() noexcept {
+  BeginShaderMode(postProcessing);
+}
 }  // namespace Shaders
 
-inline static float CalculateAlpha() noexcept{
+namespace AmbientOcclusion {
+std::vector<Vector3 > CURRENT_SHADOW_MAP;
+inline static void GenerateShadowMap() noexcept {
+  CURRENT_SHADOW_MAP.clear();
+  for (int_fast16_t j = 0; j < CURRENT_MAP_SIZE; j++) {
+    for (int_fast16_t i = 0; i < CURRENT_MAP_SIZE; i++) {
+      if (CheckTileCollision(i, j)) {
+        if (i == 0 || !CheckTileCollision(i - 1, j)) {
+          int_fast16_t height = 1;
+          while (i + height < CURRENT_MAP_SIZE && CheckTileCollision(i + height, j)) {
+            height++;
+          }
+          CURRENT_SHADOW_MAP.emplace_back(i, j, height);
+          i += height - 1;
+        }
+      }
+    }
+  }
+}
+}  // namespace AmbientOcclusion
+inline static float CalculateAlpha() noexcept {
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
   float alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
-  return alphaDouble * 0.82F;
+  return alphaDouble * 0.95F;
 }
 inline static void DrawFade() noexcept {
   DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {24, 20, 37, fadeAlpha});

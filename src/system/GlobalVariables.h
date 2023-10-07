@@ -94,4 +94,7 @@ inline static bool CheckTileCollision(int x, int y) noexcept {
   return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID ||
          COLLISIONS[CURRENT_MIDDLE_GROUND[x][y]] == C_SOLID;
 }
+static inline bool BoundCheckMap(int x, int y) noexcept {
+  return x >= 0 && y >= 0 && x < CURRENT_MAP_SIZE && y < CURRENT_MAP_SIZE;
+}
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_
