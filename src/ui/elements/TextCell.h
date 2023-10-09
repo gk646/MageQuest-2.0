@@ -1,5 +1,6 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_TEXTCELL_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_TEXTCELL_H_
+
 struct TextCell {
   RectangleR bounds;
   float base_width, base_height;
@@ -20,8 +21,8 @@ struct TextCell {
                            const Color& rightColor = Colors::darkBackground,
                            const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
-
     if (isHovered) {
+      ToolTip::DrawToolTip(toolTip, font, fontSize);
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1,
                   Colors::mediumLightGreyDarker);
     } else {
@@ -31,14 +32,13 @@ struct TextCell {
     sprintf(txt, "%.1f", rightVal);
     DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
                          rightColor);
-    DrawToolTip();
   }
   inline void DrawStatCell(float x, float y, char* txt, int rightVal,
                            const Color& rightColor = Colors::darkBackground,
                            const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
-
     if (isHovered) {
+      ToolTip::DrawToolTip(toolTip, font, fontSize);
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1,
                   Colors::mediumLightGreyDarker);
     } else {
@@ -48,7 +48,6 @@ struct TextCell {
     sprintf(txt, "%i", (int)rightVal);
     DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
                          rightColor);
-    DrawToolTip();
   }
   static std::array<TextCell, 18> CreateCharacterCells(float width, float height,
                                                        const Font& font,
@@ -65,38 +64,27 @@ struct TextCell {
         TextCell(width, height, toolTips[7], font, fontSize),
         TextCell(width, height, toolTips[8], font, fontSize),
 
-        TextCell(width+25, height, toolTips[9], font, fontSize),
-        TextCell(width+25, height, toolTips[10], font, fontSize),
-        TextCell(width+25, height, toolTips[11], font, fontSize),
-        TextCell(width+25, height, toolTips[12], font, fontSize),
-        TextCell(width+25, height, toolTips[13], font, fontSize),
-        TextCell(width+25, height, toolTips[14], font, fontSize),
-        TextCell(width+25, height, toolTips[15], font, fontSize),
-        TextCell(width+25, height, toolTips[16], font, fontSize),
-        TextCell(width+25, height, toolTips[17], font, fontSize),
+        TextCell(width + 25, height, toolTips[9], font, fontSize),
+        TextCell(width + 25, height, toolTips[10], font, fontSize),
+        TextCell(width + 25, height, toolTips[11], font, fontSize),
+        TextCell(width + 25, height, toolTips[12], font, fontSize),
+        TextCell(width + 25, height, toolTips[13], font, fontSize),
+        TextCell(width + 25, height, toolTips[14], font, fontSize),
+        TextCell(width + 25, height, toolTips[15], font, fontSize),
+        TextCell(width + 25, height, toolTips[16], font, fontSize),
+        TextCell(width + 25, height, toolTips[17], font, fontSize),
     };
     return cells;
   }
 
  private:
-  inline void DrawToolTip() noexcept {
-    isHovered = CheckCollisionPointRec(MOUSE_POS, bounds);
-    Vector2 txtBounds = MeasureTextEx(font, toolTip.c_str(), SCALE(fontSize), 1);
-    if (isHovered) {
-      DrawTextureScaled(textures::ui::toolTip,
-                        {MOUSE_POS.x, MOUSE_POS.y - bounds.height * 1.5F,
-                         txtBounds.x + 25, txtBounds.y + 5},
-                        0, false, 0, WHITE);
-      DrawTextExR(font, toolTip.c_str(),
-                  {MOUSE_POS.x + 12, MOUSE_POS.y - bounds.height * 1.3F}, SCALE(fontSize),
-                  1, Colors::mediumVeryLight);
-    }
-  }
   inline void Update(float x, float y) noexcept {
     bounds.x = x;
     bounds.y = y;
     bounds.width = SCALE(base_width);
     bounds.height = SCALE(base_height);
+
+    isHovered = CheckCollisionPointRec(MOUSE_POS, bounds);
   }
 };
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_TEXTCELL_H_

@@ -21,6 +21,10 @@ struct SoundLoader{
     sound::interact = LoadSound((ASSET_PATH+"sound/effects/quest/interact.wav").c_str());
     sound::speak = LoadSound((ASSET_PATH+"sound/effects/quest/speak.wav").c_str());
 
+
+    sound::menu_switch = LoadSound((ASSET_PATH+"sound/effects/menu_switch.wav").c_str());
+    sound::menu_back = LoadSound((ASSET_PATH+"sound/effects/menu_back.wav").c_str());
+
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

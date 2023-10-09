@@ -1,9 +1,6 @@
 #ifndef MAGEQUEST_SRC_UI_WINDOW_H_
 #define MAGEQUEST_SRC_UI_WINDOW_H_
 
-#include "Button.h"
-#include "Panel.h"
-
 struct Window {
   RectangleR whole_window;
   RectangleR header_bar;
@@ -45,6 +42,7 @@ struct Window {
   } else {                                                          \
     isDragging = false;                                             \
   }
+
 #define DRAG_WINDOW()                                               \
   if (isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {         \
     auto mouse_pos = MOUSE_POS;                                     \
@@ -97,8 +95,14 @@ struct Window {
     WINDOW_FOCUSED =                                                                \
         isDragging || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(whole_window));  \
   }
-
-  inline void reset_pos() noexcept {
+  inline void ToggleWindow() noexcept {
+    if (!open) {
+      open = true;
+    } else {
+      open = false;
+    }
+  }
+  inline void ResetPosition() noexcept {
     whole_window.x = base_pos.x;
     whole_window.y = base_pos.y;
 

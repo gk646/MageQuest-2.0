@@ -143,13 +143,11 @@ using namespace cxstructs;
 #include "multiplayer/menus/ServerBrowser.h"
 #include "gamestateio/DataBaseHandler.h"
 #include "ui/game/LoadingScreen.h"
-#include "ui/player/CharacterPanel.h"
 #include "gamestateio/loading/LoadingUtil.h"
 #include "system/BenchMark.h"
 #include "ui/game/MiniMap.h"
 #include "gamestateio/GameLoader.h"
 #include "gamestateio/GameSaver.h"
-#include "ui/PlayerUI.h"
 #include "ui/UIManager.h"
 #include "Game.h"
 #endif  //MAGEQUEST_SRC_INCLUDES_H_

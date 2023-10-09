@@ -8,7 +8,6 @@
 #include "player/StatusBar.h"
 #include "player/QuestPanel.h"
 
-
 struct PlayerUI {
   RegionMap region_map{};
   MiniMap mini_map{&region_map.open};
@@ -16,28 +15,29 @@ struct PlayerUI {
   CharacterBag char_bag{};
   StatusBar status_bar{};
   QuestPanel questPanel{};
+  HotBar playerHotbar{};
 
-
-  void draw() noexcept {
+  void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
     PLAYER_EFFECTS.draw();
-    PLAYER_HOTBAR.draw();
+    playerHotbar.Draw();
     questPanel.Draw();
     status_bar.draw();
     mini_map.Draw();
     char_panel.draw();
-    char_bag.draw();
+    char_bag.Draw();
     region_map.draw();
     draw_special_items();
   }
-  void update() noexcept {
+  void Update() noexcept {
     WINDOW_FOCUSED = false;
     questPanel.Update();
     mini_map.Update();
     status_bar.update();
     char_panel.update();
-    char_bag.update();
+    char_bag.Update();
     region_map.update();
+    playerHotbar.Update();
     UpdateTickFunctions::update();
     update_special_items();
   }
@@ -55,7 +55,9 @@ struct PlayerUI {
       if (WINDOW_FOCUSED) {
         InventorySlot::place_item_back();
       } else {
-        WORLD_OBJECTS.push_back(new DroppedItem({PLAYER_X+ PLAYER.size.x_/2+50, PLAYER_Y+ PLAYER.size.y_/2}, DRAGGED_ITEM));
+        WORLD_OBJECTS.push_back(new DroppedItem(
+            {PLAYER_X + PLAYER.size.x_ / 2 + 50, PLAYER_Y + PLAYER.size.y_ / 2},
+            DRAGGED_ITEM));
         DRAGGED_ITEM = nullptr;
         DRAGGED_SLOT = nullptr;
       }
@@ -71,15 +73,12 @@ struct PlayerUI {
       return false;
     }
   }
-  inline void ResetPosition() noexcept{
-    char_panel.reset_pos();
-    char_bag.reset_pos();
-    questPanel.reset_pos();
-    region_map.reset_pos();
+  inline void ResetPosition() noexcept {
+    char_panel.ResetPosition();
+    char_bag.ResetPosition();
+    questPanel.ResetPosition();
+    region_map.ResetPosition();
   }
 };
-
-
-
 
 #endif  //MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_

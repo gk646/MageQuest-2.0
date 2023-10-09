@@ -1,9 +1,12 @@
 #ifndef MAGE_QUEST_SRC_UI_UIMANAGER_H_
 #define MAGE_QUEST_SRC_UI_UIMANAGER_H_
 
-namespace UIFunction {
+namespace UIFunctions {
 inline void RestUIPosition();
 }
+
+#include "elements/TextCell.h"
+#include "elements/Panel.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"
@@ -11,13 +14,16 @@ inline void RestUIPosition();
 #include "menus/GameMenu.h"
 
 struct UIManager {
-
   PlayerUI player_ui;
   SettingsMenu settings_menu;
   GameMenu game_menu{settings_menu};
   MainMenu main_menu{settings_menu};
-
-  void ui_update() noexcept {
+  UIManager() {
+    player_ui.playerHotbar.menuButtons[0].onPressedFunc = [&]() {
+      player_ui.char_bag.ToggleWindow();
+    };
+  }
+  void UIUpdate() noexcept {
     MOUSE_POS = GetMousePosition();
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH || GetScreenHeight() != SCREEN_HEIGHT) {
@@ -37,17 +43,17 @@ struct UIManager {
       }
     }
   }
-  inline void update() noexcept { player_ui.update(); }
+  inline void Update() noexcept { player_ui.Update(); }
   inline void ResetUIPosition() { player_ui.ResetPosition(); }
 };
 
 inline UIManager UI_MANAGER{};
 
-namespace UIFunction {
+namespace UIFunctions {
 inline void RestUIPosition() {
   UI_SCALE = 1;
   UI_MANAGER.ResetUIPosition();
 }
-}  // namespace UIFunction
+}  // namespace UIFunctions
 
 #endif  //MAGE_QUEST_SRC_UI_UIMANAGER_H_

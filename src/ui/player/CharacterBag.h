@@ -1,3 +1,4 @@
+
 #ifndef MAGEQUEST_SRC_UI_PLAYER_CHARACTERBAG_H_
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERBAG_H_
 
@@ -16,12 +17,12 @@ struct CharacterBag final : public Window {
     cxstructs::now(2);
   }
 
-  void draw() noexcept {
+  void Draw() noexcept {
     if (IsKeyPressed(open_key)) {
-      if(open){
+      if (open) {
         PlaySoundR(sound::close_inventory);
         open = false;
-      }else{
+      } else {
         PlaySoundR(sound::open_inventory);
         open = true;
       }
@@ -36,13 +37,14 @@ struct CharacterBag final : public Window {
       PLAYER_BAG[i].draw(whole_window.x, whole_window.y);
     }
   }
-  void update() noexcept {
+  void Update() noexcept {
     WINDOW_UPDATE();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
       PLAYER_BAG[i].update();
     }
   }
   inline static void add_slots(int n) noexcept {
+    //todo add dynamic inventory size based on slots
     int exist_x = PLAYER_BAG_SIZE % per_row;
     int exist_y = PLAYER_BAG_SIZE / per_row;
     for (uint_fast32_t i = 0; i < n; i++) {
@@ -60,6 +62,7 @@ struct CharacterBag final : public Window {
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
       if (!PLAYER_BAG[i].item && &PLAYER_BAG[i] != DRAGGED_SLOT) {
         PLAYER_BAG[i].item = new_item;
+        GAME_STATISTICS.PickedUpItem(new_item->rarity);
         return true;
       }
     }

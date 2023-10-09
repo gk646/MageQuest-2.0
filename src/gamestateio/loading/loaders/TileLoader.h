@@ -20,7 +20,7 @@ struct TileLoader {
   static void load_texture_span(int start, int end) {
     for (uint_fast32_t i = start; i < end; ++i) {
       images.push_back(
-          LoadImageR((ASSET_PATH + "textures/" + std::to_string(i) + ".png").c_str()));
+          LoadImageR((ASSET_PATH + "textures/Tiles/" + std::to_string(i) + ".png").c_str()));
     }
   }
   static void load_tile_collision() {

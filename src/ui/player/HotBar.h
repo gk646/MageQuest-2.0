@@ -2,10 +2,11 @@
 #define MAGE_QUEST_SRC_UI_HOTBAR_H_
 
 #include "../../gameplay/Skill.h"
-#include "elements/XPBar.h"
+#include "XPBar.h"
+#include "../elements/Button.h"
 
 struct HotBar {
-
+  inline static constexpr uint8_t BUTTON_ALPHA = 70;
   RectangleR BASE_RECT = {0, 0, 480, 120};
   XPBar xp_bar;
   std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
@@ -16,8 +17,22 @@ struct HotBar {
                                 new Texture(),
                                 &textures::ui::skillbar::mouseleft,
                                 &textures::ui::skillbar::mouseright};
+  std::array<Button, 6> menuButtons{
+      Button(32, 32, "", 16, textures::ui::skillbar::bag, textures::ui::skillbar::bag,
+             textures::ui::skillbar::bag_pressed, BUTTON_ALPHA, "Opens your bags (B)"),
+      Button(32, 32, "", 16, textures::ui::skillbar::abilities, textures::ui::skillbar::abilities,
+             textures::ui::skillbar::abilities_pressed, BUTTON_ALPHA, "Opens abilities (P)"),
+      Button(32, 32, "", 16, textures::ui::skillbar::character, textures::ui::skillbar::character,
+             textures::ui::skillbar::character_pressed, BUTTON_ALPHA, "Opens character (C)"),
+      Button(32, 32, "", 16, textures::ui::skillbar::map, textures::ui::skillbar::map,
+             textures::ui::skillbar::map_pressed, BUTTON_ALPHA, "Opens map (M)"),
+      Button(32, 32, "", 16, textures::ui::skillbar::setting, textures::ui::skillbar::setting,
+             textures::ui::skillbar::setting_pressed, BUTTON_ALPHA, "Opens settings (ESC)"),
+      Button(32, 32, "", 16, textures::ui::skillbar::skilltree, textures::ui::skillbar::skilltree,
+             textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA, "Opens skill tree (N)")
+  };
   HotBar() noexcept = default;
-  void draw() noexcept {
+  void Draw() noexcept {
     float size = SCALE(50);
     float offx = SCALE(46);
     float offy = SCALE(23);
@@ -34,11 +49,20 @@ struct HotBar {
                          dy + height * 0.72, 0, WHITE);
       dx += SCALE(65);
     }
+    dx += 450;
+    for (int i = 5; i > -1; i--) {
+      menuButtons[i].Draw(dx, SCREEN_HEIGHT -  menuButtons[i].bounds.height);
+      dx -= 32;
+    }
+
   }
-  void update() noexcept {
+  void Update() noexcept {
     xp_bar.update();
+    for (const auto& mb : menuButtons) {
+      mb.UpdateGlobalWindowState();
+    }
     for (const auto& skill : skills) {
-      skill->update();
+      skill->Update();
     }
     if (GAME_STATE != GameState::GameMenu) {
       if (IsKeyDown(KEY_ONE) && skills[0]->IsUsable()) {
