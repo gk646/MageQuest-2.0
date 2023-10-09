@@ -51,6 +51,10 @@ struct WorldRender {
         }
       }
     }
+
+    // Loop through all shadow objects within the visible screen area
+
+
   }
   static void DrawForeGround() noexcept {
     const int worldCol = std::max(PLAYER_TILE->x - 21, 0);
@@ -70,7 +74,6 @@ struct WorldRender {
         }
       }
     }
-
   }
 };
 

@@ -23,6 +23,7 @@ static void LoadMap(Zone zone, const PointI& pos) {
       CURRENT_ZONE = zone;
       Lighting::fadeAlpha = 150;
       WorldAnimations::CacheAnimationTiles();
+      Lighting::AmbientOcclusion::GenerateShadowMap();
       return;
     }
   }

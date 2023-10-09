@@ -194,7 +194,6 @@ class Game {
       EndTextureMode();
 
 
-
       Lighting::Shaders::StartPostProcessing();
       DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0, 0, true);
       EndShaderMode();

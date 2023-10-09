@@ -97,6 +97,7 @@ using namespace std::chrono_literals;
 #include "cxstructs/Geometry.h"
 #include "cxstructs/HashMap.h"
 #include "cxstructs/PriorityQueue.h"
+#include "cxstructs/QuadTree.h"
 #include <cxstructs/HashSet.h>
 #include "cxstructs/vec.h"
 #include "cxutil/cxtime.h"

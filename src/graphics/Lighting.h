@@ -6,6 +6,18 @@ struct SpotLightInfo {
   float outerRadius;
   Vector3 lightColors;
 };
+struct ShadowObject{
+  uint16_t xTile;
+  uint16_t yTile;
+  bool rectangular;
+  uint8_t height;
+  [[nodiscard]] inline float x() const noexcept{
+    return xTile;
+  }
+  [[nodiscard]] inline float y() const noexcept{
+    return yTile;
+  }
+};
 
 inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {FIRE_BALL, {7, 120, {0.8745f, 0.2431f, 0.1373f}}},
@@ -15,7 +27,54 @@ inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
 inline static uint16_t dayTicks = 18000;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
+namespace AmbientOcclusion {
+QuadTree<ShadowObject> CURRENT_SHADOW_TREE{{0, 0, 0, 0}};
+inline static void GenerateShadowMap() noexcept {
+  CURRENT_SHADOW_TREE.clear();
+  CURRENT_SHADOW_TREE.set_bounds({0.0F, 0.0F, (float)CURRENT_MAP_SIZE, (float)CURRENT_MAP_SIZE});
+  for (uint16_t j = 0; j < CURRENT_MAP_SIZE; j++) {
+    for (uint16_t i = 0; i < CURRENT_MAP_SIZE; i++) {
+      if (CheckTileCollision(i, j)) {
+        if (i == 0 || !CheckTileCollision(i - 1, j)) {
+          uint8_t height = 1;
+          while (i + height < CURRENT_MAP_SIZE && CheckTileCollision(i + height, j)) {
+            height++;
+          }
+          CURRENT_SHADOW_TREE.insert({i, j, true, height});
+          i += height - 1;
+        }
+      }
+    }
+  }
+}
+inline static void DrawAmbientOcclusion() noexcept{
+  for (auto obj : CURRENT_SHADOW_TREE.get_subrect(
+           {PLAYER_TILE->x - SCREEN_TILE_WIDTH / 2.0F,
+            PLAYER_TILE->y - SCREEN_TILE_HEIGHT / 2.0F, (float)SCREEN_TILE_WIDTH,
+            (float)SCREEN_TILE_HEIGHT})) {
+    // Get the object's position and height
+    PointI tilePos = {obj->xTile * 48,obj->yTile * 48+48};
+    int height = obj->height; // Assuming height is a scalar value
 
+    // Calculate shadow direction and length based on time
+    float time = 0.9; // normalized time between 0 and 1
+    float shadowLength = height * 48; // for example
+    Vector2 shadowDirection = Vector2(cos(time * 2 * PI), sin(time * 2 * PI));
+
+    // Calculate four corners of the shadow rhombus
+    Vector2 baseLeft = Vector2(tilePos.x + DRAW_X, tilePos.y + DRAW_Y);
+    Vector2 baseRight = Vector2(tilePos.x + TILE_SIZE + DRAW_X, tilePos.y + DRAW_Y);
+    Vector2 tipLeft = {baseLeft.x - shadowDirection.x * shadowLength, baseLeft.y - shadowDirection.y * shadowLength};
+    Vector2 tipRight = {baseRight.x - shadowDirection.x * shadowLength, baseRight.y - shadowDirection.y * shadowLength};
+
+
+    DrawTriangle(baseLeft, tipLeft, baseRight, {50, 50, 50, 150});
+
+
+    DrawTriangle(baseRight, tipLeft, tipRight, {255, 0, 0, 150});
+  }
+}
+}  // namespace AmbientOcclusion
 namespace Shaders {
 inline static Shader spotLight;
 inline static Shader nightShader;
@@ -72,30 +131,18 @@ inline static void StartPostProcessing() noexcept {
 }
 }  // namespace Shaders
 
-namespace AmbientOcclusion {
-std::vector<Vector3 > CURRENT_SHADOW_MAP;
-inline static void GenerateShadowMap() noexcept {
-  CURRENT_SHADOW_MAP.clear();
-  for (int_fast16_t j = 0; j < CURRENT_MAP_SIZE; j++) {
-    for (int_fast16_t i = 0; i < CURRENT_MAP_SIZE; i++) {
-      if (CheckTileCollision(i, j)) {
-        if (i == 0 || !CheckTileCollision(i - 1, j)) {
-          int_fast16_t height = 1;
-          while (i + height < CURRENT_MAP_SIZE && CheckTileCollision(i + height, j)) {
-            height++;
-          }
-          CURRENT_SHADOW_MAP.emplace_back(i, j, height);
-          i += height - 1;
-        }
-      }
-    }
-  }
-}
-}  // namespace AmbientOcclusion
 inline static float CalculateAlpha() noexcept {
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
   float alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
   return alphaDouble * 0.95F;
+}
+inline static Vector2 CalculateShadowDirection() noexcept {
+  float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
+
+  float shadowX = cos(phaseOfDay);
+  float shadowY = sin(phaseOfDay);
+
+  return Vector2(shadowX, shadowY);
 }
 inline static void DrawFade() noexcept {
   DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {24, 20, 37, fadeAlpha});
