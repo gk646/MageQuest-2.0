@@ -18,7 +18,7 @@ struct Skill {
     cool_down_ticks = (int)ability_stats.cool_down;
   }
   inline virtual void activate() = 0;
-  inline void update() noexcept { cool_down_ticks++; };
+  inline void Update() noexcept { cool_down_ticks++; };
   virtual void Draw(float x, float y, float size) const noexcept {
     DrawTextureProFast(*icon, x, y, 0, WHITE);
     int rcd = PLAYER_STATS.GetRemainingCD(skill_stats);
@@ -89,6 +89,7 @@ struct Skill {
     return false;
   }
 };
+
 #include "skills/Dummy.h"
 #include "skills/FireBall_Skill.h"
 #include "skills/BlastHammer_Skill.h"

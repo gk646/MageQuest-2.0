@@ -1,6 +1,5 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
-#include "../elements/TextCell.h"
 
 struct CharacterPanel : public Window {
   static constexpr int WIDTH = 350;

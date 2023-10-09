@@ -50,6 +50,13 @@ enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRU
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
+enum class ShadowType : uint8_t {
+  TREE_GREEN_BUSH,
+  TREE_GREEN_POINTY,
+  TREE_GREEN_SWAMPY,
+  ROCK_SMALL_1,
+  ROCK_SMALL_2
+};
 enum class ItemType : uint8_t {
   HEAD = 5,
   CHEST = 4,
@@ -95,7 +102,7 @@ enum GameStatistic : uint8_t {
   MONSTERS_KILLED,
   QUESTS_COMPLETED,
   COINS_EARNED,
-  GAME_TICK_SPLAYED,
+  GAME_TICKS_PLAYED,
   BOSSES_KILLED,
   ITEMS_PICKED_UP,
   END

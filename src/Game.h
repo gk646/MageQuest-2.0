@@ -1,7 +1,6 @@
 #ifndef MAGE_QUEST_SRC_GAME_H_
 #define MAGE_QUEST_SRC_GAME_H_
 
-
 class Game {
   static bool logic_thread_running;
   std::thread logic_thread;
@@ -105,11 +104,11 @@ class Game {
     }
   }
   static inline void GameTick() noexcept {
-    SteamAPI_RunCallbacks();
-    Multiplayer::PollPackets();
     GAME_STATISTICS.Update();
     WorldManager::Update();
     Lighting::UpdateScreenEffects();
+    SteamAPI_RunCallbacks();
+    Multiplayer::PollPackets();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
@@ -117,20 +116,18 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
-          UI_MANAGER.update();
-          PLAYER_EFFECTS.Update();
           PLAYER_STATS.update();
-          PLAYER_HOTBAR.update();
+          PLAYER_EFFECTS.Update();
           PLAYER.update();
           UPDATE_AND_COLLISION()
+          UI_MANAGER.Update();
         }
         break;
       case GameState::GameMenu: {
-        UI_MANAGER.update();
-        PLAYER_EFFECTS.Update();
         PLAYER_STATS.update();
-        PLAYER_HOTBAR.update();
+        PLAYER_EFFECTS.Update();
         UPDATE_AND_COLLISION()
+        UI_MANAGER.Update();
       } break;
       case GameState::Loading: {
       } break;
@@ -178,6 +175,7 @@ class Game {
       ClearBackground(BLANK);
       Lighting::Shaders::StartDynamicLights();
       WorldRender::DrawBackGround();
+      Lighting::AmbientOcclusion::DrawAmbientOcclusion();
       DRAW_ENTITIES();
       EndShaderMode();
       EndTextureMode();
@@ -193,23 +191,22 @@ class Game {
       EndShaderMode();
       EndTextureMode();
 
-
       Lighting::Shaders::StartPostProcessing();
       DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0, 0, true);
       EndShaderMode();
 
-      UI_MANAGER.player_ui.draw();
+      UI_MANAGER.player_ui.Draw();
       Lighting::DrawScreenEffects();
     } else {
       WorldRender::DrawBackGround();
       DRAW_ENTITIES()
       WorldRender::DrawForeGround();
-      UI_MANAGER.player_ui.draw();
+      UI_MANAGER.player_ui.Draw();
     }
   }
   static inline void DrawFrame() noexcept {
     RESET_CAMERA()
-    UI_MANAGER.ui_update();
+    UI_MANAGER.UIUpdate();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
@@ -282,8 +279,8 @@ class Game {
 #ifdef MG2_DEBUG
     //SetMasterVolume(0);
 #endif
-    PLAYER_HOTBAR.skills[1] = new FireStrike_Skill(true, 6);
-    PLAYER_HOTBAR.skills[4] = new EnergySphere_Skill(true);
+    UI_MANAGER.player_ui.playerHotbar.skills[1] = new FireStrike_Skill(true, 6);
+    UI_MANAGER.player_ui.playerHotbar.skills[4] = new EnergySphere_Skill(true);
     for (uint_fast32_t i = 0; i < 3; i++) {
       MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }

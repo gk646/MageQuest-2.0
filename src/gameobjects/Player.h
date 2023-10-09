@@ -126,7 +126,6 @@ struct Player final : public Entity {
 inline static Player PLAYER({150, 150});
 #include "../ui/player/HotBar.h"
 #include "WorldObject.h"
-inline static HotBar PLAYER_HOTBAR{};
 void EntityStats::RemoveEffects() noexcept {
   PLAYER_EFFECTS.RemoveEffects();
 }

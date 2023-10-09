@@ -22,15 +22,16 @@ struct GameMenu {
         GAME_STATE = GameState::Game;
         menu_state = MenuState::Main;
       }
-      if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - (3 * scaled_height) - 2* vertical_gap,
-                     scaled_width, scaled_height},
-                    "Settings")) {
+      if (GuiButton(
+              {xOffset, (SCREEN_HEIGHT / 2.0f) - (3 * scaled_height) - 2 * vertical_gap,
+               scaled_width, scaled_height},
+              "Settings")) {
         menu_state = MenuState::Settings;
       }
       if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - (2 * scaled_height) - vertical_gap,
                      scaled_width, scaled_height},
                     "Reset UI")) {
-        UIFunction::RestUIPosition();
+        UIFunctions::RestUIPosition();
       }
       if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - scaled_height, scaled_width,
                      scaled_height},
@@ -44,6 +45,7 @@ struct GameMenu {
       settings_menu.Draw();
     }
     if (IsKeyPressed(KEY_ESCAPE)) {
+      PlaySoundR(sound::menu_back);
       menu_state = MenuState::Main;
     }
   }

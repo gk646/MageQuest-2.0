@@ -90,14 +90,33 @@ inline static Texture spendButtonPressed;
 
 namespace skillbar {
 inline static Texture bag;
+inline static Texture bag_hovered;
+inline static Texture bag_pressed;
+
 inline static Texture abilities;
+inline static Texture abilities_hovered;
+inline static Texture abilities_pressed;
+
 inline static Texture character;
+inline static Texture character_hovered;
+inline static Texture character_pressed;
+
 inline static Texture map;
+inline static Texture map_hovered;
+inline static Texture map_pressed;
+
+
+inline static Texture setting;
+inline static Texture setting_hovered;
+inline static Texture setting_pressed;
+
+inline static Texture skilltree;
+inline static Texture skilltree_hovered;
+inline static Texture skilltree_pressed;
+
+inline static Texture tooltip;
 inline static Texture mouseleft;
 inline static Texture mouseright;
-inline static Texture tooltip;
-inline static Texture setting;
-inline static Texture skilltree;
 inline static Texture skillbar;
 inline static Texture xpbar;
 

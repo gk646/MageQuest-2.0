@@ -49,6 +49,7 @@ struct MainMenu {
     }
 
     if (IsKeyPressed(KEY_ESCAPE)) {
+      PlaySoundR(sound::menu_back);
       menu_state = MenuState::Main;
       Multiplayer::CloseMultiplayer();
     }
