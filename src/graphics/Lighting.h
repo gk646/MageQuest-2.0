@@ -19,7 +19,7 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
 
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
-inline static uint16_t dayTicks = 18000;
+inline static uint16_t dayTicks = 30000;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
 namespace AmbientOcclusion {
@@ -53,7 +53,7 @@ inline static void DrawAmbientOcclusion() noexcept {
     PointI tilePos = {obj->xTile * 48, obj->yTile * 48 + 48};
 
     // Calculate shadow direction and length based on time
-    float time = 0.9;                  // normalized time between 0 and 1
+    float time = 0.9;         // normalized time between 0 and 1
     float shadowLength = 48;  // for example
     Vector2 shadowDirection = Vector2(cos(time * 2 * PI), sin(time * 2 * PI));
 
@@ -72,6 +72,7 @@ inline static void DrawAmbientOcclusion() noexcept {
 }
 }  // namespace AmbientOcclusion
 namespace Shaders {
+inline static Vector2* cameraVec = new Vector2{0, 0};
 inline static Shader spotLight;
 inline static Shader nightShader;
 inline static Shader postProcessing;
@@ -81,15 +82,17 @@ inline static int SPOT_LIGHT_COLOR;
 inline static int SPOT_LIGHT_INNER_RADIUS;
 inline static int SPOT_LIGHT_NUM;
 inline static int SPOT_LIGHT_TIME;
+inline static int SPOT_LIGHT_PLAYER;
 inline static int SPOT_LIGHT_ALPHA;
 inline static int NIGHT_SHADER_ALPHA;
+inline static int NIGHT_SHADER_PLAYER;
 inline static int spotLightCount = 0;
 inline static float spotLightTime = 0;
 Vector2 lightPositions[MAX_DYNAMIC_LIGHTS];
 float innerRadii[MAX_DYNAMIC_LIGHTS];
 float outerRadii[MAX_DYNAMIC_LIGHTS];
 Vector3 lightColors[MAX_DYNAMIC_LIGHTS];
-inline static void StartDynamicLights() noexcept {
+inline static void UpdateDynamicLights() noexcept {
   int i = 0;
   for (auto p : PROJECTILES) {
     if (i >= MAX_DYNAMIC_LIGHTS) break;
@@ -102,8 +105,11 @@ inline static void StartDynamicLights() noexcept {
       i++;
     }
   }
-  spotLightTime += 0.0083;
+
   spotLightCount = i;
+}
+inline static void StartDynamicLights() noexcept {
+  spotLightTime += 0.0083;
   SetShaderValueV(spotLight, SPOT_LIGHT_POSITION, lightPositions, SHADER_UNIFORM_VEC2,
                   spotLightCount);
   SetShaderValueV(spotLight, SPOT_LIGHT_COLOR, lightColors, SHADER_UNIFORM_VEC3,
@@ -115,11 +121,13 @@ inline static void StartDynamicLights() noexcept {
   SetShaderValue(spotLight, SPOT_LIGHT_NUM, &spotLightCount, SHADER_UNIFORM_INT);
   SetShaderValue(spotLight, SPOT_LIGHT_TIME, &spotLightTime, SHADER_UNIFORM_FLOAT);
   SetShaderValue(spotLight, SPOT_LIGHT_ALPHA, &currentNightAlpha, SHADER_UNIFORM_FLOAT);
+  SetShaderValue(spotLight, SPOT_LIGHT_PLAYER, cameraVec, SHADER_UNIFORM_VEC2);
   BeginShaderMode(spotLight);
 }
 inline static void StartNightShader() noexcept {
   SetShaderValue(nightShader, NIGHT_SHADER_ALPHA, &currentNightAlpha,
                  SHADER_UNIFORM_FLOAT);
+  SetShaderValue(nightShader, NIGHT_SHADER_PLAYER, cameraVec, SHADER_UNIFORM_VEC2);
   BeginShaderMode(nightShader);
 }
 inline static void StartPostProcessing() noexcept {
@@ -130,7 +138,7 @@ inline static void StartPostProcessing() noexcept {
 inline static float CalculateAlpha() noexcept {
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
   float alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
-  return alphaDouble * 0.95F;
+  return alphaDouble * 0.99F;
 }
 inline static Vector2 CalculateShadowDirection() noexcept {
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;

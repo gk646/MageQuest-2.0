@@ -17,7 +17,7 @@ struct Button {
   std::function<void()> onPressedFunc;
   Button(float width, float height, const char* txt, float fontSize,
          const Texture& normal, const Texture& hovered, const Texture& pressed,
-         uint8_t alpha = 255, std::string toolTip = "", const std::function<void()> func = nullptr)
+         uint8_t alpha = 255, std::string toolTip = "", const std::function<void()>& func = nullptr)
       : bounds(0, 0, width, height),
         base_width(width),
         base_height(height),
@@ -31,13 +31,9 @@ struct Button {
         onPressedFunc(func) {}
   bool Draw(float x, float y) noexcept {
     Update(x, y);
-
     if (isHovered) {
       ToolTip::DrawToolTip(toolTip, ANT_PARTY, 15);
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        if (onPressedFunc) {
-          onPressedFunc();
-        }
         DrawTextureScaled(pressed, bounds, 0, false, 0, {255, 255, 255, 255});
       } else {
         DrawTextureScaled(hovered, bounds, 0, false, 0, {255, 255, 255, 255});
@@ -78,6 +74,9 @@ struct Button {
   }
   [[nodiscard]] inline bool PlayConfirmSound() const noexcept {
     if (isHovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+      if (onPressedFunc) {
+        onPressedFunc();
+      }
       //PlaySoundR(sound::menu_switch);
       return true;
     }

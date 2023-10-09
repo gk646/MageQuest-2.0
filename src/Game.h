@@ -77,7 +77,8 @@ class Game {
       }                                                               \
       ++it;                                                           \
     }                                                                 \
-  }
+  }                                                                   \
+  Lighting::Shaders::UpdateDynamicLights();
 
   inline static void LogicLoop() noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
@@ -169,6 +170,7 @@ class Game {
   PLAYER.draw();
 
   inline static void DrawGame() noexcept {
+    WorldRender::PreRenderTasks();
     if (!DISABLE_DYNAMIC_LIGHTING) [[likely]] {
 
       BeginTextureMode(FIRST_LAYER_BUFFER);

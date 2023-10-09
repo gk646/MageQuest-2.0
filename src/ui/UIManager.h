@@ -22,6 +22,21 @@ struct UIManager {
     player_ui.playerHotbar.menuButtons[0].onPressedFunc = [&]() {
       player_ui.char_bag.ToggleWindow();
     };
+    player_ui.playerHotbar.menuButtons[1].onPressedFunc = [&]() {
+      player_ui.char_bag.ToggleWindow();
+    };
+    player_ui.playerHotbar.menuButtons[2].onPressedFunc = [&]() {
+      player_ui.char_panel.ToggleWindow();
+    };
+    player_ui.playerHotbar.menuButtons[3].onPressedFunc = [&]() {
+      player_ui.region_map.ToggleWindow();
+    };
+    player_ui.playerHotbar.menuButtons[4].onPressedFunc = [&]() {
+      GAME_STATE = GameState::GameMenu;
+    };
+    player_ui.playerHotbar.menuButtons[5].onPressedFunc = [&]() {
+      player_ui.char_bag.ToggleWindow();
+    };
   }
   void UIUpdate() noexcept {
     MOUSE_POS = GetMousePosition();

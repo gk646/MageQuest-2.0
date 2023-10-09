@@ -12,8 +12,11 @@ struct TextureLoader {
     Lighting::Shaders::SPOT_LIGHT_NUM = GetShaderLocation(Lighting::Shaders::spotLight,"numLights");
     Lighting::Shaders::SPOT_LIGHT_TIME= GetShaderLocation(Lighting::Shaders::spotLight,"time");
     Lighting::Shaders::SPOT_LIGHT_ALPHA= GetShaderLocation(Lighting::Shaders::spotLight,"nightAlpha");
+    Lighting::Shaders::SPOT_LIGHT_PLAYER= GetShaderLocation(Lighting::Shaders::spotLight,"playerPos");
+
 
     Lighting::Shaders::NIGHT_SHADER_ALPHA= GetShaderLocation( Lighting::Shaders::nightShader,"nightAlpha");
+    Lighting::Shaders::NIGHT_SHADER_PLAYER= GetShaderLocation( Lighting::Shaders::nightShader,"playerPos");
 
 
     textures::ui::STATUS_BAR =
