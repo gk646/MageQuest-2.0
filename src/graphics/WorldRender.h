@@ -4,12 +4,12 @@
 #include "WorldAnimations.h"
 
 struct WorldRender {
-  static void DrawBackGround() noexcept {
-    int worldCol = std::max(PLAYER_TILE->x - 21, 0);
-    int worldRow = std::max(PLAYER_TILE->y - 12, 0);
-    const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
-    const int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
-
+  static uint16_t worldCol, worldRow, maxCol, maxRow;
+  static inline void PreRenderTasks() noexcept {
+    worldCol = std::max(PLAYER_TILE->x - 21, 0);
+    worldRow = std::max(PLAYER_TILE->y - 12, 0);
+    maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
+    maxRow = std::min(worldRow + 24, CURRENT_MAP_SIZE);
     const int playerX = PLAYER_X = PLAYER.pos.x_;
     const int playerY = PLAYER_Y = PLAYER.pos.y_;
     int screenX = CAMERA_X;
@@ -30,14 +30,19 @@ struct WorldRender {
       worldRow = std::min(std::max(worldRow - 10, 0), CURRENT_MAP_SIZE);
     }
 
+    Lighting::Shaders::cameraVec->x = CAMERA_X - 10;
+    Lighting::Shaders::cameraVec->y = CAMERA_Y - 24;
+
     DRAW_X = -playerX + screenX;
     DRAW_Y = -playerY + screenY;
     MIRROR_POINT = playerX + PLAYER.size.x_ / 2;
+  }
+  static void DrawBackGround() noexcept {
 
     float x_base, y_base;
-    for (int i = worldCol; i < maxCol; ++i) {
+    for (uint16_t i = worldCol; i < maxCol; ++i) {
       x_base = i * TILE_SIZE + DRAW_X;
-      for (int b = worldRow; b < maxRow; ++b) {
+      for (uint16_t b = worldRow; b < maxRow; ++b) {
         y_base = b * TILE_SIZE + DRAW_Y;
 
         DrawTextureProFastUltra(TILES[CURRENT_BACK_GROUND[i][b]], x_base, y_base);
@@ -51,21 +56,12 @@ struct WorldRender {
         }
       }
     }
-
-    // Loop through all shadow objects within the visible screen area
-
-
   }
   static void DrawForeGround() noexcept {
-    const int worldCol = std::max(PLAYER_TILE->x - 21, 0);
-    const int worldRow = std::max(PLAYER_TILE->y - 12, 0);
-    const int maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
-    const int maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
-
     float x_base, y_base;
-    for (int i = worldCol; i < maxCol; ++i) {
+    for (uint16_t i = worldCol; i < maxCol; ++i) {
       x_base = i * TILE_SIZE + DRAW_X;
-      for (int b = worldRow; b < maxRow; ++b) {
+      for (uint16_t b = worldRow; b < maxRow; ++b) {
         y_base = b * TILE_SIZE + DRAW_Y;
 
         int num1 = CURRENT_FORE_GROUND[i][b];
@@ -76,5 +72,9 @@ struct WorldRender {
     }
   }
 };
+uint16_t WorldRender::worldRow = 0;
+uint16_t WorldRender::worldCol = 0;
+uint16_t WorldRender::maxCol = 0;
+uint16_t WorldRender::maxRow = 0;
 
 #endif  //MAGE_QUEST_SRC_GRAPHICS_WORLDRENDER_H_
