@@ -10,6 +10,8 @@
 
 inline static float SCREEN_WIDTH = 1280;
 inline static float SCREEN_HEIGHT = 960;
+inline static int SCREEN_TILE_WIDTH = 42;
+inline static int SCREEN_TILE_HEIGHT = 24;
 inline static GameState GAME_STATE = GameState::Loading;
 inline static std::shared_mutex rwLock;
 inline const static std::thread::id MAIN_THREAD_ID = std::this_thread::get_id();
