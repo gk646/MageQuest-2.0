@@ -32,7 +32,7 @@ struct CharacterBag final : public Window {
       return;
     }
     DRAG_WINDOW()
-    draw_window();
+    DrawWindow();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
       PLAYER_BAG[i].draw(whole_window.x, whole_window.y);
     }

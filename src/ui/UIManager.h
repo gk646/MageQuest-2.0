@@ -6,7 +6,9 @@ inline void RestUIPosition();
 }
 
 #include "elements/TextCell.h"
+#include "elements/Button.h"
 #include "elements/Panel.h"
+#include "elements/ExpandableMenu.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"

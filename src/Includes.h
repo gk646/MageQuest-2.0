@@ -107,12 +107,12 @@ using namespace cxstructs;
  * |                  MAGE QUEST II                      |
  * |-----------------------------------------------------|
  */
-#include "system/GameSettings.h"
 #include "raylib-extension/DrawFunctions.h"
 #include "system/CollisionDetection.h"
 #include "system/Definitions.h"
 #include "resources/Colors.h"
 #include "system/Enums.h"
+#include "system/GameSettings.h"
 #include "system/GameSettings.h"
 #include "resources/FontStorage.h"
 #include "graphics/elements/LogoDrawer.h"
@@ -147,7 +147,7 @@ using namespace cxstructs;
 #include "system/BenchMark.h"
 #include "ui/game/MiniMap.h"
 #include "gamestateio/GameLoader.h"
-#include "gamestateio/GameSaver.h"
+#include "gamestateio/loading/loaders/GameSaver.h"
 #include "ui/UIManager.h"
 #include "Game.h"
 #endif  //MAGEQUEST_SRC_INCLUDES_H_

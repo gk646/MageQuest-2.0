@@ -49,11 +49,6 @@ inline std::string ASSET_PATH = "../res/";
 #define C_AIR_ONLY 2
 #define C_WATER 3
 
-//Directions
-#define LEFT 0
-#define RIGHT 1
-#define DOWN 2
-#define UP 3
 
 //UI
 #define SLOT_SIZE 45

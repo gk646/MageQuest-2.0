@@ -3,22 +3,22 @@
 
 #include "../ui/game/HealthBar.h"
 struct Monster : public Entity {
-  StatusEffectHandler status_effects{stats};
   EntityStats stats;
-  uint16_t u_id = MONSTER_ID++;
-  int16_t attack = 0;
   int16_t attack_cd = 0;
+  int16_t attack = 0;
+  std::string name;
+  StatusEffectHandler status_effects{stats};
+  ThreatManager threatManager{*this};
+  MonsterResource* resource;
+  Entity* target = nullptr;
+  uint16_t u_id = MONSTER_ID++;
   bool moving = false;
   bool prev_moving = false;
   bool flip = false;
-  Entity* target = nullptr;
-  MonsterResource* resource;
   uint8_t AttackRange = 10;
   uint8_t ChaseRange = 15;
-  std::string name;
-  HealthBar health_bar;
-  ThreatManager threatManager{*this};
   MonsterType type;
+  HealthBar health_bar;
   Monster(const Point& pos, const EntityStats& stats, MonsterResource* resource,
           MonsterType type, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)

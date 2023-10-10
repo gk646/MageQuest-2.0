@@ -1,8 +1,8 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_GAMESAVER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_GAMESAVER_H_
 
-#include "saving/ItemSaver.h"
-#include "saving/EntitySaver.h"
+#include "../../saving/ItemSaver.h"
+#include "../../saving/EntitySaver.h"
 
 struct GameSaver {
 

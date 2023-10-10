@@ -70,8 +70,18 @@ inline static void DrawAmbientOcclusion() noexcept {
     DrawTriangle(baseRight, tipLeft, tipRight, {255, 0, 0, 150});
   }
 }
+inline static Vector2 CalculateShadowDirection() noexcept {
+  float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
+
+  float shadowX = cos(phaseOfDay);
+  float shadowY = sin(phaseOfDay);
+
+  return Vector2(shadowX, shadowY);
+}
+
 }  // namespace AmbientOcclusion
 namespace Shaders {
+inline static bool lightOn = false;
 inline static Vector2* cameraVec = new Vector2{0, 0};
 inline static Shader spotLight;
 inline static Shader nightShader;
@@ -96,7 +106,7 @@ inline static void UpdateDynamicLights() noexcept {
   int i = 0;
   for (auto p : PROJECTILES) {
     if (i >= MAX_DYNAMIC_LIGHTS) break;
-    if (p->active) {
+    if (p->active && p->illuminated) {
       lightPositions[i] = {p->pos.x_ + DRAW_X + p->size.x_ / 2,
                            SCREEN_HEIGHT - (p->pos.y_ + DRAW_Y + p->size.y_ / 2)};
       innerRadii[i] = typeToLight[p->projectileType].innerRadius;
@@ -110,6 +120,15 @@ inline static void UpdateDynamicLights() noexcept {
 }
 inline static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
+  if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) lightOn = !lightOn;
+  if (lightOn) {
+    cameraVec->x = CAMERA_X - 10;
+    cameraVec->y = CAMERA_Y - 24;
+  } else {
+    cameraVec->x = 0;
+    cameraVec->y = 0;
+  }
+
   SetShaderValueV(spotLight, SPOT_LIGHT_POSITION, lightPositions, SHADER_UNIFORM_VEC2,
                   spotLightCount);
   SetShaderValueV(spotLight, SPOT_LIGHT_COLOR, lightColors, SHADER_UNIFORM_VEC3,
@@ -134,26 +153,14 @@ inline static void StartPostProcessing() noexcept {
   BeginShaderMode(postProcessing);
 }
 }  // namespace Shaders
-
 inline static float CalculateAlpha() noexcept {
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
   float alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
   return alphaDouble * 0.99F;
 }
-inline static Vector2 CalculateShadowDirection() noexcept {
-  float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
-
-  float shadowX = cos(phaseOfDay);
-  float shadowY = sin(phaseOfDay);
-
-  return Vector2(shadowX, shadowY);
-}
-inline static void DrawFade() noexcept {
-  DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {24, 20, 37, fadeAlpha});
-}
 inline static void DrawScreenEffects() noexcept {
   if (fadeAlpha < 255) {
-    DrawFade();
+    DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {24, 20, 37, fadeAlpha});
   }
 }
 inline static void UpdateScreenEffects() noexcept {
@@ -165,6 +172,7 @@ inline static void UpdateScreenEffects() noexcept {
     dayTicks = 0;
   }
   currentNightAlpha = CalculateAlpha();
+  Lighting::Shaders::UpdateDynamicLights();
 }
 }  // namespace Lighting
 #endif  //MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_

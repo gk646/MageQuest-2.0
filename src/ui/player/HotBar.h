@@ -3,7 +3,7 @@
 
 #include "../../gameplay/Skill.h"
 #include "XPBar.h"
-#include "../elements/Button.h"
+#include "../elements/TexturedButton.h"
 
 struct HotBar {
   inline static constexpr uint8_t BUTTON_ALPHA = 70;
@@ -17,18 +17,18 @@ struct HotBar {
                                 new Texture(),
                                 &textures::ui::skillbar::mouseleft,
                                 &textures::ui::skillbar::mouseright};
-  std::array<Button, 6> menuButtons{
-      Button(32, 32, "", 16, textures::ui::skillbar::bag, textures::ui::skillbar::bag,
+  std::array<TexturedButton, 6> menuButtons{
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::bag, textures::ui::skillbar::bag,
              textures::ui::skillbar::bag_pressed, BUTTON_ALPHA, "Opens your bags (B)"),
-      Button(32, 32, "", 16, textures::ui::skillbar::abilities, textures::ui::skillbar::abilities,
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::abilities, textures::ui::skillbar::abilities,
              textures::ui::skillbar::abilities_pressed, BUTTON_ALPHA, "Opens abilities (P)"),
-      Button(32, 32, "", 16, textures::ui::skillbar::character, textures::ui::skillbar::character,
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::character, textures::ui::skillbar::character,
              textures::ui::skillbar::character_pressed, BUTTON_ALPHA, "Opens character (C)"),
-      Button(32, 32, "", 16, textures::ui::skillbar::map, textures::ui::skillbar::map,
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::map, textures::ui::skillbar::map,
              textures::ui::skillbar::map_pressed, BUTTON_ALPHA, "Opens map (M)"),
-      Button(32, 32, "", 16, textures::ui::skillbar::setting, textures::ui::skillbar::setting,
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::setting, textures::ui::skillbar::setting,
              textures::ui::skillbar::setting_pressed, BUTTON_ALPHA, "Opens settings (ESC)"),
-      Button(32, 32, "", 16, textures::ui::skillbar::skilltree, textures::ui::skillbar::skilltree,
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::skilltree, textures::ui::skillbar::skilltree,
              textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA, "Opens skill tree (N)")
   };
   HotBar() noexcept = default;

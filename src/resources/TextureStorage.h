@@ -86,7 +86,12 @@ inline static Texture spendButtonNormal;
 inline static Texture spendButtonHovered;
 inline static Texture spendButtonPressed;
 
+namespace questpanel{
+inline static Texture questBox;
+inline static Texture questBoxHovered;
+inline static Texture questBoxPressed;
 
+}
 
 namespace skillbar {
 inline static Texture bag;

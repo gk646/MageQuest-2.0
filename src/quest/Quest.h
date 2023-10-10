@@ -5,12 +5,15 @@
 #include "elements/QuestReward.h"
 
 struct Quest final {
+  std::string name;
+  std::vector<std::string> pastObjectives;
+  std::vector<std::string> pastDialogue;
+  std::vector<QuestNode*> objectives;
+  std::string description;
+  QuestReward* reward = nullptr;
   int stage = 0;
   Quest_ID id;
-  QuestReward* reward = nullptr;
-  std::string name;
   QuestState state = QuestState::IN_ACTIVE;
-  std::vector<QuestNode*> objectives;
   bool hidden = false;
   explicit Quest(Quest_ID id) : id(id) {}
   ~Quest() {
@@ -27,7 +30,7 @@ struct Quest final {
       FinishStage(objectives[stage]);
     }
   }
-  void Progress(MonsterType type)noexcept {
+  void Progress(MonsterType type) noexcept {
     if (((KILL*)objectives[stage])->progress(type)) {
       FinishStage(objectives[stage]);
     }

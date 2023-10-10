@@ -30,8 +30,6 @@ struct WorldRender {
       worldRow = std::min(std::max(worldRow - 10, 0), CURRENT_MAP_SIZE);
     }
 
-    Lighting::Shaders::cameraVec->x = CAMERA_X - 10;
-    Lighting::Shaders::cameraVec->y = CAMERA_Y - 24;
 
     DRAW_X = -playerX + screenX;
     DRAW_Y = -playerY + screenY;

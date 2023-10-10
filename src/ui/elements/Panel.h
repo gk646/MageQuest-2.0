@@ -1,14 +1,14 @@
 #ifndef MAGEQUEST_SRC_UI_ELEMENTS_PANEL_H_
 #define MAGEQUEST_SRC_UI_ELEMENTS_PANEL_H_
 struct Panel {
+  RectangleR button;
+  RectangleR body;
+  const Font& font;
+  char* headerText;
   float baseWidth;
   float baseHeight;
   float baseHeaderHeight;
-  RectangleR button;
-  RectangleR body;
   bool expanded = false;
-  char* headerText;
-  const Font& font;
   bool isHovered = false;
   Panel(float width, float height, float headerHeight, const Font& font, char* headerText)
       : button(0, 0, 16, 16),
@@ -40,7 +40,6 @@ struct Panel {
     }
   }
   virtual void DrawContent() noexcept = 0;
-
   void Update() {
     isHovered = CheckCollisionPointRec(MOUSE_POS, button);
     if (isHovered) WINDOW_FOCUSED = true;
