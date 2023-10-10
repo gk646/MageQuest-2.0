@@ -29,6 +29,7 @@ struct PlayerUI {
     region_map.draw();
     draw_special_items();
   }
+
   void Update() noexcept {
     WINDOW_FOCUSED = false;
     questPanel.Update();

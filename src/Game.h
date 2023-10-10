@@ -77,8 +77,7 @@ class Game {
       }                                                               \
       ++it;                                                           \
     }                                                                 \
-  }                                                                   \
-  Lighting::Shaders::UpdateDynamicLights();
+  }
 
   inline static void LogicLoop() noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();

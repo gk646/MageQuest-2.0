@@ -4,8 +4,8 @@
 #include "Quest.h"
 
 struct QuestHandler {
-  Quest* activeQuest = nullptr;
   std::vector<Quest*> quests;
+  Quest* activeQuest = nullptr;
   ~QuestHandler() {
     for (auto q : quests) {
       delete q;

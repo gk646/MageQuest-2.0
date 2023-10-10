@@ -29,7 +29,7 @@ struct CharacterPanel : public Window {
   std::array<TextCell, 18> baseStats =
       TextCell::CreateCharacterCells(WIDTH / 2.5F, 12, MINECRAFT_BOLD, 15);
 
-  Button spendPoint{14,
+  TexturedButton spendPoint{14,
                     14,
                     "",
                     0,
@@ -44,7 +44,7 @@ struct CharacterPanel : public Window {
   }
   void draw() {
     WINDOW_LOGIC()
-    draw_window();
+    DrawWindow();
     RectangleR scaled_whole = SCALE_RECT(whole_window);
     float x = scaled_whole.x + SCALE(left_x/2);
     float y = scaled_whole.y + SCALE(275);

@@ -9,6 +9,7 @@
 #include "loading/loaders/TileLoader.h"
 #include "loading/loaders/FontLoader.h"
 #include "loading/loaders/EntityStateLoader.h"
+#include "loading/loaders/GameInfoLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -32,6 +33,7 @@ struct GameLoader {
 
  private:
   static void load_game() {
+    LoadStep(GameInfoLoader::Load);
     LoadStep(TransitionParser::ParseTransitionFile);
     LoadStep(NPCLoader::LoadNamedNPCs);
     LoadStep(QuestLoader::load);

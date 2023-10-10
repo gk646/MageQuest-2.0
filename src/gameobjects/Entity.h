@@ -4,14 +4,14 @@
 #include "../pathfinding/PathFinder.h"
 
 struct Entity {
-  bool dead = false;
-  float pov;
-  Point pos;
   PointI tile_pos;
+  Point pos;
   Point size;
-  ShapeType shape_type;
-  Zone zone;
+  float pov;
   uint16_t sprite_counter = 0;
+  ShapeType shape_type;
+  bool dead = false;
+  Zone zone;
   bool active = true;
   bool illuminated = false;
   Entity(const Point& pos, const Point& size, ShapeType shape_type, float pov = 0,

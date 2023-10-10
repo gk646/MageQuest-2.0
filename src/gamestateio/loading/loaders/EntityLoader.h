@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ENTITYLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ENTITYLOADER_H_
 
-struct EntityLoader {
+namespace EntityLoader {
   static void load() {
     textures::PLAYER_RESOURCE.load("player/");
 
@@ -41,7 +41,6 @@ struct EntityLoader {
     textures::projectile::DUMMY.load("dummy/");
     textures::projectile::PSYCHIC_SCREAM.load("PsychicScream/");
 
-    //npcs
     textures::npc::ARIA.load("npc/aria/");
     textures::npc::OLD_MAN.load("npc/oldman/");
     textures::npc::realmKeeper.load("npc/realmKeeper/");

@@ -5,13 +5,13 @@ struct Window {
   RectangleR whole_window;
   RectangleR header_bar;
   Vector2 lastMousePos = {0};
-  bool isDragging = false;
+  Vector2 base_pos;
   char* header_text;
   int open_key;
   float font_size = 17;
+  bool isDragging = false;
   bool open = false;
   bool header_hover = false;
-  Vector2 base_pos;
   Window(int start_x, int start_y, int width, int height, int header_height,
          char* header_text, int open_key)
       : whole_window(start_x, start_y, width, height),
@@ -57,20 +57,25 @@ struct Window {
     isDragging = false;                                             \
   }
 
-  void draw_window() const noexcept {
+  void DrawWindow() const noexcept {
     RectangleR scaled_whole = SCALE_RECT(whole_window);
     RectangleR scaled_head = SCALE_RECT(header_bar);
 
-    DrawRectangleRounded(scaled_whole, 0.1F, ROUND_SEGMENTS, Colors::LightGrey);
+    float ROUNDNESS = 0.1F;
+    if (whole_window.width > 450) {
+      ROUNDNESS = 0.05F;
+    }
+
+    DrawRectangleRounded(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, Colors::LightGrey);
 
     DrawRectangleRounded(scaled_head, 0.5F, ROUND_SEGMENTS,
                          header_hover ? isDragging ? Colors::mediumLightGreyDarker
                                                    : Colors::mediumLightGreyBitDarker
                                       : Colors::mediumLightGrey);
 
-    DrawRectangleRoundedLines(scaled_whole, 0.1F, ROUND_SEGMENTS, 3,
-                              Colors::darkBackground);
     DrawRectangleRoundedLines(scaled_head, 1.5F, ROUND_SEGMENTS, 2,
+                              Colors::darkBackground);
+    DrawRectangleRoundedLines(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, 3,
                               Colors::darkBackground);
     DrawCenteredText(ANT_PARTY, SCALE(font_size), header_text,
                      scaled_whole.x + scaled_whole.width / 2,

@@ -50,12 +50,23 @@ enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRU
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
+enum class TextAlign : uint8_t { LEFT, RIGHT, MIDDLE };
 enum class ShadowType : uint8_t {
   TREE_GREEN_BUSH,
   TREE_GREEN_POINTY,
   TREE_GREEN_SWAMPY,
   ROCK_SMALL_1,
   ROCK_SMALL_2
+};
+enum class Keybind : uint8_t {
+  PLAYER_LIGHT,
+  ABILITY_1,
+  ABILITY_2,
+  ABILITY_3,
+  ABILITY_4,
+  ABILITY_5,
+  ABILITY_6,
+  END
 };
 enum class ItemType : uint8_t {
   HEAD = 5,
@@ -152,6 +163,7 @@ enum Stat : uint8_t {
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
  */
+
 enum class NodeType : uint8_t {
   GOTO,
   KILL,
@@ -179,8 +191,8 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"ESCORT", NodeType::ESCORT},
     {"MIX", NodeType::MIX},
     {"NPC_MOVE", NodeType::NPC_MOVE}};
-enum class QuestState { IN_ACTIVE, ACTIVE, COMPLETED };
-enum class Quest_ID { TUTORIAL, MARLA, END };
+enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
+enum class Quest_ID : uint8_t { TUTORIAL, MARLA, END };
 
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving

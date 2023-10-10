@@ -6,11 +6,11 @@ inline static InventorySlot* PLAYER_EQUIPPED;
 inline static InventorySlot* PLAYER_BAG;
 inline static int PLAYER_BAG_SIZE = 0;
 struct InventorySlot {
+  RectangleR hit_box = {0};
+  Item* item = nullptr;
   static constexpr int tool_tip_delay = 12;
   int tool_tip_counter = 0;
   int base_x = 0, base_y = 0;
-  RectangleR hit_box = {0};
-  Item* item = nullptr;
   ItemType item_type = ItemType::EMPTY;
   InventorySlot() = default;
   InventorySlot(int x, int y, ItemType item_type) noexcept
