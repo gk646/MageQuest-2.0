@@ -2,6 +2,10 @@
 #define MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
 namespace ScriptParser {
 
+#define ADD_TO_QUEST()                                       \
+  obj->major_objective = parts[parts.size() - 1] == "MAJOR"; \
+  quest->objectives.push_back(obj);
+
 Quest* load(const std::string& path, Quest_ID id) {
   auto quest = new Quest(id);
   std::ifstream file(ASSET_PATH + path);
@@ -25,15 +29,13 @@ Quest* load(const std::string& path, Quest_ID id) {
     switch (type) {
       case NodeType::GOTO: {
         auto obj = new GOTO(parts[2], ParsePointI(parts[1]));
-        obj->major_objective = parts[parts.size() - 1] == "MAJOR";
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
 
       } break;
       case NodeType::KILL: {
         auto obj = new KILL(stringToMonsterID[split(parts[1], ',')[0]],
                             std::stoi(split(parts[1], ',')[1]), parts[2]);
-        obj->major_objective = parts[parts.size() - 1] == "MAJOR";
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
       } break;
       case NodeType::SPEAK: {
         auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
@@ -41,11 +43,10 @@ Quest* load(const std::string& path, Quest_ID id) {
           obj->map_marker = {std::stoi(split(parts[3], ',')[1]),
                              std::stoi(split(parts[3], ',')[2])};
         }
-        obj->major_objective = parts[parts.size() - 1] == "MAJOR";
         while (std::getline(file, line) && line != "*") {
           obj->lines.push_back(line);
         }
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
       } break;
       case NodeType::COLLECT:
         break;
@@ -65,7 +66,7 @@ Quest* load(const std::string& path, Quest_ID id) {
           auto vec = split(parts[i], ',');
           obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));
         }
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
 
       } break;
       case NodeType::TILE_ACTION: {
@@ -79,7 +80,7 @@ Quest* load(const std::string& path, Quest_ID id) {
         }
         auto obj = new TILE_ACTION(stringToZoneMap[parts[1]], layer,
                                    ParsePointI(parts[3]), std::stoi(parts[4]));
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
       } break;
       case NodeType::NPC_SAY: {
         auto obj = new NPC_SAY(npcIdMap[parts[1]]);
@@ -90,14 +91,21 @@ Quest* load(const std::string& path, Quest_ID id) {
         }
         std::getline(file, obj->txt);
         std::getline(file, line);
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
       } break;
       case NodeType::SPAWN: {
         auto obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
         for (uint_fast32_t i = 3; i < parts.size(); i++) {
           obj->positions.emplace_back(ParsePointI(parts[i]));
         }
-        quest->objectives.push_back(obj);
+        ADD_TO_QUEST();
+      } break;
+      case NodeType::NPC_SAY_PROXIMITY: {
+        auto obj = new NPC_SAY_PROXIMITY(npcIdMap[parts[1]], std::stoi(parts[2]));
+        while (std::getline(file, line) && line != "*") {
+          obj->lines.push_back(line);
+        }
+        ADD_TO_QUEST();
       } break;
       default:
         break;

@@ -19,7 +19,7 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
 
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
-inline static uint16_t dayTicks = 30000;
+inline static uint16_t dayTicks = 0;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
 namespace AmbientOcclusion {

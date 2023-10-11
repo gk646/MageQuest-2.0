@@ -26,17 +26,17 @@ struct Quest final {
     return state == QuestState::ACTIVE && objectives[stage]->suitable(type);
   }
   void Progress(NPC* npc) noexcept {
-    if (((SPEAK*)objectives[stage])->progress(npc)) {
+    if (((SPEAK*)objectives[stage])->Progress(npc)) {
       FinishStage(objectives[stage]);
     }
   }
   void Progress(MonsterType type) noexcept {
-    if (((KILL*)objectives[stage])->progress(type)) {
+    if (((KILL*)objectives[stage])->Progress(type)) {
       FinishStage(objectives[stage]);
     }
   }
   void Update() {
-    if (objectives[stage]->progress()) {
+    if (objectives[stage]->Progress()) {
       FinishStage(objectives[stage]);
     }
   }

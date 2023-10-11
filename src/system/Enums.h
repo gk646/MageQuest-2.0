@@ -176,6 +176,7 @@ enum class NodeType : uint8_t {
   MIX,
   NPC_MOVE,
   NPC_SAY,
+  NPC_SAY_PROXIMITY,
   TILE_ACTION
 };
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
@@ -190,7 +191,9 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"PROTECT", NodeType::PROTECT},
     {"ESCORT", NodeType::ESCORT},
     {"MIX", NodeType::MIX},
-    {"NPC_MOVE", NodeType::NPC_MOVE}};
+    {"NPC_MOVE", NodeType::NPC_MOVE},
+    {"NPC_SAY_PROXIMITY", NodeType::NPC_SAY_PROXIMITY}
+};
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID : uint8_t { TUTORIAL, MARLA, END };
 
@@ -220,6 +223,18 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"TRADER", NPC_ID::TRADER},
     {"RANDOM", NPC_ID::RANDOM},
     {"END", NPC_ID::END}};
+
+std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
+    {NPC_ID::DECKARD, "Deckard"},
+    {NPC_ID::MARLA, "Marla"},
+    {NPC_ID::HILLCREST_MAYOR, "Hillcrest Mayor"},
+    {NPC_ID::RECEPTIONS, "Receptionist"},
+    {NPC_ID::DYING_MAN, "Dying Man"},
+    {NPC_ID::NIETZSCHE, "Nietzsche"},
+    {NPC_ID::VILLAGER, "Villager"},
+    {NPC_ID::TRADER, "Trader"},
+    {NPC_ID::RANDOM, "Person"}};
+
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
 enum UDP_Channel : uint8_t {
   FILL,
