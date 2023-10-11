@@ -30,13 +30,11 @@ struct WorldRender {
       worldRow = std::min(std::max(worldRow - 10, 0), CURRENT_MAP_SIZE);
     }
 
-
     DRAW_X = -playerX + screenX;
     DRAW_Y = -playerY + screenY;
     MIRROR_POINT = playerX + PLAYER.size.x_ / 2;
   }
   static void DrawBackGround() noexcept {
-
     float x_base, y_base;
     for (uint16_t i = worldCol; i < maxCol; ++i) {
       x_base = i * TILE_SIZE + DRAW_X;

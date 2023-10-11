@@ -263,10 +263,12 @@ class Game {
 
     SetTargetFPS(TARGET_FPS);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Mage Quest II");
+    InitWindow(0, 0, "Mage Quest II");
+    SCREEN_WIDTH = GetScreenWidth();
+    SCREEN_HEIGHT= GetScreenHeight();
     InitAudioDevice();
     SetExitKey(0);
-    FIRST_LAYER_BUFFER = LoadRenderTexture(1280, 960);
+    FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     SetMouseCursorImage((ASSET_PATH + "ui/cursor.png").c_str(), 0, 0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();

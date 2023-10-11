@@ -27,7 +27,7 @@ struct GameLoader {
 #else
     } else if (RAYLIB_LOGO->finished) {
 #endif
-      setup_game();
+      SetupGame();
     }
   }
 
@@ -42,7 +42,7 @@ struct GameLoader {
     LoadStep(MapLoader::load);
     finished_cpu_loading = true;
   }
-  static void setup_game() {
+  static void SetupGame() {
     PlaySoundR(sound::intro);
     for (uint_fast32_t i = 0; i < 10; i++) {
       if (PLAYER_EQUIPPED[i].item) {
@@ -50,7 +50,7 @@ struct GameLoader {
       }
     }
     PLAYER_STATS.refill_stats();
-    WorldManager::LoadMap(Zone::Hillcrest, {94, 34});
+    WorldManager::LoadMap(Zone::Hillcrest, {24, 34});
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
     finished_cpu_loading = false;
@@ -58,6 +58,8 @@ struct GameLoader {
     PLAYER_QUESTS.add_quest(Quests::TUTORIAL);
     PLAYER_QUESTS.get_quest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
     PLAYER_QUESTS.SetActive(Quest_ID::TUTORIAL);
+    PLAYER_QUESTS.add_quest(Quests::MARLA_LOST_NECKLACE);
+    PLAYER_QUESTS.get_quest(Quest_ID::MARLA)->state = QuestState::ACTIVE;
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

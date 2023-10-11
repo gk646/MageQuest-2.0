@@ -23,9 +23,9 @@ struct ExpandableQuestMenu {
       }
       y += 50;
       if (box.clicked) {
-
-        DrawRectangleProFast(x - bounds.width / 2 + INFO_BOX_OFFSET / 2, y,
-                             bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT, BLACK);
+        DrawRectangleRounded({x - bounds.width / 2 + INFO_BOX_OFFSET / 2, y-5,
+                              bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT},
+                             0.1, ROUND_SEGMENTS, Colors::mediumLightGrey);
         y += INFO_BOX_HEIGHT;
       }
     }

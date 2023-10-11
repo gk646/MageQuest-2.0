@@ -19,8 +19,10 @@ static void LoadNamedNPCs() {
         NPCS.push_back(new Deckard(x, y, zone));
         break;
       case NPC_ID::MARLA:
+        NPCS.push_back(new Marla(x, y, zone));
         break;
       case NPC_ID::ARIA:
+        NPCS.push_back(new Aria(x, y, zone));
         break;
       case NPC_ID::HILLCREST_MAYOR:
         break;

@@ -11,14 +11,14 @@ struct QuestNode {
   [[nodiscard]] inline bool suitable(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
-  virtual bool progress() noexcept { return false; };
+  virtual bool Progress() noexcept { return false; };
 };
 
 struct GOTO final : public QuestNode {
   PointI target;
   explicit GOTO(std::string obj_txt, const PointI& target)
       : QuestNode(std::move(obj_txt), NodeType::GOTO), target(target) {}
-  inline bool progress() noexcept final { return PLAYER.tile_pos == target; }
+  inline bool Progress() noexcept final { return PLAYER.tile_pos == target; }
 };
 struct NPC_MOVE final : public QuestNode {
   std::vector<PointI> waypoints;
@@ -26,7 +26,7 @@ struct NPC_MOVE final : public QuestNode {
   NPC_ID target_id;
   explicit NPC_MOVE(NPC_ID id, std::string obj_txt)
       : QuestNode(std::move(obj_txt), NodeType::NPC_MOVE), target_id(id) {}
-  inline bool progress() noexcept final {
+  inline bool Progress() noexcept final {
     for (auto npc : NPCS) {
       if (npc->id == target_id) {
         if (npc->MoveToPointI(waypoints[waypoint])) {
@@ -47,7 +47,7 @@ struct SPEAK final : public QuestNode {
   std::vector<std::string> lines;
   explicit SPEAK(std::string obj_txt, NPC_ID target)
       : QuestNode(std::move(obj_txt), NodeType::SPEAK), target(target) {}
-  bool progress(NPC* npc) noexcept {
+  bool Progress(NPC* npc) noexcept {
     if (npc->id == target) {
       if (stage < lines.size()) {
         npc->update_dialogue(&lines[stage]);
@@ -71,8 +71,8 @@ struct KILL final : public QuestNode {
   int amount = 0;
   explicit KILL(MonsterType target, int amount, std::string obj_txt)
       : QuestNode(std::move(obj_txt), NodeType::KILL), amount(amount), target(target) {}
-  bool progress() noexcept final { return false; }
-  bool progress(MonsterType type) noexcept {
+  bool Progress() noexcept final { return false; }
+  bool Progress(MonsterType type) noexcept {
     if (type == target || target == MonsterType::ANY) {
       amount--;
     }
@@ -84,13 +84,13 @@ struct TILE_ACTION final : public QuestNode {
   PointI pos;
   int new_tile;
   int layer;
-  TILE_ACTION(Zone zone, int layer, PointI pos, int new_tile)
+  TILE_ACTION(Zone zone, int layer, const PointI& pos, int new_tile)
       : QuestNode("", NodeType::TILE_ACTION),
         layer(layer),
         pos(pos),
         new_tile(new_tile),
         zone(zone) {}
-  bool progress() noexcept final {
+  bool Progress() noexcept final {
     if (CURRENT_ZONE == zone) {
       std::cout << pos.x << std::endl;
       std::cout << pos.y << std::endl;
@@ -120,8 +120,8 @@ struct SPAWN final : public QuestNode {
       : QuestNode("", NodeType::SPAWN),
         level(level == 0 ? PLAYER_STATS.level : level),
         type(type) {}
-  bool progress() noexcept final {
-    for (auto p : positions) {
+  bool Progress() noexcept final {
+    for (const auto& p : positions) {
       MONSTERS.push_back(Monster::GetMonster(p.x * 48, p.y * 48, type, level));
     }
     return true;
@@ -133,7 +133,7 @@ struct NPC_SAY final : public QuestNode {
   bool skipWait = false;
   bool startedTalking = false;
   explicit NPC_SAY(NPC_ID target) : QuestNode("", NodeType::MIX), target(target) {}
-  bool progress() noexcept final {
+  bool Progress() noexcept final {
     for (auto npc : NPCS) {
       if (npc->id == target) {
         if (!startedTalking) {
@@ -143,6 +143,36 @@ struct NPC_SAY final : public QuestNode {
           return true;
         }
         return false;
+      }
+    }
+    return false;
+  }
+};
+struct NPC_SAY_PROXIMITY final : public QuestNode {
+  inline static constexpr int DELAY_TICKS = 150;
+  NPC_ID target;
+  std::vector<std::string> lines;
+  int activationDistance = 0;
+  int currentLine = 0;
+  int currentTicks = DELAY_TICKS;
+  NPC_SAY_PROXIMITY(NPC_ID target, int distance)
+      : QuestNode("", NodeType::NPC_SAY_PROXIMITY),
+        target(target),
+        activationDistance(distance) {}
+  bool Progress() noexcept final {
+    for (auto npc : NPCS) {
+      if (npc->id == target) {
+        auto distance = PLAYER.tile_pos.dist(npc->tile_pos);
+        if (distance <= activationDistance) {
+          currentTicks++;
+          if (distance == 0) return true;
+          if (currentTicks >= DELAY_TICKS && npc->dial_count == 1000) {
+            if (currentLine == lines.size() - 1) return true;
+            npc->update_dialogue(&lines[currentLine]);
+            currentLine++;
+            currentTicks = 0;
+          }
+        }
       }
     }
     return false;

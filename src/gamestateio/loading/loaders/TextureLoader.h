@@ -91,43 +91,33 @@ struct TextureLoader {
 
     textures::ui::skillbar::bag =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
-    textures::ui::skillbar::bag_hovered =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag_hovered.png").c_str());
     textures::ui::skillbar::bag_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag_pressed.png").c_str());
 
     textures::ui::skillbar::abilities =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities.png").c_str());
-    textures::ui::skillbar::abilities_hovered =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities_hovered.png").c_str());
     textures::ui::skillbar::abilities_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities_pressed.png").c_str());
 
     textures::ui::skillbar::character =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/character.png").c_str());
-    textures::ui::skillbar::character_hovered =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character_hovered.png").c_str());
     textures::ui::skillbar::character_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/character_pressed.png").c_str());
 
     textures::ui::skillbar::map =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/map.png").c_str());
-    textures::ui::skillbar::map_hovered =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_hovered.png").c_str());
+
     textures::ui::skillbar::map_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_pressed.png").c_str());
 
     textures::ui::skillbar::setting =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/settings.png").c_str());
-    textures::ui::skillbar::setting_hovered =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/settings_hovered.png").c_str());
     textures::ui::skillbar::setting_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/settings_pressed.png").c_str());
 
     textures::ui::skillbar::skilltree =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/skilltree.png").c_str());
-    textures::ui::skillbar::skilltree_hovered =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/skilltree_hovered.png").c_str());
+
     textures::ui::skillbar::skilltree_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/skilltree_pressed.png").c_str());
 

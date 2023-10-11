@@ -35,11 +35,10 @@ struct QuestPanel final : public Window {
     DrawWindow();
     questMenu.Draw(whole_window.x, whole_window.y);
   }
-
   void Update() {
+    PLAYER_QUESTS.Update();
     WINDOW_UPDATE();
     side_panel.Update();
-    PLAYER_QUESTS.Update();
     questMenu.UpdateQuestBinding();
   }
 };
