@@ -17,7 +17,8 @@ struct DataBaseHandler {
     for (const auto& name : table_names) {
       create_items_from_table(name);
     }
-    RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, ITEMS.size()-1);
+    RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, ITEMS.size() - 1);
+    std::cout << "ITEMS LOADED: " << ITEMS.size() << std::endl;
     load_items_from_table(PLAYER_EQUIPPED, "PLAYER_INV", 10);
     CharacterBag::add_slots(8);
     load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_BAG_SIZE);
@@ -53,7 +54,8 @@ struct DataBaseHandler {
                                      ItemType(sqlite3_column_int(stmt, 3)),
                                      description_ptr, LoadTexture(texturePath.c_str()));
         parse_effect_text(s.effects, sqlite3_column_text(stmt, 7));
-        ParseAttributeStats(s.effects,reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
+        ParseAttributeStats(s.effects,
+                            reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
       }
     }
     sqlite3_finalize(stmt);
