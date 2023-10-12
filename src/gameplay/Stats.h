@@ -9,8 +9,9 @@ struct SkillStats {
 };
 
 struct DamageStats {
-  DamageType damage_type = DamageType::FIRE;
   float damage = 1;
+  DamageType damage_type = DamageType::FIRE;
+  DamageStats(DamageType type, float damage): damage(damage), damage_type(type){}
   inline bool operator==(const DamageStats& d) const noexcept {
     return damage_type == d.damage_type && damage_type == d.damage_type &&
            damage == d.damage;
@@ -41,8 +42,8 @@ struct EntityStats {
   float health = 10;
   float mana = 20;
   float speed = 2.5;
-  uint8_t level = 1;
   float shield = 0;
+  uint8_t level = 1;
   bool stunned = false;
   EntityStats() {
     Init();

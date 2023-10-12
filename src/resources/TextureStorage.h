@@ -91,6 +91,9 @@ inline static Texture questBox;
 inline static Texture questBoxHovered;
 inline static Texture questBoxPressed;
 
+
+inline static Texture choiceBox;
+inline static Texture choiceBoxHovered;
 }
 
 namespace skillbar {

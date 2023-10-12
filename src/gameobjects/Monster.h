@@ -4,21 +4,21 @@
 #include "../ui/game/HealthBar.h"
 struct Monster : public Entity {
   EntityStats stats;
-  int16_t attack_cd = 0;
-  int16_t attack = 0;
+  ThreatManager threatManager{*this};
   std::string name;
   StatusEffectHandler status_effects{stats};
-  ThreatManager threatManager{*this};
   MonsterResource* resource;
   Entity* target = nullptr;
+  HealthBar health_bar;
   uint16_t u_id = MONSTER_ID++;
+  int16_t attack_cd = 0;
+  int16_t attack = 0;
   bool moving = false;
   bool prev_moving = false;
   bool flip = false;
   uint8_t AttackRange = 10;
   uint8_t ChaseRange = 15;
   MonsterType type;
-  HealthBar health_bar;
   Monster(const Point& pos, const EntityStats& stats, MonsterResource* resource,
           MonsterType type, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)
@@ -196,6 +196,7 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
     case MonsterType::BLOOD_HOUND:
       return new BloodHound({x, y}, level);
   }
+  std::cout << (int)type << std::endl;
   return nullptr;
 }
 
@@ -233,6 +234,7 @@ void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
     }
   }
 }
+
 void ThreatManager::Update() noexcept {
   if (TargetCount > 0) {
     for (auto& te : targets) {

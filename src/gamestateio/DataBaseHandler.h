@@ -53,8 +53,7 @@ struct DataBaseHandler {
                                      ItemType(sqlite3_column_int(stmt, 3)),
                                      description_ptr, LoadTexture(texturePath.c_str()));
         parse_effect_text(s.effects, sqlite3_column_text(stmt, 7));
-        parse_attributes(s.effects,
-                         reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
+        ParseAttributeStats(s.effects,reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
       }
     }
     sqlite3_finalize(stmt);
@@ -96,7 +95,7 @@ struct DataBaseHandler {
       }
     }
   }
-  static void parse_attributes(float* arr, const std::string& input) {
+  static void ParseAttributeStats(float* arr, const std::string& input) {
     std::regex pattern(R"((\w+)([-+]?\d+))");
     std::smatch matches;
 

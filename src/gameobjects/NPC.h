@@ -3,19 +3,16 @@
 
 struct NPC : public Entity {
   //TODO npc scripting
-  NPC_ID id;
+  MonsterResource* resource;
+  std::string* dialogue = nullptr;
+  std::vector<TexturedButton>* choices = nullptr;
+  float speed;
+  float dial_count = 1000;
+  int16_t show_dial_delay = -1;
   bool flip = false;
   bool moving = false;
-  float speed;
-  MonsterResource* resource;
-  /* |-----------------------------------------------------|
-   * |                         Dialog                      |
-   * |-----------------------------------------------------|
-   */
-  int show_dial_delay = -1;
+  NPC_ID id;
   bool last = false;
-  float dial_count = 1000;
-  std::string* dialogue = nullptr;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
       float speed = 2, const Point& size = {30, 48})
       : Entity(pos, size, ShapeType::RECT, 0, zone),
@@ -49,6 +46,14 @@ struct NPC : public Entity {
       if (dialogue) {
         DialogueRender::render_npc(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
                                    dialogue, dial_count, last);
+      }
+      if (choices) {
+        float offSet = 0;
+        for (auto& b : *choices) {
+          b.Draw(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y + size.x_ * 1.2F + offSet,
+                 TextAlign::LEFT);
+          offSet += 21;
+        }
       }
     }
   }

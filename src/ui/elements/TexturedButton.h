@@ -10,12 +10,12 @@ struct TexturedButton {
   const Texture& normal;
   const Texture& hovered;
   const Texture& pressed;
-  const char* txt = nullptr;
+  const std::string txt;
   float base_width, base_height;
   float fontSize = 15;
   bool isHovered = false;
   uint8_t alpha = 255;
-  TexturedButton(float width, float height, const char* txt, float fontSize,
+  TexturedButton(float width, float height, const std::string& txt, float fontSize,
                  const Texture& normal, const Texture& hovered, const Texture& pressed,
                  uint8_t alpha = 255, std::string toolTip = "",
                  const std::function<void()>& func = nullptr)
@@ -53,20 +53,22 @@ struct TexturedButton {
  private:
   inline void DrawButtonText(TextAlign align) noexcept {
     switch (align) {
-      case TextAlign::LEFT:{
-        auto bound = MeasureTextEx(VARNISHED,txt,fontSize,0.5);
-        DrawTextExR(VARNISHED, txt, { fontSize+bounds.x ,
-                                     bounds.y + bounds.height/2 - bound.y/2}, fontSize,0.5F, GetTextColor());
+      case TextAlign::LEFT: {
+        auto bound = MeasureTextEx(VARNISHED, txt.c_str(), fontSize, 0.5);
+        DrawTextExR(VARNISHED, txt.c_str(),
+                    {fontSize + bounds.x, bounds.y + bounds.height / 2 - bound.y / 2},
+                    fontSize, 0.5F, GetTextColor());
       }
 
-        break;
+      break;
       case TextAlign::RIGHT:
-        DrawRightAlignedText(VARNISHED, fontSize, txt, bounds.x + bounds.width-fontSize,
+        DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
+                             bounds.x + bounds.width - fontSize,
                              bounds.y + bounds.height / 3.4F, GetTextColor());
 
         break;
       case TextAlign::MIDDLE:
-        DrawCenteredText(VARNISHED, fontSize, txt, bounds.x + bounds.width / 2.0F,
+        DrawCenteredText(VARNISHED, fontSize, txt.c_str(), bounds.x + bounds.width / 2.0F,
                          bounds.y + bounds.height / 3.4F, GetTextColor());
         break;
     }

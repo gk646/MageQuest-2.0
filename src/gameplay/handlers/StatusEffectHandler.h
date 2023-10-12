@@ -2,8 +2,8 @@
 #define MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECTHANDLER_H_
 
 struct StatusEffectHandler {
-  EntityStats& stats;
   std::vector<StatusEffect*> status_effects{};
+  EntityStats& stats;
   explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
   ~StatusEffectHandler(){
     for(auto effect : status_effects){

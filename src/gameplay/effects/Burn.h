@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_BURN_H_
 
 struct Burn final : public StatusEffect {
-  DamageStats damage_stats{};
+  DamageStats damage_stats;
   Burn(float damage, int duration, int tick_speed)
       : StatusEffect(true,  tick_speed, duration, false, EffectType::BURN),
         damage_stats({DamageType::FIRE, damage}) {}
