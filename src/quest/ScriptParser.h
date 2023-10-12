@@ -107,6 +107,23 @@ Quest* load(const std::string& path, Quest_ID id) {
         }
         ADD_TO_QUEST();
       } break;
+      case NodeType::CHOICE_DIALOGUE_SIMPLE: {
+        auto* obj = new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2]);
+        int i = 0;
+        while (std::getline(file, line) && line != "*") {
+          auto choice = split(line, ':');
+          auto textBound = MeasureTextEx(MINECRAFT_REGULAR, choice[0].c_str(), 16, 0.5F);
+          auto boundFunction = [obj, i] { obj->SetAnswerIndex(i); };
+          obj->choices.emplace_back(textBound.x + 20, 20, choice[0], 16,
+                                    textures::ui::questpanel::choiceBox,
+                                    textures::ui::questpanel::choiceBoxHovered,
+                                    textures::ui::questpanel::choiceBoxHovered, 255, "",
+                                    boundFunction);
+          obj->answers.emplace_back(choice[1]);
+          i++;
+        }
+        ADD_TO_QUEST();
+      } break;
       default:
         break;
     }

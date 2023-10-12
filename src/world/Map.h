@@ -130,8 +130,10 @@ struct Map {
         parts = split(line, ':');
         y = std::stoi(parts[1]);
         isSingular = amount == 0;
-        vector->emplace_back(PointI{x * 3, y * 3}, PointI{width * 3, height * 3}, false,
-                             isSingular, spread_type, level, type, amount);
+        if (type != MonsterType::ANY) {
+          vector->emplace_back(PointI{x * 3, y * 3}, PointI{width * 3, height * 3}, false,
+                               isSingular, spread_type, level, type, amount);
+        }
         RESET_TO_DEFAULTS()
       }
     }

@@ -21,12 +21,12 @@ struct ExpandableQuestMenu {
       if (box.button.Draw(x, y, TextAlign::LEFT)) {
         box.clicked = !box.clicked;
       }
-      y += 50;
+      y += ELEMENT_HEIGHT + 1;
       if (box.clicked) {
-        DrawRectangleRounded({x - bounds.width / 2 + INFO_BOX_OFFSET / 2, y-5,
+        DrawRectangleRounded({x - bounds.width / 2 + INFO_BOX_OFFSET / 2, y - 5,
                               bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT},
                              0.1, ROUND_SEGMENTS, Colors::mediumLightGrey);
-        y += INFO_BOX_HEIGHT;
+        y += INFO_BOX_HEIGHT + 1;
       }
     }
   }

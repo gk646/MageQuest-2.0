@@ -5,79 +5,80 @@ class Game {
   static bool logic_thread_running;
   std::thread logic_thread;
 
-#define UPDATE_AND_COLLISION()                                        \
-  SIMD_PRAGMA                                                         \
-  for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) { \
-    if ((*it)->dead) {                                                \
-      delete *it;                                                     \
-      it = WORLD_OBJECTS.erase(it);                                   \
-    } else {                                                          \
-      (*it)->update();                                                \
-      ++it;                                                           \
-    }                                                                 \
-  }                                                                   \
-                                                                      \
-  SIMD_PRAGMA                                                         \
-  for (const auto net_player : OTHER_PLAYERS) {                       \
-    if (net_player) {                                                 \
-      net_player->update();                                           \
-    }                                                                 \
-  }                                                                   \
-                                                                      \
-  SIMD_PRAGMA                                                         \
-  for (auto it = NPCS.begin(); it != NPCS.end();) {                   \
-    if ((*it)->dead) {                                                \
-      it = NPCS.erase(it);                                            \
-    } else {                                                          \
-      (*it)->update();                                                \
-      ++it;                                                           \
-    }                                                                 \
-  }                                                                   \
-                                                                      \
-  SIMD_PRAGMA                                                         \
-  for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {           \
-    if ((*it)->dead) [[unlikely]] {                                   \
-      delete *it;                                                     \
-      it = MONSTERS.erase(it);                                        \
-    } else {                                                          \
-      (*it)->update();                                                \
-      ++it;                                                           \
-    }                                                                 \
-  }                                                                   \
-                                                                      \
-  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {     \
-    (*it)->update();                                                  \
-                                                                      \
-    if ((*it)->dead) [[unlikely]] {                                   \
-      delete *it;                                                     \
-      it = PROJECTILES.erase(it);                                     \
-    } else if (MP_TYPE == MultiplayerType::CLIENT) {                  \
-      ++it;                                                           \
-    } else {                                                          \
-      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {   \
-        if ((*m_it)->dead) [[unlikely]] {                             \
-          delete *m_it;                                               \
-          m_it = MONSTERS.erase(m_it);                                \
-        } else {                                                      \
-          if ((*it)->intersects(**m_it)) [[unlikely]] {               \
-            (*m_it)->hit(**it);                                       \
-          }                                                           \
-          ++m_it;                                                     \
-        }                                                             \
-      }                                                               \
-      for (auto np : OTHER_PLAYERS) {                                 \
-        if (np) {                                                     \
-          if ((*it)->intersects(*np)) {                               \
-            np->hit(**it);                                            \
-          }                                                           \
-        }                                                             \
-      }                                                               \
-      if ((*it)->intersects(PLAYER)) [[unlikely]] {                   \
-        PLAYER.hit(**it);                                             \
-      }                                                               \
-      ++it;                                                           \
-    }                                                                 \
+static void UPDATE_AND_COLLISION() {
+  SIMD_PRAGMA
+  for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) {
+    if ((*it)->dead) {
+      delete *it;
+      it = WORLD_OBJECTS.erase(it);
+    } else {
+      (*it)->update();
+      ++it;
+    }
   }
+
+  SIMD_PRAGMA
+  for (const auto net_player : OTHER_PLAYERS) {
+    if (net_player) {
+      net_player->update();
+    }
+  }
+
+  SIMD_PRAGMA
+  for (auto it = NPCS.begin(); it != NPCS.end();) {
+    if ((*it)->dead) {
+      it = NPCS.erase(it);
+    } else {
+      (*it)->update();
+      ++it;
+    }
+  }
+
+  SIMD_PRAGMA
+  for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {
+    if ((*it)->dead) [[unlikely]] {
+      delete *it;
+      it = MONSTERS.erase(it);
+    } else {
+      (*it)->update();
+      ++it;
+    }
+  }
+
+  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {
+    (*it)->update();
+
+    if ((*it)->dead) [[unlikely]] {
+      delete *it;
+      it = PROJECTILES.erase(it);
+    } else if (MP_TYPE == MultiplayerType::CLIENT) {
+      ++it;
+    } else {
+      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {
+        if ((*m_it)->dead) [[unlikely]] {
+          delete *m_it;
+          m_it = MONSTERS.erase(m_it);
+        } else {
+          if ((*it)->intersects(**m_it)) [[unlikely]] {
+            (*m_it)->hit(**it);
+          }
+          ++m_it;
+        }
+      }
+      for (auto np : OTHER_PLAYERS) {
+        if (np) {
+          if ((*it)->intersects(*np)) {
+            np->hit(**it);
+          }
+        }
+      }
+      if ((*it)->intersects(PLAYER)) [[unlikely]] {
+        PLAYER.hit(**it);
+      }
+      ++it;
+    }
+  }
+}
 
   inline static void LogicLoop() noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
@@ -119,14 +120,14 @@ class Game {
           PLAYER_STATS.update();
           PLAYER_EFFECTS.Update();
           PLAYER.update();
-          UPDATE_AND_COLLISION()
+          UPDATE_AND_COLLISION();
           UI_MANAGER.Update();
         }
         break;
       case GameState::GameMenu: {
         PLAYER_STATS.update();
         PLAYER_EFFECTS.Update();
-        UPDATE_AND_COLLISION()
+        UPDATE_AND_COLLISION();
         UI_MANAGER.Update();
       } break;
       case GameState::Loading: {
@@ -276,6 +277,7 @@ class Game {
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
+    FontLoader::load();
     SetWindowIcon(icon);
     UnloadImage(icon);
     //PLAYER_QUESTS.push_back()

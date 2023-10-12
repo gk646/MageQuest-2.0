@@ -2,10 +2,10 @@
 #define MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
 
 struct QuestNode {
-  bool major_objective = false;
-  PointI map_marker{0, 0};
   std::string objective_text;
+  PointI map_marker{0, 0};
   NodeType type;
+  bool major_objective = false;
   QuestNode(std::string objective_text, NodeType type)
       : objective_text(std::move(objective_text)), type(type) {}
   [[nodiscard]] inline bool suitable(NodeType event_type) const {
@@ -80,10 +80,10 @@ struct KILL final : public QuestNode {
   }
 };
 struct TILE_ACTION final : public QuestNode {
-  Zone zone;
   PointI pos;
   int new_tile;
   int layer;
+  Zone zone;
   TILE_ACTION(Zone zone, int layer, const PointI& pos, int new_tile)
       : QuestNode("", NodeType::TILE_ACTION),
         layer(layer),
@@ -108,13 +108,10 @@ struct TILE_ACTION final : public QuestNode {
     return false;
   }
 };
-struct MIX final : public QuestNode {
-  std::vector<QuestNode*> objectives;
-  explicit MIX(std::string obj_txt) : QuestNode(std::move(obj_txt), NodeType::MIX) {}
-};
+
 struct SPAWN final : public QuestNode {
-  MonsterType type;
   std::vector<PointI> positions;
+  MonsterType type;
   int level;
   explicit SPAWN(MonsterType type, int level)
       : QuestNode("", NodeType::SPAWN),
@@ -128,8 +125,8 @@ struct SPAWN final : public QuestNode {
   }
 };
 struct NPC_SAY final : public QuestNode {
-  NPC_ID target;
   std::string txt;
+  NPC_ID target;
   bool skipWait = false;
   bool startedTalking = false;
   explicit NPC_SAY(NPC_ID target) : QuestNode("", NodeType::MIX), target(target) {}
@@ -149,7 +146,7 @@ struct NPC_SAY final : public QuestNode {
   }
 };
 struct NPC_SAY_PROXIMITY final : public QuestNode {
-  inline static constexpr int DELAY_TICKS = 150;
+  inline static constexpr int DELAY_TICKS = 250;
   NPC_ID target;
   std::vector<std::string> lines;
   int activationDistance = 0;
@@ -160,22 +157,71 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
         target(target),
         activationDistance(distance) {}
   bool Progress() noexcept final {
+    if (currentLine == lines.size()) currentLine = 0;
     for (auto npc : NPCS) {
       if (npc->id == target) {
         auto distance = PLAYER.tile_pos.dist(npc->tile_pos);
+        if (distance == 0) return true;
         if (distance <= activationDistance) {
-          currentTicks++;
-          if (distance == 0) return true;
-          if (currentTicks >= DELAY_TICKS && npc->dial_count == 1000) {
-            if (currentLine == lines.size() - 1) return true;
+          currentTicks += npc->dial_count == 1000;
+          if (currentTicks >= DELAY_TICKS) {
             npc->update_dialogue(&lines[currentLine]);
+            npc->last = true;
+            if (currentLine == lines.size() - 1) currentTicks = -1000;
             currentLine++;
             currentTicks = 0;
           }
+        } else {
+          currentLine = 0;
+          currentTicks = 0;
+        }
+        return false;
+      }
+    }
+    return false;
+  }
+};
+
+struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
+  std::string text;
+  std::vector<TexturedButton> choices;
+  std::vector<std::string> answers;
+  int8_t answerIndex = -1;
+  NPC_ID target;
+  bool assignedChoices = false;
+  explicit CHOICE_DIALOGUE_SIMPLE(NPC_ID target, std::string text)
+      : QuestNode("", NodeType::CHOICE_DIALOGUE_SIMPLE),
+        target(target),
+        text(std::move(text)){};
+
+  bool Progress() noexcept final {
+    for (const auto& b : choices) {
+      b.UpdateGlobalWindowState();
+    }
+    if (!assignedChoices) {
+      for (const auto npc : NPCS) {
+        if (npc->id == target) {
+          npc->update_dialogue(&text);
+          npc->choices = &choices;
+          assignedChoices = true;
+          break;
+        }
+      }
+    }
+
+    if (answerIndex != -1) {
+      for (const auto npc : NPCS) {
+        if (npc->id == target) {
+          npc->update_dialogue(&answers[answerIndex]);
+          npc->choices = nullptr;
+          return true;
         }
       }
     }
     return false;
+  }
+  inline  void SetAnswerIndex( int num) {
+    answerIndex = num;
   }
 };
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

@@ -13,7 +13,7 @@
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
-  static std::array<std::function<void()>, 6> load_functions;
+  static std::array<std::function<void()>, 5> load_functions;
   static void load() {
     std::thread worker(load_game);
     worker.detach();
@@ -63,8 +63,8 @@ struct GameLoader {
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
-std::array<std::function<void()>, 6> GameLoader::load_functions = {
-    EntityLoader::load,  GuiLoadStyleAshes, TileLoader::load_to_vram,
-    TextureLoader::load, FontLoader::load,  DataBaseHandler::load};
+std::array<std::function<void()>, 5> GameLoader::load_functions = {
+    EntityLoader::load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load,
+    DataBaseHandler::load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

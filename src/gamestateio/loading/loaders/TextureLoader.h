@@ -3,6 +3,12 @@
 struct TextureLoader {
 
   static void load() {
+    textures::ui::questpanel::choiceBox =
+        LoadTexture((ASSET_PATH + "ui/questpanel/choice_normal.png").c_str());
+    textures::ui::questpanel::choiceBoxHovered =
+        LoadTexture((ASSET_PATH + "ui/questpanel/choice_hovered.png").c_str());
+
+
     textures::ui::questpanel::questBox =
         LoadTexture((ASSET_PATH + "ui/questpanel/questBox.png").c_str());
     textures::ui::questpanel::questBoxHovered =

@@ -7,9 +7,9 @@ struct ThreatEntity{
 
 struct ThreatManager {
   static constexpr float THREAT_DROP = 0.2F / 60;
+  std::array<ThreatEntity, 4> targets{};
   Monster& Self;
   int8_t TargetCount = 0;
-  std::array<ThreatEntity, 4> targets{};
   explicit ThreatManager(Monster& Self) : Self(Self) {}
   inline void Reset() noexcept {
     for (auto& te : targets) {
