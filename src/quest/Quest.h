@@ -15,6 +15,7 @@ struct Quest final {
   Quest_ID id;
   QuestState state = QuestState::IN_ACTIVE;
   bool hidden = false;
+  uint8_t questLevel = 0;
   explicit Quest(Quest_ID id) : id(id) {}
   ~Quest() {
     for (auto obj : objectives) {
@@ -42,6 +43,9 @@ struct Quest final {
   }
   [[nodiscard]] inline const std::string& GetActiveObjective() const noexcept {
     return objectives[stage]->objective_text;
+  }
+  [[nodiscard]] inline PointI GetActiveWaypoint() const noexcept {
+    return objectives[stage]->map_marker;
   }
 
  private:

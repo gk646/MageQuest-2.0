@@ -22,7 +22,7 @@ Quest* load(const std::string& path, Quest_ID id) {
   std::getline(file, line);
   std::vector<std::string> parts;
   while (std::getline(file, line)) {
-    if (line.empty()) continue;
+    if (line.empty() || line.starts_with('#')) continue;
     parts.clear();
     parts = split(line, ':');
     type = node_to_type[parts[0]];
@@ -108,20 +108,26 @@ Quest* load(const std::string& path, Quest_ID id) {
         ADD_TO_QUEST();
       } break;
       case NodeType::CHOICE_DIALOGUE_SIMPLE: {
-        auto* obj = new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2]);
+        auto* obj =
+            new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2], std::stoi(parts[3]));
         int i = 0;
         while (std::getline(file, line) && line != "*") {
           auto choice = split(line, ':');
           auto textBound = MeasureTextEx(MINECRAFT_REGULAR, choice[0].c_str(), 16, 0.5F);
-          auto boundFunction = [obj, i] { obj->SetAnswerIndex(i); };
-          obj->choices.emplace_back(textBound.x + 20, 20, choice[0], 16,
-                                    textures::ui::questpanel::choiceBox,
-                                    textures::ui::questpanel::choiceBoxHovered,
-                                    textures::ui::questpanel::choiceBoxHovered, 255, "",
-                                    boundFunction);
+          auto boundFunction = [obj, i] {
+            obj->SetAnswerIndex(i);
+          };
+          obj->choices.emplace_back(
+              textBound.x + 20, 20, choice[0], 16, textures::ui::questpanel::choiceBox,
+              textures::ui::questpanel::choiceBoxHovered,
+              textures::ui::questpanel::choiceBoxHovered, 255, "", boundFunction);
           obj->answers.emplace_back(choice[1]);
           i++;
         }
+        ADD_TO_QUEST();
+      } break;
+      case NodeType::SET_QUEST_SHOWN: {
+        auto obj = new SET_QUEST_SHOWN(stringToQuestID[parts[1]]);
         ADD_TO_QUEST();
       } break;
       default:

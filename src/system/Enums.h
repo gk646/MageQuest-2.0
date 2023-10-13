@@ -170,6 +170,7 @@ enum class NodeType : uint8_t {
   SPAWN,
   SPEAK,
   COLLECT,
+  SET_QUEST_SHOWN,
   REQUIRE,
   PROTECT,
   ESCORT,
@@ -194,11 +195,15 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"MIX", NodeType::MIX},
     {"NPC_MOVE", NodeType::NPC_MOVE},
     {"NPC_SAY_PROXIMITY", NodeType::NPC_SAY_PROXIMITY},
+    {"SET_QUEST_SHOWN", NodeType::SET_QUEST_SHOWN},
     {"CHOICE_DIALOGUE_SIMPLE", NodeType::CHOICE_DIALOGUE_SIMPLE}};
 
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID : uint8_t { TUTORIAL, MARLA, END };
-
+inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
+  {"TUTORIAL", Quest_ID::TUTORIAL},
+  {"MARLA",Quest_ID::TUTORIAL},
+ };
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving
   DECKARD,

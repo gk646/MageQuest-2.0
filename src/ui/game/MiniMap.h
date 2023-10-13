@@ -15,7 +15,8 @@ struct MiniMap {
   explicit MiniMap(bool* region_map_status) : region_map_open(region_map_status) {}
   static inline bool BoundCheckObject(const Entity* e, int tile_x, int tile_y) noexcept {
     return !e->active || e->tile_pos.x < tile_x || e->tile_pos.y < tile_y ||
-           e->tile_pos.x >= tile_x + MINIMAP_TILE_WIDTH || e->tile_pos.y >= tile_y + MINIMAP_TILE_WIDTH;
+           e->tile_pos.x >= tile_x + MINIMAP_TILE_WIDTH ||
+           e->tile_pos.y >= tile_y + MINIMAP_TILE_WIDTH;
   }
   void Draw() const noexcept {
     auto player_tile = PLAYER.tile_pos;
@@ -42,7 +43,8 @@ struct MiniMap {
                               Colors::darkBackground);
           } else {
             if (tile_x + i == player_tile.x && tile_y + j == player_tile.y) [[unlikely]] {
-              DrawSquareProFast(draw_x + i * ZOOM, START_Y + j * ZOOM, ZOOM, Colors::Blue);
+              DrawSquareProFast(draw_x + i * ZOOM, START_Y + j * ZOOM, ZOOM,
+                                Colors::Blue);
 
             } else {
               DrawSquareProFast(draw_x + i * ZOOM, START_Y + j * ZOOM, ZOOM,
@@ -55,11 +57,30 @@ struct MiniMap {
         }
       }
     }
-
     if (FAST_UI) {
       return;
     }
 
+    DrawExtras(tile_x, tile_y, draw_x);
+  }
+  void Update() noexcept {
+    if (update_timer >= 45) {
+      update_timer = 0;
+
+      auto timePoint = GetGameTimePoint();
+      ss.str("");
+      ss.clear();
+
+      ss << std::setw(2) << std::setfill('0') << timePoint.x << ":" << std::setw(2)
+         << std::setfill('0') << timePoint.y;
+
+      time_str = ss.str();
+    }
+    update_timer++;
+  }
+
+ private:
+  inline void DrawExtras(int tile_x, int tile_y, float draw_x) const noexcept {
     for (const auto projectile : PROJECTILES) {
       if (BoundCheckObject(projectile, tile_x, tile_y)) continue;
 
@@ -92,28 +113,21 @@ struct MiniMap {
                           Colors::blue_npc);
       }
     }
-  }
-  void Update() noexcept {
-    if (update_timer >= 45) {
-      update_timer = 0;
-
-      auto timePoint = GetGameTimePoint();
-      ss.str("");
-      ss.clear();
-
-      ss << std::setw(2) << std::setfill('0') << timePoint.x << ":" << std::setw(2)
-         << std::setfill('0') << timePoint.y;
-
-      time_str = ss.str();
+    PointI questWaypoint;
+    if (PLAYER_QUESTS.activeQuest &&
+        (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
+      DrawSquareProFast(draw_x + (questWaypoint.x - tile_x) * ZOOM,
+                        START_Y + (questWaypoint.y - tile_y) * ZOOM, ZOOM,
+                        Colors::blue_npc);
     }
-    update_timer++;
   }
   inline static PointI GetGameTimePoint() noexcept {
     constexpr int ticksPerHour = Lighting::FULL_DAY_TICKS / 24;
-    int hours = ((Lighting::dayTicks + ticksPerHour * 12) % Lighting::FULL_DAY_TICKS) / ticksPerHour;
-    int minutes = ((Lighting::dayTicks + ticksPerHour * 12) % ticksPerHour) * 60 / ticksPerHour;
+    int hours = ((Lighting::dayTicks + ticksPerHour * 12) % Lighting::FULL_DAY_TICKS) /
+                ticksPerHour;
+    int minutes =
+        ((Lighting::dayTicks + ticksPerHour * 12) % ticksPerHour) * 60 / ticksPerHour;
     return {hours % 24, minutes};
   }
-
 };
 #endif  //MAGEQUEST_SRC_GRAPHICS_MINIMAP_H_

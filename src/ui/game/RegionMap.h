@@ -45,6 +45,7 @@ struct RegionMap final : public Window {
     if (!dragged) {
       tile_offset = player_tile;
     }
+
     int curr_size = CURRENT_MAP_SIZE;
     float base_x = whole_window.x + whole_window.width / 2 - tile_offset.x * zoom;
     float base_y = whole_window.y + whole_window.height / 2 - tile_offset.y * zoom;
@@ -66,6 +67,7 @@ struct RegionMap final : public Window {
         }
       }
     }
+
     if(FAST_UI){
       return;
     }
