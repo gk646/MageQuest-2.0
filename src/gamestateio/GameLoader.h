@@ -55,10 +55,10 @@ struct GameLoader {
     LoadingScreen::progress = 0;
     finished_cpu_loading = false;
     delete RAYLIB_LOGO;
-    PLAYER_QUESTS.add_quest(Quests::TUTORIAL);
+    PLAYER_QUESTS.AddQuest(Quests::TUTORIAL);
     PLAYER_QUESTS.get_quest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
     PLAYER_QUESTS.SetActive(Quest_ID::TUTORIAL);
-    PLAYER_QUESTS.add_quest(Quests::MARLA_LOST_NECKLACE);
+    PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
     PLAYER_QUESTS.get_quest(Quest_ID::MARLA)->state = QuestState::ACTIVE;
   }
 };

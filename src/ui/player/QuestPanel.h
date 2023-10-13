@@ -6,13 +6,18 @@ struct QuestSidePanel final : public Panel {
   QuestSidePanel() : Panel(200, 150, 16, MINECRAFT_BOLD, HEADER) {}
 
   void DrawContent() noexcept final {
-    if (PLAYER_QUESTS.HaveActiveQuest()) {
-      DrawOutlineText(MINECRAFT_BOLD, SCALE(15), PLAYER_QUESTS.activeQuest->name.c_str(),
+    if (PLAYER_QUESTS.HasActiveQuest()) {
+      DrawOutlineText(MINECRAFT_BOLD, SCALE(16), PLAYER_QUESTS.activeQuest->name.c_str(),
                       body.x + SCALE(2), body.y + SCALE(35), 1, Colors::LightGrey,
                       Colors::black);
       DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
                       PLAYER_QUESTS.activeQuest->GetActiveObjective().c_str(),
-                      body.x + SCALE(15), body.y + SCALE(50), 1, Colors::LightGrey,
+                      body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
+                      Colors::black);
+    }else{
+      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
+                      "No active Quest",
+                      body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                       Colors::black);
     }
   }
@@ -37,8 +42,8 @@ struct QuestPanel final : public Window {
   }
   void Update() {
     PLAYER_QUESTS.Update();
-    WINDOW_UPDATE();
     side_panel.Update();
+    WINDOW_UPDATE();
     questMenu.UpdateQuestBinding();
   }
 };

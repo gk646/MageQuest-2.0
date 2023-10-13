@@ -9,7 +9,7 @@ struct BloodHound final : public Monster {
   static constexpr uint8_t CHASE_RANGE = 10;
   BloodHound(const Point& pos, int level) noexcept
       : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
-                &textures::monsters::WOLF, MonsterType::WOLF, {45, 30}) {
+                &textures::monsters::BLOOD_HOUND, MonsterType::WOLF, {45, 30}) {
     attack_cd = ATTACK_CD;
     AttackRange = ATTACK_RANGE;
     ChaseRange = CHASE_RANGE;

@@ -160,6 +160,7 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
     if (currentLine == lines.size()) currentLine = 0;
     for (auto npc : NPCS) {
       if (npc->id == target) {
+        if (npc->zone != CURRENT_ZONE) return false;
         auto distance = PLAYER.tile_pos.dist(npc->tile_pos);
         if (distance == 0) return true;
         if (distance <= activationDistance) {
@@ -189,10 +190,12 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   int8_t answerIndex = -1;
   NPC_ID target;
   bool assignedChoices = false;
-  explicit CHOICE_DIALOGUE_SIMPLE(NPC_ID target, std::string text)
+  uint8_t correctAnswer;
+  explicit CHOICE_DIALOGUE_SIMPLE(NPC_ID target, std::string text, int correctAnswer)
       : QuestNode("", NodeType::CHOICE_DIALOGUE_SIMPLE),
         target(target),
-        text(std::move(text)){};
+        text(std::move(text)),
+        correctAnswer(correctAnswer){};
 
   bool Progress() noexcept final {
     for (const auto& b : choices) {
@@ -214,14 +217,22 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
         if (npc->id == target) {
           npc->update_dialogue(&answers[answerIndex]);
           npc->choices = nullptr;
-          return true;
+          return answerIndex == correctAnswer;
         }
       }
     }
     return false;
   }
-  inline  void SetAnswerIndex( int num) {
-    answerIndex = num;
+  inline void SetAnswerIndex(int num) { answerIndex = num; }
+};
+
+struct SET_QUEST_SHOWN final : public QuestNode {
+  Quest_ID id;
+  explicit SET_QUEST_SHOWN(Quest_ID id)
+      : QuestNode("", NodeType::SET_QUEST_SHOWN), id(id) {}
+  bool Progress() noexcept final {
+    PLAYER_QUESTS.SetShown(id);
+    return true;
   }
 };
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

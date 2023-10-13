@@ -5,12 +5,12 @@
 
 struct TexturedButton {
   std::function<void()> onPressedFunc;
+  const std::string txt;
   const std::string toolTip;
   RectangleR bounds;
   const Texture& normal;
   const Texture& hovered;
   const Texture& pressed;
-  const std::string txt;
   float base_width, base_height;
   float fontSize = 15;
   bool isHovered = false;
@@ -54,8 +54,8 @@ struct TexturedButton {
   inline void DrawButtonText(TextAlign align) noexcept {
     switch (align) {
       case TextAlign::LEFT: {
-        auto bound = MeasureTextEx(VARNISHED, txt.c_str(), fontSize, 0.5);
-        DrawTextExR(VARNISHED, txt.c_str(),
+        auto bound = MeasureTextEx(MINECRAFT_BOLD, txt.c_str(), fontSize, 0.5);
+        DrawTextExR(MINECRAFT_BOLD, txt.c_str(),
                     {fontSize + bounds.x, bounds.y + bounds.height / 2 - bound.y / 2},
                     fontSize, 0.5F, GetTextColor());
       }
