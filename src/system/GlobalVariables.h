@@ -77,9 +77,9 @@ class Monster;
 class Player;
 inline static uint_fast32_t MONSTER_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND = nullptr;
-inline static int16_t** CURRENT_MIDDLE_GROUND= nullptr;
-inline static int16_t** CURRENT_FORE_GROUND= nullptr;
-inline static bool** CURRENT_MAP_COVER= nullptr;
+inline static int16_t** CURRENT_MIDDLE_GROUND = nullptr;
+inline static int16_t** CURRENT_FORE_GROUND = nullptr;
+inline static bool** CURRENT_MAP_COVER = nullptr;
 inline static std::vector<SpawnTrigger>* CURRENT_SPAWN_TRIGGERS;
 inline static Zone CURRENT_ZONE = Zone::Tutorial;
 inline static int CURRENT_MAP_SIZE = 100;
@@ -96,7 +96,11 @@ inline static bool CheckTileCollision(int x, int y) noexcept {
   return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID ||
          COLLISIONS[CURRENT_MIDDLE_GROUND[x][y]] == C_SOLID;
 }
-static inline bool BoundCheckMap(int x, int y) noexcept {
+inline static bool BoundCheckMap(int x, int y) noexcept {
   return x >= 0 && y >= 0 && x < CURRENT_MAP_SIZE && y < CURRENT_MAP_SIZE;
 }
+inline static bool IsTileCovered(int x, int y) noexcept {
+  return CURRENT_MAP_COVER[x][y];
+}
+
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

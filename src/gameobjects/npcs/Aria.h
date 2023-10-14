@@ -17,8 +17,8 @@ struct Aria final : public NPC {
     draw_hitbox();
 #endif
   }
-  void update() final {
-    NPC::update();
+  void Update() final {
+    NPC::Update();
     INTERACT_WITH_PLAYER()
   }
 };

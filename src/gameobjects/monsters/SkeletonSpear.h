@@ -101,7 +101,7 @@ struct SkeletonSpear final : public Monster {
                          pos.y_ + DRAW_Y - 45, 0, WHITE);
     }
   }
-  void update() final {
+  void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {

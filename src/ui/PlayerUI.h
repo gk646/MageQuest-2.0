@@ -37,7 +37,7 @@ struct PlayerUI {
     status_bar.update();
     char_panel.update();
     char_bag.Update();
-    region_map.update();
+    region_map.Update();
     playerHotbar.Update();
     Util::update();
     update_special_items();

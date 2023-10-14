@@ -81,13 +81,14 @@ struct Projectile : public Entity {
     return {std::cos(angle), std::sin(angle)};
   }
   [[nodiscard]] inline bool IsActive() const noexcept { return !dead && does_damage; }
-  void update() noexcept override {
+  void Update() override {
     sprite_counter++;
     pos.x_ += move_vector.x * speed;
     pos.y_ += move_vector.y * speed;
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
-    if (CheckTileCollision(tile_pos.x, tile_pos.y)) {
+    if (!BoundCheckMap(tile_pos.x, tile_pos.y) ||
+        CheckTileCollision(tile_pos.x, tile_pos.y)) {
       dead = true;
     }
     life_span--;

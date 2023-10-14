@@ -36,8 +36,13 @@ struct MiniMap {
     }
 
     for (int_fast32_t i = 0; i < MINIMAP_TILE_WIDTH; i++) {
+
       for (int_fast32_t j = 0; j < MINIMAP_TILE_WIDTH; j++) {
         if (BoundCheckMap(tile_x + i, tile_y + j)) [[likely]] {
+          if (IsTileCovered(tile_x + i, tile_y + j)) {
+            DrawSquareProFast(draw_x + i * ZOOM, START_Y + j * ZOOM, ZOOM, Colors::black);
+            continue;
+          }
           if (CheckTileCollision(tile_x + i, tile_y + j)) [[unlikely]] {
             DrawSquareProFast(draw_x + i * ZOOM, START_Y + j * ZOOM, ZOOM,
                               Colors::darkBackground);
@@ -57,6 +62,7 @@ struct MiniMap {
         }
       }
     }
+
     if (FAST_UI) {
       return;
     }
@@ -80,7 +86,7 @@ struct MiniMap {
   }
 
  private:
-  inline void DrawExtras(int tile_x, int tile_y, float draw_x) const noexcept {
+  static inline void DrawExtras(int tile_x, int tile_y, float draw_x) noexcept {
     for (const auto projectile : PROJECTILES) {
       if (BoundCheckObject(projectile, tile_x, tile_y)) continue;
 
@@ -95,14 +101,13 @@ struct MiniMap {
       }
     }
     for (const auto monster : MONSTERS) {
-      if (BoundCheckObject(monster, tile_x, tile_y)) continue;
-
+      if (!monster->active || BoundCheckObject(monster, tile_x, tile_y)) continue;
       DrawSquareProFast(draw_x + (monster->tile_pos.x - tile_x) * ZOOM,
                         START_Y + (monster->tile_pos.y - tile_y) * ZOOM, ZOOM,
                         Colors::Red);
     }
     for (const auto npc : NPCS) {
-      if (BoundCheckObject(npc, tile_x, tile_y)) continue;
+      if (!npc->active || BoundCheckObject(npc, tile_x, tile_y)) continue;
       if (npc->id == NPC_ID::RANDOM || npc->id == NPC_ID::VILLAGER) {
         DrawSquareProFast(draw_x + (npc->tile_pos.x - tile_x) * ZOOM,
                           START_Y + (npc->tile_pos.y - tile_y) * ZOOM, ZOOM,
@@ -118,7 +123,7 @@ struct MiniMap {
         (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
       DrawSquareProFast(draw_x + (questWaypoint.x - tile_x) * ZOOM,
                         START_Y + (questWaypoint.y - tile_y) * ZOOM, ZOOM,
-                        Colors::blue_npc);
+                        Colors::questMarkerYellow);
     }
   }
   inline static PointI GetGameTimePoint() noexcept {

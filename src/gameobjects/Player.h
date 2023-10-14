@@ -7,6 +7,7 @@ struct Player final : public Entity {
   int action_state = 0;
   bool flip = false;
   bool moving = false;
+  uint8_t uncoverRadius = 8;
   explicit Player(const Point& pos) : Entity(pos, {28, 50}, ShapeType::RECT) {
     PLAYER_TILE = &tile_pos;
   }
@@ -26,38 +27,45 @@ struct Player final : public Entity {
       p.dead = p.hitType == HitType::ONE_HIT;
     }
   }
-  void update() final {
+  void Update() final {
     if (dead) {
       GAME_STATE = GameState::GameOver;
       return;
     } else if (PLAYER_STATS.stunned) {
       return;
     }
+
     float speed = PLAYER_STATS.get_speed();
 
-    moving = false;
+    bool verticalMove = (IsKeyDown(KEY_W) || IsKeyDown(KEY_S));
+    bool horizontalMove = (IsKeyDown(KEY_A) || IsKeyDown(KEY_D));
+
+    if (verticalMove && horizontalMove) {
+      speed /= SQRT_2;
+    }
+
+    moving = verticalMove || horizontalMove;
     if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
       pos.y_ -= speed;
       GAME_STATISTICS.WalkPixels(speed);
-      moving = true;
     }
     if (IsKeyDown(KEY_S) && !tile_collision_down(speed)) {
       pos.y_ += speed;
       GAME_STATISTICS.WalkPixels(speed);
-      moving = true;
     }
     if (IsKeyDown(KEY_A) && !tile_collision_left(speed)) {
       pos.x_ -= speed;
       GAME_STATISTICS.WalkPixels(speed);
       flip = true;
-      moving = true;
     }
     if (IsKeyDown(KEY_D) && !tile_collision_right(speed)) {
       pos.x_ += speed;
       GAME_STATISTICS.WalkPixels(speed);
       flip = false;
-      moving = true;
     }
+
+    UncoverMapCover();
+
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
@@ -66,8 +74,9 @@ struct Player final : public Entity {
   }
   void draw() final {
     if (moving) {
-      DrawTextureProFastEx(resource->walk[sprite_counter % 56 / 7], pos.x_ + DRAW_X - 25,
-                           pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
+      DrawTextureProFastEx(resource->walk[sprite_counter % 56 / 7],
+                           pos.x_ + DRAW_X - 25.0F, pos.y_ + DRAW_Y - 45, -23, 0, flip,
+                           WHITE);
       action_state = 0;
     } else if (action_state == 1) {
       draw_attack1();
@@ -79,8 +88,9 @@ struct Player final : public Entity {
       draw_death();
     }
     if (!moving && action_state == 0) {
-      DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10], pos.x_ + DRAW_X - 30,
-                           pos.y_ + DRAW_Y - 45, -7, 0, flip, WHITE);
+      DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10],
+                           pos.x_ + DRAW_X - 30.0F, pos.y_ + DRAW_Y - 45, -7, 0, flip,
+                           WHITE);
     }
 #ifdef DRAW_HITBOXES
     draw_hitbox();
@@ -120,6 +130,26 @@ struct Player final : public Entity {
                            pos.y_ + DRAW_Y - 45, -15, 0, flip, WHITE);
     } else {
       action_state = 0;
+    }
+  }
+
+ private:
+  inline void UncoverMapCover() noexcept {
+    int sx = tile_pos.x;
+    int sy = tile_pos.y;
+    int radiusSqrt = uncoverRadius * uncoverRadius;
+    int xMin = std::max(sx - uncoverRadius, 0);
+    int xMax = std::min(sx + uncoverRadius, CURRENT_MAP_SIZE);
+    int yMin = std::max(sy - uncoverRadius, 0);
+    int yMax = std::min(sy + uncoverRadius, CURRENT_MAP_SIZE);
+
+    for (int x = xMin; x < xMax; ++x) {
+      for (int y = yMin; y < yMax; ++y) {
+        if (RANGE_01(RNG_ENGINE) > 0.92F &&
+            (x - sx) * (x - sx) + (y - sy) * (y - sy) <= radiusSqrt) {
+          CURRENT_MAP_COVER[x][y] = false;
+        }
+      }
     }
   }
 };

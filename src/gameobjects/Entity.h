@@ -41,7 +41,7 @@ struct Entity {
     return *this;
   }
   virtual ~Entity() = default;
-  virtual void update() = 0;
+  virtual void Update() = 0;
 #define ENTITY_UPDATE()                                                               \
   tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;                    \
   tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;                    \
@@ -109,8 +109,7 @@ struct Entity {
 #endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
-    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+    return !BoundCheckMap(entX, entY) || CheckTileCollision(entX, entY);
   }
   [[nodiscard]] inline bool tile_collision_right(float speed) const noexcept {
 #ifdef NO_CLIP
@@ -118,8 +117,7 @@ struct Entity {
 #endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
-    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+    return !BoundCheckMap(entX, entY) || CheckTileCollision(entX, entY);
   }
   [[nodiscard]] inline bool tile_collision_down(float speed) const noexcept {
 #ifdef NO_CLIP
@@ -127,8 +125,7 @@ struct Entity {
 #endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
-    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+    return !BoundCheckMap(entX, entY) || CheckTileCollision(entX, entY);
   }
   [[nodiscard]] inline bool tile_collision_up(float speed) const noexcept {
 #ifdef NO_CLIP
@@ -136,40 +133,39 @@ struct Entity {
 #endif
     int entX = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     int entY = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
-    return COLLISIONS[CURRENT_BACK_GROUND[entX][entY]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entX][entY]] == C_SOLID;
+    return !BoundCheckMap(entX, entY) || CheckTileCollision(entX, entY);
   }
   [[nodiscard]] inline bool tile_collision_upright(float speed) const noexcept {
     int entXRight = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entYUp = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
 
-    return COLLISIONS[CURRENT_BACK_GROUND[entXRight][entYUp]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entXRight][entYUp]] == C_SOLID ||
-           tile_collision_right(speed) || tile_collision_up(speed);
+    return !BoundCheckMap(entXRight, entYUp) ||
+           CheckTileCollision(entXRight, entYUp) && tile_collision_right(speed) ||
+           tile_collision_up(speed);
   }
   [[nodiscard]] inline bool tile_collision_downright(float speed) const noexcept {
     int entXRight = static_cast<int>(pos.x_ + size.x_ / 2 + speed) / TILE_SIZE;
     int entYDown = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
 
-    return COLLISIONS[CURRENT_BACK_GROUND[entXRight][entYDown]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entXRight][entYDown]] == C_SOLID ||
-           tile_collision_right(speed) || tile_collision_down(speed);
+    return !BoundCheckMap(entXRight, entYDown) ||
+           CheckTileCollision(entXRight, entYDown) && tile_collision_right(speed) ||
+           tile_collision_down(speed);
   }
   [[nodiscard]] inline bool tile_collision_upleft(float speed) const noexcept {
     int entXLeft = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entYUp = static_cast<int>(pos.y_ + size.y_ / 2 - speed) / TILE_SIZE;
 
-    return COLLISIONS[CURRENT_BACK_GROUND[entXLeft][entYUp]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entXLeft][entYUp]] == C_SOLID ||
-           tile_collision_left(speed) || tile_collision_up(speed);
+    return !BoundCheckMap(entXLeft, entYUp) ||
+           CheckTileCollision(entXLeft, entYUp) && tile_collision_left(speed) ||
+           tile_collision_up(speed);
   }
   [[nodiscard]] inline bool tile_collision_downleft(float speed) const noexcept {
     int entXLeft = static_cast<int>(pos.x_ + size.x_ / 2 - speed) / TILE_SIZE;
     int entYDown = static_cast<int>(pos.y_ + size.y_ / 2 + speed) / TILE_SIZE;
 
-    return COLLISIONS[CURRENT_BACK_GROUND[entXLeft][entYDown]] == C_SOLID ||
-           COLLISIONS[CURRENT_MIDDLE_GROUND[entXLeft][entYDown]] == C_SOLID ||
-           tile_collision_left(speed) || tile_collision_down(speed);
+    return !BoundCheckMap(entXLeft, entYDown) ||
+           CheckTileCollision(entXLeft, entYDown) && tile_collision_left(speed) ||
+           tile_collision_down(speed);
   }
   void decideMovement(const PointI& next, float speed) noexcept {
     bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
