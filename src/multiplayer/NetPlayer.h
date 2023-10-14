@@ -46,7 +46,7 @@ struct NetPlayer final : public Entity {
     draw_hitbox();
 #endif
     DrawTextPro(
-        ANT_PARTY, name.c_str(),
+        VARNISHED, name.c_str(),
         {pos.x_ + DRAW_X - MeasureTextEx(MINECRAFT_REGULAR, name.c_str(), 14, 0.5).x / 2,
          pos.y_ + DRAW_Y - 15},
         {0, 0}, 0, 14, 0.5, WHITE);

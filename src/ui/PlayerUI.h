@@ -39,7 +39,7 @@ struct PlayerUI {
     char_bag.Update();
     region_map.update();
     playerHotbar.Update();
-    UpdateTickFunctions::update();
+    Util::update();
     update_special_items();
   }
   static inline void draw_special_items() noexcept {

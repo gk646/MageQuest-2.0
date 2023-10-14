@@ -30,8 +30,8 @@ struct TextCell {
     }
 
     sprintf(txt, "%.1f", rightVal);
-    DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
-                         rightColor);
+    Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
+                               rightColor);
   }
   inline void DrawStatCell(float x, float y, char* txt, int rightVal,
                            const Color& rightColor = Colors::darkBackground,
@@ -46,13 +46,13 @@ struct TextCell {
     }
 
     sprintf(txt, "%i", (int)rightVal);
-    DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
-                         rightColor);
+    Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
+                               rightColor);
   }
   static std::array<TextCell, 18> CreateCharacterCells(float width, float height,
                                                        const Font& font,
                                                        float fontSize) noexcept {
-    auto toolTips = loadStringsFromFile(ASSET_PATH + "Text/Codex/StatsToolTip.txt");
+    auto toolTips = Util::loadStringsFromFile(ASSET_PATH + "Text/Codex/StatsToolTip.txt");
     std::array<TextCell, 18> cells{
         TextCell(width, height, toolTips[0], font, fontSize),
         TextCell(width, height, toolTips[1], font, fontSize),

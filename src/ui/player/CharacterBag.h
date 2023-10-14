@@ -12,7 +12,7 @@ struct CharacterBag final : public Window {
   static constexpr int max_slots = 40;
   static inline char HEADER[] = "Bags";
   explicit CharacterBag() noexcept
-      : Window(SCREEN_WIDTH * 0.6F, SCREEN_HEIGHT * 0.6F, width, 300, 20, HEADER, KEY_B) {
+      : Window(SCREEN_WIDTH*0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, HEADER, KEY_B) {
     PLAYER_BAG = new InventorySlot[max_slots];
     cxstructs::now(2);
   }

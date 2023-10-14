@@ -220,7 +220,7 @@ struct Item {
 
     //description
     off_sety = 240 * UI_SCALE;
-    std::string wrappedText = DialogueRender::WrapText(description,width-5,MINECRAFT_ITALIC,SCALE(15));
+    std::string wrappedText =  Util::WrapText(description,width-5,MINECRAFT_ITALIC,SCALE(15));
       DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {startX + off_setX, startY + off_sety},
                 SCALE(15), 0.5F, Colors::darkBackground);
 

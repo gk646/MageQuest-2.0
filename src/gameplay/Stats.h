@@ -41,7 +41,7 @@ struct EntityStats {
   float effects[STATS_ENDING] = {0};
   float health = 10;
   float mana = 20;
-  float speed = 2.5;
+  float speed = 2.6;
   float shield = 0;
   uint8_t level = 1;
   bool stunned = false;

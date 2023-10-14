@@ -66,7 +66,7 @@ struct NPC : public Entity {
 
 #include "../quest/QuestHandler.h"
 #define INTERACT_WITH_PLAYER()                                       \
-  if (UpdateTickFunctions::EPressed() && zone == CURRENT_ZONE && this->intersects(PLAYER)) { \
+  if (Util::EPressed() && zone == CURRENT_ZONE && this->intersects(PLAYER)) { \
     if (!dialogue) {                                                 \
       PLAYER_QUESTS.InteractWithNPC(this);                           \
       dial_count = 0;                                                \

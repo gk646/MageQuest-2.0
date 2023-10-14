@@ -7,15 +7,15 @@ struct QuestSidePanel final : public Panel {
 
   void DrawContent() noexcept final {
     if (PLAYER_QUESTS.HasActiveQuest()) {
-      DrawOutlineText(MINECRAFT_BOLD, SCALE(16), PLAYER_QUESTS.activeQuest->name.c_str(),
+      Util::      DrawOutlineText(MINECRAFT_BOLD, SCALE(16), PLAYER_QUESTS.activeQuest->name.c_str(),
                       body.x + SCALE(2), body.y + SCALE(35), 1, Colors::LightGrey,
                       Colors::black);
-      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
+      Util::      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
                       PLAYER_QUESTS.activeQuest->GetActiveObjective().c_str(),
                       body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                       Colors::black);
     }else{
-      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
+      Util::      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
                       "No active Quest",
                       body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                       Colors::black);
@@ -27,11 +27,11 @@ struct QuestPanel final : public Window {
   QuestSidePanel side_panel;
   ExpandableQuestMenu questMenu;
   static inline char HEADER[] = "Quest";
-  inline static float WIDTH = 700;
-  inline static float HEIGHT = 550;
+  inline constexpr static float WIDTH = 750;
+  inline constexpr static float HEIGHT = 550;
 
   QuestPanel()
-      : Window(SCREEN_WIDTH * 0.1F, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20, HEADER,
+      : Window(SCREEN_WIDTH/2 - WIDTH/2, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20, HEADER,
                KEY_J),
         questMenu(WIDTH / 2, HEIGHT) {}
   void Draw() {

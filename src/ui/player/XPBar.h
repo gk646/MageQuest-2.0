@@ -1,8 +1,10 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_XPBAR_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_XPBAR_H_
 struct XPBar {
-  static constexpr float HEIGHT = 20;
-  static constexpr float WIDTH = 415;
+  inline static constexpr float HEIGHT = 20;
+  inline static constexpr float WIDTH = 415;
+  inline static constexpr float XP_TOOL_TIP_WIDTH = 225;
+  inline static constexpr float XP_TOOL_TIP_HEIGHT = 70;
   bool collision = false;
   RectangleR xp_bar = {2, 2, 2, 13};
   static int prev_req;
@@ -10,7 +12,7 @@ struct XPBar {
   static float PLAYER_EXPERIENCE;
   static char tx_buf[15];
   XPBar() { UpdateRequirements(1); }
-  void draw(float x, float y) noexcept {
+  void Draw(float x, float y) noexcept {
     xp_bar.x = x + SCALE(28);
     xp_bar.y = y - SCALE(13);
     xp_bar.width = ((PLAYER_EXPERIENCE - prev_req) / next_req) * WIDTH,
@@ -21,15 +23,23 @@ struct XPBar {
     }
   }
   static inline void DrawTooltip(Vector2 m) noexcept {
-    DrawTextureProFast(textures::ui::skillbar::tooltip, m.x - 84, m.y - 72, 0, WHITE);
+    //normalizing values to top left
+    m.x -= XP_TOOL_TIP_WIDTH / 2.0F;
+    m.y -= XP_TOOL_TIP_HEIGHT + 10;
+    DrawTextureScaled(textures::ui::skillbar::tooltip,
+                      {m.x, m.y, XP_TOOL_TIP_WIDTH, XP_TOOL_TIP_HEIGHT}, false, false, 0,
+                      WHITE);
     sprintf(tx_buf, "%d / %d", (int)PLAYER_EXPERIENCE - prev_req, next_req);
-    DrawTextExR(VARNISHED, tx_buf, {m.x - 75, m.y - 55}, 13, 0.5, WHITE);
+    DrawTextExR(MINECRAFT_BOLD, tx_buf, {m.x + 10, m.y + 15}, 15, 0.5, WHITE);
 
-    sprintf(tx_buf, "Collected: %d%%", (int)((PLAYER_EXPERIENCE - prev_req) * 100.0 / next_req));
-    DrawTextExR(VARNISHED, tx_buf, {m.x - 10, m.y - 55}, 13, 0.5, WHITE);
+    sprintf(tx_buf, "Collected: %d%%",
+            (int)((PLAYER_EXPERIENCE - prev_req) * 100.0 / next_req));
+    Util::DrawRightAlignedText(MINECRAFT_BOLD, 15, tx_buf, m.x + XP_TOOL_TIP_WIDTH - 10,
+                               m.y + 15, WHITE);
 
     sprintf(tx_buf, "Total XP: %.1f", PLAYER_EXPERIENCE);
-    DrawTextExR(VARNISHED, tx_buf, {m.x - 75, m.y - 30}, 13, 0.5, WHITE);
+    Util::DrawCenteredText(MINECRAFT_BOLD, 16, tx_buf, m.x + XP_TOOL_TIP_WIDTH / 2.0F,
+                           m.y + 35, WHITE);
   }
   void update() noexcept {
     if (PLAYER_EXPERIENCE - prev_req >= next_req) {

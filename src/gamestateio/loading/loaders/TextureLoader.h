@@ -8,7 +8,6 @@ struct TextureLoader {
     textures::ui::questpanel::choiceBoxHovered =
         LoadTexture((ASSET_PATH + "ui/questpanel/choice_hovered.png").c_str());
 
-
     textures::ui::questpanel::questBox =
         LoadTexture((ASSET_PATH + "ui/questpanel/questBox.png").c_str());
     textures::ui::questpanel::questBoxHovered =
@@ -97,18 +96,12 @@ struct TextureLoader {
 
     textures::ui::skillbar::bag =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
-    textures::ui::skillbar::bag_pressed =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag_pressed.png").c_str());
 
     textures::ui::skillbar::abilities =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities.png").c_str());
-    textures::ui::skillbar::abilities_pressed =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities_pressed.png").c_str());
 
     textures::ui::skillbar::character =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/character.png").c_str());
-    textures::ui::skillbar::character_pressed =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character_pressed.png").c_str());
 
     textures::ui::skillbar::map =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/map.png").c_str());
