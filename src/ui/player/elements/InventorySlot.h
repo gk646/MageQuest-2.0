@@ -38,7 +38,7 @@ struct InventorySlot {
     if (!ptr) return;
     sprintf(ptr->text_buffer, "%i", ptr->level);
     if (base_x < 175) {
-      DrawRightAlignedText(
+      Util::DrawRightAlignedText(
           MINECRAFT_BOLD, SCALE(14), ptr->text_buffer, hit_box.x - SCALE(4),
           hit_box.y + (hit_box.height - SCALE(14)) / 2, rarity_to_color[ptr->rarity]);
     } else {

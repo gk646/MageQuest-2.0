@@ -22,7 +22,7 @@ struct MainMenu {
       PlaySoundR(sound::intro);
     }
     if (menu_state == MenuState::Main) {
-      DrawCenteredText(VARNISHED, 35, "Mage Quest II", SCREEN_WIDTH / 2, 150, Colors::purple_dark);
+      Util::      DrawCenteredText(ANT_PARTY, 35, "Mage Quest II", SCREEN_WIDTH / 2, 150, Colors::purple_dark);
       if (playGame.Draw(SCREEN_WIDTH / 2.0F, baseYOffset)) {
         GAME_STATE = GameState::Game;
         StopSound(sound::intro);

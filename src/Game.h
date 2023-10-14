@@ -264,7 +264,7 @@ static void UPDATE_AND_COLLISION() {
 
     SetTargetFPS(TARGET_FPS);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
-    InitWindow(0, 0, "Mage Quest II");
+    InitWindow(1280, 960, "Mage Quest II");
     SCREEN_WIDTH = GetScreenWidth();
     SCREEN_HEIGHT= GetScreenHeight();
     InitAudioDevice();

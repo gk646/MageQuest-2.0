@@ -9,8 +9,8 @@ struct ExpandableQuestMenu {
   inline static char TRACK[] = "Track";
   inline static char UNTRACK[] = "Untrack";
   static inline float ELEMENT_HEIGHT = 50;
-  static inline float INFO_BOX_OFFSET = 50;
-  static inline float INFO_BOX_HEIGHT = 150;
+  static constexpr inline float INFO_BOX_OFFSET = 50;
+  static constexpr inline float INFO_BOX_HEIGHT = 150;
   static inline float INFO_BOX_WIDTH;
   std::vector<QuestBox> items;
   RectangleR bounds;
@@ -29,10 +29,10 @@ struct ExpandableQuestMenu {
       if (box.button.Draw(x, y, TextAlign::LEFT)) {
         box.clicked = !box.clicked;
       }
-      DrawRightAlignedText(MINECRAFT_REGULAR, 16,
-                           std::to_string(box.quest.questLevel).c_str(),
-                           x + box.button.bounds.width * 0.2F, y + 18,
-                           GetLevelRangeColor(box.quest.questLevel));
+      Util::DrawRightAlignedText(MINECRAFT_BOLD, 17,
+                                 std::to_string(box.quest.questLevel).c_str(),
+                                 x + box.button.bounds.width * 0.3F, y + 16,
+                                 GetLevelRangeColor(box.quest.questLevel));
       y += ELEMENT_HEIGHT + 1;
       if (box.clicked) {
         y += INFO_BOX_HEIGHT + 1;
@@ -72,18 +72,22 @@ struct ExpandableQuestMenu {
     y += +ELEMENT_HEIGHT - 5;
     DrawRectangleRounded({x, y, bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT}, 0.1,
                          ROUND_SEGMENTS, Colors::mediumLightGrey);
-    if (!PLAYER_QUESTS.HasActiveQuest()) {
-      if (Button::Draw({x + INFO_BOX_WIDTH - 30, y + INFO_BOX_HEIGHT - 20, 30, 20},
-                       "Track", "")) {
-        PLAYER_QUESTS.SetActive(quest.id);
-      }
-    } else if(PLAYER_QUESTS.activeQuest->id == quest.id) {
-      if (Button::Draw({x + INFO_BOX_WIDTH - 30, y + INFO_BOX_HEIGHT - 20, 30, 20},
+
+    auto desc =
+        Util::WrapText(quest.description, INFO_BOX_WIDTH - 10, MINECRAFT_BOLD, 15);
+    DrawTextExR(MINECRAFT_BOLD, desc.c_str(), {x + 5, y + 5}, 15, 0.5,
+                Colors::darkBackground);
+
+    if (PLAYER_QUESTS.HasActiveQuest() && PLAYER_QUESTS.activeQuest->id == quest.id) {
+      if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Untrack", "")) {
         PLAYER_QUESTS.ClearActive();
       }
-    }else{
-
+    } else {
+      if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
+                       "Track", "")) {
+        PLAYER_QUESTS.SetActive(quest.id);
+      }
     }
   }
 };

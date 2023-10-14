@@ -2,29 +2,40 @@
 #define MAGEQUEST_SRC_UI_ELEMENTS_BUTTON_H_
 
 struct Button {
-  static bool Draw(RectangleR bounds, const std::string& buttonText,
+  static bool Draw(const RectangleR& bounds, const std::string& buttonText,
                    const std::string& toolTip) noexcept {
+    bool ret = false;
     if (CheckCollisionPointRec(MOUSE_POS, bounds)) {
       ToolTip::DrawToolTip(toolTip, ANT_PARTY, 15);
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        DrawRectangle(bounds.x, bounds.y, bounds.width, bounds.height,
-                      Colors::lightGreyMiddleAlpha);
+        DrawPressedButton(bounds);
       } else {
-        DrawRectangle(bounds.x, bounds.y, bounds.width, bounds.height,
-                      Colors::lightGreyMiddleAlpha);
+        DrawHoveredButton(bounds);
+        ret = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
       }
     } else {
-      DrawRectangle(bounds.x, bounds.y, bounds.width, bounds.height,
-                    Colors::lightGreyMiddleAlpha);
+      DrawNormalButton(bounds);
     }
     DrawButtonText(bounds, buttonText, TextAlign::MIDDLE);
-    return IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+    return ret;
   }
 
  private:
+  inline static void DrawNormalButton(const RectangleR& bound) noexcept {
+    DrawRectangleRounded(bound,0.2F,ROUND_SEGMENTS,Colors::mediumVeryLight);
+    DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
+  }
+  inline static void DrawHoveredButton(const RectangleR& bound) noexcept {
+    DrawRectangleRounded(bound,0.2F,ROUND_SEGMENTS,Colors::mediumLightGreyBitDarker);
+    DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
+  }
+  inline static void DrawPressedButton(const RectangleR& bound) noexcept {
+    DrawRectangleRounded(bound,0.2F,ROUND_SEGMENTS,Colors::mediumLightGreyDarker);
+    DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
+  }
   inline static void DrawButtonText(const RectangleR& bounds, const std::string& txt,
                                     TextAlign align) noexcept {
-    float fontSize = 15;
+    float fontSize = 14;
     switch (align) {
       case TextAlign::LEFT: {
         auto bound = MeasureTextEx(MINECRAFT_BOLD, txt.c_str(), fontSize, 0.5);
@@ -35,14 +46,15 @@ struct Button {
 
       break;
       case TextAlign::RIGHT:
-        DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
-                             bounds.x + bounds.width - fontSize,
-                             bounds.y + bounds.height / 3.4F, GetTextColor());
+        Util::DrawRightAlignedText(ANT_PARTY, fontSize, txt.c_str(),
+                                   bounds.x + bounds.width - fontSize,
+                                   bounds.y + bounds.height / 3.4F, GetTextColor());
 
         break;
       case TextAlign::MIDDLE:
-        DrawCenteredText(VARNISHED, fontSize, txt.c_str(), bounds.x + bounds.width / 2.0F,
-                         bounds.y + bounds.height / 3.4F, GetTextColor());
+        Util::DrawCenteredText(MINECRAFT_BOLD, fontSize, txt.c_str(),
+                               bounds.x + bounds.width / 2.0F,
+                               bounds.y + bounds.height / 3.4F, GetTextColor());
         break;
     }
   }

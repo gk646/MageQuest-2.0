@@ -62,13 +62,13 @@ struct TexturedButton {
 
       break;
       case TextAlign::RIGHT:
-        DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
+        Util::        DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
                              bounds.x + bounds.width - fontSize,
                              bounds.y + bounds.height / 3.4F, GetTextColor());
 
         break;
       case TextAlign::MIDDLE:
-        DrawCenteredText(VARNISHED, fontSize, txt.c_str(), bounds.x + bounds.width / 2.0F,
+        Util::        DrawCenteredText(VARNISHED, fontSize, txt.c_str(), bounds.x + bounds.width / 2.0F,
                          bounds.y + bounds.height / 3.4F, GetTextColor());
         break;
     }

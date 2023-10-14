@@ -32,9 +32,9 @@ struct Map {
     spawnTriggers = LoadSpawnTriggers(name + "/" + name);
   }
   ~Map() {
-    delete_2D_array(map_back_ground, map_size);
-    delete_2D_array(map_middle_ground, map_size);
-    delete_2D_array(map_fore_ground, map_size);
+    Util::Delete2DArr(map_back_ground, map_size);
+    Util::Delete2DArr(map_middle_ground, map_size);
+    Util::Delete2DArr(map_fore_ground, map_size);
     delete spawnTriggers;
   }
   [[nodiscard]] int16_t** LoadMapData(const std::string& name) const noexcept {
@@ -45,7 +45,7 @@ struct Map {
       return nullptr;
     }
 
-    auto arr = get_2D_array<int16_t>(map_size, map_size);
+    auto arr = Util::Create2DArr<int16_t>(map_size, map_size);
     std::string line;
     for (int i = 0; i < map_size; ++i) {
       if (std::getline(infile, line)) {
@@ -63,7 +63,7 @@ struct Map {
     return arr;
   }
   [[nodiscard]] bool** LoadMapCover() const noexcept {
-    auto arr = get_2D_array<bool>(map_size, map_size);
+    auto arr =  Util::Create2DArr<bool>(map_size, map_size);
     for (uint_fast32_t i = 0; i < map_size; i++) {
       for (uint_fast32_t j = 0; j < map_size; j++) {
         arr[i][j] = true;
@@ -103,10 +103,10 @@ struct Map {
     std::vector<std::string> parts;
     while (std::getline(file, line)) {
       if (line.contains("\"height\"")) {
-        parts = split(line, ':');
+        parts = Util::SplitString(line, ':');
         height = std::stoi(parts[1]);
       } else if (line.contains("\"name\"")) {
-        parts = split(line, ':');
+        parts = Util::SplitString(line, ':');
         std::string triggerName = parts[1].substr(1, parts[1].find_last_of('"'));
 
         size_t numStart = triggerName.find_first_of("0123456789");
@@ -121,13 +121,13 @@ struct Map {
           }
         }
       } else if (line.contains("\"width\"")) {
-        parts = split(line, ':');
+        parts = Util::SplitString(line, ':');
         width = std::stoi(parts[1]);
       } else if (line.contains("\"x\"")) {
-        parts = split(line, ':');
+        parts = Util::SplitString(line, ':');
         x = std::stoi(parts[1]);
       } else if (line.contains("\"y\"")) {
-        parts = split(line, ':');
+        parts = Util::SplitString(line, ':');
         y = std::stoi(parts[1]);
         isSingular = amount == 0;
         if (type != MonsterType::ANY) {

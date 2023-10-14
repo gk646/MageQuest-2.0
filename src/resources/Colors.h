@@ -15,8 +15,6 @@ inline const Color LightGreyAlpha = {192, 203, 220, 190};
 inline const Color LightGreyTransparent = {150, 150, 150, 77};
 inline const Color LightGreyLessTransp = {150, 150, 150, 158};
 inline const Color darkBackground = {90, 105, 136, 255};
-inline const Color xpbarOrange = {254, 132, 23, 229};
-inline const Color LightGrey = {192, 203, 220, 255};
 
 // INTERFACE
 inline const Color mediumVeryLight = {172, 180, 205, 255};
@@ -35,6 +33,8 @@ inline const Color milk = {253, 255, 245, 200};
 inline const Color white_smoke = {237, 242, 244, 200};
 inline const Color SUPPORT_BAR_ORANGE = {207, 152, 27, 255};
 inline const Color StatGreen = {24, 145, 21, 255};
+inline const Color LightGrey = {192, 203, 220, 255};
+inline const Color xpbarOrange = {254, 132, 23, 229};
 
 // MAP
 inline const Color map_green = {99, 199, 77, 255};

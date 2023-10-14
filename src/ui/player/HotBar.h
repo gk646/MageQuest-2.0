@@ -40,7 +40,7 @@ struct HotBar {
     float height = SCALE(BASE_RECT.height);
     float dx = (SCREEN_WIDTH - width) / 2.0F;
     float dy = SCREEN_HEIGHT - height * 0.93;
-    xp_bar.draw(dx, dy);
+    xp_bar.Draw(dx, dy);
     DrawTexturePro(textures::ui::skillbar::skillbar, BASE_RECT, {dx, dy, width, height},
                    {0, 0}, 0, WHITE);
     for (uint_fast32_t i = 0; i < 6; i++) {

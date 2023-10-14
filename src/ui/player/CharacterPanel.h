@@ -111,11 +111,11 @@ struct CharacterPanel : public Window {
   static void DrawHeaderText(float x, float y, float size) noexcept {
     if (PLAYER_SPENT_POINTS.HasPointsToSpend()) {
       sprintf(buffer, "Unspent Attribute Points!: %i", PLAYER_SPENT_POINTS.pointsToSpend);
-      DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2, y + SCALE(40),
+      Util::      DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2, y + SCALE(40),
                        Colors::darkBackground);
     }
     sprintf(buffer, "Level: %i", (int)PLAYER_STATS.level);
-    DrawCenteredText(MINECRAFT_BOLD, SCALE(16), buffer, x + size / 2, y + SCALE(25),
+    Util::    DrawCenteredText(MINECRAFT_BOLD, SCALE(16), buffer, x + size / 2, y + SCALE(25),
                      Colors::darkBackground);
   }
   void DrawStatCells(float x, float y) noexcept {

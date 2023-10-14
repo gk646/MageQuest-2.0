@@ -77,7 +77,7 @@ struct Window {
                               Colors::darkBackground);
     DrawRectangleRoundedLines(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, 3,
                               Colors::darkBackground);
-    DrawCenteredText(ANT_PARTY, SCALE(font_size), header_text,
+    Util::DrawCenteredText(ANT_PARTY, SCALE(font_size), header_text,
                      scaled_whole.x + scaled_whole.width / 2,
                      scaled_whole.y + scaled_head.height / 4, Colors::darkBackground);
   }
