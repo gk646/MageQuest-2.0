@@ -22,8 +22,8 @@ struct BlastHammer final : Projectile {
     draw_hitbox();
 #endif
   }
-  void update() noexcept final {
-    Projectile::update();
+  void Update() final {
+    Projectile::Update();
     if (sprite_counter == hit_delay) {
       PlaySoundR(sound::blastHammer);
       does_damage = true;

@@ -6,7 +6,7 @@ struct DroppedItem final : public WorldObject {
   DroppedItem(const Point& pos, Item* item)
       : WorldObject(pos, {40, 40}, ShapeType::RECT), item(item) {}
 
-  void update() final {
+  void Update() final {
     ENTITY_UPDATE();
     if (this->intersects(PLAYER)) {
       dead = CharacterBag::AddItem(item);

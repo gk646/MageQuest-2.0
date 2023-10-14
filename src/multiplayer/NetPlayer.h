@@ -51,7 +51,7 @@ struct NetPlayer final : public Entity {
          pos.y_ + DRAW_Y - 15},
         {0, 0}, 0, 14, 0.5, WHITE);
   }
-  void update() final {
+  void Update() final {
     sprite_counter++;
     tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;

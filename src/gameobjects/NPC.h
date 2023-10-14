@@ -20,7 +20,7 @@ struct NPC : public Entity {
         id(id),
         speed(speed) {}
   void draw() override = 0;
-  void update() override {
+  void Update() override {
     ENTITY_UPDATE();
     sprite_counter++;
     if (dial_count < 1000) {

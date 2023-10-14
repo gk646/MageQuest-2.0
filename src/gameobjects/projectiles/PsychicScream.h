@@ -18,8 +18,8 @@ struct PsychicScream final : Projectile {
     draw_hitbox();
 #endif
   }
-  void update() noexcept final{
-    Projectile::update();
+  void Update() final{
+    Projectile::Update();
     if(life_span == 1){
       does_damage = true;
     }

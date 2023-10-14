@@ -37,7 +37,7 @@ struct SkeletonWarrior final : public Monster {
     draw_hitbox();
 #endif
   }
-  void update() final {
+  void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {

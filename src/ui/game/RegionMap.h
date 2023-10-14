@@ -8,8 +8,7 @@ struct RegionMap final : public Window {
   float zoom = 5;
   bool dragged = false;
   RegionMap()
-      : Window(100, 100, SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.9, 20, HEADER,
-               KEY_M) {}
+      : Window(100, 100, SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.9, 20, HEADER, KEY_M) {}
   void draw() noexcept {
     WINDOW_LOGIC();
     drag_map();
@@ -54,10 +53,12 @@ struct RegionMap final : public Window {
       draw_x = base_x + i * zoom;
       for (int_fast32_t j = 0; j < curr_size; j++) {
         draw_y = base_y + j * zoom;
-
         if (window_bounds(draw_x, draw_y)) [[likely]] {
-          if (COLLISIONS[CURRENT_BACK_GROUND[i][j]] == C_SOLID ||
-              COLLISIONS[CURRENT_MIDDLE_GROUND[i][j]] == C_SOLID) {
+          if (IsTileCovered(i, j)) {
+            DrawSquareProFast(draw_x, draw_y, zoom, Colors::black);
+            continue;
+          }
+          if (CheckTileCollision(i, j)) {
             DrawSquareProFast(draw_x, draw_y, zoom, Colors::darkBackground);
           } else if (i == player_tile.x && j == player_tile.y) {
             DrawSquareProFast(draw_x, draw_y, zoom, Colors::Blue);
@@ -68,7 +69,7 @@ struct RegionMap final : public Window {
       }
     }
 
-    if(FAST_UI){
+    if (FAST_UI) {
       return;
     }
 
@@ -111,7 +112,7 @@ struct RegionMap final : public Window {
       zoom += wheel;
     }
   }
-  void update() {
+  void Update() {
     WINDOW_UPDATE()
     if (whole_window.width < SCREEN_WIDTH * 0.9) {
       whole_window.width = SCREEN_WIDTH * 0.9;

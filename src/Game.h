@@ -12,7 +12,7 @@ static void UPDATE_AND_COLLISION() {
       delete *it;
       it = WORLD_OBJECTS.erase(it);
     } else {
-      (*it)->update();
+      (*it)->Update();
       ++it;
     }
   }
@@ -20,7 +20,7 @@ static void UPDATE_AND_COLLISION() {
   SIMD_PRAGMA
   for (const auto net_player : OTHER_PLAYERS) {
     if (net_player) {
-      net_player->update();
+      net_player->Update();
     }
   }
 
@@ -29,7 +29,7 @@ static void UPDATE_AND_COLLISION() {
     if ((*it)->dead) {
       it = NPCS.erase(it);
     } else {
-      (*it)->update();
+      (*it)->Update();
       ++it;
     }
   }
@@ -40,13 +40,13 @@ static void UPDATE_AND_COLLISION() {
       delete *it;
       it = MONSTERS.erase(it);
     } else {
-      (*it)->update();
+      (*it)->Update();
       ++it;
     }
   }
 
   for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {
-    (*it)->update();
+    (*it)->Update();
 
     if ((*it)->dead) [[unlikely]] {
       delete *it;
@@ -119,7 +119,7 @@ static void UPDATE_AND_COLLISION() {
         [[likely]] {
           PLAYER_STATS.update();
           PLAYER_EFFECTS.Update();
-          PLAYER.update();
+          PLAYER.Update();
           UPDATE_AND_COLLISION();
           UI_MANAGER.Update();
         }
