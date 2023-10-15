@@ -1,6 +1,8 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_QUESTPANEL_H_
 #define MAGEQUEST_SRC_UI_PLAYER_QUESTPANEL_H_
 
+#include "../elements/ExpandableMenu.h"
+
 struct QuestSidePanel final : public Panel {
   static inline char HEADER[] = "Objectives";
   QuestSidePanel() : Panel(200, 150, 16, MINECRAFT_BOLD, HEADER) {}

@@ -8,7 +8,7 @@ struct FireStrike_Skill final : public Skill {
   int num_fireballs;
   FireStrike_Skill(bool from_player, int num_fireballs)
       : Skill(SkillStats{400, 10, 0, 420}, DamageStats{DamageType::FIRE, BASE_DMG},
-              from_player, 2, &textures::ui::skillbar::icons::fireBurst),
+              from_player, 2, textures::ui::skillbar::icons::fireBurst),
         num_fireballs(num_fireballs) {}
 
   void activate() final {

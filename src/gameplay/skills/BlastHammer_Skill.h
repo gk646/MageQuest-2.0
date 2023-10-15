@@ -7,7 +7,7 @@ struct BlastHammer_Skill final : public Skill {
   static constexpr float mana_cost = 20;
   explicit BlastHammer_Skill(bool from_player)
       : Skill(SkillStats{cooldown, mana_cost, 0}, DamageStats{DamageType::FIRE, base_dmg},
-              from_player, 1,&textures::ui::skillbar::icons::blastHammer) {}
+              from_player, 1,textures::ui::skillbar::icons::blastHammer) {}
 
   void activate() final {
     TriggerSkill();

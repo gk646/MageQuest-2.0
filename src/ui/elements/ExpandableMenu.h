@@ -1,10 +1,14 @@
 #ifndef MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEMENU_H_
 #define MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEMENU_H_
+
+
+
 struct QuestBox {
   TexturedButton button;
   const Quest& quest;
   bool clicked;
 };
+
 struct ExpandableQuestMenu {
   inline static char TRACK[] = "Track";
   inline static char UNTRACK[] = "Untrack";

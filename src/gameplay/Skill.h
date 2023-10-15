@@ -2,14 +2,19 @@
 #define MAGEQUEST_SRC_GAMEPLAY_SKILL_H_
 
 struct Skill {
-  DamageStats damage_stats;
+  inline static constexpr float SKILL_ICON_SIZE = 50;
+  inline static constexpr float TOOL_TIP_WIDTH = 150;
+  inline static constexpr float TOOL_TIP_HEIGHT = 200;
+  std::string name;
+  UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
   SkillStats skill_stats;
+  DamageStats damage_stats;
+  const Texture& icon;
   int cool_down_ticks;
-  bool from_player;
   int attack_animation = 0;
-  Texture* icon = nullptr;
-  Skill(SkillStats ability_stats, DamageStats damage_stats, bool from_player,
-        int attack_animation, Texture* icon) noexcept
+  bool from_player;
+  Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,
+        bool from_player, int attack_animation, const Texture& icon) noexcept
       : damage_stats(damage_stats),
         skill_stats(ability_stats),
         from_player(from_player),
@@ -19,8 +24,45 @@ struct Skill {
   }
   inline virtual void activate() = 0;
   inline void Update() noexcept { cool_down_ticks++; };
-  virtual void Draw(float x, float y, float size) const noexcept {
-    DrawTextureProFast(*icon, x, y, 0, WHITE);
+  virtual void Draw(float x, float y, float size) noexcept {
+    DrawTextureProFast(icon, x, y, 0, WHITE);
+    DrawCooldown(x, y, size);
+    if (hitbox.Update(x, y)) {
+      DrawToolTip(x, y);
+    }
+  }
+  static inline void DrawSupportBar(float x, float y, float percent) noexcept {
+    DrawRectangleProFast(x - SCALE(2), y - SCALE(12), SCALE(53) * percent, SCALE(7),
+                         Colors::SUPPORT_BAR_ORANGE);
+  }
+  [[nodiscard]] inline bool IsUsable() const noexcept {
+    return PLAYER_STATS.skill_useable(skill_stats, cool_down_ticks);
+  }
+  inline void TriggerSkill() noexcept {
+    cool_down_ticks = 0;
+    PLAYER.flip = MOUSE_POS.x < CAMERA_X;
+    PLAYER.sprite_counter = 0;
+    PLAYER.action_state = attack_animation;
+    PLAYER_STATS.UseSkill(skill_stats);
+  }
+  [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
+    Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
+                       PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
+    if (PLAYER.pos.dist(targetPos) <= skill_stats.range) {
+      if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
+        return true;
+        //TODO quick notifications
+      } else {
+        // No line of sight to target
+      }
+    } else {
+      // Target is out of range
+    }
+    return false;
+  }
+
+ private:
+  void DrawCooldown(float x, float y, float size) const noexcept {
     int rcd = PLAYER_STATS.GetRemainingCD(skill_stats);
     if (cool_down_ticks < rcd) {
       float side1, side2, side3, side4, side5;
@@ -59,34 +101,29 @@ struct Skill {
       }
     }
   }
-  static inline void DrawSupportBar(float x, float y, float percent) noexcept {
-    DrawRectangleProFast(x - SCALE(2), y - SCALE(12), SCALE(53) * percent, SCALE(7),
-                         Colors::SUPPORT_BAR_ORANGE);
+  void DrawToolTip(float x, float y) noexcept {
+    DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
+                         Colors::lightGreyMiddleAlpha);
+    DrawRangeCircle();
+    DrawRectangleRounded({MOUSE_POS.x - TOOL_TIP_WIDTH, MOUSE_POS.y - TOOL_TIP_HEIGHT,
+                          TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT},
+                         0.2F, ROUND_SEGMENTS, Colors::mediumLightGrey);
+    DrawRectangleRoundedLines(
+        {MOUSE_POS.x - TOOL_TIP_WIDTH, MOUSE_POS.y - TOOL_TIP_HEIGHT, TOOL_TIP_WIDTH,
+         TOOL_TIP_HEIGHT},
+        0.2F, ROUND_SEGMENTS, 2, Colors::darkBackground);
+
+
+
+
   }
-  [[nodiscard]] inline bool IsUsable() const noexcept {
-    return PLAYER_STATS.skill_useable(skill_stats, cool_down_ticks);
-  }
-  inline void TriggerSkill() noexcept {
-    cool_down_ticks = 0;
-    PLAYER.flip = MOUSE_POS.x < CAMERA_X;
-    PLAYER.sprite_counter = 0;
-    PLAYER.action_state = attack_animation;
-    PLAYER_STATS.UseSkill(skill_stats);
-  }
-  [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
-    Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
-                       PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
-    if (PLAYER.pos.dist(targetPos) <= skill_stats.range) {
-      if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
-        return true;
-        //TODO quick notifications
-      } else {
-        // No line of sight to target
-      }
-    } else {
-      // Target is out of range
+  inline void DrawRangeCircle() const noexcept {
+    if (skill_stats.range > 0) {
+      DrawTextureScaled(textures::ui::skillbar::skillRange,
+                        {CAMERA_X - skill_stats.range, CAMERA_Y - skill_stats.range,
+                         skill_stats.range * 2.0F, skill_stats.range * 2.0F},
+                        0, false, 0, WHITE);
     }
-    return false;
   }
 };
 

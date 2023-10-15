@@ -7,12 +7,12 @@ struct EnergySphere_Skill final : public Skill {
   static constexpr float CONTINUOUS_DIVISOR = 50;
   explicit EnergySphere_Skill(bool from_player)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::ARCANE, BASE_DMG},
-              from_player, 1, &textures::ui::skillbar::icons::energy_sphere) {}
-  void Draw(float x, float y, float size) const noexcept final {
-    Skill::Draw(x, y, size);
+              from_player, 1, textures::ui::skillbar::icons::energy_sphere) {}
+  void Draw(float x, float y, float size)  noexcept final {
     if(cool_down_ticks < LIFESPAN){
       DrawSupportBar(x, y, 1- cool_down_ticks / LIFESPAN);
     }
+    Skill::Draw(x, y, size);
   }
   void activate() final {
     TriggerSkill();
