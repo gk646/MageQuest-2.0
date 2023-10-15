@@ -7,7 +7,7 @@ struct FireBall_Skill final : public Skill {
   static constexpr float SPEED = 3;
   explicit FireBall_Skill(bool from_player)
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::FIRE, BASE_DMG},
-              from_player, 1,&textures::ui::skillbar::icons::pyroBlast) {}
+              from_player, 1,textures::ui::skillbar::icons::pyroBlast) {}
 
   void activate() final {
     TriggerSkill();
@@ -17,7 +17,7 @@ struct FireBall_Skill final : public Skill {
     float damage = PLAYER_STATS.get_ability_dmg(damage_stats);
     float posX = PLAYER_X + PLAYER.size.x_ / 2;
     float posY = PLAYER_Y + PLAYER.size.y_ / 2 - FireBall::height / 2;
-    float pov = angle * (180.0f / M_PI);
+    float pov = angle * (180.0f / PI);
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
 

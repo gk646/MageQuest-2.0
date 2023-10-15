@@ -3,7 +3,6 @@
 
 #include "../../gameplay/Skill.h"
 #include "XPBar.h"
-#include "../elements/TexturedButton.h"
 
 struct HotBar {
   inline static constexpr uint8_t BUTTON_ALPHA = 70;
@@ -11,26 +10,33 @@ struct HotBar {
   XPBar xp_bar;
   std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
                                new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
-  std::array<Texture*, 6> icons{new Texture(),
-                                new Texture(),
-                                new Texture(),
-                                new Texture(),
-                                &textures::ui::skillbar::mouseleft,
-                                &textures::ui::skillbar::mouseright};
+  std::array<Texture, 6> icons{
+      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
+      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
+      textures::ui::skillbar::mouseleft, textures::ui::skillbar::mouseright};
   std::array<TexturedButton, 6> menuButtons{
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::bag, textures::ui::skillbar::bag,
-             textures::ui::skillbar::bag_pressed, BUTTON_ALPHA, "Opens your bags (B)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::abilities, textures::ui::skillbar::abilities,
-             textures::ui::skillbar::abilities_pressed, BUTTON_ALPHA, "Opens abilities (P)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::character, textures::ui::skillbar::character,
-             textures::ui::skillbar::character_pressed, BUTTON_ALPHA, "Opens character (C)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::map, textures::ui::skillbar::map,
-             textures::ui::skillbar::map_pressed, BUTTON_ALPHA, "Opens map (M)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::setting, textures::ui::skillbar::setting,
-             textures::ui::skillbar::setting_pressed, BUTTON_ALPHA, "Opens settings (ESC)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::skilltree, textures::ui::skillbar::skilltree,
-             textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA, "Opens skill tree (N)")
-  };
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::bag,
+                     textures::ui::skillbar::bag, textures::ui::skillbar::bag_pressed,
+                     BUTTON_ALPHA, "Opens your bags (B)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::abilities,
+                     textures::ui::skillbar::abilities,
+                     textures::ui::skillbar::abilities_pressed, BUTTON_ALPHA,
+                     "Opens abilities (P)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::character,
+                     textures::ui::skillbar::character,
+                     textures::ui::skillbar::character_pressed, BUTTON_ALPHA,
+                     "Opens character (C)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::map,
+                     textures::ui::skillbar::map, textures::ui::skillbar::map_pressed,
+                     BUTTON_ALPHA, "Opens map (M)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::setting,
+                     textures::ui::skillbar::setting,
+                     textures::ui::skillbar::setting_pressed, BUTTON_ALPHA,
+                     "Opens settings (ESC)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::skilltree,
+                     textures::ui::skillbar::skilltree,
+                     textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA,
+                     "Opens skill tree (N)")};
   HotBar() noexcept = default;
   void Draw() noexcept {
     float size = SCALE(50);
@@ -45,16 +51,15 @@ struct HotBar {
                    {0, 0}, 0, WHITE);
     for (uint_fast32_t i = 0; i < 6; i++) {
       skills[i]->Draw(dx + offx, dy + offy, size);
-      DrawTextureProFast(*icons[i], dx + offx + SCALE(50) / 2 - icons[i]->width / 2,
+      DrawTextureProFast(icons[i], dx + offx + SCALE(50) / 2 - icons[i].width / 2,
                          dy + height * 0.72, 0, WHITE);
       dx += SCALE(65);
     }
     dx += 450;
     for (int i = 5; i > -1; i--) {
-      menuButtons[i].Draw(dx, SCREEN_HEIGHT -  menuButtons[i].bounds.height);
+      menuButtons[i].Draw(dx, SCREEN_HEIGHT - menuButtons[i].bounds.height);
       dx -= 32;
     }
-
   }
   void Update() noexcept {
     xp_bar.update();

@@ -5,9 +5,6 @@
  * |                      SYSTEM                         |
  * |-----------------------------------------------------|
  */
-#ifndef M_PI
-#define M_PI 3.1415F
-#endif
 #define SQRT_2 1.2142F
 #define SIMD_PRAGMA _Pragma("omp simd")
 #define TILE_SIZE 48

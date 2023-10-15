@@ -1,5 +1,6 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_XPBAR_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_XPBAR_H_
+
 struct XPBar {
   inline static constexpr float HEIGHT = 20;
   inline static constexpr float WIDTH = 415;

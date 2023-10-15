@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_SYSTEM_TEXTURESTORAGE_H_
 
 namespace textures {
-
+inline Texture EMPTY_TEXTURE = Texture();
 inline MonsterResource PLAYER_RESOURCE;
 
 namespace npc {
@@ -58,7 +58,7 @@ namespace misc {
 inline static Texture blueGlow;
 inline static Texture redGlow;
 inline static Texture purpleGlow;
-}
+}  // namespace misc
 namespace ui {
 inline Texture STATUS_BAR;
 inline Texture CROSS_HAIR_AIM;
@@ -80,21 +80,19 @@ inline static Texture dialogContinue;
 inline static Texture dialogContinue2;
 inline static Texture dialogContinue3;
 
-
 inline static Texture notificationWindow;
 inline static Texture spendButtonNormal;
 inline static Texture spendButtonHovered;
 inline static Texture spendButtonPressed;
 
-namespace questpanel{
+namespace questpanel {
 inline static Texture questBox;
 inline static Texture questBoxHovered;
 inline static Texture questBoxPressed;
 
-
 inline static Texture choiceBox;
 inline static Texture choiceBoxHovered;
-}
+}  // namespace questpanel
 
 namespace skillbar {
 inline static Texture bag;
@@ -113,7 +111,6 @@ inline static Texture map;
 inline static Texture map_hovered;
 inline static Texture map_pressed;
 
-
 inline static Texture setting;
 inline static Texture setting_hovered;
 inline static Texture setting_pressed;
@@ -127,6 +124,7 @@ inline static Texture mouseleft;
 inline static Texture mouseright;
 inline static Texture skillbar;
 inline static Texture xpbar;
+inline static Texture skillRange;
 
 namespace icons {
 inline static Texture iceLance;

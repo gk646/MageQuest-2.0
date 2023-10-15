@@ -103,4 +103,6 @@ inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
 
+
+
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_
