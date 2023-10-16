@@ -11,7 +11,7 @@ struct FireStrike_Skill final : public Skill {
               from_player, 2, textures::ui::skillbar::icons::fireBurst),
         num_fireballs(num_fireballs) {}
 
-  void activate() final {
+  void Activate() final {
     if (!RangeLineOfSightCheck()) return;
     TriggerSkill();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - FireBall::width / 2,

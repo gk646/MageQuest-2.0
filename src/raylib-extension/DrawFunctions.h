@@ -81,10 +81,10 @@ void DrawTextureScaled(Texture2D texture, RectangleR dest,  float rotation, bool
     {
       float x = dest.x ;
       float y = dest.y;
-      topLeft = (Vector2){ x, y };
-      topRight = (Vector2){ x + dest.width, y };
-      bottomLeft = (Vector2){ x, y + dest.height };
-      bottomRight = (Vector2){ x + dest.width, y + dest.height };
+      topLeft ={ x, y };
+      topRight = { x + dest.width, y };
+      bottomLeft = { x, y + dest.height };
+      bottomRight = { x + dest.width, y + dest.height };
     }
     else
     {
@@ -307,10 +307,10 @@ void DrawTextureProFastEx(Texture2D texture, float x, float y,float flip_offset_
     if(flipped) x+= flip_offset_x;
     if (rotation == 0.0f)
     {
-      topLeft = (Vector2){ x, y };
-      topRight = (Vector2){ x + width, y };
-      bottomLeft = (Vector2){ x, y + height };
-      bottomRight = (Vector2){ x + width, y + height };
+      topLeft = { x, y };
+      topRight = { x + width, y };
+      bottomLeft = { x, y + height };
+      bottomRight = { x + width, y + height };
     }
     else
     {

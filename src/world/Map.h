@@ -28,8 +28,13 @@ struct Map {
     map_back_ground = LoadMapData(name + "/" + name + "_BG");
     map_middle_ground = LoadMapData(name + "/" + name + "_BG1");
     map_fore_ground = LoadMapData(name + "/" + name + "_FG");
-    map_cover = LoadMapCover();
+    map_cover = Util::Create2DArr<bool>(map_size,map_size);
     spawnTriggers = LoadSpawnTriggers(name + "/" + name);
+    for (uint_fast32_t i = 0; i < map_size; i++) {
+      for (uint_fast32_t j = 0; j < map_size; j++) {
+        map_cover[i][j] = true;
+      }
+    }
   }
   ~Map() {
     Util::Delete2DArr(map_back_ground, map_size);
@@ -60,15 +65,6 @@ struct Map {
     }
 
     infile.close();
-    return arr;
-  }
-  [[nodiscard]] bool** LoadMapCover() const noexcept {
-    auto arr =  Util::Create2DArr<bool>(map_size, map_size);
-    for (uint_fast32_t i = 0; i < map_size; i++) {
-      for (uint_fast32_t j = 0; j < map_size; j++) {
-        arr[i][j] = true;
-      }
-    }
     return arr;
   }
 

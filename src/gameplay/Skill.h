@@ -22,7 +22,7 @@ struct Skill {
         icon(icon) {
     cool_down_ticks = (int)ability_stats.cool_down;
   }
-  inline virtual void activate() = 0;
+  inline virtual void Activate() = 0;
   inline void Update() noexcept { cool_down_ticks++; };
   virtual void Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
