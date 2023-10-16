@@ -9,7 +9,7 @@ struct FireBall_Skill final : public Skill {
       : Skill(SkillStats{300, 10, 0}, DamageStats{DamageType::FIRE, BASE_DMG},
               from_player, 1,textures::ui::skillbar::icons::pyroBlast) {}
 
-  void activate() final {
+  void Activate() final {
     TriggerSkill();
     auto mouse_pos = MOUSE_POS;
     float angle =

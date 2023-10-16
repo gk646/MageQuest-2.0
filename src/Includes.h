@@ -147,7 +147,7 @@ using namespace cxstructs;
 #include "system/BenchMark.h"
 #include "ui/game/MiniMap.h"
 #include "gamestateio/GameLoader.h"
-#include "gamestateio/loading/loaders/GameSaver.h"
+#include "gamestateio/GameSaver.h"
 #include "ui/UIManager.h"
 #include "Game.h"
 #endif  //MAGEQUEST_SRC_INCLUDES_H_

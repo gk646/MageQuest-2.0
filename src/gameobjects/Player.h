@@ -64,10 +64,10 @@ struct Player final : public Entity {
       flip = false;
     }
 
-    UncoverMapCover();
-
     tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
     tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
+
+    UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
                                    static_cast<int16_t>(pos.y_));
     sprite_counter++;
@@ -75,8 +75,8 @@ struct Player final : public Entity {
   void draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 56 / 7],
-                           pos.x_ + DRAW_X - 25.0F, pos.y_ + DRAW_Y - 45, -23, 0, flip,
-                           WHITE);
+                           (int)pos.x_ + DRAW_X - 25.0F, (int)pos.y_ + DRAW_Y - 45, -23,
+                           0, flip, WHITE);
       action_state = 0;
     } else if (action_state == 1) {
       draw_attack1();

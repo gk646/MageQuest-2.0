@@ -16,14 +16,14 @@ static void LoadMap(Zone zone, const PointI& pos) {
       CURRENT_BACK_GROUND = map.map_back_ground;
       CURRENT_MIDDLE_GROUND = map.map_middle_ground;
       CURRENT_FORE_GROUND = map.map_fore_ground;
+      PLAYER.pos = PointI::GetPoint(pos * 48);
       CURRENT_MAP_COVER = map.map_cover;
       CURRENT_MAP_SIZE = map.map_size;
       CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
-      PLAYER.pos = PointI::GetPoint(pos * 48);
       CURRENT_ZONE = zone;
       Lighting::fadeAlpha = 150;
       WorldAnimations::CacheAnimationTiles();
-      Lighting::AmbientOcclusion::GenerateShadowMap();
+      //Lighting::AmbientOcclusion::GenerateShadowMap();
       return;
     }
   }

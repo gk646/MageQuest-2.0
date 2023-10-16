@@ -14,7 +14,7 @@ struct EnergySphere_Skill final : public Skill {
     }
     Skill::Draw(x, y, size);
   }
-  void activate() final {
+  void Activate() final {
     TriggerSkill();
     float posX = PLAYER_X + PLAYER.size.x_ / 2;
     float posY = PLAYER_Y + (PLAYER.size.y_ - EnergySphere::HEIGHT) / 2;

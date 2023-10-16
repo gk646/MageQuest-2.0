@@ -7,7 +7,7 @@ struct Dummy_Skill final : public Skill {
       : Skill(SkillStats{300, 10, 0,0}, DamageStats{DamageType::FIRE, base_dmg},
               from_player, 1, textures::EMPTY_TEXTURE) {}
 
-  void activate() final {
+  void Activate() final {
     TriggerSkill();
 
     PROJECTILES.push_back(new Dummy({PLAYER_X + PLAYER.size.x_ / 2,
