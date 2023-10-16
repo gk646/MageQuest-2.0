@@ -19,7 +19,7 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
 
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
-inline static uint16_t dayTicks = 0;
+inline static uint16_t dayTicks = 25900;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
 namespace AmbientOcclusion {
@@ -30,44 +30,23 @@ inline static void GenerateShadowMap() noexcept {
       {0.0F, 0.0F, (float)CURRENT_MAP_SIZE, (float)CURRENT_MAP_SIZE});
   for (uint16_t j = 0; j < CURRENT_MAP_SIZE; j++) {
     for (uint16_t i = 0; i < CURRENT_MAP_SIZE; i++) {
-      if (CheckTileCollision(i, j)) {
-        if (i == 0 || !CheckTileCollision(i - 1, j)) {
-          uint8_t height = 1;
-          while (i + height < CURRENT_MAP_SIZE && CheckTileCollision(i + height, j)) {
-            height++;
-          }
-          //CURRENT_SHADOW_TREE.insert({i, j, true, height});
-          i += height - 1;
-        }
+      if (CURRENT_BACK_GROUND[i][j] == (int16_t)ShadowType::TREE_GREEN_BUSH ||
+          CURRENT_MIDDLE_GROUND[i][j] == (int16_t)ShadowType::TREE_GREEN_BUSH) {
+        CURRENT_SHADOW_TREE.insert({i, j, ShadowType::TREE_GREEN_BUSH});
       }
     }
   }
 }
 inline static void DrawAmbientOcclusion() noexcept {
-  return;
+
   for (auto obj : CURRENT_SHADOW_TREE.get_subrect(
            {PLAYER_TILE->x - SCREEN_TILE_WIDTH / 2.0F,
             PLAYER_TILE->y - SCREEN_TILE_HEIGHT / 2.0F, (float)SCREEN_TILE_WIDTH,
             (float)SCREEN_TILE_HEIGHT})) {
-    // Get the object's position and height
     PointI tilePos = {obj->xTile * 48, obj->yTile * 48 + 48};
-
-    // Calculate shadow direction and length based on time
-    float time = 0.9;         // normalized time between 0 and 1
-    float shadowLength = 48;  // for example
-    Vector2 shadowDirection = Vector2(cos(time * 2 * PI), sin(time * 2 * PI));
-
-    // Calculate four corners of the shadow rhombus
-    Vector2 baseLeft = Vector2(tilePos.x + DRAW_X, tilePos.y + DRAW_Y);
-    Vector2 baseRight = Vector2(tilePos.x + TILE_SIZE + DRAW_X, tilePos.y + DRAW_Y);
-    Vector2 tipLeft = {baseLeft.x - shadowDirection.x * shadowLength,
-                       baseLeft.y - shadowDirection.y * shadowLength};
-    Vector2 tipRight = {baseRight.x - shadowDirection.x * shadowLength,
-                        baseRight.y - shadowDirection.y * shadowLength};
-
-    DrawTriangle(baseLeft, tipLeft, baseRight, {50, 50, 50, 150});
-
-    DrawTriangle(baseRight, tipLeft, tipRight, {255, 0, 0, 150});
+    auto& tex = shadowToTexture[obj->type];
+    DrawTextureProFastRotOffset(tex, 24.0F+tilePos.x + DRAW_X - tex.width / 2,
+                                tilePos.y + DRAW_Y-12.0F, 0, {255,255,255,static_cast<unsigned char>(255-currentNightAlpha*254)}, 0, 0);
   }
 }
 inline static Vector2 CalculateShadowDirection() noexcept {
@@ -160,7 +139,13 @@ inline static float CalculateAlpha() noexcept {
 }
 inline static void DrawScreenEffects() noexcept {
   if (fadeAlpha < 255) {
-    DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {24, 20, 37, fadeAlpha});
+    DrawRectangleProFast(
+        0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
+        {24, 20, 37,
+         std::max((unsigned char)std::max(fadeAlpha - 50, 0), (unsigned char)0)});
+    Util::DrawCenteredText(ANT_PARTY, 40, zoneMap[CURRENT_ZONE].c_str(), SCREEN_WIDTH / 2,
+                           SCREEN_HEIGHT * 0.3F,
+                           {252, 252, 252, static_cast<unsigned char>(255 - fadeAlpha)});
   }
 }
 inline static void UpdateScreenEffects() noexcept {

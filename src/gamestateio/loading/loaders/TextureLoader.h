@@ -3,6 +3,9 @@
 struct TextureLoader {
 
   static void load() {
+    shadowToTexture[ShadowType::TREE_GREEN_BUSH] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/0.png").c_str());
+
     textures::ui::questpanel::choiceBox =
         LoadTexture((ASSET_PATH + "ui/questpanel/choice_normal.png").c_str());
     textures::ui::questpanel::choiceBoxHovered =
@@ -132,7 +135,8 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/xpbar.png").c_str());
     textures::ui::skillbar::tooltip =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/xp_tooltip.png").c_str());
-    textures::ui::skillbar::skillRange = LoadTexture((ASSET_PATH + "ui/skillbar/ui/skill_range.png").c_str());
+    textures::ui::skillbar::skillRange =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/skill_range.png").c_str());
 
     textures::ui::skillbar::icons::infernoRay =
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/infernoRay.png").c_str());

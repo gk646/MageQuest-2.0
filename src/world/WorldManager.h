@@ -21,9 +21,9 @@ static void LoadMap(Zone zone, const PointI& pos) {
       CURRENT_MAP_SIZE = map.map_size;
       CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
       CURRENT_ZONE = zone;
-      Lighting::fadeAlpha = 150;
+      Lighting::fadeAlpha = 253;
       WorldAnimations::CacheAnimationTiles();
-      //Lighting::AmbientOcclusion::GenerateShadowMap();
+      Lighting::AmbientOcclusion::GenerateShadowMap();
       return;
     }
   }
