@@ -9,22 +9,25 @@ To see the base features head over to the page of the first game.
 ### New Features:
 - Engine overhaul
   - Fully adjustable framerate
-  - Better performance
-  - Faster saving and loading through low-level sqlite3
-  - Enemies automatically look in your direction through texture mirroring
-- Fully dynamic effect system 
-  - Both monsters and the player can be effect by DoT's, Buffs, Debuffs and have over 30 attributes
+  - Much better performance
+  - Faster saving and loading through low-level of the sqlite3 API
+  - Dynamic lighting with shaders
+  - Post processing effects
+- Fully dynamic effects system 
+  - Both monsters and the player can be affected by DoT's, Buffs, Debuffs and have over 30 attributes
+-Steam integration
+  - Full P2P multiplayer lobbies with up to 4 players over steam
+  - full animation, projectile and enemy syncing
 - New Gameplay systems
   - New item effects like: Magic Shield,
+  - Ingame time and full day night cycle
   - Improved diversity of enemy pathfinding
+  - Improved attacks and behaviour
+- Largely improved CodeBase
+  -Invented small scription language for quests / streamlined quest creation
 
+Lines of Code: 9k 
+Game Assets: 6.5k
 
-### Progress: 50%  of base game features ported
-- Missing pathfinding and enemy logic
-- Missing hotbar ui and talent window and world map
-- Missing quest system
-
-### Planned Features
-
-- full multiplayer (local) via nbnet
-- more focus on gameplay 
+### Progress: 90% of base game features ported
+- Talent window (will be reimagined)
