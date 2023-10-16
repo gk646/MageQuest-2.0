@@ -275,6 +275,7 @@ void DrawTextureProFastRotOffset(Texture2D texture, float drawX, float drawY, fl
     rlBegin(RL_QUADS);
 
     rlColor4ub(tint.r, tint.g, tint.b, tint.a);
+    rlNormal3f(0.0f, 0.0f, 1.0f);
 
     rlTexCoord2f(0.0f, 0.0f);
     rlVertex2f(topLeftX, topLeftY);

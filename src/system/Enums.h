@@ -51,13 +51,15 @@ enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
 enum class TextAlign : uint8_t { LEFT, RIGHT, MIDDLE };
-enum class ShadowType : uint8_t {
-  TREE_GREEN_BUSH,
+enum class ShadowType : int16_t {
+  TREE_GREEN_BUSH = 886,
   TREE_GREEN_POINTY,
   TREE_GREEN_SWAMPY,
   ROCK_SMALL_1,
   ROCK_SMALL_2
 };
+std::unordered_map<ShadowType, Texture> shadowToTexture{
+    {ShadowType::TREE_GREEN_BUSH, Texture()}};
 enum class Keybind : uint8_t {
   PLAYER_LIGHT,
   ABILITY_1,
@@ -201,9 +203,9 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID : uint8_t { TUTORIAL, MARLA, END };
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
-  {"TUTORIAL", Quest_ID::TUTORIAL},
-  {"MARLA",Quest_ID::TUTORIAL},
- };
+    {"TUTORIAL", Quest_ID::TUTORIAL},
+    {"MARLA", Quest_ID::TUTORIAL},
+};
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving
   DECKARD,

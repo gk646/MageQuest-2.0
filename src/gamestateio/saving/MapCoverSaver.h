@@ -5,10 +5,9 @@ namespace MapCoverSaver {
 inline static unsigned char* SerializeBooleans(bool** arr, int length) noexcept {
   int totalBytes = ceil((double)(length * length) / 8);
   auto* data = new unsigned char[totalBytes];
-  memset(data, true, totalBytes);
+  memset(data, false, totalBytes);
 
   int byteIndex = 0, bitIndex = 0;
-
   for (int i = 0; i < length; i++) {
     for (int j = 0; j < length; j++) {
       if (arr[i][j]) {

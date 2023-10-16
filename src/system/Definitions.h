@@ -62,4 +62,11 @@ inline std::string ASSET_PATH = "../res/";
 //#define NO_CLIP           //No collision
 //#define SPAWN_TESTROOM    //Spawns you in the testroom
 #endif
+
+/* |-----------------------------------------------------|
+ * |                   TILE INDICES                      |
+ * |-----------------------------------------------------|
+ */
+
+#define TREE_STUMP
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_
