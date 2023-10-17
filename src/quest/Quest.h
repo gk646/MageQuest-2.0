@@ -23,7 +23,7 @@ struct Quest final {
     }
     delete reward;
   }
-  [[nodiscard]] inline bool progressable(NodeType type) const noexcept {
+  [[nodiscard]] inline bool Progressable(NodeType type) const noexcept {
     return state == QuestState::ACTIVE && objectives[stage]->suitable(type);
   }
   void Progress(NPC* npc) noexcept {

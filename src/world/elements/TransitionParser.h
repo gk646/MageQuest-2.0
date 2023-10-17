@@ -8,7 +8,7 @@ static void ParseTransitionFile() {
   std::ifstream file(ASSET_PATH + "Maps/TransitionMap.mgt");
 
   if (!file.is_open()) {
-    std::cerr << "Failed to open quest file." << std::endl;
+    std::cerr << "Failed to open transition file." << std::endl;
   }
   Zone zone;
   std::string line;
@@ -21,11 +21,11 @@ static void ParseTransitionFile() {
     PointI dest = Util::ParsePointI(parts[1]);
     Zone destZone = stringToZoneMap[parts[2]];
     for (uint_fast32_t i = 3; i < parts.size(); i++) {
-      tempPoints[(int)zone].emplace_back(Util::ParsePointI(parts[i]),dest,destZone);
+      tempPoints[(int)zone].emplace_back(Util::ParsePointI(parts[i]), dest, destZone);
     }
   }
 
-  WorldManager::zoneTPoints = tempPoints;
+  WorldManager::transitionPoints = tempPoints;
 }
 }  // namespace TransitionParser
 #endif  //MAGEQUEST_SRC_WORLD_TRANSITIONPARSER_H_

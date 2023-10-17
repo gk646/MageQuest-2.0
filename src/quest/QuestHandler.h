@@ -42,14 +42,14 @@ Quest* QuestHandler::get_quest(Quest_ID id) {
 }
 void QuestHandler::InteractWithNPC(NPC* npc) {
   for (auto quest : quests) {
-    if (quest->progressable(NodeType::SPEAK)) {
+    if (quest->Progressable(NodeType::SPEAK)) {
       quest->Progress(npc);
     }
   }
 }
 void QuestHandler::MonsterKilled(MonsterType type) {
   for (auto quest : quests) {
-    if (quest->progressable(NodeType::KILL)) {
+    if (quest->Progressable(NodeType::KILL)) {
       quest->Progress(type);
     }
   }
