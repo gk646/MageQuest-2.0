@@ -26,7 +26,7 @@ struct InventorySlot {
         ptr ? rarity_to_color[ptr->rarity] : Colors::darkBackground);
 
     if (ptr) {
-      ptr->draw(hit_box);
+      ptr->Draw(hit_box);
       if (tool_tip_counter > tool_tip_delay) {
         TOOL_TIP_ITEM = ptr;
       }

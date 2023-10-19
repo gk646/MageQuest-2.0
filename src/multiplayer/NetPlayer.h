@@ -74,8 +74,8 @@ struct NetPlayer final : public Entity {
   }
   void hit(Projectile& p) noexcept {
     if (!p.from_player) {
-      status_effects.AddEffects(p.status_effects);
-      stats.take_damage(p.damage_stats);
+      status_effects.AddEffects(p.statusEffects);
+      stats.take_damage(p.damageStats);
       p.dead = action_state != -100 && p.hitType == HitType::ONE_HIT;
     }
   }

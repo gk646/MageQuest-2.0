@@ -8,11 +8,11 @@ struct PsychicScream final : Projectile {
       : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, 42, 0,
                    {DamageType::ARCANE, damage}, hit_type, {new Stun(120)}, {0,0}, 0, nullptr,
                    &textures::projectile::PSYCHIC_SCREAM,nullptr) {
-    does_damage = false;
+    isDoingDamage = false;
   }
 
   void draw() final {
-    DrawTextureProFast(resources->frames[sprite_counter % 42 / 6],
+    DrawTextureProFast(resources->frames[spriteCounter % 42 / 6],
                        pos.x_ + DRAW_X-65, pos.y_ + DRAW_Y-55,0,WHITE);
 #ifdef DRAW_HITBOXES
     draw_hitbox();
@@ -20,8 +20,8 @@ struct PsychicScream final : Projectile {
   }
   void Update() final{
     Projectile::Update();
-    if(life_span == 1){
-      does_damage = true;
+    if(lifeSpanTicks == 1){
+      isDoingDamage = true;
     }
   }
 };

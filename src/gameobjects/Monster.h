@@ -74,9 +74,9 @@ struct Monster : public Entity {
   void hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && attack != -100) {
       health_bar.hit();
-      status_effects.AddEffects(p.status_effects);
-      float dmg = stats.take_damage(p.damage_stats);
-      threatManager.AddThreat(p.Sender, dmg);
+      status_effects.AddEffects(p.statusEffects);
+      float dmg = stats.take_damage(p.damageStats);
+      threatManager.AddThreat(p.sender, dmg);
       p.dead = p.hitType == HitType::ONE_HIT;
     }
   }

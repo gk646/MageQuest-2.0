@@ -9,4 +9,6 @@ inline int ROUND_SEGMENTS = 30;
 inline bool SHOW_HEALTH_NUMBERS = false;
 inline bool DISABLE_DYNAMIC_LIGHTING = false;
 inline uint8_t PLAYER_KEYBINDS[(int)Keybind::END] = {0};
+inline float MASTER_VOLUME = 1;
+inline float MUSIC_VOLUME = 1;
 #endif  //MAGEQUEST_SRC_SYSTEM_SETTINGS_H_

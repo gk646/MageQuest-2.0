@@ -8,7 +8,7 @@ struct Dummy final : Projectile {
     float angle =
         std::atan2(MOUSE_POS.y - (pos.y_ + DRAW_Y)-size.y_/2, MOUSE_POS.x - (pos.x_ + DRAW_X)-size.x_/2);
     pov = angle * (180.0f / PI);
-    move_vector = get_move_vector();
+    mvmVector = GetMovementVector();
   }
 
   void draw() final {

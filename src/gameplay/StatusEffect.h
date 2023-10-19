@@ -2,17 +2,18 @@
 #define MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECT_H_
 
 struct StatusEffect {
-  EffectType type;
-  bool isDebuff;
   uint16_t cadence;
   uint16_t duration;
+  EffectType type;
+  bool isDebuff;
   bool stack_able;
   //Texture2D texture;
   StatusEffect(bool isDebuff, int cadence, int duration, bool stack_able, EffectType type)
       : isDebuff(isDebuff),
         cadence(cadence),
         duration(duration),
-        stack_able(stack_able) , type(type){}
+        stack_able(stack_able),
+        type(type) {}
   virtual ~StatusEffect() = default;
   StatusEffect(const StatusEffect& other) = default;
   StatusEffect& operator=(const StatusEffect& other) {
