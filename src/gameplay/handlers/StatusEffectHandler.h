@@ -20,7 +20,7 @@ struct StatusEffectHandler {
       effect->RemoveEffect(stats);
     }
   }
-  void AddEffects(const std::vector<StatusEffect*>& o) {
+  void AddEffects(const std::array<StatusEffect*,MAX_STATUS_EFFECTS_PRJ>& o) {
     for (const auto& new_effect : o) {
       bool is_new = true;
       for (auto& curr_effect : status_effects) {

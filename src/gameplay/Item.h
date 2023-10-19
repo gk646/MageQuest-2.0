@@ -96,7 +96,7 @@ struct Item {
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
-  void draw(const RectangleR& rect) const noexcept {
+  void Draw(const RectangleR& rect) const noexcept {
     DrawTextureScaled(texture,rect, 0, false, 0, WHITE);
   }
   void draw_tooltip() const noexcept {

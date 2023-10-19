@@ -139,28 +139,28 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
     case FIRE_BALL: {
       PROJECTILES.emplace_back(new FireBall(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireBall_Skill::LIFE_SPAN,
-          FireBall_Skill::SPEED, data->damage, HitType::ONE_HIT, {}, data->pov,
+          FireBall_Skill::SPEED, data->damage, HitType::ONE_HIT, {nullptr, nullptr, nullptr}, data->pov,
           {data->move_x, data->move_y}, ptr));
       break;
     }
     case FIRE_STRIKE: {
       PROJECTILES.emplace_back(new FireBall(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireStrike_Skill::LIFE_SPAN,
-          FireStrike_Skill::SPEED, data->damage, HitType::CONTINUOUS, {}, data->pov,
+          FireStrike_Skill::SPEED, data->damage, HitType::CONTINUOUS, {nullptr, nullptr, nullptr}, data->pov,
           {data->move_x, data->move_y}, ptr));
       break;
     }
     case BLAST_HAMMER: {
       PROJECTILES.emplace_back(new BlastHammer(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, BlastHammer_Skill::LIFE_SPAN,
-          0, data->damage, HitType::ONE_TICK, {}, data->pov, {0, 0},
+          0, data->damage, HitType::ONE_TICK, {nullptr, nullptr, nullptr}, data->pov, {0, 0},
           RANGE_01(RNG_RANDOM) > 0.5F, ptr));
       break;
     }
     case ENERGY_SPHERE: {
       PROJECTILES.emplace_back(new EnergySphere(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, EnergySphere_Skill::LIFESPAN,
-          EnergySphere_Skill::SPEED, data->damage, HitType::CONTINUOUS, {},
+          EnergySphere_Skill::SPEED, data->damage, HitType::CONTINUOUS, {nullptr, nullptr, nullptr},
           {data->move_x, data->move_y}, ptr));
       break;
     }

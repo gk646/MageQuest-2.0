@@ -50,6 +50,7 @@ inline static CSteamID PLAYER_ID;
  * |                    PLAYER                      |
  * |-----------------------------------------------------|
  */
+inline static constexpr int MAX_STATUS_EFFECTS_PRJ = 3;
 #include "../gameplay/Stats.h"
 #include "../gameplay/StatusEffect.h"
 #include "../gameplay/handlers/StatusEffectHandler.h"

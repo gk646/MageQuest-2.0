@@ -22,8 +22,8 @@ struct Player final : public Entity {
   static void hit(Projectile& p) noexcept {
     //TODO dodge chance
     if (!p.from_player && p.IsActive()) {
-      PLAYER_EFFECTS.AddEffects(p.status_effects);
-      PLAYER_STATS.take_damage(p.damage_stats);
+      PLAYER_EFFECTS.AddEffects(p.statusEffects);
+      PLAYER_STATS.take_damage(p.damageStats);
       p.dead = p.hitType == HitType::ONE_HIT;
     }
   }
