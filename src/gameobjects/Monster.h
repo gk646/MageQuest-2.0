@@ -71,7 +71,7 @@ struct Monster : public Entity {
   moving = false;
 
   void draw() override = 0;
-  void hit(Projectile& p) noexcept {
+  void Hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && attack != -100) {
       health_bar.hit();
       status_effects.AddEffects(p.statusEffects);
@@ -110,7 +110,7 @@ struct Monster : public Entity {
     }
     return true;
   }
-  inline void update_state(UDP_MonsterUpdate* data) noexcept {
+  inline void UpdateWithRemoteState(UDP_MonsterUpdate* data) noexcept {
     if (stats.health != (float)data->new_health) {
       stats.health = data->new_health;
       health_bar.hit();
@@ -230,7 +230,7 @@ void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
   //TODO optimize
   for (auto m : MONSTERS) {
     if (m->u_id == data->monster_id) {
-      m->update_state(data);
+      m->UpdateWithRemoteState(data);
     }
   }
 }

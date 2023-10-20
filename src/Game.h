@@ -5,80 +5,80 @@ class Game {
   static bool logic_thread_running;
   std::thread logic_thread;
 
-static void UPDATE_AND_COLLISION() {
-  SIMD_PRAGMA
-  for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) {
-    if ((*it)->dead) {
-      delete *it;
-      it = WORLD_OBJECTS.erase(it);
-    } else {
-      (*it)->Update();
-      ++it;
-    }
-  }
-
-  SIMD_PRAGMA
-  for (const auto net_player : OTHER_PLAYERS) {
-    if (net_player) {
-      net_player->Update();
-    }
-  }
-
-  SIMD_PRAGMA
-  for (auto it = NPCS.begin(); it != NPCS.end();) {
-    if ((*it)->dead) {
-      it = NPCS.erase(it);
-    } else {
-      (*it)->Update();
-      ++it;
-    }
-  }
-
-  SIMD_PRAGMA
-  for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {
-    if ((*it)->dead) [[unlikely]] {
-      delete *it;
-      it = MONSTERS.erase(it);
-    } else {
-      (*it)->Update();
-      ++it;
-    }
-  }
-
-  for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {
-    (*it)->Update();
-
-    if ((*it)->dead) [[unlikely]] {
-      delete *it;
-      it = PROJECTILES.erase(it);
-    } else if (MP_TYPE == MultiplayerType::CLIENT) {
-      ++it;
-    } else {
-      for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {
-        if ((*m_it)->dead) [[unlikely]] {
-          delete *m_it;
-          m_it = MONSTERS.erase(m_it);
-        } else {
-          if ((*it)->intersects(**m_it)) [[unlikely]] {
-            (*m_it)->hit(**it);
-          }
-          ++m_it;
-        }
+  static void UPDATE_AND_COLLISION() {
+    SIMD_PRAGMA
+    for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) {
+      if ((*it)->dead) {
+        delete *it;
+        it = WORLD_OBJECTS.erase(it);
+      } else {
+        (*it)->Update();
+        ++it;
       }
-      for (auto np : OTHER_PLAYERS) {
-        if (np) {
-          if ((*it)->intersects(*np)) {
-            np->hit(**it);
+    }
+
+    SIMD_PRAGMA
+    for (const auto net_player : OTHER_PLAYERS) {
+      if (net_player) {
+        net_player->Update();
+      }
+    }
+
+    SIMD_PRAGMA
+    for (auto it = NPCS.begin(); it != NPCS.end();) {
+      if ((*it)->dead) {
+        it = NPCS.erase(it);
+      } else {
+        (*it)->Update();
+        ++it;
+      }
+    }
+
+    SIMD_PRAGMA
+    for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {
+      if ((*it)->dead) [[unlikely]] {
+        delete *it;
+        it = MONSTERS.erase(it);
+      } else {
+        (*it)->Update();
+        ++it;
+      }
+    }
+
+    for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {
+      (*it)->Update();
+
+      if ((*it)->dead) [[unlikely]] {
+        delete *it;
+        it = PROJECTILES.erase(it);
+      } else if (MP_TYPE == MultiplayerType::CLIENT) {
+        ++it;
+      } else {
+        for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {
+          if ((*m_it)->dead) [[unlikely]] {
+            delete *m_it;
+            m_it = MONSTERS.erase(m_it);
+          } else {
+            if ((*m_it)->active && (*it)->intersects(**m_it)) [[unlikely]] {
+              (*m_it)->Hit(**it);
+            }
+            ++m_it;
           }
         }
+        for (auto np : OTHER_PLAYERS) {
+          if (np) {
+            if ((*it)->intersects(*np)) {
+              np->hit(**it);
+            }
+          }
+        }
+        if ((*it)->intersects(PLAYER)) [[unlikely]] {
+          PLAYER.hit(**it);
+        }
+        ++it;
       }
-      if ((*it)->intersects(PLAYER)) [[unlikely]] {
-        PLAYER.hit(**it);
-      }
-      ++it;
     }
   }
-}
 
   inline static void LogicLoop() noexcept {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
@@ -139,10 +139,6 @@ static void UPDATE_AND_COLLISION() {
     Multiplayer::BroadCastGameState();
   }
 
-#define RESET_CAMERA()         \
-  CAMERA_X = SCREEN_WIDTH / 2; \
-  CAMERA_Y = SCREEN_HEIGHT / 2;
-
 #define DRAW_ENTITIES()                   \
   for (auto object : WORLD_OBJECTS) {     \
     if (object->active) {                 \
@@ -172,7 +168,6 @@ static void UPDATE_AND_COLLISION() {
   inline static void DrawGame() noexcept {
     WorldRender::PreRenderTasks();
     if (!DISABLE_DYNAMIC_LIGHTING) [[likely]] {
-
       BeginTextureMode(FIRST_LAYER_BUFFER);
       ClearBackground(BLANK);
       Lighting::Shaders::StartDynamicLights();
@@ -207,7 +202,6 @@ static void UPDATE_AND_COLLISION() {
     }
   }
   static inline void DrawFrame() noexcept {
-    RESET_CAMERA()
     UI_MANAGER.UIUpdate();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
@@ -266,7 +260,7 @@ static void UPDATE_AND_COLLISION() {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
     InitWindow(1280, 960, "Mage Quest II");
     SCREEN_WIDTH = GetScreenWidth();
-    SCREEN_HEIGHT= GetScreenHeight();
+    SCREEN_HEIGHT = GetScreenHeight();
     InitAudioDevice();
     SetExitKey(0);
     FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);

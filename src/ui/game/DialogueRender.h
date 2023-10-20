@@ -1,11 +1,12 @@
 #ifndef MAGEQUEST_SRC_GRAPHICS_DIALOGUERENDER_H_
 #define MAGEQUEST_SRC_GRAPHICS_DIALOGUERENDER_H_
 
-namespace DialogueRender {
+namespace TextRenderer {
 inline static constexpr int BASE_DIALOGUE_BOX_WIDTH = 365;
 inline static constexpr int BASE_DIALOGUE_BOX_HEIGHT = 120;
 inline static int spriteCounter = 0;
-
+inline static std::string* playerText = nullptr;
+inline static float* playerDialogueCount = nullptr;
 inline static void DrawContinueButton(float startX, float width, float startY,
                                       float height) noexcept {
   int num = spriteCounter % 160 / 40;
@@ -37,7 +38,8 @@ inline static void DrawContinueButton(float startX, float width, float startY,
   }
   spriteCounter++;
 }
-void RenderDialogue(int x, int y, const std::string* text, float& count, bool last) {
+static void RenderDialogue(int x, int y, const std::string* text, float count,
+                           bool last) noexcept {
   if (!text) return;
   float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
   float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
@@ -66,6 +68,27 @@ void RenderDialogue(int x, int y, const std::string* text, float& count, bool la
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);
 }
+static void RenderPlayerThought() noexcept {
+  if (!playerText) return;
+  float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
+  float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
 
-}  // namespace DialogueRender
+  float startX = CAMERA_X - width / 2;
+  float startY = CAMERA_Y - height / 2;
+
+  if (*playerDialogueCount < playerText->size()) {
+    if (!IsSoundPlaying(sound::speak)) {
+      PlaySoundR(sound::speak);
+    }
+  } else if (*playerDialogueCount > 300) {
+    playerText = nullptr;
+    return;
+  }
+
+  auto wrappedText = Util::WrapText(playerText->substr(0, *playerDialogueCount),
+                                    width - 3, MINECRAFT_REGULAR, SCALE(17));
+  DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
+              WHITE);
+}
+}  // namespace TextRenderer
 #endif  //MAGEQUEST_SRC_GRAPHICS_DIALOGUERENDER_H_

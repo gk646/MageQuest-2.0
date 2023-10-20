@@ -75,8 +75,8 @@ struct Player final : public Entity {
   void draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 56 / 7],
-                           (int)pos.x_ + DRAW_X - 25.0F, (int)pos.y_ + DRAW_Y - 45, -23,
-                           0, flip, WHITE);
+                           (int)(pos.x_ + DRAW_X - 25.0F), (int)(pos.y_ + DRAW_Y - 45), -23, 0, flip,
+                           WHITE);
       action_state = 0;
     } else if (action_state == 1) {
       draw_attack1();
@@ -89,7 +89,7 @@ struct Player final : public Entity {
     }
     if (!moving && action_state == 0) {
       DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10],
-                           pos.x_ + DRAW_X - 30.0F, pos.y_ + DRAW_Y - 45, -7, 0, flip,
+                           pos.x_ + DRAW_X - 32.0F, pos.y_ + DRAW_Y - 46, -7, 0, flip,
                            WHITE);
     }
 #ifdef DRAW_HITBOXES

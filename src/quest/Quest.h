@@ -49,10 +49,13 @@ struct Quest final {
   }
 
  private:
-  void CompleteQuest() noexcept { state = QuestState::COMPLETED; }
+  void CompleteQuest() noexcept {
+    PlaySoundR(sound::completeQuest);
+    state = QuestState::COMPLETED;
+  }
   inline void FinishStage(const QuestNode* obj) noexcept {
     if (obj->isMajorObjective) {
-      //play sound
+      PlaySoundR(sound::majorObjective);
     }
     stage++;
     if (stage == objectives.size()) {

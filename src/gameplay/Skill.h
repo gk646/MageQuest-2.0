@@ -3,9 +3,10 @@
 
 struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
-  inline static constexpr float TOOL_TIP_WIDTH = 150;
-  inline static constexpr float TOOL_TIP_HEIGHT = 200;
+  inline static constexpr float TOOL_TIP_WIDTH = 200;
+  inline static constexpr float TOOL_TIP_HEIGHT = 250;
   std::string name;
+  std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
   SkillStats skill_stats;
   DamageStats damage_stats;
@@ -48,7 +49,8 @@ struct Skill {
   [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
     Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
                        PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
-    if (PLAYER.pos.dist(targetPos) <= skill_stats.range) {
+    if (Point(PLAYER_X + PLAYER.size.x_ / 2, PLAYER_Y + PLAYER.size.y_ / 2)
+            .dist(targetPos) <= skill_stats.range) {
       if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
         return true;
         //TODO quick notifications
@@ -112,17 +114,14 @@ struct Skill {
         {MOUSE_POS.x - TOOL_TIP_WIDTH, MOUSE_POS.y - TOOL_TIP_HEIGHT, TOOL_TIP_WIDTH,
          TOOL_TIP_HEIGHT},
         0.2F, ROUND_SEGMENTS, 2, Colors::darkBackground);
-
-
-
-
   }
   inline void DrawRangeCircle() const noexcept {
     if (skill_stats.range > 0) {
-      DrawTextureScaled(textures::ui::skillbar::skillRange,
-                        {CAMERA_X - skill_stats.range, CAMERA_Y - skill_stats.range,
-                         skill_stats.range * 2.0F, skill_stats.range * 2.0F},
-                        0, false, 0, WHITE);
+      DrawTextureScaled(
+          textures::ui::skillbar::skillRange,
+          {(CAMERA_X + 14) - skill_stats.range, (CAMERA_Y + 25) - skill_stats.range,
+           skill_stats.range * 2.05F, skill_stats.range * 2.05F},
+          0, false, 0, WHITE);
     }
   }
 };
@@ -139,29 +138,29 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
     case FIRE_BALL: {
       PROJECTILES.emplace_back(new FireBall(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireBall_Skill::LIFE_SPAN,
-          FireBall_Skill::SPEED, data->damage, HitType::ONE_HIT, {nullptr, nullptr, nullptr}, data->pov,
-          {data->move_x, data->move_y}, ptr));
+          FireBall_Skill::SPEED, data->damage, HitType::ONE_HIT,
+          {nullptr, nullptr, nullptr}, data->pov, {data->move_x, data->move_y}, ptr));
       break;
     }
     case FIRE_STRIKE: {
       PROJECTILES.emplace_back(new FireBall(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireStrike_Skill::LIFE_SPAN,
-          FireStrike_Skill::SPEED, data->damage, HitType::CONTINUOUS, {nullptr, nullptr, nullptr}, data->pov,
-          {data->move_x, data->move_y}, ptr));
+          FireStrike_Skill::SPEED, data->damage, HitType::CONTINUOUS,
+          {nullptr, nullptr, nullptr}, data->pov, {data->move_x, data->move_y}, ptr));
       break;
     }
     case BLAST_HAMMER: {
       PROJECTILES.emplace_back(new BlastHammer(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, BlastHammer_Skill::LIFE_SPAN,
-          0, data->damage, HitType::ONE_TICK, {nullptr, nullptr, nullptr}, data->pov, {0, 0},
-          RANGE_01(RNG_RANDOM) > 0.5F, ptr));
+          0, data->damage, HitType::ONE_TICK, {nullptr, nullptr, nullptr}, data->pov,
+          {0, 0}, RANGE_01(RNG_RANDOM) > 0.5F, ptr));
       break;
     }
     case ENERGY_SPHERE: {
       PROJECTILES.emplace_back(new EnergySphere(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, EnergySphere_Skill::LIFESPAN,
-          EnergySphere_Skill::SPEED, data->damage, HitType::CONTINUOUS, {nullptr, nullptr, nullptr},
-          {data->move_x, data->move_y}, ptr));
+          EnergySphere_Skill::SPEED, data->damage, HitType::CONTINUOUS,
+          {nullptr, nullptr, nullptr}, {data->move_x, data->move_y}, ptr));
       break;
     }
   }

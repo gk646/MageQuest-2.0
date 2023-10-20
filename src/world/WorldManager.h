@@ -13,9 +13,9 @@ namespace WorldManager {
 static void LoadMap(Zone zone, const PointI& pos) {
   for (const auto& map : MAPS) {
     if (map.zone == zone) {
-      CURRENT_BACK_GROUND = map.map_back_ground;
-      CURRENT_MIDDLE_GROUND = map.map_middle_ground;
-      CURRENT_FORE_GROUND = map.map_fore_ground;
+      CURRENT_BACK_GROUND = map.mapBackGround;
+      CURRENT_MIDDLE_GROUND = map.mapMiddleGround;
+      CURRENT_FORE_GROUND = map.mapForeGround;
       PLAYER.pos = PointI::GetPoint(pos * 48);
       CURRENT_MAP_COVER = map.map_cover;
       CURRENT_MAP_SIZE = map.map_size;

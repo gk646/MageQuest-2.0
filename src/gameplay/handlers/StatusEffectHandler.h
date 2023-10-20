@@ -21,16 +21,17 @@ struct StatusEffectHandler {
     }
   }
   void AddEffects(const std::array<StatusEffect*,MAX_STATUS_EFFECTS_PRJ>& o) {
-    for (const auto& new_effect : o) {
+    for (const auto& newEffect : o) {
+      if(!newEffect) continue;
       bool is_new = true;
-      for (auto& curr_effect : status_effects) {
-        if (curr_effect->type == new_effect->type) {
-          curr_effect->duration = new_effect->duration;
+      for (auto& currentEffect : status_effects) {
+        if (currentEffect->type == newEffect->type) {
+          currentEffect->duration = newEffect->duration;
           is_new = false;
         }
       }
       if (is_new) {
-        auto new_copy = new_effect->clone();
+        auto new_copy = newEffect->clone();
         new_copy->ApplyEffect(stats);
         status_effects.push_back(new_copy);
       }
@@ -48,7 +49,7 @@ struct StatusEffectHandler {
       }
     }
   }
-  void draw() const noexcept {
+  void Draw() const noexcept {
     int buff_start = 500;
     int debuff_start = 700;
     for (const auto& effect : status_effects) {

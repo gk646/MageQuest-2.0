@@ -173,7 +173,7 @@ struct NPC_SAY final : public QuestNode {
         if (!startedTalking) {
           npc->update_dialogue(&txt);
           startedTalking = true;
-        } else if (npc->dial_count == 1000 || skipWait) {
+        } else if (npc->dialogueProgressCount == 1000 || skipWait) {
           return true;
         }
         return false;
@@ -201,7 +201,7 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
         auto distance = PLAYER.tile_pos.dist(npc->tile_pos);
         if (distance == 0) return true;
         if (distance <= activationDistance) {
-          currentTicks += npc->dial_count == 1000;
+          currentTicks += npc->dialogueProgressCount == 1000;
           if (currentTicks >= DELAY_TICKS) {
             npc->update_dialogue(&lines[currentLine]);
             npc->last = true;
@@ -273,17 +273,23 @@ struct SET_QUEST_SHOWN final : public QuestNode {
 struct PLAYER_THOUGHT final : public QuestNode {
   std::string thought;
   float count = 0;
+  bool assigned = false;
   PLAYER_THOUGHT(std::string thought, std::string objective)
       : QuestNode(std::move(objective), NodeType::SET_QUEST_SHOWN),
         thought(std::move(thought)) {}
   bool Progress() noexcept final {
-    DialogueRender::RenderDialogue(PLAYER.pos.x_, PLAYER.pos.y_, &thought, count, true);
+    if (!assigned) {
+      TextRenderer::playerText = &thought;
+      TextRenderer::playerDialogueCount = &count;
+      assigned = true;
+    }
+    count += 0.4F;
     //TODO Make player thought / dialogue without box and above player head
     //TODO make quest decisions prettier / center them below player (live)
-    return count == 1000;
+    return count > 300;
   }
   inline static PLAYER_THOUGHT* ParseQuestNode(const std::vector<std::string>& parts) {
-    return new PLAYER_THOUGHT(parts[2], parts[3]);
+    return new PLAYER_THOUGHT(parts[1], parts[2]);
   }
 };
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

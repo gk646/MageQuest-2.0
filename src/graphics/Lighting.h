@@ -19,12 +19,13 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
 
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
-inline static uint16_t dayTicks = 25900;
+inline static uint16_t dayTicks = 0;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
 namespace AmbientOcclusion {
 QuadTree<ShadowObject> CURRENT_SHADOW_TREE{{0, 0, 0, 0}};
 inline static void GenerateShadowMap() noexcept {
+  std::cout<< "hey" << std::endl;
   CURRENT_SHADOW_TREE.clear();
   CURRENT_SHADOW_TREE.set_bounds(
       {0.0F, 0.0F, (float)CURRENT_MAP_SIZE, (float)CURRENT_MAP_SIZE});
@@ -32,7 +33,7 @@ inline static void GenerateShadowMap() noexcept {
     for (uint16_t i = 0; i < CURRENT_MAP_SIZE; i++) {
       if (CURRENT_BACK_GROUND[i][j] == (int16_t)ShadowType::TREE_GREEN_BUSH ||
           CURRENT_MIDDLE_GROUND[i][j] == (int16_t)ShadowType::TREE_GREEN_BUSH) {
-        CURRENT_SHADOW_TREE.insert({i, j, ShadowType::TREE_GREEN_BUSH});
+        CURRENT_SHADOW_TREE.insert(ShadowObject{i, j, ShadowType::TREE_GREEN_BUSH});
       }
     }
   }
@@ -101,8 +102,8 @@ inline static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
   if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) lightOn = !lightOn;
   if (lightOn) {
-    cameraVec->x = CAMERA_X - 10;
-    cameraVec->y = CAMERA_Y - 24;
+    cameraVec->x = CAMERA_X;
+    cameraVec->y = CAMERA_Y;
   } else {
     cameraVec->x = 0;
     cameraVec->y = 0;

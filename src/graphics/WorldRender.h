@@ -6,26 +6,26 @@
 struct WorldRender {
   static uint16_t worldCol, worldRow, maxCol, maxRow;
   static inline void PreRenderTasks() noexcept {
-    worldCol = std::max(PLAYER_TILE->x - 21, 0);
+    worldCol = std::max(PLAYER_TILE->x - 20, 0);
     worldRow = std::max(PLAYER_TILE->y - 12, 0);
-    maxCol = std::min(worldCol + 42, CURRENT_MAP_SIZE);
-    maxRow = std::min(worldRow + 24, CURRENT_MAP_SIZE);
-    const int playerX = PLAYER_X = PLAYER.pos.x_;
-    const int playerY = PLAYER_Y = PLAYER.pos.y_;
-    int screenX = CAMERA_X;
-    int screenY = CAMERA_Y;
-    const int worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
+    maxCol = std::min(worldCol + 41, CURRENT_MAP_SIZE);
+    maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
+    const float playerX = PLAYER_X = PLAYER.pos.x_;
+    const float playerY = PLAYER_Y = PLAYER.pos.y_;
+    float screenX = CAMERA_X = SCREEN_WIDTH / 2 - 14;
+    float screenY = CAMERA_Y = SCREEN_HEIGHT / 2 - 25;
+    const float worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
 
     if (screenX > playerX) {
       CAMERA_X = screenX = playerX;
-    } else if (playerX > worldWidth - SCREEN_WIDTH / 2) {
+    } else if (playerX > worldWidth - screenX - 28) {
       CAMERA_X = screenX = SCREEN_WIDTH - (worldWidth - playerX);
       worldCol = std::min(std::max(worldCol - 18, 0), CURRENT_MAP_SIZE);
     }
 
     if (screenY > playerY) {
       CAMERA_Y = screenY = playerY;
-    } else if (playerY > worldWidth - SCREEN_HEIGHT / 2) {
+    } else if (playerY > worldWidth - screenY - 50) {
       CAMERA_Y = screenY = SCREEN_HEIGHT - (worldWidth - playerY);
       worldRow = std::min(std::max(worldRow - 10, 0), CURRENT_MAP_SIZE);
     }

@@ -56,27 +56,6 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
 
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
 }
-std::vector<std::string> SplitString(const std::string& s, char delim) noexcept {
-  std::vector<std::string> result;
-  std::string_view sv(s);
-  while (!sv.empty()) {
-    size_t pos = sv.find(delim);
-    if (pos == std::string_view::npos) {
-      result.emplace_back(sv);
-      break;
-    } else {
-      result.emplace_back(sv.substr(0, pos));
-      sv.remove_prefix(pos + 1);
-    }
-  }
-  return result;
-}
-inline PointI ParsePointI(const std::string& string) noexcept {
-  return {std::stoi(SplitString(string, ',')[0]), std::stoi(SplitString(string, ',')[1])};
-}
-inline Point ParsePoint(const std::string& string) noexcept {
-  return {std::stof(SplitString(string, ',')[0]), std::stof(SplitString(string, ',')[1])};
-}
 std::string WrapText(const std::string& txt, float width, const Font& font,
                      float fontSize) {
   std::istringstream iss(txt);
@@ -96,7 +75,44 @@ std::string WrapText(const std::string& txt, float width, const Font& font,
   }
   return wrappedText;
 }
+std::vector<std::string> SplitString(const std::string& s, char delim) noexcept {
+  std::vector<std::string> result;
+  std::string_view sv(s);
+  while (!sv.empty()) {
+    size_t pos = sv.find(delim);
+    if (pos == std::string_view::npos) {
+      result.emplace_back(sv);
+      break;
+    } else {
+      result.emplace_back(sv.substr(0, pos));
+      sv.remove_prefix(pos + 1);
+    }
+  }
+  return result;
+}
+static std::vector<std::vector<std::string>> ReadMGI(
+    const std::string& filePath) noexcept {
+  auto ret = std::vector<std::vector<std::string>>{};
+  std::ifstream file(ASSET_PATH + filePath);
 
+  if (!file.is_open()) {
+    std::cerr << "Failed to open .mgi (MageQuestInfo) file." << std::endl;
+  }
+
+  std::string line;
+  while (std::getline(file, line)) {
+    if (line.starts_with('#')) continue;
+    if (line.empty()) break;
+    ret.push_back(std::move(SplitString(line, ':')));
+  }
+  return ret;
+}
+inline PointI ParsePointI(const std::string& string) noexcept {
+  return {std::stoi(SplitString(string, ',')[0]), std::stoi(SplitString(string, ',')[1])};
+}
+inline Point ParsePoint(const std::string& string) noexcept {
+  return {std::stof(SplitString(string, ',')[0]), std::stof(SplitString(string, ',')[1])};
+}
 inline static bool e_previous[2] = {false, false};
 inline static void update() noexcept {
   e_previous[0] = e_previous[1];

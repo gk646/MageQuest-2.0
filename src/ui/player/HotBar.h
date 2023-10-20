@@ -6,14 +6,6 @@
 
 struct HotBar {
   inline static constexpr uint8_t BUTTON_ALPHA = 70;
-  RectangleR BASE_RECT = {0, 0, 480, 120};
-  XPBar xp_bar;
-  std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
-                               new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
-  std::array<Texture, 6> icons{
-      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
-      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
-      textures::ui::skillbar::mouseleft, textures::ui::skillbar::mouseright};
   std::array<TexturedButton, 6> menuButtons{
       TexturedButton(32, 32, "", 16, textures::ui::skillbar::bag,
                      textures::ui::skillbar::bag, textures::ui::skillbar::bag_pressed,
@@ -37,6 +29,14 @@ struct HotBar {
                      textures::ui::skillbar::skilltree,
                      textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA,
                      "Opens skill tree (N)")};
+  std::array<Texture, 6> icons{
+      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
+      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
+      textures::ui::skillbar::mouseleft, textures::ui::skillbar::mouseright};
+  std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
+                               new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
+  XPBar xp_bar;
+  RectangleR BASE_RECT = {0, 0, 480, 120};
   HotBar() noexcept = default;
   void Draw() noexcept {
     float size = SCALE(50);
@@ -47,8 +47,8 @@ struct HotBar {
     float dx = (SCREEN_WIDTH - width) / 2.0F;
     float dy = SCREEN_HEIGHT - height * 0.93;
     xp_bar.Draw(dx, dy);
-    DrawTexturePro(textures::ui::skillbar::skillbar, BASE_RECT, {dx, dy, width, height},
-                   {0, 0}, 0, WHITE);
+    DrawTextureScaled(textures::ui::skillbar::skillbar, {dx, dy, width, height}, 0, false,
+                      0, WHITE);
     for (uint_fast32_t i = 0; i < 6; i++) {
       skills[i]->Draw(dx + offx, dy + offy, size);
       DrawTextureProFast(icons[i], dx + offx + SCALE(50) / 2 - icons[i].width / 2,

@@ -22,7 +22,7 @@ void DrawTextureProFastUltraMirrored(unsigned int id, float drawX, float drawY) 
 
   rlEnd();
 }
-void DrawTextureFlipped(Texture2D texture, float drawX, float drawY, bool flipY) {
+void DrawTextureFlipped(const Texture2D& texture, float drawX, float drawY, bool flipY) {
   float width = (float)texture.width;
   float height = (float)texture.height;
 
@@ -57,17 +57,17 @@ void DrawTextureFlipped(Texture2D texture, float drawX, float drawY, bool flipY)
   rlEnd();
   rlSetTexture(0);
 }
-void DrawTextureScaled(Texture2D texture, RectangleR dest, float rotation, bool flip,
-                       float foff, Color tint) {
+void DrawTextureScaled(const Texture2D& texture, const RectangleR& dest, float rotation,
+                       bool flip, float foff, Color tint) {
   flip = !flip;
+  float destX = dest.x;
+  if (flip) {
+    destX = dest.x + foff;
+  }
   // Check if texture is valid
   if (texture.id > 0) {
-    float width = (float)texture.width;
-    float height = (float)texture.height;
-
-    if (flip) {
-      dest.x += foff;
-    }
+    auto width = (float)texture.width;
+    auto height = (float)texture.height;
 
     Vector2 topLeft = {0};
     Vector2 topRight = {0};
@@ -76,7 +76,7 @@ void DrawTextureScaled(Texture2D texture, RectangleR dest, float rotation, bool 
 
     // Only calculate rotation if needed
     if (rotation == 0.0f) {
-      float x = dest.x;
+      float x =destX;
       float y = dest.y;
       topLeft = {x, y};
       topRight = {x + dest.width, y};
@@ -85,7 +85,7 @@ void DrawTextureScaled(Texture2D texture, RectangleR dest, float rotation, bool 
     } else {
       float sinRotation = sinf(rotation * DEG2RAD);
       float cosRotation = cosf(rotation * DEG2RAD);
-      float x = dest.x;
+      float x = destX;
       float y = dest.y;
 
       topLeft.x = x + cosRotation - sinRotation;
@@ -135,13 +135,13 @@ void DrawTextureScaled(Texture2D texture, RectangleR dest, float rotation, bool 
     rlSetTexture(0);
   }
 }
-void DrawTextureProFast(Texture2D texture, float drawX, float drawY, float rotation,
-                        Color tint) {
+void DrawTextureProFast(const Texture2D& texture, float drawX, float drawY,
+                        float rotation, Color tint) {
   if (texture.id > 0) {
     auto width = (float)texture.width;
     auto height = (float)texture.height;
-    drawX = drawX;
-    drawY = drawY;
+    drawX = (int)drawX;
+    drawY = (int)drawY;
     float topLeftX, topLeftY, topRightX, topRightY, bottomLeftX, bottomLeftY,
         bottomRightX, bottomRightY;
 
@@ -192,8 +192,8 @@ void DrawTextureProFast(Texture2D texture, float drawX, float drawY, float rotat
     rlSetTexture(0);
   }
 }
-void DrawTextureProFastRot(Texture2D texture, float drawX, float drawY, float rotation,
-                           Color tint) {
+void DrawTextureProFastRot(const Texture2D& texture, float drawX, float drawY,
+                           float rotation, Color tint) {
   if (texture.id > 0) {
     float width = texture.width;
     float height = texture.height;
@@ -245,7 +245,7 @@ void DrawTextureProFastRot(Texture2D texture, float drawX, float drawY, float ro
     rlSetTexture(0);
   }
 }
-void DrawTextureProFastRotOffset(Texture2D texture, float drawX, float drawY,
+void DrawTextureProFastRotOffset(const Texture2D& texture, float drawX, float drawY,
                                  float rotation, Color tint, float offsetX,
                                  float offsetY) {
   if (texture.id > 0) {
@@ -304,11 +304,11 @@ void DrawTextureProFastRotOffset(Texture2D texture, float drawX, float drawY,
     rlSetTexture(0);
   }
 }
-void DrawTextureProFastEx(Texture2D texture, float x, float y, float flip_offset_x,
+void DrawTextureProFastEx(const Texture2D& texture, float x, float y, float flip_offset_x,
                           float rotation, bool flipped, Color tint) {
   if (texture.id > 0) {
-    float width = (float)texture.width;
-    float height = (float)texture.height;
+    auto width = (float)texture.width;
+    auto height = (float)texture.height;
 
     Vector2 topLeft = {0};
     Vector2 topRight = {0};

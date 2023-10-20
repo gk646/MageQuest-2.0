@@ -50,7 +50,11 @@ struct GameLoader {
       }
     }
     PLAYER_STATS.refill_stats();
-    WorldManager::LoadMap(Zone::Hillcrest, {24, 34});
+#ifdef SPAWN_TESTROOM
+    WorldManager::LoadMap(Zone::TestRoom, {24, 34});
+#else
+    WorldManager::LoadMap(Zone::Hillcrest, {94, 34});
+#endif
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
     finished_cpu_loading = false;
