@@ -16,7 +16,7 @@ struct Quest final {
   QuestState state = QuestState::IN_ACTIVE;
   bool hidden = false;
   uint8_t questLevel = 0;
-  explicit Quest(Quest_ID id) : id(id) {}
+  explicit Quest(Quest_ID id, bool hidden) : id(id), hidden(hidden) {}
   ~Quest() {
     for (auto obj : objectives) {
       delete obj;
@@ -24,7 +24,7 @@ struct Quest final {
     delete reward;
   }
   [[nodiscard]] inline bool progressable(NodeType type) const noexcept {
-    return state == QuestState::ACTIVE && objectives[stage]->suitable(type);
+    return state == QuestState::ACTIVE && objectives[stage]->IsNodeTypeCompatible(type);
   }
   void Progress(NPC* npc) noexcept {
     if (((SPEAK*)objectives[stage])->Progress(npc)) {

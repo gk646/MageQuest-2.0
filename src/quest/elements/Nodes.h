@@ -8,7 +8,7 @@ struct QuestNode {
   bool major_objective = false;
   QuestNode(std::string objective_text, NodeType type)
       : objective_text(std::move(objective_text)), type(type) {}
-  [[nodiscard]] inline bool suitable(NodeType event_type) const {
+  [[nodiscard]] inline bool IsNodeTypeCompatible(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
   virtual bool Progress() noexcept { return false; };
@@ -18,7 +18,7 @@ struct GOTO final : public QuestNode {
   PointI target;
   explicit GOTO(std::string obj_txt, const PointI& target)
       : QuestNode(std::move(obj_txt), NodeType::GOTO), target(target) {}
-  inline bool Progress() noexcept final { return PLAYER.tile_pos == target; }
+  inline bool Progress() noexcept final { return PLAYER.tile_pos.dist(target) < 3; }
 };
 struct NPC_MOVE final : public QuestNode {
   std::vector<PointI> waypoints;
@@ -108,20 +108,54 @@ struct TILE_ACTION final : public QuestNode {
     return false;
   }
 };
-
+/**
+ * @brief SPAWN Command Documentation
+ *
+ * Use SPAWN to instantiate game entities at various locations.
+ *
+ * Syntax:
+ * @code
+ *     SPAWN:ENTITY_TYPE:LEVEL:POINT[:POINT]...
+ * @endcode
+ *
+ * - ENTITY_TYPE: Entity to be spawned (e.g., "WOLF").
+ * - LEVEL: Entity's level as an integer.
+ * - POINT: X,Y coordinates. Can specify multiple using colons.
+ *
+ * Example:
+ * @code
+ *     SPAWN:WOLF:1:42,30:42,37:44,34
+ * @endcode
+ *
+ * @note No spaces in the command.
+ */
 struct SPAWN final : public QuestNode {
   std::vector<PointI> positions;
-  MonsterType type;
+  MonsterType mType = MonsterType::ANY;
+  NPC_ID npcID = NPC_ID::END;
   int level;
   explicit SPAWN(MonsterType type, int level)
       : QuestNode("", NodeType::SPAWN),
         level(level == 0 ? PLAYER_STATS.level : level),
-        type(type) {}
+        mType(type) {}
+  explicit SPAWN(NPC_ID npcID, int level)
+      : QuestNode("", NodeType::SPAWN),
+        level(level == 0 ? PLAYER_STATS.level : level),
+        npcID(npcID) {}
   bool Progress() noexcept final {
-    for (const auto& p : positions) {
-      MONSTERS.push_back(Monster::GetMonster(p.x * 48, p.y * 48, type, level));
+    if (npcID == NPC_ID::END) {
+      for (const auto& p : positions) {
+        MONSTERS.push_back(Monster::GetMonster(p.x * 48, p.y * 48, mType, level));
+      }
+      return true;
+    } else if (mType == MonsterType::ANY) {
+      for (const auto& p : positions) {
+        NPCS.push_back(NPC::GetNPCInstance(npcID, p.x * 48, p.y * 48,CURRENT_ZONE));
+      }
+      return true;
+    } else {
+      return false;
     }
-    return true;
   }
 };
 struct NPC_SAY final : public QuestNode {
@@ -182,7 +216,6 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
     return false;
   }
 };
-
 struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   std::string text;
   std::vector<TexturedButton> choices;
@@ -225,14 +258,14 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   }
   inline void SetAnswerIndex(int num) { answerIndex = num; }
 };
-
 struct SET_QUEST_SHOWN final : public QuestNode {
   Quest_ID id;
   explicit SET_QUEST_SHOWN(Quest_ID id)
       : QuestNode("", NodeType::SET_QUEST_SHOWN), id(id) {}
   bool Progress() noexcept final {
-    PLAYER_QUESTS.SetShown(id);
+    PLAYER_QUESTS.SetQuestShown(id);
     return true;
   }
 };
+
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

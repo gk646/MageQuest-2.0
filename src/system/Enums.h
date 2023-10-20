@@ -181,7 +181,8 @@ enum class NodeType : uint8_t {
   NPC_SAY,
   NPC_SAY_PROXIMITY,
   CHOICE_DIALOGUE_SIMPLE,
-  TILE_ACTION
+  TILE_ACTION,
+  PLAYER_THOUGHT
 };
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"SPAWN", NodeType::SPAWN},
@@ -198,13 +199,14 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"NPC_MOVE", NodeType::NPC_MOVE},
     {"NPC_SAY_PROXIMITY", NodeType::NPC_SAY_PROXIMITY},
     {"SET_QUEST_SHOWN", NodeType::SET_QUEST_SHOWN},
+    {"PLAYER_THOUGHT", NodeType::PLAYER_THOUGHT},
     {"CHOICE_DIALOGUE_SIMPLE", NodeType::CHOICE_DIALOGUE_SIMPLE}};
 
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class Quest_ID : uint8_t { TUTORIAL, MARLA, END };
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
     {"TUTORIAL", Quest_ID::TUTORIAL},
-    {"MARLA", Quest_ID::TUTORIAL},
+    {"MARLA", Quest_ID::MARLA},
 };
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving

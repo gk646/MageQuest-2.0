@@ -45,14 +45,14 @@ struct CharacterPanel : public Window {
   void draw() {
     WINDOW_LOGIC()
     DrawWindow();
-    RectangleR scaled_whole = SCALE_RECT(whole_window);
+    RectangleR scaled_whole = SCALE_RECT(wholeWindow);
     float x = scaled_whole.x + SCALE(left_x/2);
     float y = scaled_whole.y + SCALE(275);
     DrawStatCells(x, y);
     DrawHeaderText(scaled_whole.x, scaled_whole.y, scaled_whole.width);
     DrawPlayer(scaled_whole);
     for (auto& slot : equip_slots) {
-      slot.DrawCharacterSlot(whole_window.x, whole_window.y);
+      slot.DrawCharacterSlot(wholeWindow.x, wholeWindow.y);
       if (!slot.item) {
         slot.draw_inventory_icons();
       }

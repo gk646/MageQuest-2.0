@@ -9,95 +9,95 @@
 #include "UIHitbox.h"
 
 struct Window {
-  RectangleR whole_window;
+  RectangleR wholeWindow;
   RectangleR header_bar;
   Vector2 lastMousePos = {0};
-  Vector2 base_pos;
+  Vector2 basePosition;
   char* header_text;
-  int open_key;
-  float font_size = 17;
-  bool isDragging = false;
-  bool open = false;
-  bool header_hover = false;
+  int windowOpenKey;
+  float fontSize = 17;
+  bool isDragged = false;
+  bool isWindowOpen = false;
+  bool isHeaderHovered = false;
   Window(int start_x, int start_y, int width, int height, int header_height,
          char* header_text, int open_key)
-      : whole_window(start_x, start_y, width, height),
+      : wholeWindow(start_x, start_y, width, height),
         header_bar(start_x, start_y + 2, width, header_height),
         header_text(header_text),
-        open_key(open_key),
-        base_pos(start_x, start_y) {}
+        windowOpenKey(open_key),
+        basePosition(start_x, start_y) {}
 
 #define WINDOW_LOGIC()                                              \
-  if (IsKeyPressed(open_key)) {                                     \
-    open = !open;                                                   \
-    isDragging = false;                                             \
+  if (IsKeyPressed(windowOpenKey)) {                                \
+    isWindowOpen = !isWindowOpen;                                   \
+    isDragged = false;                                              \
   }                                                                 \
                                                                     \
-  if (!open) {                                                      \
+  if (!isWindowOpen) {                                              \
     return;                                                         \
   }                                                                 \
                                                                     \
-  if (isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {         \
+  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
     auto mouse_pos = MOUSE_POS;                                     \
     auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
     auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
-    whole_window.x += delta_x;                                      \
-    whole_window.y += delta_y;                                      \
+    wholeWindow.x += delta_x;                                       \
+    wholeWindow.y += delta_y;                                       \
     header_bar.x += delta_x;                                        \
     header_bar.y += delta_y;                                        \
     lastMousePos = mouse_pos;                                       \
   } else {                                                          \
-    isDragging = false;                                             \
+    isDragged = false;                                              \
   }
 
 #define DRAG_WINDOW()                                               \
-  if (isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {         \
+  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
     auto mouse_pos = MOUSE_POS;                                     \
     auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
     auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
-    whole_window.x += delta_x;                                      \
-    whole_window.y += delta_y;                                      \
+    wholeWindow.x += delta_x;                                       \
+    wholeWindow.y += delta_y;                                       \
     header_bar.x += delta_x;                                        \
     header_bar.y += delta_y;                                        \
     lastMousePos = mouse_pos;                                       \
   } else {                                                          \
-    isDragging = false;                                             \
+    isDragged = false;                                              \
   }
 
   void DrawWindow() const noexcept {
-    RectangleR scaled_whole = SCALE_RECT(whole_window);
+    RectangleR scaled_whole = SCALE_RECT(wholeWindow);
     RectangleR scaled_head = SCALE_RECT(header_bar);
 
     float ROUNDNESS = 0.1F;
-    if (whole_window.width > 450) {
+    if (wholeWindow.width > 450) {
       ROUNDNESS = 0.05F;
     }
 
     DrawRectangleRounded(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, Colors::LightGrey);
 
     DrawRectangleRounded(scaled_head, 0.5F, ROUND_SEGMENTS,
-                         header_hover ? isDragging ? Colors::mediumLightGreyDarker
-                                                   : Colors::mediumLightGreyBitDarker
-                                      : Colors::mediumLightGrey);
+                         isHeaderHovered ? isDragged ? Colors::mediumLightGreyDarker
+                                                     : Colors::mediumLightGreyBitDarker
+                                         : Colors::mediumLightGrey);
 
     DrawRectangleRoundedLines(scaled_head, 1.5F, ROUND_SEGMENTS, 2,
                               Colors::darkBackground);
     DrawRectangleRoundedLines(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, 3,
                               Colors::darkBackground);
-    Util::DrawCenteredText(ANT_PARTY, SCALE(font_size), header_text,
-                     scaled_whole.x + scaled_whole.width / 2,
-                     scaled_whole.y + scaled_head.height / 4, Colors::darkBackground);
+    Util::DrawCenteredText(
+        ANT_PARTY, SCALE(fontSize), header_text, scaled_whole.x + scaled_whole.width / 2,
+        scaled_whole.y + scaled_head.height / 4, Colors::darkBackground);
   }
 #define WINDOW_UPDATE()                                                             \
-  if (!open) {                                                                      \
+  if (!isWindowOpen) {                                                              \
     return;                                                                         \
   }                                                                                 \
-  header_hover = false;                                                             \
+  isHeaderHovered = false;                                                          \
   if (CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && !DRAGGED_ITEM) { \
-    header_hover = true;                                                            \
+    isHeaderHovered = true;                                                         \
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                     \
-      if (!isDragging) {                                                            \
-        isDragging = true;                                                          \
+      if (!isDragged) {                                                            \
+        isDragged = true;                                                          \
         lastMousePos = MOUSE_POS;                                                   \
       }                                                                             \
     }                                                                               \
@@ -105,21 +105,25 @@ struct Window {
                                                                                     \
   if (!WINDOW_FOCUSED) {                                                            \
     WINDOW_FOCUSED =                                                                \
-        isDragging || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(whole_window));  \
+        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));   \
   }
   inline void ToggleWindow() noexcept {
-    if (!open) {
-      open = true;
+    if (!isWindowOpen) {
+      isWindowOpen = true;
     } else {
-      open = false;
+      isWindowOpen = false;
     }
   }
   inline void ResetPosition() noexcept {
-    whole_window.x = base_pos.x;
-    whole_window.y = base_pos.y;
+    wholeWindow.x = basePosition.x;
+    wholeWindow.y = basePosition.y;
 
-    header_bar.x = base_pos.x;
-    header_bar.y = base_pos.y + 2;
+    header_bar.x = basePosition.x;
+    header_bar.y = basePosition.y + 2;
+  }
+  [[nodiscard]] inline bool IsInsideWindowBounds(float x, float y) const noexcept {
+    return x >= wholeWindow.x && x < wholeWindow.x + wholeWindow.width &&
+           y >= wholeWindow.y && y < wholeWindow.y + wholeWindow.height;
   }
 };
 #endif  //MAGEQUEST_SRC_UI_WINDOW_H_

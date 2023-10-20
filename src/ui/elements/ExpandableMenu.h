@@ -1,8 +1,6 @@
 #ifndef MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEMENU_H_
 #define MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEMENU_H_
 
-
-
 struct QuestBox {
   TexturedButton button;
   const Quest& quest;
@@ -43,16 +41,18 @@ struct ExpandableQuestMenu {
       }
     }
   }
-  void UpdateQuestBinding(bool force = false) noexcept {
-    if (prevSize != PLAYER_QUESTS.quests.size() || force) {
+  void UpdateQuestBinding() noexcept {
+    if (prevSize != PLAYER_QUESTS.quests.size() || PLAYER_QUESTS.updateHappened) {
       items.clear();
       for (const auto q : PLAYER_QUESTS.quests) {
-        items.emplace_back(TexturedButton{bounds.width, ELEMENT_HEIGHT, q->name.c_str(),
-                                          15, textures::ui::questpanel::questBox,
+        if (q->hidden) continue;
+        items.emplace_back(TexturedButton{bounds.width, ELEMENT_HEIGHT, q->name, 15,
+                                          textures::ui::questpanel::questBox,
                                           textures::ui::questpanel::questBoxHovered,
                                           textures::ui::questpanel::questBoxPressed},
                            *q);
       }
+      PLAYER_QUESTS.updateHappened = false;
       prevSize = PLAYER_QUESTS.quests.size();
     }
   }
@@ -85,12 +85,12 @@ struct ExpandableQuestMenu {
     if (PLAYER_QUESTS.HasActiveQuest() && PLAYER_QUESTS.activeQuest->id == quest.id) {
       if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Untrack", "")) {
-        PLAYER_QUESTS.ClearActive();
+        PLAYER_QUESTS.RemoveActiveQuest();
       }
     } else {
       if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Track", "")) {
-        PLAYER_QUESTS.SetActive(quest.id);
+        PLAYER_QUESTS.SetAsActiveQuest(quest.id);
       }
     }
   }
