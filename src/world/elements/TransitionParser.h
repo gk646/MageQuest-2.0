@@ -4,28 +4,18 @@
 namespace TransitionParser {
 
 static void ParseTransitionFile() {
-  std::array<std::vector<WorldManager::TransitionPoint>, (int)Zone::END> tempPoints;
-  std::ifstream file(ASSET_PATH + "Maps/TransitionMap.mgt");
+  auto table = Util::ReadMGI("Maps/TransitionMap.mgi");
 
-  if (!file.is_open()) {
-    std::cerr << "Failed to open quest file." << std::endl;
-  }
   Zone zone;
-  std::string line;
-  std::vector<std::string> parts;
-  while (std::getline(file, line)) {
-    if (line.empty()) break;
-    parts.clear();
-    parts = Util::SplitString(line, ':');
-    zone = stringToZoneMap[parts[0]];
-    PointI dest = Util::ParsePointI(parts[1]);
-    Zone destZone = stringToZoneMap[parts[2]];
-    for (uint_fast32_t i = 3; i < parts.size(); i++) {
-      tempPoints[(int)zone].emplace_back(Util::ParsePointI(parts[i]),dest,destZone);
+  for (uint_fast32_t i = 0; i < table.size(); i++) {
+    zone = stringToZoneMap[table[i][0]];
+    PointI dest = Util::ParsePointI(table[i][1]);
+    Zone destZone = stringToZoneMap[table[i][2]];
+    for (uint_fast32_t j = 3; j < table[i].size(); j++) {
+      WorldManager::zoneTPoints[(int)zone].emplace_back(Util::ParsePointI(table[i][j]),
+                                                        dest, destZone);
     }
   }
-
-  WorldManager::zoneTPoints = tempPoints;
 }
 }  // namespace TransitionParser
 #endif  //MAGEQUEST_SRC_WORLD_TRANSITIONPARSER_H_

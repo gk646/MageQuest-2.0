@@ -7,8 +7,8 @@ struct NPC : public Entity {
   std::string* dialogue = nullptr;
   std::vector<TexturedButton>* choices = nullptr;
   float speed;
-  float dial_count = 1000;
-  int16_t show_dial_delay = -1;
+  float dialogueProgressCount = 1000;
+  int16_t dialogueShowDelayTicks = -1;
   bool flip = false;
   bool moving = false;
   NPC_ID id;
@@ -23,10 +23,10 @@ struct NPC : public Entity {
   void Update() override {
     ENTITY_UPDATE();
     sprite_counter++;
-    if (dial_count < 1000) {
-      dial_count += 0.4F;
+    if (dialogueProgressCount < 1000) {
+      dialogueProgressCount += 0.4F;
     } else {
-      show_dial_delay--;
+      dialogueShowDelayTicks--;
     }
   }
   bool MoveToPointI(const PointI& next) noexcept {
@@ -42,10 +42,10 @@ struct NPC : public Entity {
     return false;
   }
   void draw_dialogue() noexcept {
-    if (show_dial_delay > 0) {
+    if (dialogueShowDelayTicks > 0) {
       if (dialogue) {
-        DialogueRender::RenderDialogue(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
-                                       dialogue, dial_count, last);
+        TextRenderer::RenderDialogue(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
+                                     dialogue, dialogueProgressCount, last);
       }
       if (choices) {
         float offSet = 0;
@@ -58,9 +58,9 @@ struct NPC : public Entity {
     }
   }
   void update_dialogue(std::string* text) {
-    dial_count = 0;
+    dialogueProgressCount = 0;
     dialogue = text;
-    show_dial_delay = 400;
+    dialogueShowDelayTicks = 400;
   }
   inline static NPC* GetNPCInstance(NPC_ID npcID, float absoluteX, float absoluteY,
                                     Zone npcZone) noexcept;
@@ -71,13 +71,13 @@ struct NPC : public Entity {
   if (Util::EPressed() && zone == CURRENT_ZONE && this->intersects(PLAYER)) { \
     if (!dialogue) {                                                          \
       PLAYER_QUESTS.InteractWithNPC(this);                                    \
-      dial_count = 0;                                                         \
-      show_dial_delay = 400;                                                  \
-    } else if (show_dial_delay < 0) {                                         \
-      dial_count = 0;                                                         \
-      show_dial_delay = 400;                                                  \
-    } else if (dial_count < 1000) {                                           \
-      dial_count = 1000;                                                      \
+      dialogueProgressCount = 0;                                              \
+      dialogueShowDelayTicks = 400;                                           \
+    } else if (dialogueShowDelayTicks < 0) {                                  \
+      dialogueProgressCount = 0;                                              \
+      dialogueShowDelayTicks = 400;                                           \
+    } else if (dialogueProgressCount < 1000) {                                \
+      dialogueProgressCount = 1000;                                           \
     } else {                                                                  \
       PLAYER_QUESTS.InteractWithNPC(this);                                    \
     }                                                                         \
@@ -85,7 +85,9 @@ struct NPC : public Entity {
 #define DRAW_NPC_DIALOGUE() \
   for (auto npc : NPCS) {   \
     npc->draw_dialogue();   \
-  }
+  }                         \
+  TextRenderer::RenderPlayerThought();
+
 void Monster::MonsterDiedCallback() noexcept {
   ItemDropHandler::RollForItemDrop(pos.x_ + size.x_ / 2, pos.y_ + size.y_ / 2,
                                    stats.level);

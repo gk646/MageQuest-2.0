@@ -1,6 +1,0 @@
-Quest:
-
-Line 1-4 MetaData
-
-Name:[String] # quest name
-Reward:Type,Amount: ...  # chainable

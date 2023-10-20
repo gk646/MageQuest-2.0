@@ -10,5 +10,3 @@ TODO
   - linking items
   - SteamMatchMaking->SendChatMsg()
 
-finishd abilities
-hotbar ui

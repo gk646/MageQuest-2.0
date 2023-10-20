@@ -15,9 +15,9 @@
 
 struct Map {
   Zone zone;
-  int16_t** map_back_ground;
-  int16_t** map_middle_ground;
-  int16_t** map_fore_ground;
+  int16_t** mapBackGround;
+  int16_t** mapMiddleGround;
+  int16_t** mapForeGround;
   bool** map_cover;
   std::vector<SpawnTrigger>* spawnTriggers;
 
@@ -25,9 +25,9 @@ struct Map {
 
   Map(const std::string& name, int16_t size, Zone zone) noexcept
       : map_size(size), zone(zone) {
-    map_back_ground = LoadMapData(name + "/" + name + "_BG");
-    map_middle_ground = LoadMapData(name + "/" + name + "_BG1");
-    map_fore_ground = LoadMapData(name + "/" + name + "_FG");
+    mapBackGround = LoadMapData(name + "/" + name + "_BG");
+    mapMiddleGround = LoadMapData(name + "/" + name + "_BG1");
+    mapForeGround = LoadMapData(name + "/" + name + "_FG");
     map_cover = Util::Create2DArr<bool>(map_size,map_size);
     spawnTriggers = LoadSpawnTriggers(name + "/" + name);
     for (int16_t i = 0; i < map_size; i++) {
@@ -37,9 +37,9 @@ struct Map {
     }
   }
   ~Map() {
-    Util::Delete2DArr(map_back_ground, map_size);
-    Util::Delete2DArr(map_middle_ground, map_size);
-    Util::Delete2DArr(map_fore_ground, map_size);
+    Util::Delete2DArr(mapBackGround, map_size);
+    Util::Delete2DArr(mapMiddleGround, map_size);
+    Util::Delete2DArr(mapForeGround, map_size);
     delete spawnTriggers;
   }
   [[nodiscard]] int16_t** LoadMapData(const std::string& name) const noexcept {

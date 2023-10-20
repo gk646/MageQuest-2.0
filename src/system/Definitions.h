@@ -58,8 +58,8 @@ inline std::string ASSET_PATH = "../res/";
 
 #ifdef MG2_DEBUG
 #define DRAW_HITBOXES     //Draws an outline around hitboxes
-#define DRAW_TILE_BORDER  //Draws and outline on the tile edges
-//#define NO_CLIP           //No collision
+//#define DRAW_TILE_BORDER  //Draws and outline on the tile edges
+#define NO_CLIP           //No collision
 //#define SPAWN_TESTROOM    //Spawns you in the testroom
 #endif
 

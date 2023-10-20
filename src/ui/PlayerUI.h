@@ -19,7 +19,7 @@ struct PlayerUI {
 
   void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
-    PLAYER_EFFECTS.draw();
+    PLAYER_EFFECTS.Draw();
     playerHotbar.Draw();
     questPanel.Draw();
     status_bar.draw();
@@ -27,7 +27,7 @@ struct PlayerUI {
     char_panel.Draw();
     char_bag.Draw();
     region_map.Draw();
-    draw_special_items();
+    DrawDraggedAndToolTip();
   }
 
   void Update() noexcept {
@@ -42,7 +42,7 @@ struct PlayerUI {
     Util::update();
     update_special_items();
   }
-  static inline void draw_special_items() noexcept {
+  static inline void DrawDraggedAndToolTip() noexcept {
     if (DRAGGED_ITEM) {
       DRAGGED_ITEM->Draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
     }
