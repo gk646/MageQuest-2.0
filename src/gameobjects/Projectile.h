@@ -32,7 +32,7 @@ struct Projectile : public Entity {
         mvmVector(move_vector),
         resources(res),
         sender(sender) {
-    PlaySoundR(*sound);
+    PlaySoundR(*this->sound);
   }
   Projectile(const Projectile& p) noexcept
       : Entity(p),
@@ -74,6 +74,9 @@ struct Projectile : public Entity {
   }
   ~Projectile() noexcept override {
     StopSound(*sound);
+    if (isSoundDoubled) {
+      free(sound->stream.buffer);
+    }
     for (auto ptr : statusEffects) {
       delete ptr;
     }

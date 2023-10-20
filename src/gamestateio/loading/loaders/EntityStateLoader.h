@@ -10,37 +10,11 @@ static void LoadNamedNPCs() {
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     if (sqlite3_column_type(stmt, 0) == SQLITE_NULL) break;
-    auto id = NPC_ID(sqlite3_column_int(stmt, 0));
-    auto x = static_cast<float>(sqlite3_column_double(stmt, 1));
-    auto y = static_cast<float>(sqlite3_column_double(stmt, 2));
+    auto npcID = NPC_ID(sqlite3_column_int(stmt, 0));
+    auto absoluteX = static_cast<float>(sqlite3_column_double(stmt, 1));
+    auto absoluteY = static_cast<float>(sqlite3_column_double(stmt, 2));
     auto zone = Zone(sqlite3_column_int(stmt, 3));
-    switch (id) {
-      case NPC_ID::DECKARD:
-        NPCS.push_back(new Deckard(x, y, zone));
-        break;
-      case NPC_ID::MARLA:
-        NPCS.push_back(new Marla(x, y, zone));
-        break;
-      case NPC_ID::ARIA:
-        NPCS.push_back(new Aria(x, y, zone));
-        break;
-      case NPC_ID::HILLCREST_MAYOR:
-        break;
-      case NPC_ID::RECEPTIONS:
-        break;
-      case NPC_ID::DYING_MAN:
-        break;
-      case NPC_ID::NIETZSCHE:
-        break;
-      case NPC_ID::VILLAGER:
-        break;
-      case NPC_ID::TRADER:
-        break;
-      case NPC_ID::RANDOM:
-        break;
-      case NPC_ID::END:
-        break;
-    }
+    NPCS.push_back(NPC::GetNPCInstance(npcID, absoluteX, absoluteY, zone));
   }
   sqlite3_finalize(stmt);
 }

@@ -11,7 +11,6 @@ struct MiniMap {
   std::string time_str{};
   int update_timer = 500;
   bool* region_map_open;
-
   explicit MiniMap(bool* region_map_status) : region_map_open(region_map_status) {}
   static inline bool BoundCheckObject(const Entity* e, int tile_x, int tile_y) noexcept {
     return !e->active || e->tile_pos.x < tile_x || e->tile_pos.y < tile_y ||

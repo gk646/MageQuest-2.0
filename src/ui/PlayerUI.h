@@ -10,7 +10,7 @@
 
 struct PlayerUI {
   RegionMap region_map{};
-  MiniMap mini_map{&region_map.open};
+  MiniMap mini_map{&region_map.isWindowOpen};
   CharacterPanel char_panel{};
   CharacterBag char_bag{};
   StatusBar status_bar{};
@@ -26,7 +26,7 @@ struct PlayerUI {
     mini_map.Draw();
     char_panel.draw();
     char_bag.Draw();
-    region_map.draw();
+    region_map.Draw();
     draw_special_items();
   }
 
@@ -65,10 +65,10 @@ struct PlayerUI {
     }
   }
   inline bool window_closeable() noexcept {
-    if (char_panel.open || char_bag.open || region_map.open) {
-      char_panel.open = false;
-      char_bag.open = false;
-      region_map.open = false;
+    if (char_panel.isWindowOpen || char_bag.isWindowOpen || region_map.isWindowOpen) {
+      char_panel.isWindowOpen = false;
+      char_bag.isWindowOpen = false;
+      region_map.isWindowOpen = false;
       return true;
     } else {
       return false;

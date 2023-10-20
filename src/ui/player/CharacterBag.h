@@ -18,23 +18,23 @@ struct CharacterBag final : public Window {
   }
 
   void Draw() noexcept {
-    if (IsKeyPressed(open_key)) {
-      if (open) {
+    if (IsKeyPressed(windowOpenKey)) {
+      if (isWindowOpen) {
         PlaySoundR(sound::close_inventory);
-        open = false;
+        isWindowOpen = false;
       } else {
         PlaySoundR(sound::open_inventory);
-        open = true;
+        isWindowOpen = true;
       }
-      isDragging = false;
+      isDragged = false;
     }
-    if (!open) {
+    if (!isWindowOpen) {
       return;
     }
     DRAG_WINDOW()
     DrawWindow();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
-      PLAYER_BAG[i].draw(whole_window.x, whole_window.y);
+      PLAYER_BAG[i].draw(wholeWindow.x, wholeWindow.y);
     }
   }
   void Update() noexcept {

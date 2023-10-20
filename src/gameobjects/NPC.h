@@ -62,23 +62,25 @@ struct NPC : public Entity {
     dialogue = text;
     show_dial_delay = 400;
   }
+  inline static NPC* GetNPCInstance(NPC_ID npcID, float absoluteX, float absoluteY,
+                                    Zone npcZone) noexcept;
 };
 
 #include "../quest/QuestHandler.h"
-#define INTERACT_WITH_PLAYER()                                       \
+#define INTERACT_WITH_PLAYER()                                                \
   if (Util::EPressed() && zone == CURRENT_ZONE && this->intersects(PLAYER)) { \
-    if (!dialogue) {                                                 \
-      PLAYER_QUESTS.InteractWithNPC(this);                           \
-      dial_count = 0;                                                \
-      show_dial_delay = 400;                                         \
-    } else if (show_dial_delay < 0) {                                \
-      dial_count = 0;                                                \
-      show_dial_delay = 400;                                         \
-    } else if (dial_count < 1000) {                                  \
-      dial_count = 1000;                                             \
-    } else {                                                         \
-      PLAYER_QUESTS.InteractWithNPC(this);                           \
-    }                                                                \
+    if (!dialogue) {                                                          \
+      PLAYER_QUESTS.InteractWithNPC(this);                                    \
+      dial_count = 0;                                                         \
+      show_dial_delay = 400;                                                  \
+    } else if (show_dial_delay < 0) {                                         \
+      dial_count = 0;                                                         \
+      show_dial_delay = 400;                                                  \
+    } else if (dial_count < 1000) {                                           \
+      dial_count = 1000;                                                      \
+    } else {                                                                  \
+      PLAYER_QUESTS.InteractWithNPC(this);                                    \
+    }                                                                         \
   }
 #define DRAW_NPC_DIALOGUE() \
   for (auto npc : NPCS) {   \
@@ -93,5 +95,31 @@ void Monster::MonsterDiedCallback() noexcept {
 #include "npcs/Deckard.h"
 #include "npcs/Aria.h"
 #include "npcs/Marla.h"
-
+NPC* NPC::GetNPCInstance(NPC_ID npcID, float absoluteX, float absoluteY,
+                         Zone npcZone) noexcept {
+  switch (npcID) {
+    case NPC_ID::DECKARD:
+      return new Deckard(absoluteX, absoluteY, npcZone);
+    case NPC_ID::MARLA:
+      return new Marla(absoluteX, absoluteY, npcZone);
+    case NPC_ID::ARIA:
+      return new Aria(absoluteX, absoluteY, npcZone);
+    case NPC_ID::HILLCREST_MAYOR:
+      break;
+    case NPC_ID::RECEPTIONS:
+      break;
+    case NPC_ID::DYING_MAN:
+      break;
+    case NPC_ID::NIETZSCHE:
+      break;
+    case NPC_ID::VILLAGER:
+      break;
+    case NPC_ID::TRADER:
+      break;
+    case NPC_ID::RANDOM:
+      break;
+    case NPC_ID::END:
+      break;
+  }
+}
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_NPC_H_

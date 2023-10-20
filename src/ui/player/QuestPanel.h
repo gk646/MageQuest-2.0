@@ -9,18 +9,17 @@ struct QuestSidePanel final : public Panel {
 
   void DrawContent() noexcept final {
     if (PLAYER_QUESTS.HasActiveQuest()) {
-      Util::      DrawOutlineText(MINECRAFT_BOLD, SCALE(16), PLAYER_QUESTS.activeQuest->name.c_str(),
-                      body.x + SCALE(2), body.y + SCALE(35), 1, Colors::LightGrey,
-                      Colors::black);
-      Util::      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
-                      PLAYER_QUESTS.activeQuest->GetActiveObjective().c_str(),
-                      body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
-                      Colors::black);
-    }else{
-      Util::      DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
-                      "No active Quest",
-                      body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
-                      Colors::black);
+      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(16),
+                            PLAYER_QUESTS.activeQuest->name.c_str(), body.x + SCALE(2),
+                            body.y + SCALE(35), 1, Colors::LightGrey, Colors::black);
+      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
+                            PLAYER_QUESTS.activeQuest->GetActiveObjective().c_str(),
+                            body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
+                            Colors::black);
+    } else {
+      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(15), "No active Quest",
+                            body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
+                            Colors::black);
     }
   }
 };
@@ -33,14 +32,14 @@ struct QuestPanel final : public Window {
   inline constexpr static float HEIGHT = 550;
 
   QuestPanel()
-      : Window(SCREEN_WIDTH/2 - WIDTH/2, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20, HEADER,
-               KEY_J),
+      : Window(SCREEN_WIDTH / 2 - WIDTH / 2, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20,
+               HEADER, KEY_J),
         questMenu(WIDTH / 2, HEIGHT) {}
   void Draw() {
     side_panel.Draw(SCREEN_WIDTH - 230, SCALE(300));
     WINDOW_LOGIC()
     DrawWindow();
-    questMenu.Draw(whole_window.x, whole_window.y);
+    questMenu.Draw(wholeWindow.x, wholeWindow.y);
   }
   void Update() {
     PLAYER_QUESTS.Update();

@@ -6,8 +6,8 @@ namespace ScriptParser {
   obj->major_objective = parts[parts.size() - 1] == "MAJOR"; \
   quest->objectives.push_back(obj);
 
-Quest* load(const std::string& path, Quest_ID id) {
-  auto quest = new Quest(id);
+Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
+  auto quest = new Quest(id, hidden);
   std::ifstream file(ASSET_PATH + path);
   NodeType type;
   std::string line;
@@ -29,9 +29,10 @@ Quest* load(const std::string& path, Quest_ID id) {
     type = node_to_type[parts[0]];
     switch (type) {
       case NodeType::GOTO: {
-        auto obj = new GOTO(parts[2], Util::ParsePointI(parts[1]));
+        auto point = Util::ParsePointI(parts[1]);
+        auto obj = new GOTO(parts[2], point);
+        obj->map_marker = point;
         ADD_TO_QUEST();
-
       } break;
       case NodeType::KILL: {
         auto obj = new KILL(stringToMonsterID[Util::SplitString(parts[1], ',')[0]],
@@ -95,7 +96,12 @@ Quest* load(const std::string& path, Quest_ID id) {
         ADD_TO_QUEST();
       } break;
       case NodeType::SPAWN: {
-        auto obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
+        SPAWN* obj;
+        if (stringToMonsterID.contains(parts[1])) {
+          obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
+        } else {
+          obj = new SPAWN(npcIdMap[parts[1]], std::stoi(parts[2]));
+        }
         for (uint_fast32_t i = 3; i < parts.size(); i++) {
           obj->positions.emplace_back(Util::ParsePointI(parts[i]));
         }
