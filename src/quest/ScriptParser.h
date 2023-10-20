@@ -2,8 +2,8 @@
 #define MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
 namespace ScriptParser {
 
-#define ADD_TO_QUEST()                                       \
-  obj->major_objective = parts[parts.size() - 1] == "MAJOR"; \
+#define ADD_TO_QUEST()                                        \
+  obj->isMajorObjective = parts[parts.size() - 1] == "MAJOR"; \
   quest->objectives.push_back(obj);
 
 Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
@@ -28,10 +28,12 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
     parts = Util::SplitString(line, ':');
     type = node_to_type[parts[0]];
     switch (type) {
+      case NodeType::PLAYER_THOUGHT: {
+        auto obj = PLAYER_THOUGHT::ParseQuestNode(parts);
+        ADD_TO_QUEST();
+      } break;
       case NodeType::GOTO: {
-        auto point = Util::ParsePointI(parts[1]);
-        auto obj = new GOTO(parts[2], point);
-        obj->map_marker = point;
+        auto obj = GOTO::ParseQuestNode(parts);
         ADD_TO_QUEST();
       } break;
       case NodeType::KILL: {
@@ -42,8 +44,8 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
       case NodeType::SPEAK: {
         auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
         if (parts.size() > 3) {
-          obj->map_marker = {std::stoi(Util::SplitString(parts[3], ',')[1]),
-                             std::stoi(Util::SplitString(parts[3], ',')[2])};
+          obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
+                           std::stoi(Util::SplitString(parts[3], ',')[2])};
         }
         while (std::getline(file, line) && line != "*") {
           obj->lines.push_back(line);
@@ -62,8 +64,8 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
         break;
       case NodeType::NPC_MOVE: {
         auto obj = new NPC_MOVE(npcIdMap[parts[1]], parts[2]);
-        obj->map_marker = {std::stoi(Util::SplitString(parts[3], ',')[1]),
-                           std::stoi(Util::SplitString(parts[3], ',')[2])};
+        obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
+                         std::stoi(Util::SplitString(parts[3], ',')[2])};
         for (uint_fast32_t i = 4; i < parts.size(); i++) {
           auto vec = Util::SplitString(parts[i], ',');
           obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));

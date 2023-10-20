@@ -64,18 +64,18 @@ inline static float MIRROR_POINT = 0;
 inline static PointI* PLAYER_TILE = nullptr;
 inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline static std::string PLAYER_NAME;
-class Item;
+struct Item;
 inline static Item* DRAGGED_ITEM = nullptr;
 inline static Item* TOOL_TIP_ITEM = nullptr;
 /* |-----------------------------------------------------|
  * |                          WORLD                      |
  * |-----------------------------------------------------|
  */
-class Projectile;
-class WorldObject;
-class NPC;
-class Monster;
-class Player;
+struct Projectile;
+struct WorldObject;
+struct NPC;
+struct Monster;
+struct Player;
 inline static uint_fast32_t MONSTER_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND = nullptr;
 inline static int16_t** CURRENT_MIDDLE_GROUND = nullptr;

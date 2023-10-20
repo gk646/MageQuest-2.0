@@ -44,8 +44,8 @@ struct NPC : public Entity {
   void draw_dialogue() noexcept {
     if (show_dial_delay > 0) {
       if (dialogue) {
-        DialogueRender::render_npc(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
-                                   dialogue, dial_count, last);
+        DialogueRender::RenderDialogue(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
+                                       dialogue, dial_count, last);
       }
       if (choices) {
         float offSet = 0;

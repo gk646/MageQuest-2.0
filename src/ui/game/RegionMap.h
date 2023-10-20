@@ -8,7 +8,7 @@ struct RegionMap final : public Window {
   float zoom = 5;
   bool dragged = false;
   RegionMap()
-      : Window(100, 100, SCREEN_WIDTH * 0.9, SCREEN_HEIGHT * 0.9, 20, HEADER, KEY_M) {}
+      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, HEADER, KEY_M) {}
   void Draw() noexcept {
     WINDOW_LOGIC();
     DragMap();
@@ -120,9 +120,9 @@ struct RegionMap final : public Window {
                               Colors::darkBackground);
 
     DrawTextExR(ANT_PARTY, header_text,
-                {scaled_whole.x + scaled_whole.width / 2 -
-                     GetTextWidth(header_text, fontSize * UI_SCALE) / 2,
-                 scaled_whole.y + scaled_head.height / 4},
+                {scaled_whole.x + scaled_whole.width / 2.0F -
+                     GetTextWidth(header_text, fontSize * UI_SCALE) / 2.0F,
+                 scaled_whole.y + scaled_head.height / 4.0F},
                 fontSize * UI_SCALE, 1, Colors::darkBackground);
   }
 };

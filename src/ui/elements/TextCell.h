@@ -2,21 +2,20 @@
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_TEXTCELL_H_
 
 struct TextCell {
-  RectangleR bounds;
-  float base_width, base_height;
   std::string toolTip;
+  RectangleR bounds;
   const Font& font;
-  float fontSize;
+  uint16_t baseWidth, baseHeight;
+  uint8_t fontSize;
   bool isHovered = false;
   TextCell(float width, float height, std::string tooltip, const Font& font,
            float fontSize)
       : bounds(0, 0, width, height),
         toolTip(std::move(tooltip)),
         font(font),
-        fontSize(fontSize),
-        base_width(width),
-        base_height(height) {}
-
+        fontSize((uint8_t)fontSize),
+        baseWidth((uint16_t)width),
+        baseHeight((uint16_t)height) {}
   inline void DrawStatCell(float x, float y, char* txt, float rightVal,
                            const Color& rightColor = Colors::darkBackground,
                            const Color& leftColor = Colors::darkBackground) noexcept {
@@ -76,13 +75,12 @@ struct TextCell {
     };
     return cells;
   }
-
  private:
   inline void Update(float x, float y) noexcept {
     bounds.x = x;
     bounds.y = y;
-    bounds.width = SCALE(base_width);
-    bounds.height = SCALE(base_height);
+    bounds.width = SCALE(baseWidth);
+    bounds.height = SCALE(baseHeight);
 
     isHovered = CheckCollisionPointRec(MOUSE_POS, bounds);
   }

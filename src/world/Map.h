@@ -30,8 +30,8 @@ struct Map {
     map_fore_ground = LoadMapData(name + "/" + name + "_FG");
     map_cover = Util::Create2DArr<bool>(map_size,map_size);
     spawnTriggers = LoadSpawnTriggers(name + "/" + name);
-    for (uint_fast32_t i = 0; i < map_size; i++) {
-      for (uint_fast32_t j = 0; j < map_size; j++) {
+    for (int16_t i = 0; i < map_size; i++) {
+      for (int16_t j = 0; j < map_size; j++) {
         map_cover[i][j] = true;
       }
     }

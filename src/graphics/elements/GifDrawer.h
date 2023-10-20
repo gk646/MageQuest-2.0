@@ -19,8 +19,7 @@ struct GifDrawer {
     UnloadTexture(texture);
   }
   void draw() {
-    if (finished)
-      return;
+    if (finished) return;
 
     frameCounter++;
     if (frameCounter >= frameDelay) {
@@ -37,8 +36,8 @@ struct GifDrawer {
 
       frameCounter = 0;
     }
-    DrawTextureProFast(texture, GetScreenWidth() / 2 - texture.width / 2,
-                GetScreenHeight() / 2 - texture.height / 2,0, WHITE);
+    DrawTextureProFast(texture, GetScreenWidth() / 2.0F - texture.width / 2.0F,
+                       GetScreenHeight() / 2.0F - texture.height / 2.0F, 0, WHITE);
 
     if (frame_count == 5) {
       frameDelay = 6;
