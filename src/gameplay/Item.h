@@ -4,7 +4,7 @@
 struct Item {
   static constexpr int tooltip_x = 260;
   static constexpr int tooltip_y = 350;
-  static char text_buffer[10];
+  static char textBuffer[10];
   uint8_t quality = 70;
   uint8_t durability = 100;
   uint8_t level = 1;
@@ -124,19 +124,19 @@ struct Item {
      * |                     ITEM LEVEL                      |
      * |-----------------------------------------------------|
      */
-    snprintf(text_buffer, 10, "ilvl:%d", level);
-    DrawTextExR(MINECRAFT_ITALIC, text_buffer,
+    snprintf(textBuffer, 10, "ilvl:%d", level);
+    DrawTextExR(MINECRAFT_ITALIC, textBuffer,
                 {startX + 3 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE, 1,
                 Colors::darkBackground);
 
     //quality
-    snprintf(text_buffer, 10, "%d%%", quality);
+    snprintf(textBuffer, 10, "%d%%", quality);
     if (quality == 100) [[unlikely]] {
-      DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+      DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                   {startX + width - 36 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE,
                   1, get_quality_color());
     } else {
-      DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+      DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                   {startX + width - 29 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE,
                   1, get_quality_color());
     }
@@ -153,42 +153,42 @@ struct Item {
     float h_space = 90 * UI_SCALE;
     float font_size = 16 * UI_SCALE;
 
-    snprintf(text_buffer, 10, "INT: %d", (int)effects[INTELLIGENCE]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer, {startX + off_setX, startY + off_sety},
+    snprintf(textBuffer, 10, "INT: %d", (int)effects[INTELLIGENCE]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer, {startX + off_setX, startY + off_sety},
                 font_size, 1, Colors::darkBackground);
 
-    snprintf(text_buffer, 10, "WIS: %d", (int)effects[WISDOM]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "WIS: %d", (int)effects[WISDOM]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX, startY + off_sety + v_space}, font_size, 1,
                 Colors::darkBackground);
-    snprintf(text_buffer, 10, "FOC: %d", (int)effects[FOCUS]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "FOC: %d", (int)effects[FOCUS]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX, startY + off_sety + v_space * 2}, font_size, 1,
                 Colors::darkBackground);
 
-    snprintf(text_buffer, 10, "VIT: %d", (int)effects[VITALITY]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "VIT: %d", (int)effects[VITALITY]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX + h_space, startY + off_sety}, font_size, 1,
                 Colors::darkBackground);
-    snprintf(text_buffer, 10, "AGI: %d", (int)effects[AGILITY]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "AGI: %d", (int)effects[AGILITY]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX + h_space, startY + off_sety + v_space}, font_size, 1,
                 Colors::darkBackground);
-    snprintf(text_buffer, 10, "END: %d", (int)effects[ENDURANCE]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "END: %d", (int)effects[ENDURANCE]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX + h_space, startY + off_sety + v_space * 2}, font_size,
                 1, Colors::darkBackground);
 
-    snprintf(text_buffer, 10, "STR: %d", (int)effects[STRENGTH]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "STR: %d", (int)effects[STRENGTH]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX + h_space * 2, startY + +off_sety}, font_size, 1,
                 Colors::darkBackground);
-    snprintf(text_buffer, 10, "CHA: %d", (int)effects[CHARISMA]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "CHA: %d", (int)effects[CHARISMA]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX + h_space * 2, startY + off_sety + v_space}, font_size,
                 1, Colors::darkBackground);
-    snprintf(text_buffer, 10, "LUC: %d", (int)effects[LUCK]);
-    DrawTextExR(MINECRAFT_REGULAR, text_buffer,
+    snprintf(textBuffer, 10, "LUC: %d", (int)effects[LUCK]);
+    DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                 {startX + off_setX + h_space * 2, startY + off_sety + v_space * 2},
                 font_size, 1, Colors::darkBackground);
 
@@ -199,8 +199,8 @@ struct Item {
     off_sety += 20;
     for (uint_fast32_t i = 9; i < WEAPON_DAMAGE; i++) {
       if (effects[i] != 0) {
-        snprintf(text_buffer, 10, "%+0.2f", effects[i] * 100);
-        std::string displayText = std::string(text_buffer) + " " + statToName[Stat(i)];
+        snprintf(textBuffer, 10, "%+0.2f", effects[i] * 100);
+        std::string displayText = std::string(textBuffer) + " " + statToName[Stat(i)];
         DrawTextExR(MINECRAFT_REGULAR, displayText.c_str(),
                     {startX + off_setX, startY + off_sety}, font_size, 1,
                     Colors::darkBackground);
@@ -209,8 +209,8 @@ struct Item {
     }
     for (uint_fast32_t i = WEAPON_DAMAGE; i < STATS_ENDING; i++) {
       if (effects[i] != 0) {
-        snprintf(text_buffer, 10, "%+0.2f", effects[i]);
-        std::string displayText = std::string(text_buffer) + " " + statToName[Stat(i)];
+        snprintf(textBuffer, 10, "%+0.2f", effects[i]);
+        std::string displayText = std::string(textBuffer) + " " + statToName[Stat(i)];
         DrawTextExR(MINECRAFT_REGULAR, displayText.c_str(),
                     {startX + off_setX, startY + off_sety}, font_size, 1,
                     Colors::darkBackground);
@@ -226,8 +226,8 @@ struct Item {
 
 
     //durability
-    snprintf(text_buffer, 10, "D:%d", durability);
-    DrawTextExR(MINECRAFT_ITALIC, text_buffer,
+    snprintf(textBuffer, 10, "D:%d", durability);
+    DrawTextExR(MINECRAFT_ITALIC, textBuffer,
                 {startX + off_setX, startY + height - 15 * UI_SCALE}, 15 * UI_SCALE, 0.5F,
                 Colors::darkBackground);
 
@@ -238,8 +238,8 @@ struct Item {
                 15 * UI_SCALE, 0.5F, Colors::darkBackground);
 
     //id
-    snprintf(text_buffer, 10, "id:%d%d", id, type);
-    DrawTextExR(MINECRAFT_ITALIC, text_buffer,
+    snprintf(textBuffer, 10, "id:%d%d", id, type);
+    DrawTextExR(MINECRAFT_ITALIC, textBuffer,
                 {startX + width - 35 * UI_SCALE, startY + height - 15 * UI_SCALE},
                 15 * UI_SCALE, 0.5F, Colors::darkBackground);
   }
@@ -259,5 +259,5 @@ struct Item {
     return new_item;
   }
 };
-char Item::text_buffer[10];
+char Item::textBuffer[10];
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_

@@ -46,7 +46,7 @@ struct StatusBar {
       DrawTextureProFast(textures::ui::STATUS_BAR, beginX, beginY, 0, WHITE);
       DrawTextExR(EDIT_UNDO, health_buffer, {beginX + 160, beginY + 15}, 16, 1,
                  Colors::white_smoke);
-      DrawTextExR(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2,
+      DrawTextExR(EDIT_UNDO, mana_buffer, {beginX + 130, beginY + 45}, 16, 0.2F,
                  Colors::white_smoke);
     }
   }

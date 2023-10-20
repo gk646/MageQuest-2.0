@@ -2,60 +2,60 @@
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 
 struct CharacterPanel : public Window {
+  //2212
+  //2032
+  //1888
   static constexpr int WIDTH = 350;
-  static constexpr int left_x = 22;
-  static constexpr int begin_y = 60;
-  static constexpr int right_x = 290;
-  static constexpr int vertical_gap = 55;
+  static constexpr int PADDING_LEFT = 22;
+  static constexpr int PADDING_TOP = 60;
+  static constexpr int PADDING_RIGHT = 290;
+  static constexpr int GAP_TOP = 55;
   static char buffer[30];
-  std::array<InventorySlot, 10> equip_slots = {
-      // left, from top to bottom
-      InventorySlot(left_x, begin_y, ItemType::HEAD),
-      InventorySlot(left_x, begin_y + vertical_gap, ItemType::CHEST),
-      InventorySlot(left_x, begin_y + vertical_gap * 2, ItemType::PANTS),
-      InventorySlot(left_x, begin_y + vertical_gap * 3, ItemType::BOOTS),
-
-      //  right, from top to bottom
-      InventorySlot(right_x, begin_y, ItemType::AMULET),
-      InventorySlot(right_x, begin_y + vertical_gap, ItemType::RING),
-      InventorySlot(right_x, begin_y + vertical_gap * 2, ItemType::RING),
-      InventorySlot(right_x, begin_y + vertical_gap * 3, ItemType::RELIC),
-
-      // bottom middle
-      InventorySlot(WIDTH / 2 - SLOT_SIZE * 1.5F, begin_y + vertical_gap * 6.2F,
-                    ItemType::ONE_HAND),
-      InventorySlot(WIDTH / 2 + SLOT_SIZE / 2, begin_y + vertical_gap * 6.2F,
-                    ItemType::OFF_HAND)};
   std::array<TextCell, 18> baseStats =
       TextCell::CreateCharacterCells(WIDTH / 2.5F, 12, MINECRAFT_BOLD, 15);
+  std::array<InventorySlot, 10> equipSlots = {
+      //Left, from top to bottom
+      InventorySlot(PADDING_LEFT, PADDING_TOP, ItemType::HEAD),
+      InventorySlot(PADDING_LEFT, PADDING_TOP + GAP_TOP, ItemType::CHEST),
+      InventorySlot(PADDING_LEFT, PADDING_TOP + GAP_TOP * 2, ItemType::PANTS),
+      InventorySlot(PADDING_LEFT, PADDING_TOP + GAP_TOP * 3, ItemType::BOOTS),
 
+      //Right, from top to bottom
+      InventorySlot(PADDING_RIGHT, PADDING_TOP, ItemType::AMULET),
+      InventorySlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP, ItemType::RING),
+      InventorySlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP * 2, ItemType::RING),
+      InventorySlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP * 3, ItemType::RELIC),
+
+      // bottom middle
+      InventorySlot(WIDTH / 2 - SLOT_SIZE * 1.5F, PADDING_TOP + GAP_TOP * 6.2F,
+                    ItemType::ONE_HAND),
+      InventorySlot(WIDTH / 2 + SLOT_SIZE / 2, PADDING_TOP + GAP_TOP * 6.2F,
+                    ItemType::OFF_HAND)};
   TexturedButton spendPoint{14,
-                    14,
-                    "",
-                    0,
-                    textures::ui::spendButtonNormal,
-                    textures::ui::spendButtonHovered,
-                    textures::ui::spendButtonPressed};
+                            14,
+                            "",
+                            0,
+                            textures::ui::spendButtonNormal,
+                            textures::ui::spendButtonHovered,
+                            textures::ui::spendButtonPressed};
 
   CharacterPanel() noexcept
       : Window(SCREEN_WIDTH * 0.1F, SCREEN_HEIGHT * 0.2F, WIDTH, 450, 18,
                PLAYER_NAME.data(), KEY_C) {
-    PLAYER_EQUIPPED = equip_slots.data();
+    PLAYER_EQUIPPED = equipSlots.data();
   }
-  void draw() {
+  void Draw() {
     WINDOW_LOGIC()
     DrawWindow();
-    RectangleR scaled_whole = SCALE_RECT(wholeWindow);
-    float x = scaled_whole.x + SCALE(left_x/2);
-    float y = scaled_whole.y + SCALE(275);
+    RectangleR scaleWhole = SCALE_RECT(wholeWindow);
+    float x = scaleWhole.x + SCALE(PADDING_LEFT / 2.0F);
+    float y = scaleWhole.y + SCALE(275);
     DrawStatCells(x, y);
-    DrawHeaderText(scaled_whole.x, scaled_whole.y, scaled_whole.width);
-    DrawPlayer(scaled_whole);
-    for (auto& slot : equip_slots) {
+    DrawHeaderText(scaleWhole.x, scaleWhole.y, scaleWhole.width);
+    DrawPlayer(scaleWhole);
+    for (auto& slot : equipSlots) {
       slot.DrawCharacterSlot(wholeWindow.x, wholeWindow.y);
-      if (!slot.item) {
-        slot.draw_inventory_icons();
-      }
+      slot.DrawBackGroundIcons();
     }
   }
   static void DrawPlayer(const RectangleR& scaled_rect) noexcept {
@@ -104,19 +104,19 @@ struct CharacterPanel : public Window {
                         20, WHITE);
     }
     DrawRectangleRoundedLines(
-        {scaled_rect.x + SCALE(left_x * 3.2F), scaled_rect.y + SCALE(begin_y),
-         scaled_rect.width - SCALE(left_x * 6.4F), scaled_rect.height - SCALE(240)},
+        {scaled_rect.x + SCALE(PADDING_LEFT * 3.2F), scaled_rect.y + SCALE(PADDING_TOP),
+         scaled_rect.width - SCALE(PADDING_LEFT * 6.4F), scaled_rect.height - SCALE(240)},
         0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
     if (PLAYER_SPENT_POINTS.HasPointsToSpend()) {
       sprintf(buffer, "Unspent Attribute Points!: %i", PLAYER_SPENT_POINTS.pointsToSpend);
-      Util::      DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2, y + SCALE(40),
-                       Colors::darkBackground);
+      Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2,
+                             y + SCALE(40), Colors::darkBackground);
     }
     sprintf(buffer, "Level: %i", (int)PLAYER_STATS.level);
-    Util::    DrawCenteredText(MINECRAFT_BOLD, SCALE(16), buffer, x + size / 2, y + SCALE(25),
-                     Colors::darkBackground);
+    Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(16), buffer, x + size / 2, y + SCALE(25),
+                           Colors::darkBackground);
   }
   void DrawStatCells(float x, float y) noexcept {
     x += baseStats[0].bounds.width + SCALE(22);
@@ -133,37 +133,36 @@ struct CharacterPanel : public Window {
 
     y -= 9 * (baseStats[0].bounds.height + 1);
     x -= baseStats[0].bounds.width + SCALE(22);
-    for (uint_fast32_t i = 0; i < 9; i++) {
-      Stat stat = Stat(i);
+    for (uint_fast32_t j = 0; j < 9; j++) {
+      Stat stat = Stat(j);
       if (PLAYER_SPENT_POINTS.HasPointsToSpend() &&
           spendPoint.Draw(x + WIDTH / 2.5F + SCALE(10), y)) {
-        PLAYER_STATS.SpendAttributePoint(i);
+        PLAYER_STATS.SpendAttributePoint(j);
       }
       sprintf(buffer, "%s:", statToName[stat].c_str());
-      baseStats[i].DrawStatCell(x, y, buffer, (int)PLAYER_STATS.effects[i],
+      baseStats[j].DrawStatCell(x, y, buffer, (int)PLAYER_STATS.effects[j],
                                 PLAYER_SPENT_POINTS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
 
-      y += baseStats[i].bounds.height + 1;
+      y += baseStats[j].bounds.height + 1;
     }
   }
   void update() noexcept {
     WINDOW_UPDATE();
-    for (auto& slot : equip_slots) {
-      slot.update_player_inv();
+    for (auto& slot : equipSlots) {
+      slot.UpdateCharacterSlots();
     }
   }
- private:
-  inline void DrawSingleStatCell(Stat stat,float x, float& y, int& i) noexcept{
-    sprintf(buffer, "%s:", statToName[stat].c_str());
 
-    if(i== 16){
-      baseStats[i++].DrawStatCell(x, y, buffer, 1+PLAYER_STATS.effects[stat]);
-    } else{
+ private:
+  inline void DrawSingleStatCell(Stat stat, float x, float& y, int& i) noexcept {
+    sprintf_s(buffer, "%s:", statToName[stat].c_str());
+    if (i == 16) {
+      baseStats[i++].DrawStatCell(x, y, buffer, 1 + PLAYER_STATS.effects[stat]);
+    } else {
       baseStats[i++].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[stat]);
     }
-
     y += baseStats[0].bounds.height + 1;
   }
 };

@@ -9,7 +9,6 @@ struct GameStatistics {
     }
   }
   inline void WalkPixels(float pixels) noexcept { statistics[PIXELS_WALKED] += pixels; }
-
   inline void MonsterKilled(MonsterType type) noexcept { statistics[MONSTERS_KILLED]++; }
   inline void PickedUpItem(ItemRarity rarity) noexcept { statistics[ITEMS_PICKED_UP]++; }
 };

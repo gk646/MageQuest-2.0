@@ -34,13 +34,13 @@ struct CharacterBag final : public Window {
     DRAG_WINDOW()
     DrawWindow();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
-      PLAYER_BAG[i].draw(wholeWindow.x, wholeWindow.y);
+      PLAYER_BAG[i].Draw(wholeWindow.x, wholeWindow.y);
     }
   }
   void Update() noexcept {
     WINDOW_UPDATE();
     for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
-      PLAYER_BAG[i].update();
+      PLAYER_BAG[i].Update();
     }
   }
   inline static void add_slots(int n) noexcept {
@@ -50,9 +50,9 @@ struct CharacterBag final : public Window {
     for (uint_fast32_t i = 0; i < n; i++) {
       RectangleR rect = {(float)offset_x + spacing_x * exist_x,
                          (float)offset_y + spacing_y * exist_y, 45, 45};
-      PLAYER_BAG[i].hit_box = rect;
-      PLAYER_BAG[i].base_x = rect.x;
-      PLAYER_BAG[i].base_y = rect.y;
+      PLAYER_BAG[i].hitBox = rect;
+      PLAYER_BAG[i].baseX = rect.x;
+      PLAYER_BAG[i].baseY = rect.y;
       PLAYER_BAG_SIZE++;
       exist_x = PLAYER_BAG_SIZE % per_row;
       exist_y = PLAYER_BAG_SIZE / per_row;

@@ -6,54 +6,55 @@ inline static InventorySlot* PLAYER_EQUIPPED;
 inline static InventorySlot* PLAYER_BAG;
 inline static int PLAYER_BAG_SIZE = 0;
 struct InventorySlot {
-  RectangleR hit_box = {0};
+  RectangleR hitBox = {0};
   Item* item = nullptr;
-  static constexpr int tool_tip_delay = 12;
-  int tool_tip_counter = 0;
-  int base_x = 0, base_y = 0;
-  ItemType item_type = ItemType::EMPTY;
+  uint16_t baseX = 0, baseY = 0;
+  ItemType itemType = ItemType::EMPTY;
+  int8_t toolTipHoverTicks = 0;
   InventorySlot() = default;
   InventorySlot(int x, int y, ItemType item_type) noexcept
-      : hit_box(x, y, 40, 40), base_x(x), base_y(y), item_type(item_type) {}
-  void draw(float x, float y) noexcept {
-    hit_box.x = (x + base_x) * UI_SCALE;
-    hit_box.y = (y + base_y) * UI_SCALE;
+      : hitBox((uint16_t)x, (uint16_t)y, 40, 40),
+        baseX(x),
+        baseY(y),
+        itemType(item_type) {}
+  void Draw(float x, float y) noexcept {
+    hitBox.x = (x + (float)baseX) * UI_SCALE;
+    hitBox.y = (y + (float)baseY) * UI_SCALE;
 
     auto ptr = item;  //thread safety
-    DrawRectangleRounded(hit_box, 0.4F, 40, Colors::mediumVeryLight);
+    DrawRectangleRounded(hitBox, 0.4F, 40, Colors::mediumVeryLight);
     DrawRectangleRoundedLines(
-        hit_box, 0.4F, 40, 2,
-        ptr ? rarity_to_color[ptr->rarity] : Colors::darkBackground);
+        hitBox, 0.4F, 40, 2, ptr ? rarity_to_color[ptr->rarity] : Colors::darkBackground);
 
     if (ptr) {
-      ptr->Draw(hit_box);
-      if (tool_tip_counter > tool_tip_delay) {
+      ptr->Draw(hitBox);
+      if (toolTipHoverTicks < 0) {
         TOOL_TIP_ITEM = ptr;
       }
     }
   }
   void DrawCharacterSlot(float x, float y) {
-    draw(x, y);
+    Draw(x, y);
     auto ptr = item;
     if (!ptr) return;
-    sprintf(ptr->text_buffer, "%i", ptr->level);
-    if (base_x < 175) {
+    sprintf(Item::textBuffer, "%i", ptr->level);
+    if (baseX < 175) {
       Util::DrawRightAlignedText(
-          MINECRAFT_BOLD, SCALE(14), ptr->text_buffer, hit_box.x - SCALE(4),
-          hit_box.y + (hit_box.height - SCALE(14)) / 2, rarity_to_color[ptr->rarity]);
+          MINECRAFT_BOLD, SCALE(14), Item::textBuffer, hitBox.x - SCALE(4),
+          hitBox.y + (hitBox.height - SCALE(14)) / 2, rarity_to_color[ptr->rarity]);
     } else {
-      DrawTextExR(MINECRAFT_BOLD, ptr->text_buffer,
-                  {hit_box.x + hit_box.width + SCALE(4),
-                   hit_box.y + (hit_box.height - SCALE(14)) / 2},
+      DrawTextExR(MINECRAFT_BOLD, Item::textBuffer,
+                  {hitBox.x + hitBox.width + SCALE(4),
+                   hitBox.y + (hitBox.height - SCALE(14)) / 2},
                   SCALE(14), 0, rarity_to_color[ptr->rarity]);
     }
   }
-  static void place_item_back() noexcept {
-    if (DRAGGED_SLOT->item_type == ItemType::EMPTY) {
+  static void RecoverDraggedItem() noexcept {
+    if (DRAGGED_SLOT->itemType == ItemType::EMPTY) {
       DRAGGED_SLOT->item = DRAGGED_ITEM;
       DRAGGED_SLOT = nullptr;
       DRAGGED_ITEM = nullptr;
-    } else if (DRAGGED_SLOT->item_type == ItemType::BAG) {
+    } else if (DRAGGED_SLOT->itemType == ItemType::BAG) {
       //TODO
       DRAGGED_SLOT->item = DRAGGED_ITEM;
       DRAGGED_SLOT = nullptr;
@@ -65,49 +66,48 @@ struct InventorySlot {
       DRAGGED_ITEM = nullptr;
     }
   }
-  inline void draw_inventory_icons() const noexcept {
-    switch (item_type) {
+  inline void DrawBackGroundIcons() const noexcept {
+    if (item) return;
+    switch (itemType) {
       case ItemType::HEAD:
-        DrawTexturePro(textures::helm, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::helm, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::CHEST:
-        DrawTexturePro(textures::chest, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::chest, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::PANTS:
-        DrawTexturePro(textures::pants, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::pants, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::BOOTS:
-        DrawTexturePro(textures::boots, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::boots, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::AMULET:
-        DrawTexturePro(textures::amulet, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::amulet, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::RING:
-        DrawTexturePro(textures::ring, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::ring, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::RELIC:
-        DrawTexturePro(textures::relic, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::relic, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::ONE_HAND:
-        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
-        break;
       case ItemType::TWO_HAND:
-        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::OFF_HAND:
-        DrawTexturePro(textures::offhand, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::offhand, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       case ItemType::BAG:
-        DrawTexturePro(textures::bag, {0, 0, 40, 40}, hit_box, {0, 0}, 0, WHITE);
+        DrawTexturePro(textures::bag, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
       default:
         break;
     }
   }
-  void update_player_inv() {
-    hit_box.height = 40 * UI_SCALE;
-    hit_box.width = 40 * UI_SCALE;
-    if (CheckCollisionPointRec(MOUSE_POS, hit_box)) {
+  void UpdateCharacterSlots() {
+    hitBox.height = 40 * UI_SCALE;
+    hitBox.width = 40 * UI_SCALE;
+    if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
           for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
@@ -125,14 +125,14 @@ struct InventorySlot {
           item = nullptr;
         }
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 item_type == DRAGGED_ITEM->type) {
+                 itemType == DRAGGED_ITEM->type) {
         item = DRAGGED_ITEM;
         PLAYER_STATS.equip_item(item->effects);
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 DRAGGED_ITEM->type == item_type) {
-        if (DRAGGED_SLOT->item_type == ItemType::EMPTY) {
+                 DRAGGED_ITEM->type == itemType) {
+        if (DRAGGED_SLOT->itemType == ItemType::EMPTY) {
           PLAYER_STATS.un_equip_item(item->effects);
         }
         PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
@@ -141,19 +141,19 @@ struct InventorySlot {
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       }
-      tool_tip_counter++;
+      toolTipHoverTicks = std::max(toolTipHoverTicks - 1, -1);
     } else {
-      tool_tip_counter = 0;
+      toolTipHoverTicks = 12;
     }
   }
-  void update() noexcept {
-    hit_box.height = 40 * UI_SCALE;
-    hit_box.width = 40 * UI_SCALE;
-    if (CheckCollisionPointRec(MOUSE_POS, hit_box)) {
+  void Update() noexcept {
+    hitBox.height = 40 * UI_SCALE;
+    hitBox.width = 40 * UI_SCALE;
+    if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
           for (uint_fast32_t i = 0; i < 10; i++) {
-            if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].item_type == item->type) {
+            if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].itemType == item->type) {
               PLAYER_EQUIPPED[i].item = item;
               PLAYER_STATS.equip_item(item->effects);
               item = nullptr;
@@ -170,9 +170,9 @@ struct InventorySlot {
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 (DRAGGED_SLOT->item_type == ItemType::EMPTY ||
-                  DRAGGED_SLOT->item_type == item->type)) {
-        if (DRAGGED_SLOT->item_type != ItemType::EMPTY) {
+                 (DRAGGED_SLOT->itemType == ItemType::EMPTY ||
+                  DRAGGED_SLOT->itemType == item->type)) {
+        if (DRAGGED_SLOT->itemType != ItemType::EMPTY) {
           PLAYER_STATS.equip_item(item->effects);
         }
         DRAGGED_SLOT->item = item;
@@ -180,9 +180,9 @@ struct InventorySlot {
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       }
-      tool_tip_counter++;
+      toolTipHoverTicks = std::max(toolTipHoverTicks - 1, -1);
     } else {
-      tool_tip_counter = 0;
+      toolTipHoverTicks = 12;
     }
   }
 };

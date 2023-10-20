@@ -2,12 +2,12 @@
 #define MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
 
 struct QuestNode {
-  std::string objective_text;
-  PointI map_marker{0, 0};
+  std::string objectiveText;
+  PointI wayPoint;
   NodeType type;
-  bool major_objective = false;
-  QuestNode(std::string objective_text, NodeType type)
-      : objective_text(std::move(objective_text)), type(type) {}
+  bool isMajorObjective = false;
+  QuestNode(std::string objective_text, NodeType type, const PointI& wayPoint = {0, 0})
+      : objectiveText(std::move(objective_text)), type(type), wayPoint(wayPoint) {}
   [[nodiscard]] inline bool IsNodeTypeCompatible(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
@@ -17,8 +17,11 @@ struct QuestNode {
 struct GOTO final : public QuestNode {
   PointI target;
   explicit GOTO(std::string obj_txt, const PointI& target)
-      : QuestNode(std::move(obj_txt), NodeType::GOTO), target(target) {}
+      : QuestNode(std::move(obj_txt), NodeType::GOTO, target), target(target) {}
   inline bool Progress() noexcept final { return PLAYER.tile_pos.dist(target) < 3; }
+  static GOTO* ParseQuestNode(const std::vector<std::string>& parts) noexcept {
+    return new GOTO(parts[2], Util::ParsePointI(parts[1]));
+  }
 };
 struct NPC_MOVE final : public QuestNode {
   std::vector<PointI> waypoints;
@@ -150,7 +153,7 @@ struct SPAWN final : public QuestNode {
       return true;
     } else if (mType == MonsterType::ANY) {
       for (const auto& p : positions) {
-        NPCS.push_back(NPC::GetNPCInstance(npcID, p.x * 48, p.y * 48,CURRENT_ZONE));
+        NPCS.push_back(NPC::GetNPCInstance(npcID, p.x * 48, p.y * 48, CURRENT_ZONE));
       }
       return true;
     } else {
@@ -267,5 +270,20 @@ struct SET_QUEST_SHOWN final : public QuestNode {
     return true;
   }
 };
-
+struct PLAYER_THOUGHT final : public QuestNode {
+  std::string thought;
+  float count = 0;
+  PLAYER_THOUGHT(std::string thought, std::string objective)
+      : QuestNode(std::move(objective), NodeType::SET_QUEST_SHOWN),
+        thought(std::move(thought)) {}
+  bool Progress() noexcept final {
+    DialogueRender::RenderDialogue(PLAYER.pos.x_, PLAYER.pos.y_, &thought, count, true);
+    //TODO Make player thought / dialogue without box and above player head
+    //TODO make quest decisions prettier / center them below player (live)
+    return count == 1000;
+  }
+  inline static PLAYER_THOUGHT* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new PLAYER_THOUGHT(parts[2], parts[3]);
+  }
+};
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

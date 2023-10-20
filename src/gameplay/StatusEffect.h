@@ -10,8 +10,8 @@ struct StatusEffect {
   //Texture2D texture;
   StatusEffect(bool isDebuff, int cadence, int duration, bool stack_able, EffectType type)
       : isDebuff(isDebuff),
-        cadence(cadence),
-        duration(duration),
+        cadence((uint16_t)cadence),
+        duration((uint16_t)duration),
         stack_able(stack_able),
         type(type) {}
   virtual ~StatusEffect() = default;

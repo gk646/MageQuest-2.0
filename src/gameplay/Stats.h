@@ -11,7 +11,7 @@ struct SkillStats {
 struct DamageStats {
   float damage = 1;
   DamageType damage_type = DamageType::FIRE;
-  DamageStats(DamageType type, float damage): damage(damage), damage_type(type){}
+  DamageStats(DamageType type, float damage) : damage(damage), damage_type(type) {}
   inline bool operator==(const DamageStats& d) const noexcept {
     return damage_type == d.damage_type && damage_type == d.damage_type &&
            damage == d.damage;
@@ -41,7 +41,7 @@ struct EntityStats {
   float effects[STATS_ENDING] = {0};
   float health = 10;
   float mana = 20;
-  float speed = 2.6;
+  float speed = 2.6F;
   float shield = 0;
   uint8_t level = 1;
   bool stunned = false;
@@ -54,9 +54,10 @@ struct EntityStats {
     effects[WEAPON_DAMAGE] = 10;
   };
   EntityStats(float base_health, int level, float per_level, float speed) noexcept
-      : level(level), speed(speed) {
+      : level((int8_t)level), speed(speed) {
     Init();
-    effects[MAX_HEALTH] = base_health + ((level - 1) * per_level * std::sqrt(level));
+    effects[MAX_HEALTH] =
+        base_health + ((level - 1.0F) * per_level * cxstructs::fast_sqrt(level));
     effects[MAX_HEALTH] *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
     health = effects[MAX_HEALTH];
   }
@@ -179,14 +180,15 @@ struct EntityStats {
       ReCalculatePlayerStats();
     }
   }
+
  private:
-  inline float RollCriticalHit(float damage) const noexcept{
-    if(RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]){
-      return damage* (1 + effects[CRIT_DAMAGE_P]);
+  inline float RollCriticalHit(float damage) const noexcept {
+    if (RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]) {
+      return damage * (1 + effects[CRIT_DAMAGE_P]);
     }
     return damage;
   }
-  inline void Init()noexcept{
+  inline void Init() noexcept {
     effects[CRIT_CHANCE] = 5;
     effects[CRIT_DAMAGE_P] = 0.5F;
   }

@@ -42,16 +42,16 @@ struct Quest final {
     }
   }
   [[nodiscard]] inline const std::string& GetActiveObjective() const noexcept {
-    return objectives[stage]->objective_text;
+    return objectives[stage]->objectiveText;
   }
   [[nodiscard]] inline PointI GetActiveWaypoint() const noexcept {
-    return objectives[stage]->map_marker;
+    return objectives[stage]->wayPoint;
   }
 
  private:
   void CompleteQuest() noexcept { state = QuestState::COMPLETED; }
   inline void FinishStage(const QuestNode* obj) noexcept {
-    if (obj->major_objective) {
+    if (obj->isMajorObjective) {
       //play sound
     }
     stage++;

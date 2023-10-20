@@ -2,9 +2,9 @@
 #define MAGEQUEST_SRC_GRAPHICS_DIALOGUERENDER_H_
 
 namespace DialogueRender {
-inline static constexpr int base_width = 365;
-inline static constexpr int base_height = 120;
-int spriteCounter = 0;
+inline static constexpr int BASE_DIALOGUE_BOX_WIDTH = 365;
+inline static constexpr int BASE_DIALOGUE_BOX_HEIGHT = 120;
+inline static int spriteCounter = 0;
 
 inline static void DrawContinueButton(float startX, float width, float startY,
                                       float height) noexcept {
@@ -37,9 +37,10 @@ inline static void DrawContinueButton(float startX, float width, float startY,
   }
   spriteCounter++;
 }
-void render_npc(int x, int y, const std::string* text, float& count, bool last) {
-  float width = SCALE(base_width);
-  float height = SCALE(base_height);
+void RenderDialogue(int x, int y, const std::string* text, float& count, bool last) {
+  if (!text) return;
+  float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
+  float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
 
   float startX = x - width / 2;
   float startY = y - height;

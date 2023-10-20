@@ -24,7 +24,7 @@ struct PlayerUI {
     questPanel.Draw();
     status_bar.draw();
     mini_map.Draw();
-    char_panel.draw();
+    char_panel.Draw();
     char_bag.Draw();
     region_map.Draw();
     draw_special_items();
@@ -54,7 +54,7 @@ struct PlayerUI {
   static inline void update_special_items() noexcept {
     if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       if (WINDOW_FOCUSED) {
-        InventorySlot::place_item_back();
+        InventorySlot::RecoverDraggedItem();
       } else {
         WORLD_OBJECTS.push_back(new DroppedItem(
             {PLAYER_X + PLAYER.size.x_ / 2 + 50, PLAYER_Y + PLAYER.size.y_ / 2},
