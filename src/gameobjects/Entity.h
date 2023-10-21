@@ -8,7 +8,7 @@ struct Entity {
   Point pos;
   Point size;
   float pov;
-  uint16_t sprite_counter = 0;
+  uint16_t spriteCounter = 0;
   ShapeType shape_type;
   bool dead = false;
   Zone zone;

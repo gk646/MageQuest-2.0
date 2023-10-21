@@ -59,10 +59,10 @@ struct CharacterPanel : public Window {
     }
   }
   static void DrawPlayer(const RectangleR& scaled_rect) noexcept {
-    int sprite_counter = PLAYER.sprite_counter;
+    int sprite_counter = PLAYER.spriteCounter;
     Point pos{scaled_rect.x + SCALE(50), scaled_rect.y - SCALE(30)};
     auto flip = PLAYER.flip;
-    int action_state = PLAYER.action_state;
+    int action_state = PLAYER.actionState;
     auto resource = PLAYER.resource;
     float height = scaled_rect.height / 1.4F;
     if (PLAYER.moving) {

@@ -2,19 +2,21 @@
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
 struct SkillStats {
-  float cool_down = 0;
   float mana_cost = 0;
   float health_cost = 0;
+  float baseDamage = 0;
+  float speed = 0;
+  uint16_t cool_down = 0;
   uint16_t range = 0;
+  uint16_t lifeSpan = 0;
 };
 
 struct DamageStats {
   float damage = 1;
-  DamageType damage_type = DamageType::FIRE;
-  DamageStats(DamageType type, float damage) : damage(damage), damage_type(type) {}
+  DamageType dmgType = DamageType::FIRE;
+  DamageStats(DamageType type, float damage) : damage(damage), dmgType(type) {}
   inline bool operator==(const DamageStats& d) const noexcept {
-    return damage_type == d.damage_type && damage_type == d.damage_type &&
-           damage == d.damage;
+    return dmgType == d.dmgType && dmgType == d.dmgType && damage == d.damage;
   }
 };
 
@@ -107,8 +109,8 @@ struct EntityStats {
     }
     ReCalculatePlayerStats();
   }
-  inline float get_ability_dmg(DamageStats stats) noexcept {
-    switch (stats.damage_type) {
+  inline float get_ability_dmg(const DamageStats& stats) noexcept {
+    switch (stats.dmgType) {
       case DamageType::FIRE:
         return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[FIRE_DMG_P]);
       case DamageType::POISON:
@@ -131,9 +133,9 @@ struct EntityStats {
 
     float total_damage = RollCriticalHit(stats.damage);
 
-    if (stats.damage_type == DamageType::PHYSICAL) {
+    if (stats.dmgType == DamageType::PHYSICAL) {
       total_damage *= (armour * (1 + armour_mult)) / (level * 50.0F);
-    } else if (stats.damage_type != DamageType::TRUE_DMG) {
+    } else if (stats.dmgType != DamageType::TRUE_DMG) {
       if (shield >= total_damage) {
         shield -= total_damage;
         return total_damage;

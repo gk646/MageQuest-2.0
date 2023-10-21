@@ -13,7 +13,6 @@ struct FireBall final : Projectile {
     projectileType = ProjectileType::FIRE_BALL;
     illuminated = true;
   }
-
   void draw() final {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 60 / 15],
                                 pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -10, -3);

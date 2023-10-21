@@ -8,23 +8,23 @@ struct Skill {
   std::string name;
   std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
-  SkillStats skill_stats;
+  SkillStats skillStats;
   DamageStats damage_stats;
   const Texture& icon;
-  int cool_down_ticks;
-  int attack_animation = 0;
+  int16_t coolDownUpCounter;
+  uint8_t attackAnimation = 0;
   bool from_player;
   Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,
         bool from_player, int attack_animation, const Texture& icon) noexcept
       : damage_stats(damage_stats),
-        skill_stats(ability_stats),
+        skillStats(ability_stats),
         from_player(from_player),
-        attack_animation(attack_animation),
+        attackAnimation(attack_animation),
         icon(icon) {
-    cool_down_ticks = (int)ability_stats.cool_down;
+    coolDownUpCounter = (int16_t)ability_stats.cool_down;
   }
   inline virtual void Activate() = 0;
-  inline void Update() noexcept { cool_down_ticks++; };
+  inline void Update() noexcept { coolDownUpCounter++; };
   virtual void Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
     DrawCooldown(x, y, size);
@@ -37,20 +37,20 @@ struct Skill {
                          Colors::SUPPORT_BAR_ORANGE);
   }
   [[nodiscard]] inline bool IsUsable() const noexcept {
-    return PLAYER_STATS.skill_useable(skill_stats, cool_down_ticks);
+    return PLAYER_STATS.skill_useable(skillStats, coolDownUpCounter);
   }
   inline void TriggerSkill() noexcept {
-    cool_down_ticks = 0;
+    coolDownUpCounter = 0;
     PLAYER.flip = MOUSE_POS.x < CAMERA_X;
-    PLAYER.sprite_counter = 0;
-    PLAYER.action_state = attack_animation;
-    PLAYER_STATS.UseSkill(skill_stats);
+    PLAYER.spriteCounter = 0;
+    PLAYER.actionState = attackAnimation;
+    PLAYER_STATS.UseSkill(skillStats);
   }
   [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
     Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
                        PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
     if (Point(PLAYER_X + PLAYER.size.x_ / 2, PLAYER_Y + PLAYER.size.y_ / 2)
-            .dist(targetPos) <= skill_stats.range) {
+            .dist(targetPos) <= skillStats.range) {
       if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
         return true;
         //TODO quick notifications
@@ -62,14 +62,16 @@ struct Skill {
     }
     return false;
   }
+  inline static Skill* GetSkillInstance(ProjectileType type, const SkillStats& stats,
+                                        int val1, int val2) noexcept;
 
  private:
   void DrawCooldown(float x, float y, float size) const noexcept {
-    int rcd = PLAYER_STATS.GetRemainingCD(skill_stats);
-    if (cool_down_ticks < rcd) {
+    int rcd = PLAYER_STATS.GetRemainingCD(skillStats);
+    if (coolDownUpCounter < rcd) {
       float side1, side2, side3, side4, side5;
       float coolDownCoefficient;
-      coolDownCoefficient = cool_down_ticks * (size * 4 / rcd);
+      coolDownCoefficient = coolDownUpCounter * (size * 4 / rcd);
       side1 = size / 2;
       side2 = 0;
       side3 = 0;
@@ -107,59 +109,100 @@ struct Skill {
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();
-    DrawRectangleRounded({MOUSE_POS.x - TOOL_TIP_WIDTH, MOUSE_POS.y - TOOL_TIP_HEIGHT,
-                          TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT},
-                         0.2F, ROUND_SEGMENTS, Colors::mediumLightGrey);
-    DrawRectangleRoundedLines(
-        {MOUSE_POS.x - TOOL_TIP_WIDTH, MOUSE_POS.y - TOOL_TIP_HEIGHT, TOOL_TIP_WIDTH,
-         TOOL_TIP_HEIGHT},
-        0.2F, ROUND_SEGMENTS, 2, Colors::darkBackground);
+    float startX = MOUSE_POS.x - TOOL_TIP_WIDTH;
+    float startY = MOUSE_POS.y - TOOL_TIP_HEIGHT;
+    DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.2F,
+                         ROUND_SEGMENTS, Colors::mediumLightGrey);
+    DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.2F,
+                              ROUND_SEGMENTS, 2, Colors::darkBackground);
+
+    DrawTextExR(MINECRAFT_BOLD,name.c_str(), {startX+5, startY+5},20,0,WHITE);
   }
   inline void DrawRangeCircle() const noexcept {
-    if (skill_stats.range > 0) {
+    if (skillStats.range > 0) {
       DrawTextureScaled(
           textures::ui::skillbar::skillRange,
-          {(CAMERA_X + 14) - skill_stats.range, (CAMERA_Y + 25) - skill_stats.range,
-           skill_stats.range * 2.05F, skill_stats.range * 2.05F},
+          {(CAMERA_X + 14) - skillStats.range, (CAMERA_Y + 25) - skillStats.range,
+           skillStats.range * 2.05F, skillStats.range * 2.05F},
           0, false, 0, WHITE);
     }
   }
 };
 
-#include "skills/Dummy.h"
-#include "skills/FireBall_Skill.h"
-#include "skills/BlastHammer_Skill.h"
-#include "skills/EnergySphere_Skill.h"
-#include "skills/FireStrike_Skill.h"
-
+#include "skills/Skills.h"
+inline static std::array<Skill*, ProjectileType::PROJECTILE_END> SKILLS;
+Skill* Skill::GetSkillInstance(ProjectileType type, const SkillStats& stats, int val1,
+                               int val2) noexcept {
+  switch (type) {
+    case POISON_BALL:
+      break;
+    case FIRE_STRIKE:
+    case FIRE_STRIKE_II:
+      return new FireStrike_Skill(stats, val1);
+    case FIRE_BALL:
+     return new FireBall_Skill(stats);
+    case BLAST_HAMMER:
+      return new BlastHammer_Skill(stats);
+    case ENERGY_SPHERE:
+      return new EnergySphere_Skill(stats);
+    case FIRE_SWORD:
+      break;
+    case FROST_NOVA:
+      break;
+    case ICE_LANCE:
+      break;
+    case INFERNO_RAY:
+      break;
+    case LIGHTNING:
+      break;
+    case PYRO_BLAST:
+      break;
+    case SOLAR_FLARE:
+      break;
+    case THUNDER_SPLASH:
+      break;
+    case THUNDER_STRIKE:
+      break;
+    case VOID_ERUPTION:
+      break;
+    case VOID_FIELD:
+      break;
+    case PROJECTILE_END:
+      return nullptr;
+  }
+}
 inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
                                                  const Entity* ptr) noexcept {
   switch (data->p_type) {
     case FIRE_BALL: {
       PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireBall_Skill::LIFE_SPAN,
-          FireBall_Skill::SPEED, data->damage, HitType::ONE_HIT,
-          {nullptr, nullptr, nullptr}, data->pov, {data->move_x, data->move_y}, ptr));
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
+          SKILLS[FIRE_BALL]->skillStats.lifeSpan, SKILLS[FIRE_BALL]->skillStats.speed,
+          data->damage, HitType::ONE_HIT, {nullptr, nullptr, nullptr}, data->pov,
+          {data->move_x, data->move_y}, ptr));
       break;
     }
     case FIRE_STRIKE: {
       PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, FireStrike_Skill::LIFE_SPAN,
-          FireStrike_Skill::SPEED, data->damage, HitType::CONTINUOUS,
-          {nullptr, nullptr, nullptr}, data->pov, {data->move_x, data->move_y}, ptr));
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
+          SKILLS[FIRE_STRIKE]->skillStats.lifeSpan, SKILLS[FIRE_STRIKE]->skillStats.speed,
+          data->damage, HitType::CONTINUOUS, {nullptr, nullptr, nullptr}, data->pov,
+          {data->move_x, data->move_y}, ptr));
       break;
     }
     case BLAST_HAMMER: {
-      PROJECTILES.emplace_back(new BlastHammer(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, BlastHammer_Skill::LIFE_SPAN,
-          0, data->damage, HitType::ONE_TICK, {nullptr, nullptr, nullptr}, data->pov,
-          {0, 0}, RANGE_01(RNG_RANDOM) > 0.5F, ptr));
+      PROJECTILES.emplace_back(
+          new BlastHammer({(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
+                          SKILLS[BLAST_HAMMER]->skillStats.lifeSpan, 0, data->damage,
+                          HitType::ONE_TICK, {nullptr, nullptr, nullptr}, data->pov,
+                          {0, 0}, RANGE_01(RNG_RANDOM) > 0.5F, ptr));
       break;
     }
     case ENERGY_SPHERE: {
       PROJECTILES.emplace_back(new EnergySphere(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, EnergySphere_Skill::LIFESPAN,
-          EnergySphere_Skill::SPEED, data->damage, HitType::CONTINUOUS,
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
+          SKILLS[ENERGY_SPHERE]->skillStats.lifeSpan,
+          SKILLS[ENERGY_SPHERE]->skillStats.speed, data->damage, HitType::CONTINUOUS,
           {nullptr, nullptr, nullptr}, {data->move_x, data->move_y}, ptr));
       break;
     }
