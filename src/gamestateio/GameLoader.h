@@ -10,6 +10,7 @@
 #include "loading/loaders/FontLoader.h"
 #include "loading/loaders/EntityStateLoader.h"
 #include "loading/loaders/GameInfoLoader.h"
+#include "loading/loaders/SkillLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -33,6 +34,7 @@ struct GameLoader {
 
  private:
   static void load_game() {
+    LoadStep(SkillLoader::Load);
     LoadStep(GameInfoLoader::Load);
     LoadStep(TransitionParser::ParseTransitionFile);
     LoadStep(NPCLoader::LoadNamedNPCs);
@@ -64,6 +66,9 @@ struct GameLoader {
     PLAYER_QUESTS.SetAsActiveQuest(Quest_ID::TUTORIAL);
     PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
     PLAYER_QUESTS.GetQuest(Quest_ID::MARLA)->state = QuestState::ACTIVE;
+    UI_MANAGER.player_ui.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
+    UI_MANAGER.player_ui.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
+    UI_MANAGER.player_ui.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

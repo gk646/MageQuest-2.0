@@ -27,7 +27,7 @@ struct Ghost final : public Monster {
     } else if (attack == 3) {
       DrawDisappear();
     } else {
-      DrawTextureProFastEx(resource->idle[sprite_counter % 105 / 15],
+      DrawTextureProFastEx(resource->idle[spriteCounter % 105 / 15],
                            pos.x_ + DRAW_X - 17, pos.y_ + DRAW_Y - 20, -3, 0, !flip,
                            WHITE);
     }
@@ -44,9 +44,9 @@ struct Ghost final : public Monster {
     if (target && attack_cd <= 0 && attack == 0) {
       if (!disappeared) {
         attack = 3;
-        sprite_counter = 0;
+        spriteCounter = 0;
       } else if (!teleported) {
-        sprite_counter = 0;
+        spriteCounter = 0;
         TeleportToTarget(target);
       }
     }
@@ -72,7 +72,7 @@ struct Ghost final : public Monster {
     }
   }
   inline void draw_death() noexcept {
-    int num = sprite_counter % 70 / 10;
+    int num = spriteCounter % 70 / 10;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
                            pos.y_ + DRAW_Y - 15, 0, 0, !flip, WHITE);
@@ -81,7 +81,7 @@ struct Ghost final : public Monster {
     }
   }
   inline void DrawAppear() noexcept {
-    int num = sprite_counter % 56 / 8;
+    int num = spriteCounter % 56 / 8;
     if (num < 6) {
       DrawTextureProFastEx(resource->walk[num], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y, 0,
                            0, !flip, WHITE);
@@ -89,13 +89,13 @@ struct Ghost final : public Monster {
       attack = 1;
       teleported = false;
       PROJECTILES.push_back(new PsychicScream(pos, false, 5, HitType::CONTINUOUS));
-      sprite_counter = 0;
+      spriteCounter = 0;
       disappeared = false;
       attack_cd = ATTACK_CD;
     }
   }
   inline void DrawDisappear() noexcept {
-    int num = sprite_counter % 56 / 8;
+    int num = spriteCounter % 56 / 8;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
                            pos.y_ + DRAW_Y - 15, 0, 0, !flip, WHITE);
@@ -105,7 +105,7 @@ struct Ghost final : public Monster {
     }
   }
   inline void DrawAttack1() noexcept {
-    int num = sprite_counter % 100 / 20;
+    int num = spriteCounter % 100 / 20;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 14,
                            pos.y_ + DRAW_Y - 16, -2, 0, !flip, WHITE);

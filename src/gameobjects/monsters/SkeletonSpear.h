@@ -34,7 +34,7 @@ struct SkeletonSpear final : public Monster {
 #endif
   }
   inline void draw_death() noexcept {
-    int num = sprite_counter % 120 / 20;
+    int num = spriteCounter % 120 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
                            pos.y_ + DRAW_Y - 46, 0, 0,
@@ -44,7 +44,7 @@ struct SkeletonSpear final : public Monster {
     }
   }
   inline void draw_attack1() noexcept {
-    int num = sprite_counter % 75 / 15;
+    int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
                            pos.y_ + DRAW_Y - 46, -30, 0,
@@ -54,7 +54,7 @@ struct SkeletonSpear final : public Monster {
     }
   }
   inline void draw_attack2() noexcept {
-    int num = sprite_counter % 75 / 15;
+    int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 27,
                            pos.y_ + DRAW_Y - 46, -10, 0,
@@ -64,7 +64,7 @@ struct SkeletonSpear final : public Monster {
     }
   }
   inline void draw_attack3() noexcept {
-    int num = sprite_counter % 72 / 12;
+    int num = spriteCounter % 72 / 12;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 16,
                            pos.y_ + DRAW_Y - 46, -32, 0,
@@ -75,7 +75,7 @@ struct SkeletonSpear final : public Monster {
   }
   inline void draw_walk() noexcept {
     if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-      auto texture = resource->walk[sprite_counter % 105 / 15];
+      auto texture = resource->walk[spriteCounter % 105 / 15];
       DrawTexturePro(
           texture,
           {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
@@ -83,13 +83,13 @@ struct SkeletonSpear final : public Monster {
            static_cast<float>(texture.height)},
           {0, 0}, 0, WHITE);
     } else {
-      DrawTextureProFast(resource->walk[sprite_counter % 105 / 15], pos.x_ + DRAW_X - 30,
+      DrawTextureProFast(resource->walk[spriteCounter % 105 / 15], pos.x_ + DRAW_X - 30,
                          pos.y_ + DRAW_Y - 45, 0, WHITE);
     }
   }
   inline void draw_idle() noexcept {
     if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
-      auto texture = resource->idle[sprite_counter % 84 / 12];
+      auto texture = resource->idle[spriteCounter % 84 / 12];
       DrawTexturePro(
           texture,
           {0, 0, static_cast<float>(-texture.width), static_cast<float>(texture.height)},
@@ -97,7 +97,7 @@ struct SkeletonSpear final : public Monster {
            static_cast<float>(texture.height)},
           {0, 0}, 0, WHITE);
     } else {
-      DrawTextureProFast(resource->idle[sprite_counter % 84 / 12], pos.x_ + DRAW_X - 28,
+      DrawTextureProFast(resource->idle[spriteCounter % 84 / 12], pos.x_ + DRAW_X - 28,
                          pos.y_ + DRAW_Y - 45, 0, WHITE);
     }
   }

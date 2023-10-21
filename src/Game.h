@@ -278,8 +278,6 @@ class Game {
 #ifdef MG2_DEBUG
     //SetMasterVolume(0);
 #endif
-    UI_MANAGER.player_ui.playerHotbar.skills[1] = new FireStrike_Skill(true, 6);
-    UI_MANAGER.player_ui.playerHotbar.skills[4] = new EnergySphere_Skill(true);
     for (uint_fast32_t i = 0; i < 3; i++) {
       MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
     }

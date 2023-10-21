@@ -22,7 +22,7 @@ struct NPC : public Entity {
   void draw() override = 0;
   void Update() override {
     ENTITY_UPDATE();
-    sprite_counter++;
+    spriteCounter++;
     if (dialogueProgressCount < 1000) {
       dialogueProgressCount += 0.4F;
     } else {
@@ -120,7 +120,7 @@ NPC* NPC::GetNPCInstance(NPC_ID npcID, float absoluteX, float absoluteY,
       break;
     case NPC_ID::RANDOM:
       break;
-    case NPC_ID::END:
+    case NPC_ID::NPC_END:
       break;
   }
 }

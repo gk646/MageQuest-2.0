@@ -6,7 +6,7 @@ struct TransitionPoint {
   PointI dest;
   Zone destZone;
 };
-std::array<std::vector<TransitionPoint>, (int)Zone::END> zoneTPoints;
+std::array<std::vector<TransitionPoint>, (int)Zone::ZONE_END> zoneTPoints;
 }  // namespace WorldManager
 #include "elements/TransitionParser.h"
 namespace WorldManager {

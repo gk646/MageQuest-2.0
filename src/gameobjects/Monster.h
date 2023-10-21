@@ -60,7 +60,7 @@ struct Monster : public Entity {
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
 #define MONSTER_UPDATE()                                         \
   ENTITY_UPDATE()                                                \
-  sprite_counter++;                                              \
+  spriteCounter++;                                               \
   health_bar.update();                                           \
   status_effects.Update();                                       \
   CheckForDeath();                                               \
@@ -83,7 +83,7 @@ struct Monster : public Entity {
   inline void CheckForDeath() noexcept {
     if (stats.health <= 0 && attack != -100) {
       MonsterDiedCallback();
-      sprite_counter = 0;
+      spriteCounter = 0;
       attack = -100;
     }
   }
@@ -116,8 +116,8 @@ struct Monster : public Entity {
       health_bar.hit();
     }
 
-    if ((attack == 0 && sprite_counter > 100) || data->action_state == -100) {
-      sprite_counter = 0;
+    if ((attack == 0 && spriteCounter > 100) || data->action_state == -100) {
+      spriteCounter = 0;
       attack = data->action_state;
     }
 
@@ -139,7 +139,7 @@ struct Monster : public Entity {
     if (attack == 0 && attack_cd <= 0) {
       int num = RANGE_100(RNG_ENGINE);
       attack_cd = 160;
-      sprite_counter = 0;
+      spriteCounter = 0;
       if (num < 33) {
         attack = 1;
       } else if (num < 66) {

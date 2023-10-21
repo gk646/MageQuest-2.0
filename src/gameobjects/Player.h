@@ -4,7 +4,7 @@
 struct Player final : public Entity {
   std::string name;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
-  int action_state = 0;
+  int actionState = 0;
   bool flip = false;
   bool moving = false;
   uint8_t uncoverRadius = 8;
@@ -70,25 +70,25 @@ struct Player final : public Entity {
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
                                    static_cast<int16_t>(pos.y_));
-    sprite_counter++;
+    spriteCounter++;
   }
   void draw() final {
     if (moving) {
-      DrawTextureProFastEx(resource->walk[sprite_counter % 56 / 7],
+      DrawTextureProFastEx(resource->walk[spriteCounter % 56 / 7],
                            (int)(pos.x_ + DRAW_X - 25.0F), (int)(pos.y_ + DRAW_Y - 45), -23, 0, flip,
                            WHITE);
-      action_state = 0;
-    } else if (action_state == 1) {
+      actionState = 0;
+    } else if (actionState == 1) {
       draw_attack1();
-    } else if (action_state == 2) {
+    } else if (actionState == 2) {
       draw_attack2();
-    } else if (action_state == 3) {
+    } else if (actionState == 3) {
       draw_attack3();
-    } else if (action_state == -100) {
+    } else if (actionState == -100) {
       draw_death();
     }
-    if (!moving && action_state == 0) {
-      DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10],
+    if (!moving && actionState == 0) {
+      DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 10],
                            pos.x_ + DRAW_X - 32.0F, pos.y_ + DRAW_Y - 46, -7, 0, flip,
                            WHITE);
     }
@@ -97,7 +97,7 @@ struct Player final : public Entity {
 #endif
   }
   inline void draw_death() noexcept {
-    int num = sprite_counter % 75 / 15;
+    int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
@@ -106,30 +106,30 @@ struct Player final : public Entity {
     }
   }
   inline void draw_attack1() noexcept {
-    int num = sprite_counter % 48 / 6;
+    int num = spriteCounter % 48 / 6;
     if (num < 7) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
     } else {
-      action_state = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack2() noexcept {
-    int num = sprite_counter % 50 / 5;
+    int num = spriteCounter % 50 / 5;
     if (num < 9) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -20, 0, flip, WHITE);
     } else {
-      action_state = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack3() noexcept {
-    int num = sprite_counter % 85 / 5;
+    int num = spriteCounter % 85 / 5;
     if (num < 16) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -15, 0, flip, WHITE);
     } else {
-      action_state = 0;
+      actionState = 0;
     }
   }
 

@@ -103,7 +103,7 @@ static std::vector<std::vector<std::string>> ReadMGI(
   while (std::getline(file, line)) {
     if (line.starts_with('#')) continue;
     if (line.empty()) break;
-    ret.push_back(std::move(SplitString(line, ':')));
+    ret.push_back(std::move(SplitString(line, '|')));
   }
   return ret;
 }

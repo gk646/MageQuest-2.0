@@ -1,8 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_GAMESTATISTICS_H_
 #define MAGEQUEST_SRC_GAMEPLAY_GAMESTATISTICS_H_
 struct GameStatistics {
-  float statistics[GameStatistic::END] = {};
-
+  float statistics[GAME_STATISTICS_END] = {};
   inline void Update() noexcept {
     if (GAME_STATE == GameState::Game) {
       statistics[GAME_TICKS_PLAYED]++;

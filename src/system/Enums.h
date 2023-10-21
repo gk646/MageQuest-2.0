@@ -47,6 +47,14 @@ enum class MonsterType : uint8_t {
 enum class EffectType : uint8_t { STUN, BURN, SLOW };
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
+inline static std::unordered_map<DamageType, Color> damageTypeToColor{
+    {DamageType::FIRE, Colors::fire_red},
+    {DamageType::ICE, Colors::blue_npc},
+    {DamageType::POISON, Colors::poison_green},
+    {DamageType::ARCANE, Colors::arcane_blue},
+    {DamageType::DARK, Colors::dark_magic_purple},
+    {DamageType::PHYSICAL, Colors::physical_grey},
+};
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
@@ -108,7 +116,7 @@ enum class Zone : uint8_t {
   TestRoom,
   Goblin_Cave,
   Hillcrest_Hermit_Cave,
-  END
+  ZONE_END
 };
 enum GameStatistic : uint8_t {
   PIXELS_WALKED,
@@ -118,7 +126,7 @@ enum GameStatistic : uint8_t {
   GAME_TICKS_PLAYED,
   BOSSES_KILLED,
   ITEMS_PICKED_UP,
-  END
+  GAME_STATISTICS_END
 };
 
 //_P = percentile => 0.5, 0.05
@@ -220,7 +228,7 @@ enum class NPC_ID : uint8_t {
   VILLAGER,
   TRADER,
   RANDOM,
-  END
+  NPC_END
 };
 std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"DECKARD", NPC_ID::DECKARD},
@@ -233,7 +241,7 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"VILLAGER", NPC_ID::VILLAGER},
     {"TRADER", NPC_ID::TRADER},
     {"RANDOM", NPC_ID::RANDOM},
-    {"END", NPC_ID::END}};
+    {"END", NPC_ID::NPC_END}};
 
 std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
     {NPC_ID::DECKARD, "Deckard"},
@@ -281,6 +289,7 @@ inline static std::unordered_map<std::string, TriggerSpreadType> stringToTrigger
 enum ProjectileType : uint8_t {
   POISON_BALL,
   FIRE_STRIKE,
+  FIRE_STRIKE_II,
   FIRE_BALL,
   BLAST_HAMMER,
   ENERGY_SPHERE,
@@ -294,8 +303,28 @@ enum ProjectileType : uint8_t {
   THUNDER_SPLASH,
   THUNDER_STRIKE,
   VOID_ERUPTION,
-  VOID_FIELD
+  VOID_FIELD,
+  PROJECTILE_END
 };
+inline static std::unordered_map<std::string, ProjectileType> stringToProjectile = {
+    {"POISON_BALL", ProjectileType::POISON_BALL},
+    {"FIRE_STRIKE_II", ProjectileType::FIRE_STRIKE_II},
+    {"FIRE_STRIKE", ProjectileType::FIRE_STRIKE},
+    {"FIRE_BALL", ProjectileType::FIRE_BALL},
+    {"BLAST_HAMMER", ProjectileType::BLAST_HAMMER},
+    {"ENERGY_SPHERE", ProjectileType::ENERGY_SPHERE},
+    {"FIRE_SWORD", ProjectileType::FIRE_SWORD},
+    {"FROST_NOVA", ProjectileType::FROST_NOVA},
+    {"ICE_LANCE", ProjectileType::ICE_LANCE},
+    {"INFERNO_RAY", ProjectileType::INFERNO_RAY},
+    {"LIGHTNING", ProjectileType::LIGHTNING},
+    {"PYRO_BLAST", ProjectileType::PYRO_BLAST},
+    {"SOLAR_FLARE", ProjectileType::SOLAR_FLARE},
+    {"THUNDER_SPLASH", ProjectileType::THUNDER_SPLASH},
+    {"THUNDER_STRIKE", ProjectileType::THUNDER_STRIKE},
+    {"VOID_ERUPTION", ProjectileType::VOID_ERUPTION},
+    {"VOID_FIELD", ProjectileType::VOID_FIELD}};
+
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
     {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};

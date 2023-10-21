@@ -21,10 +21,10 @@ struct BloodHound final : public Monster {
       draw_attack1();
     } else {
       if (moving) {
-        DrawTextureProFastEx(resource->walk[sprite_counter % 60 / 10],
+        DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 10],
                              pos.x_ + DRAW_X-2, pos.y_ + DRAW_Y-19, 2, 0, !flip, WHITE);
       } else {
-        DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 20], pos.x_ + DRAW_X-5,
+        DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 20], pos.x_ + DRAW_X-5,
                              pos.y_ + DRAW_Y-17, 5, 0, !flip, WHITE);
       }
     }
@@ -41,7 +41,7 @@ struct BloodHound final : public Monster {
     if (target && WalkToEntity(target)) {
       if ( attack == 0 && attack_cd < 0) {
         attack_cd = ATTACK_CD;
-        sprite_counter = 0;
+        spriteCounter = 0;
         attack = 1;
       } else {
         attack_cd--;
@@ -49,7 +49,7 @@ struct BloodHound final : public Monster {
     }
   }
   inline void draw_death() noexcept {
-    int num = sprite_counter % 140 / 20;
+    int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X -5,
                            pos.y_ + DRAW_Y - 19, 3, 0, !flip, WHITE);
@@ -58,7 +58,7 @@ struct BloodHound final : public Monster {
     }
   }
   inline void draw_attack1() noexcept {
-    int num = sprite_counter % 140 / 20;
+    int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
                            pos.y_ + DRAW_Y - 19, 10, 0, !flip, WHITE);

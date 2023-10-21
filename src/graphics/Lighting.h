@@ -25,7 +25,6 @@ inline static uint8_t fadeAlpha = 150;
 namespace AmbientOcclusion {
 QuadTree<ShadowObject> CURRENT_SHADOW_TREE{{0, 0, 0, 0}};
 inline static void GenerateShadowMap() noexcept {
-  std::cout<< "hey" << std::endl;
   CURRENT_SHADOW_TREE.clear();
   CURRENT_SHADOW_TREE.set_bounds(
       {0.0F, 0.0F, (float)CURRENT_MAP_SIZE, (float)CURRENT_MAP_SIZE});
@@ -46,8 +45,9 @@ inline static void DrawAmbientOcclusion() noexcept {
             (float)SCREEN_TILE_HEIGHT})) {
     PointI tilePos = {obj->xTile * 48, obj->yTile * 48 + 48};
     auto& tex = shadowToTexture[obj->type];
-    DrawTextureProFastRotOffset(tex, 24.0F+tilePos.x + DRAW_X - tex.width / 2,
-                                tilePos.y + DRAW_Y-12.0F, 0, {255,255,255,static_cast<unsigned char>(255-currentNightAlpha*254)}, 0, 0);
+    DrawTextureProFastRotOffset(
+        tex, 24.0F + tilePos.x + DRAW_X - tex.width / 2, tilePos.y + DRAW_Y - 12.0F, 0,
+        {255, 255, 255, static_cast<unsigned char>(255 - currentNightAlpha * 254)}, 0, 0);
   }
 }
 inline static Vector2 CalculateShadowDirection() noexcept {

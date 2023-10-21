@@ -135,7 +135,7 @@ struct TILE_ACTION final : public QuestNode {
 struct SPAWN final : public QuestNode {
   std::vector<PointI> positions;
   MonsterType mType = MonsterType::ANY;
-  NPC_ID npcID = NPC_ID::END;
+  NPC_ID npcID = NPC_ID::NPC_END;
   int level;
   explicit SPAWN(MonsterType type, int level)
       : QuestNode("", NodeType::SPAWN),
@@ -146,7 +146,7 @@ struct SPAWN final : public QuestNode {
         level(level == 0 ? PLAYER_STATS.level : level),
         npcID(npcID) {}
   bool Progress() noexcept final {
-    if (npcID == NPC_ID::END) {
+    if (npcID == NPC_ID::NPC_END) {
       for (const auto& p : positions) {
         MONSTERS.push_back(Monster::GetMonster(p.x * 48, p.y * 48, mType, level));
       }
@@ -183,7 +183,7 @@ struct NPC_SAY final : public QuestNode {
   }
 };
 struct NPC_SAY_PROXIMITY final : public QuestNode {
-  inline static constexpr int DELAY_TICKS = 250;
+  inline static constexpr int DELAY_TICKS = 350;
   NPC_ID target;
   std::vector<std::string> lines;
   int activationDistance = 0;
@@ -284,7 +284,6 @@ struct PLAYER_THOUGHT final : public QuestNode {
       assigned = true;
     }
     count += 0.4F;
-    //TODO Make player thought / dialogue without box and above player head
     //TODO make quest decisions prettier / center them below player (live)
     return count > 300;
   }
