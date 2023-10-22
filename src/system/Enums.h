@@ -44,7 +44,7 @@ enum class MonsterType : uint8_t {
   SKEL_SHIELD,
   SNAKE
 };
-enum class EffectType : uint8_t { STUN, BURN, SLOW };
+enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT };
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 inline static std::unordered_map<DamageType, Color> damageTypeToColor{

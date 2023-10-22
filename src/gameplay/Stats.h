@@ -53,7 +53,7 @@ struct EntityStats {
     effects[MANA_REGEN] = 1;
     effects[MAX_HEALTH] = 10;
     effects[MAX_MANA] = 20;
-    effects[WEAPON_DAMAGE] = 10;
+    effects[WEAPON_DAMAGE] = 0;
   };
   EntityStats(float base_health, int level, float per_level, float speed) noexcept
       : level((int8_t)level), speed(speed) {

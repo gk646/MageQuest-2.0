@@ -25,6 +25,7 @@ struct TileLoader {
   }
   static void load_tile_collision() {
     COLLISIONS[1093] = C_SOLID;
+    COLLISIONS[2215] = C_SOLID;
     COLLISIONS[1093] = C_SOLID;
     COLLISIONS[1079] = C_SOLID;
     COLLISIONS[1080] = C_SOLID;

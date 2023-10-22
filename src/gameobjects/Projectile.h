@@ -2,10 +2,10 @@
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 
 struct Projectile : public Entity {
+  Sound sound;
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> statusEffects;
   const ProjectileResources* resources = nullptr;
   const Entity* sender = nullptr;
-  Sound* sound = nullptr;
   DamageStats damageStats;
   Vector2 mvmVector;
   float speed;
@@ -14,12 +14,11 @@ struct Projectile : public Entity {
   HitType hitType = HitType::ONE_HIT;
   bool from_player;
   bool isDoingDamage = true;
-  bool isSoundDoubled = false;
   ProjectileType projectileType = ProjectileType::FIRE_BALL;
   Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
              int life_span, float speed, const DamageStats& damage_stats, HitType type,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
-             const Vector2& move_vector, float pov, Sound* sound,
+             const Vector2& move_vector, float pov, const Sound& sourceSound,
              ProjectileResources* res, const Entity* sender) noexcept
       : Entity(pos, size, shape_type, pov),
         lifeSpanTicks(static_cast<int16_t>(life_span)),
@@ -28,11 +27,11 @@ struct Projectile : public Entity {
         from_player(from_player),
         hitType(type),
         statusEffects(effects),
-        sound(sound),
         mvmVector(move_vector),
         resources(res),
+        sound(LoadSoundAlias(sourceSound)),
         sender(sender) {
-    PlaySoundR(*this->sound);
+    PlaySoundR(sound);
   }
   Projectile(const Projectile& p) noexcept
       : Entity(p),
@@ -73,10 +72,8 @@ struct Projectile : public Entity {
     return *this;
   }
   ~Projectile() noexcept override {
-    StopSound(*sound);
-    if (isSoundDoubled) {
-      free(sound->stream.buffer);
-    }
+    StopSound(sound);
+    UnloadSoundAlias(sound);
     for (auto ptr : statusEffects) {
       delete ptr;
     }
@@ -104,22 +101,5 @@ struct Projectile : public Entity {
   }
 };
 
-#include "projectiles/FireBall.h"
-#include "projectiles/PsychicScream.h"
-#include "projectiles/Dummy.h"
-#include "projectiles/PoisonBall.h"
-#include "projectiles/BlastHammer.h"
-#include "projectiles/EnergySphere.h"
-#include "projectiles/FireSword.h"
-#include "projectiles/FrostNova.h"
-#include "projectiles/IceLance.h"
-#include "projectiles/InfernoRay.h"
-#include "projectiles/Lightning.h"
-#include "projectiles/PowerSurge.h"
-#include "projectiles/PyroBlast.h"
-#include "projectiles/SolarFlare.h"
-#include "projectiles/ThunderStrike.h"
-#include "projectiles/ThunderSplash.h"
-#include "projectiles/VoidEruption.h"
-#include "projectiles/VoidField.h"
+#include "projectiles/Projectiles.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

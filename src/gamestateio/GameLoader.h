@@ -55,7 +55,7 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Hillcrest, {94, 34});
+    WorldManager::LoadMap(Zone::Tutorial, {65, 54});
 #endif
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
@@ -69,6 +69,7 @@ struct GameLoader {
     UI_MANAGER.player_ui.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
     UI_MANAGER.player_ui.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
     UI_MANAGER.player_ui.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
+    UI_MANAGER.player_ui.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

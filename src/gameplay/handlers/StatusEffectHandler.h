@@ -10,12 +10,12 @@ struct StatusEffectHandler {
       delete effect;
     }
   }
-  inline void ApplyEffects() const noexcept{
+  inline void ApplyEffects()  noexcept{
     for(auto effect : status_effects){
       effect->ApplyEffect(stats);
     }
   }
-  inline void RemoveEffects() const noexcept{
+  inline void RemoveEffects()  noexcept{
     for(auto effect : status_effects){
       effect->RemoveEffect(stats);
     }

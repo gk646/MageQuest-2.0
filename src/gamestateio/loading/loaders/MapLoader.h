@@ -43,7 +43,7 @@ struct MapLoader {
     MAPS.emplace_back("goblinCave", 120, Zone::Goblin_Cave);
     MAPS.emplace_back("TestRoom", 50, Zone::TestRoom);
     MAPS.emplace_back("Tutorial", 100, Zone::Tutorial);
-    MAPS.emplace_back("FirstDungeon", 60, Zone::Ruin_Dungeon);
+    MAPS.emplace_back("FirstDungeon", 75, Zone::Ruin_Dungeon);
     MAPS.emplace_back("Hillcrest", 100, Zone::Hillcrest);
     MAPS.emplace_back("GrassLands", 500, Zone::GrassLands);
     MAPS.emplace_back("HillCrestPuzzleCellar", 50, Zone::Hillcrest_Treasure_Cave);
