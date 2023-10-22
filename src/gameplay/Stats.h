@@ -134,7 +134,7 @@ struct EntityStats {
     float total_damage = RollCriticalHit(stats.damage);
 
     if (stats.dmgType == DamageType::PHYSICAL) {
-      total_damage *= (armour * (1 + armour_mult)) / (level * 50.0F);
+      total_damage *= 1 - (armour * (1 + armour_mult)) / (level * 50.0F);
     } else if (stats.dmgType != DamageType::TRUE_DMG) {
       if (shield >= total_damage) {
         shield -= total_damage;
@@ -144,7 +144,6 @@ struct EntityStats {
         shield = 0;
       }
     }
-
     health -= total_damage;
     return total_damage;
   }
@@ -159,7 +158,7 @@ struct EntityStats {
   [[nodiscard]] inline float get_max_mana() const noexcept {
     return effects[MAX_MANA] * (1 + effects[MANA_MULT_P]);
   }
-  [[nodiscard]] inline float get_speed() const noexcept {
+  [[nodiscard]] inline float GetSpeed() const noexcept {
     return speed * (1 + effects[SPEED_MULT_P]);
   }
   static inline void RemoveEffects() noexcept;

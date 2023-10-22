@@ -4,7 +4,7 @@
 struct Deckard final : public NPC {
   Deckard(float x, float y, Zone zone)
       : NPC({x, y}, &textures::npc::OLD_MAN, zone, NPC_ID::DECKARD, 1.5) {}
-  void draw() final {
+  void Draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[spriteCounter % 78 / 13], pos.x_ + DRAW_X,
                            pos.y_ + DRAW_Y, -23, 0, flip, WHITE);
@@ -13,9 +13,7 @@ struct Deckard final : public NPC {
       DrawTextureProFastEx(resource->idle[spriteCounter % 64 / 16], pos.x_ + DRAW_X,
                            pos.y_ + DRAW_Y, -23, 0, flip, WHITE);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
   }
   void Update() final {
     NPC::Update();

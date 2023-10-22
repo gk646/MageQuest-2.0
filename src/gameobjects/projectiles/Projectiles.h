@@ -15,10 +15,11 @@ struct BlastHammer final : Projectile {
 
     isDoingDamage = false;
   }
-  void draw() final {
-    if(spriteCounter < 110){
+  void Draw() final {
+    if (spriteCounter < 110) {
       DrawTextureProFastEx(resources->frames[spriteCounter % 110 / 10],
-                           pos.x_ + DRAW_X - 67, pos.y_ + DRAW_Y - 95, -87, 0, flip, WHITE);
+                           pos.x_ + DRAW_X - 67, pos.y_ + DRAW_Y - 95, -87, 0, flip,
+                           WHITE);
     }
 #ifdef DRAW_HITBOXES
     draw_hitbox();
@@ -44,7 +45,7 @@ struct Dummy final : Projectile {
     mvmVector = GetMovementVector();
   }
 
-  void draw() final {
+  void Draw() final {
     DrawTextureProFastRot(resources->frames[0], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov,
                           WHITE);
   }
@@ -63,7 +64,7 @@ struct EnergySphere final : Projectile {
     projectileType = ProjectileType::ENERGY_SPHERE;
     illuminated = true;
   }
-  void draw() final {
+  void Draw() final {
     DrawTextureProFast(resources->frames[spriteCounter % 42 / 7], pos.x_ + DRAW_X - 8,
                        pos.y_ + DRAW_Y - 8, 0, WHITE);
 
@@ -85,7 +86,7 @@ struct FireBall final : Projectile {
     projectileType = ProjectileType::FIRE_BALL;
     illuminated = true;
   }
-  void draw() final {
+  void Draw() final {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 60 / 15],
                                 pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -10, -3);
   }
@@ -100,7 +101,7 @@ struct PsychicScream final : Projectile {
     isDoingDamage = false;
   }
 
-  void draw() final {
+  void Draw() final {
     DrawTextureProFast(resources->frames[spriteCounter % 42 / 6], pos.x_ + DRAW_X - 65,
                        pos.y_ + DRAW_Y - 55, 0, WHITE);
 #ifdef DRAW_HITBOXES
@@ -128,7 +129,7 @@ struct Lightning final : Projectile {
                    sound::lightning, &textures::projectile::LIGHTNING_STRIKE, sender),
         flip(flip) {}
 
-  void draw() final {
+  void Draw() final {
     if (Projectile::spriteCounter < 70) {
       DrawTextureProFastEx(resources->frames[spriteCounter % 70 / 7],
                            pos.x_ + DRAW_X - 10, pos.y_ + DRAW_Y - 53, 0, 0, flip, WHITE);
@@ -156,10 +157,10 @@ struct FrostNova final : Projectile {
             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
             const Vector2& move, const Entity* sender)
       : Projectile(from_player, pos, {WIDTH, HEIGHT}, ShapeType::CIRCLE, life_span, speed,
-                   {DamageType::ICE, damage}, hit_type, {new Root(300)}, move, pov,
+                   {DamageType::ICE, damage}, hit_type, {new Root(180)}, move, pov,
                    sound::frostNova, &textures::projectile::FROST_NOVA, sender) {}
 
-  void draw() final {
+  void Draw() final {
     if (spriteCounter > 83) return;
     DrawTextureProFastEx(resources->frames[spriteCounter % 84 / 3], pos.x_ + DRAW_X - 50,
                          pos.y_ + DRAW_Y - 50, 0, 0, false, WHITE);
@@ -171,6 +172,30 @@ struct FrostNova final : Projectile {
   void Update() final {
     Projectile::Update();
     if (spriteCounter == HIT_DELAY) {
+      isDoingDamage = true;
+    } else {
+      isDoingDamage = false;
+    }
+  }
+};
+struct AttackCone final : Projectile {
+  uint16_t hitDelay = 0;
+  AttackCone(const Point& pos, const Point& size, bool from_player, uint16_t life_span,
+             uint16_t hitDelay, float damage,
+             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+             const Sound& sound, const Entity* sender)
+      : Projectile(from_player, pos, size, ShapeType::RECT, life_span, 0,
+                   {DamageType::PHYSICAL, damage}, HitType::ONE_TICK, effects, {0, 0}, 0,
+                   sound, nullptr, sender),
+        hitDelay(hitDelay) {}
+  void Draw() final {
+#ifdef DRAW_HITBOXES
+    draw_hitbox();
+#endif
+  }
+  void Update() final {
+    Projectile::Update();
+    if (spriteCounter == hitDelay) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;

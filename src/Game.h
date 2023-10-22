@@ -73,7 +73,7 @@ class Game {
           }
         }
         if ((*it)->intersects(PLAYER)) [[unlikely]] {
-          PLAYER.hit(**it);
+          PLAYER.Hit(**it);
         }
         ++it;
       }
@@ -142,28 +142,28 @@ class Game {
 #define DRAW_ENTITIES()                   \
   for (auto object : WORLD_OBJECTS) {     \
     if (object->active) {                 \
-      object->draw();                     \
+      object->Draw();                     \
     }                                     \
   }                                       \
   for (auto projectile : PROJECTILES) {   \
-    projectile->draw();                   \
+    projectile->Draw();                   \
   }                                       \
   for (auto monster : MONSTERS) {         \
     if (monster->active) {                \
-      monster->draw();                    \
+      monster->Draw();                    \
     }                                     \
   }                                       \
   for (auto npc : NPCS) {                 \
     if (npc->active) {                    \
-      npc->draw();                        \
+      npc->Draw();                        \
     }                                     \
   }                                       \
   for (auto net_player : OTHER_PLAYERS) { \
     if (net_player) {                     \
-      net_player->draw();                 \
+      net_player->Draw();                 \
     }                                     \
   }                                       \
-  PLAYER.draw();
+  PLAYER.Draw();
 
   inline static void DrawGame() noexcept {
     WorldRender::PreRenderTasks();

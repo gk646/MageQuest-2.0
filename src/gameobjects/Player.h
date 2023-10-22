@@ -19,7 +19,7 @@ struct Player final : public Entity {
     Entity::operator=(other);
     return *this;
   }
-  static void hit(Projectile& p) noexcept {
+  static void Hit(Projectile& p) noexcept {
     //TODO dodge chance
     if (!p.from_player && p.IsActive()) {
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
@@ -35,7 +35,7 @@ struct Player final : public Entity {
       return;
     }
 
-    float speed = PLAYER_STATS.get_speed();
+    float speed = PLAYER_STATS.GetSpeed();
 
     bool verticalMove = (IsKeyDown(KEY_W) || IsKeyDown(KEY_S));
     bool horizontalMove = (IsKeyDown(KEY_A) || IsKeyDown(KEY_D));
@@ -72,11 +72,11 @@ struct Player final : public Entity {
                                    static_cast<int16_t>(pos.y_));
     spriteCounter++;
   }
-  void draw() final {
+  void Draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[spriteCounter % 56 / 7],
-                           (int)(pos.x_ + DRAW_X - 25.0F), (int)(pos.y_ + DRAW_Y - 45), -23, 0, flip,
-                           WHITE);
+                           (int)(pos.x_ + DRAW_X - 25.0F), (int)(pos.y_ + DRAW_Y - 45),
+                           -23, 0, flip, WHITE);
       actionState = 0;
     } else if (actionState == 1) {
       draw_attack1();
@@ -92,9 +92,7 @@ struct Player final : public Entity {
                            pos.x_ + DRAW_X - 32.0F, pos.y_ + DRAW_Y - 46, -7, 0, flip,
                            WHITE);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
   }
   inline void draw_death() noexcept {
     int num = spriteCounter % 75 / 15;

@@ -10,7 +10,7 @@ struct SkeletonWarrior final : public Monster {
                 &textures::monsters::SKELETON_WARRIOR, MonsterType::SKEL_WAR, {30, 48}) {
     attack_cd = 50;
   }
-  void draw() final {
+  void Draw() final {
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {
@@ -23,32 +23,46 @@ struct SkeletonWarrior final : public Monster {
       if (moving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 140 / 20],
                              pos.x_ + DRAW_X - 33, pos.y_ + DRAW_Y - 6, 0, 0, flip,
-                            WHITE);
+                             WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 112 / 16],
                              pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 2, -10, 0, flip,
-                            WHITE);
+                             WHITE);
       }
     }
     if (health_bar.delay > 0) {
       health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
   }
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      AttackPlayer3Attacks();
+      if (AttackPlayer3Attacks()) {
+        Point attackPoint = {flip ? pos.x_ - 60 : pos.x_ + 30, pos.y_};
+        Point attackSize = {flip ? pos.x_ - 60 : pos.x_ + 30, pos.y_};
+        if (attack == 1) {
+          PROJECTILES.emplace_back(new AttackCone(
+              attackPoint, {40, 50}, false, 120, 30,
+              stats.level, {}, resource->attack_sound[0], this));
+        } else if (attack == 2) {
+          PROJECTILES.emplace_back(new AttackCone(attackPoint, {40, 50}, false, 120, 30,
+                                                  stats.level, {},
+                                                  resource->attack_sound[1], this));
+        } else {
+          PROJECTILES.emplace_back(new AttackCone(attackPoint, {40, 50}, false, 120, 30,
+                                                  stats.level, {},
+                                                  resource->attack_sound[0], this));
+        }
+      }
     }
   }
   inline void draw_death() noexcept {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
-      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X-27, pos.y_ + DRAW_Y-48, -20, 0,
-                           flip,WHITE);
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
+                           pos.y_ + DRAW_Y - 48, -20, 0, flip, WHITE);
     } else {
       dead = true;
     }
@@ -57,7 +71,7 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 96 / 16;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 12, -16, 0, flip,WHITE);
+                           pos.y_ + DRAW_Y - 12, -16, 0, flip, WHITE);
     } else {
       attack = 0;
     }
@@ -66,7 +80,7 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 112 / 16;
     if (num < 6) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 22,
-                           pos.y_ + DRAW_Y - 20, -15, 0, flip,WHITE);
+                           pos.y_ + DRAW_Y - 20, -15, 0, flip, WHITE);
     } else {
       attack = 0;
     }
@@ -75,7 +89,7 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 72 / 12;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 23,
-                           pos.y_ + DRAW_Y - 13, -18, 0, flip,WHITE);
+                           pos.y_ + DRAW_Y - 13, -18, 0, flip, WHITE);
     } else {
       attack = 0;
     }

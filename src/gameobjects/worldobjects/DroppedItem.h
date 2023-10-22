@@ -12,9 +12,12 @@ struct DroppedItem final : public WorldObject {
       dead = CharacterBag::AddItem(item);
     }
   }
-  void draw() final {
-    DrawTextureScaled(item->texture, {pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x_, size.y_},
+  void Draw() final {
+    DrawTextureScaled(item->texture,
+                      {(int)pos.x_ + DRAW_X, (int)pos.y_ + DRAW_Y,
+                       size.x_, size.y_},
                       0, false, 0, WHITE);
+    DRAW_HITBOXES();
   }
 };
 

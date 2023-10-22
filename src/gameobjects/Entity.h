@@ -49,7 +49,7 @@ struct Entity {
       zone == CURRENT_ZONE && PLAYER.tile_pos.dist(this->tile_pos) < UPDATE_DISTANCE; \
   if (!active) return;
 
-  virtual void draw() = 0;
+  virtual void Draw() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {
     if (pov == 0) {
       if (shape_type == ShapeType::RECT) {

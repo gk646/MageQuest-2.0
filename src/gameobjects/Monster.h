@@ -70,7 +70,7 @@ struct Monster : public Entity {
   attack_cd -= attack == 0;                                      \
   moving = false;
 
-  void draw() override = 0;
+  void Draw() override = 0;
   void Hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && attack != -100) {
       health_bar.hit();
@@ -90,25 +90,27 @@ struct Monster : public Entity {
   bool WalkToEntity(const Entity* ent) noexcept {
     if (attack != 0) return false;
     PointI point;
-
+    float speed = stats.GetSpeed();
     if ((point = PathFinding::AStarPathFinding(tile_pos, ent->tile_pos)) > 0) [[likely]] {
-      decideMovement(point, stats.get_speed());
+      decideMovement(point, speed);
       moving = true;
       return false;
-    } else if (point == 0 && !this->intersects(*ent)) {
-      float speed = stats.get_speed();
-      moving = true;
-      if (pos.x_ < ent->pos.x_) {
-        pos.x_ += speed;
-      } else if (pos.x_ > ent->pos.x_) {
-        pos.x_ -= speed;
-      } else if (pos.y_ > ent->pos.y_) {
-        pos.y_ -= speed;
-      } else if (pos.y_ < ent->pos.y_) {
-        pos.y_ += speed;
+    } else if (point == 0) {
+      if (!this->intersects(*ent)) {
+        moving = true;
+        if (pos.x_ < ent->pos.x_) {
+          pos.x_ += speed;
+        } else if (pos.x_ > ent->pos.x_) {
+          pos.x_ -= speed;
+        } else if (pos.y_ > ent->pos.y_) {
+          pos.y_ -= speed;
+        } else if (pos.y_ < ent->pos.y_) {
+          pos.y_ += speed;
+        }
       }
+      return true;
     }
-    return true;
+    return false;
   }
   inline void UpdateWithRemoteState(UDP_MonsterUpdate* data) noexcept {
     if (stats.health != (float)data->new_health) {
@@ -135,7 +137,7 @@ struct Monster : public Entity {
     pos.x_ = data->x;
     pos.y_ = data->y;
   }
-  inline void AttackPlayer3Attacks() noexcept {
+  inline bool AttackPlayer3Attacks() noexcept {
     if (attack == 0 && attack_cd <= 0) {
       int num = RANGE_100(RNG_ENGINE);
       attack_cd = 160;
@@ -147,11 +149,24 @@ struct Monster : public Entity {
       } else {
         attack = 3;
       }
+      return true;
     }
+    return false;
   }
   inline void MonsterDiedCallback() noexcept;
   inline static Monster* GetMonster(float x, float y, MonsterType type,
                                     int level) noexcept;
+  inline RectangleR GetAttackConeBounds(int attackWidth, int attackHeight) noexcept {
+    RectangleR ret = {0};
+    auto playerPos = PLAYER.pos;
+
+    ret.y = playerPos.y_ < pos.y_ ? pos.y_ - 15 : pos.y_ + 15;
+    if (flip) {
+      ret.x = pos.x_ - (size.x_ - 5);
+    } else {
+      ret.x = pos.x_ + 5;
+    }
+  }
 };
 
 #include "monsters/SkeletonSpear.h"
