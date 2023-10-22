@@ -69,7 +69,7 @@ struct SoundLoader {
   }
   static void SetVolumes() noexcept {
     SetSoundVolume(sound::energySphere, 0.4F);
-    SetSoundVolume(sound::fireBurst, 0.7F);
+    SetSoundVolume(sound::fireBurst, 0.2F);
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

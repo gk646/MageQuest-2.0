@@ -145,6 +145,8 @@ inline static Texture blastHammer;
 inline static Texture energy_sphere;
 inline static Texture fireBurst;
 inline static Texture fireSword;
+inline static Texture frostNova;
+inline static Texture locked;
 }  // namespace icons
 }  // namespace skillbar
 

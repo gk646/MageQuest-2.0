@@ -9,14 +9,14 @@ struct Skill {
   std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
   SkillStats skillStats;
-  DamageStats damage_stats;
+  DamageStats damageStats;
   const Texture& icon;
   int16_t coolDownUpCounter;
   uint8_t attackAnimation = 0;
   bool from_player;
   Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,
         bool from_player, int attack_animation, const Texture& icon) noexcept
-      : damage_stats(damage_stats),
+      : damageStats(damage_stats),
         skillStats(ability_stats),
         from_player(from_player),
         attackAnimation(attack_animation),
@@ -116,7 +116,7 @@ struct Skill {
     DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.2F,
                               ROUND_SEGMENTS, 2, Colors::darkBackground);
 
-    DrawTextExR(MINECRAFT_BOLD,name.c_str(), {startX+5, startY+5},20,0,WHITE);
+    DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0, WHITE);
   }
   inline void DrawRangeCircle() const noexcept {
     if (skillStats.range > 0) {
@@ -140,7 +140,7 @@ Skill* Skill::GetSkillInstance(ProjectileType type, const SkillStats& stats, int
     case FIRE_STRIKE_II:
       return new FireStrike_Skill(stats, val1);
     case FIRE_BALL:
-     return new FireBall_Skill(stats);
+      return new FireBall_Skill(stats);
     case BLAST_HAMMER:
       return new BlastHammer_Skill(stats);
     case ENERGY_SPHERE:
@@ -148,13 +148,13 @@ Skill* Skill::GetSkillInstance(ProjectileType type, const SkillStats& stats, int
     case FIRE_SWORD:
       break;
     case FROST_NOVA:
-      break;
+      return new FrostNova_Skill(stats);
     case ICE_LANCE:
       break;
     case INFERNO_RAY:
       break;
     case LIGHTNING:
-      break;
+      return new Lightning_Skill(stats);
     case PYRO_BLAST:
       break;
     case SOLAR_FLARE:

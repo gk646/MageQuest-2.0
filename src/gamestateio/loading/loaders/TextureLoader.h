@@ -138,8 +138,9 @@ struct TextureLoader {
     textures::ui::skillbar::skillRange =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/skill_range.png").c_str());
 
-    textures::ui::skillbar::icons::infernoRay =
-        LoadTexture((ASSET_PATH + "ui/skillbar/icons/infernoRay.png").c_str());
+    textures::ui::skillbar::icons::infernoRay =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/infernoRay.png").c_str());
+    textures::ui::skillbar::icons::frostNova =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/frostNova.png").c_str());
+    textures::ui::skillbar::icons::locked =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/locked.png").c_str());
     textures::ui::skillbar::icons::inspiration =
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/inspiration.png").c_str());
     textures::ui::skillbar::icons::lightning =

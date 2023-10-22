@@ -29,15 +29,13 @@ struct StatusEffect {
   [[nodiscard]] virtual StatusEffect* clone() const = 0;
   static void draw(int x, int y) noexcept { DrawRectangle(x, y, 50, 50, BLUE); }
   virtual void TickEffect(EntityStats& stats) = 0;
-  virtual void ApplyEffect(EntityStats& stats) const noexcept = 0;
-  virtual void RemoveEffect(EntityStats& stats) const noexcept = 0;
+  virtual void ApplyEffect(EntityStats& stats)  noexcept = 0;
+  virtual void RemoveEffect(EntityStats& stats)  noexcept = 0;
   [[nodiscard]] inline bool is_damage_tick() const noexcept {
     return duration > 0 && duration % cadence == 0;
   }
 };
 
-#include "effects/Burn.h"
-#include "effects/Slow.h"
-#include "effects/Stun.h"
+#include "effects/Effects.h"
 
 #endif  //MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECT_H_
