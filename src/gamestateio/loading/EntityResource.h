@@ -45,7 +45,24 @@ struct MonsterResource {
       }
     }
   }
-  void load_sound(const std::string& name) {}
+  void load_sound(const std::string& name) {
+    std::string path;
+    std::string soundPath = name;
+    size_t pos = soundPath.find("enemies/");
+
+    if (pos != std::string::npos) {
+      soundPath.erase(pos, std::string("enemies/").length());
+    }
+    for (uint_fast32_t i = 0; i < 5; i++) {
+      path = ASSET_PATH + "sound/effects/Entities/" +=
+          soundPath + std::to_string(i) + ".wav";
+      if (std::filesystem::exists(path)) {
+        attack_sound.emplace_back(LoadSound(path.c_str()));
+      } else {
+        break;
+      }
+    }
+  }
 };
 
 struct ProjectileResources {

@@ -10,7 +10,7 @@ struct SkeletonSpear final : public Monster {
     attack_cd = 120;
   }
 
-  void draw() final {
+  void Draw() final {
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {

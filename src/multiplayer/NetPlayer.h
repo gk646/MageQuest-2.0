@@ -20,7 +20,7 @@ struct NetPlayer final : public Entity {
         name(SteamFriends()->GetFriendPersonaName(steam_id)) {
     identity.SetSteamID(steam_id);
   }
-  void draw() final {
+  void Draw() final {
     if (zone != CURRENT_ZONE) {
       return;
     }
@@ -42,9 +42,7 @@ struct NetPlayer final : public Entity {
       DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10], pos.x_ + DRAW_X - 30,
                            pos.y_ + DRAW_Y - 45, -7, 0, flip, WHITE);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
     DrawTextPro(
         VARNISHED, name.c_str(),
         {pos.x_ + DRAW_X - MeasureTextEx(MINECRAFT_REGULAR, name.c_str(), 14, 0.5).x / 2,

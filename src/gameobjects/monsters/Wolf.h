@@ -9,38 +9,38 @@ struct Wolf final : public Monster {
   static constexpr float per_level = 2.5;
   static constexpr float base_speed = 2.4;
   Wolf(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, std::min(MAX_SCALED_LEVEL,level), per_level, base_speed},
+      : Monster(pos,
+                EntityStats{base_health, std::min(MAX_SCALED_LEVEL, level), per_level,
+                            base_speed},
                 &textures::monsters::WOLF, MonsterType::WOLF, {45, 30}) {
     attack_cd = ATTACK_CD;
     AttackRange = ATTACK_RANGE;
     ChaseRange = CHASE_RANGE;
   }
-  void draw() final {
+  void Draw() final {
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {
       draw_attack1();
     } else {
       if (moving) {
-        DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 10],
-                             pos.x_ + DRAW_X-2, pos.y_ + DRAW_Y-19, 2, 0, !flip, WHITE);
+        DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 10], pos.x_ + DRAW_X - 2,
+                             pos.y_ + DRAW_Y - 19, 2, 0, !flip, WHITE);
       } else {
-        DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 20], pos.x_ + DRAW_X-5,
-                             pos.y_ + DRAW_Y-17, 5, 0, !flip, WHITE);
+        DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 20], pos.x_ + DRAW_X - 5,
+                             pos.y_ + DRAW_Y - 17, 5, 0, !flip, WHITE);
       }
     }
     if (health_bar.delay > 0) {
       health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
   }
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      if ( attack == 0 && attack_cd < 0) {
+      if (attack == 0 && attack_cd < 0) {
         attack_cd = ATTACK_CD;
         spriteCounter = 0;
         attack = 1;
@@ -52,7 +52,7 @@ struct Wolf final : public Monster {
   inline void draw_death() noexcept {
     int num = spriteCounter % 140 / 20;
     if (num < 5) {
-      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X -5,
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 5,
                            pos.y_ + DRAW_Y - 19, 3, 0, !flip, WHITE);
     } else {
       dead = true;

@@ -6,8 +6,8 @@ struct Ghost final : public Monster {
   static constexpr float ATTACK_CD = 120;
   static constexpr uint8_t ATTACK_RANGE = 6;
   static constexpr uint8_t CHASE_RANGE = 10;
-  static constexpr Vector2 directions[9] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1},
-                                            {-1, 1}, {1, 1}, {-1, 1}, {1, -1},{-1,-1}};
+  static constexpr Vector2 directions[9] = {{-1, 0}, {1, 0},  {0, -1}, {0, 1},  {-1, 1},
+                                            {1, 1},  {-1, 1}, {1, -1}, {-1, -1}};
   bool teleported = false;
   bool disappeared = true;
   Ghost(const Point& pos, int level) noexcept
@@ -17,7 +17,7 @@ struct Ghost final : public Monster {
     AttackRange = ATTACK_RANGE;
     ChaseRange = CHASE_RANGE;
   }
-  void draw() final {
+  void Draw() final {
     if (attack == -100) [[unlikely]] {
       draw_death();
     } else if (attack == 1) {
@@ -27,16 +27,13 @@ struct Ghost final : public Monster {
     } else if (attack == 3) {
       DrawDisappear();
     } else {
-      DrawTextureProFastEx(resource->idle[spriteCounter % 105 / 15],
-                           pos.x_ + DRAW_X - 17, pos.y_ + DRAW_Y - 20, -3, 0, !flip,
-                           WHITE);
+      DrawTextureProFastEx(resource->idle[spriteCounter % 105 / 15], pos.x_ + DRAW_X - 17,
+                           pos.y_ + DRAW_Y - 20, -3, 0, !flip, WHITE);
     }
     if (health_bar.delay > 0) {
       health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
   }
   void Update() final {
     MONSTER_UPDATE();
@@ -62,7 +59,7 @@ struct Ghost final : public Monster {
       float newX = ent->pos.x_ + 24 * dir.x;
       float newY = ent->pos.y_ + 24 * dir.y;
 
-      if (!CheckTileCollision((newX +size.x_/2)/ 48, (newY +size.y_/2)/ 48)) {
+      if (!CheckTileCollision((newX + size.x_ / 2) / 48, (newY + size.y_ / 2) / 48)) {
         pos.x_ = newX;
         pos.y_ = newY;
         attack = 2;

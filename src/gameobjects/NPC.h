@@ -19,7 +19,7 @@ struct NPC : public Entity {
         resource(resource),
         id(id),
         speed(speed) {}
-  void draw() override = 0;
+  void Draw() override = 0;
   void Update() override {
     ENTITY_UPDATE();
     spriteCounter++;

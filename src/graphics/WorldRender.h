@@ -10,11 +10,11 @@ struct WorldRender {
     worldRow = std::max(PLAYER_TILE->y - 12, 0);
     maxCol = std::min(worldCol + 41, CURRENT_MAP_SIZE);
     maxRow = std::min(worldRow + 25, CURRENT_MAP_SIZE);
-    const float playerX = PLAYER_X = PLAYER.pos.x_;
-    const float playerY = PLAYER_Y = PLAYER.pos.y_;
-    float screenX = CAMERA_X = SCREEN_WIDTH / 2 - 14;
-    float screenY = CAMERA_Y = SCREEN_HEIGHT / 2 - 25;
-    const float worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
+    const int playerX = PLAYER_X = PLAYER.pos.x_;
+    const int playerY = PLAYER_Y = PLAYER.pos.y_;
+    int screenX = CAMERA_X = SCREEN_WIDTH / 2 - 14;
+    int screenY = CAMERA_Y = SCREEN_HEIGHT / 2 - 25;
+    const int worldWidth = CURRENT_MAP_SIZE * TILE_SIZE;
 
     if (screenX > playerX) {
       CAMERA_X = screenX = playerX;
@@ -37,9 +37,9 @@ struct WorldRender {
   static void DrawBackGround() noexcept {
     float x_base, y_base;
     for (uint16_t i = worldCol; i < maxCol; ++i) {
-      x_base = i * TILE_SIZE + DRAW_X;
+      x_base = static_cast<float>(i) * TILE_SIZE + DRAW_X;
       for (uint16_t b = worldRow; b < maxRow; ++b) {
-        y_base = b * TILE_SIZE + DRAW_Y;
+        y_base = static_cast<float>(b) * TILE_SIZE + DRAW_Y;
 
         DrawTextureProFastUltra(TILES[CURRENT_BACK_GROUND[i][b]], x_base, y_base);
 
@@ -56,9 +56,9 @@ struct WorldRender {
   static void DrawForeGround() noexcept {
     float x_base, y_base;
     for (uint16_t i = worldCol; i < maxCol; ++i) {
-      x_base = i * TILE_SIZE + DRAW_X;
+      x_base = static_cast<float>(i) * TILE_SIZE + DRAW_X;
       for (uint16_t b = worldRow; b < maxRow; ++b) {
-        y_base = b * TILE_SIZE + DRAW_Y;
+        y_base = static_cast<float>(b) * TILE_SIZE + DRAW_Y;
 
         int num1 = CURRENT_FORE_GROUND[i][b];
         if (num1 != -1) {

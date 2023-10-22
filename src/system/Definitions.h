@@ -69,4 +69,13 @@ inline std::string ASSET_PATH = "../res/";
  */
 
 #define TREE_STUMP
+
+
+#ifdef DRAW_HITBOXES
+#undef DRAW_HITBOXES
+#define DRAW_HITBOXES() draw_hitbox()
+#else
+#undef DRAW_HITBOXES
+#define DRAW_HITBOXES_M()
+#endif
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_
