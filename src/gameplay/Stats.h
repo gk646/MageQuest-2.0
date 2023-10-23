@@ -2,11 +2,14 @@
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
 struct SkillStats {
-  float mana_cost = 0;
-  float health_cost = 0;
+  float manaCost = 0;
+  float healthCost = 0;
   float baseDamage = 0;
   float speed = 0;
-  uint16_t cool_down = 0;
+  float specialVal1 = 0;
+  float specialVal2 = 0;
+  uint16_t castTime = 0;
+  uint16_t coolDownTicks = 0;
   uint16_t range = 0;
   uint16_t lifeSpan = 0;
 };
@@ -88,14 +91,14 @@ struct EntityStats {
   }
   [[nodiscard]] inline bool skill_useable(const SkillStats& stats,
                                           int ticks_done) const noexcept {
-    return !stunned && ticks_done >= stats.cool_down * (1 - effects[CDR_P]) &&
-           mana >= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
+    return !stunned && ticks_done >= stats.coolDownTicks * (1 - effects[CDR_P]) &&
+           mana >= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline int GetRemainingCD(const SkillStats& stats) noexcept {
-    return stats.cool_down * (1 - effects[CDR_P]);
+    return stats.coolDownTicks * (1 - effects[CDR_P]);
   }
   inline void UseSkill(const SkillStats& stats) noexcept {
-    mana -= stats.mana_cost * (1 - effects[MANA_COST_REDUCTION_P]);
+    mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline void equip_item(const float* effect_arr) noexcept {
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {

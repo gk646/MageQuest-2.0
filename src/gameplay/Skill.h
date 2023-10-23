@@ -3,8 +3,8 @@
 
 struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
-  inline static constexpr float TOOL_TIP_WIDTH = 200;
-  inline static constexpr float TOOL_TIP_HEIGHT = 250;
+  inline static constexpr float TOOL_TIP_WIDTH = 220;
+  inline static constexpr float TOOL_TIP_HEIGHT = 90;
   std::string name;
   std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
@@ -21,7 +21,7 @@ struct Skill {
         from_player(from_player),
         attackAnimation(attack_animation),
         icon(icon) {
-    coolDownUpCounter = (int16_t)ability_stats.cool_down;
+    coolDownUpCounter = (int16_t)ability_stats.coolDownTicks;
   }
   inline virtual void Activate() = 0;
   inline void Update() noexcept { coolDownUpCounter++; };
@@ -62,8 +62,8 @@ struct Skill {
     }
     return false;
   }
-  inline static Skill* GetSkillInstance(ProjectileType type, const SkillStats& stats,
-                                        int val1, int val2) noexcept;
+  inline static Skill* GetSkillInstance(ProjectileType type,
+                                        const SkillStats& stats) noexcept;
 
  private:
   void DrawCooldown(float x, float y, float size) const noexcept {
@@ -109,22 +109,62 @@ struct Skill {
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();
-    float startX = MOUSE_POS.x - TOOL_TIP_WIDTH;
-    float startY = MOUSE_POS.y - TOOL_TIP_HEIGHT;
-    DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.1F,
-                         ROUND_SEGMENTS, Colors::mediumLightGrey);
-    DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.1F,
-                              ROUND_SEGMENTS, 2, Colors::darkBackground);
+    int lineBreaks = 0;
+    auto descriptionText = Util::WrapText(
+        Util::CreateToolTipString(description, PLAYER_STATS.get_ability_dmg(damageStats),
+                                  skillStats.specialVal1, skillStats.specialVal2),
+        TOOL_TIP_WIDTH, MINECRAFT_REGULAR, 15, &lineBreaks);
 
+    float toolTipHeight = TOOL_TIP_HEIGHT + lineBreaks * 15;
+    float startX = MOUSE_POS.x - TOOL_TIP_WIDTH / 2;
+    float startY = MOUSE_POS.y - toolTipHeight - 3;
+    DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
+                         ROUND_SEGMENTS, Colors::mediumLightGrey);
+    DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
+                              ROUND_SEGMENTS, 2, damageTypeToColor[damageStats.dmgType]);
+
+    char buffer[25];
+    //-----------Name-----------//
     DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0.5F,
                 damageTypeToColor[damageStats.dmgType]);
 
-    auto wrappedText = Util::WrapText(description, TOOL_TIP_WIDTH, MINECRAFT_REGULAR, 15);
-    DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 5, startY + 25}, 15, 0.5F,
-                Colors::darkBackground);
+    //-------------ResourceCost---------------//
+    if (skillStats.manaCost > 0) {
+      sprintf(buffer, "%i Mana", (int)skillStats.manaCost);
+      DrawTextExR(MINECRAFT_REGULAR, buffer, {startX + 5, startY + 35}, 15, 0.5F,
+                  Colors::darkBackground);
+    }
 
+    //-----------CastTime-----------//
 
+    if (skillStats.castTime == 0) {
+      DrawTextExR(MINECRAFT_REGULAR, "Instant", {startX + 5, startY + 53}, 15, 0.5F,
+                  Colors::darkBackground);
+    } else {
+      sprintf(buffer, "%f sec cast", skillStats.castTime / 60.0F);
+      DrawTextExR(MINECRAFT_REGULAR, buffer, {startX + 5, startY + 53}, 15, 0.5F,
+                  Colors::darkBackground);
+    }
 
+    //-----------CoolDown-----------//
+
+    if (skillStats.coolDownTicks > 0) {
+      float cooldownInSeconds = skillStats.coolDownTicks / 60.0F;
+
+      if (cooldownInSeconds == floor(cooldownInSeconds)) {
+        sprintf(buffer, "%.0f sec cast", cooldownInSeconds);
+      } else {
+        sprintf(buffer, "%.1f sec cast", cooldownInSeconds);
+      }
+
+      Util::DrawRightAlignedText(MINECRAFT_REGULAR, 15, buffer,
+                                 startX + TOOL_TIP_WIDTH - 5, startY + 53,
+                                 Colors::darkBackground);
+    }
+    //-----------Description-----------//
+
+    DrawTextExR(MINECRAFT_REGULAR, descriptionText.c_str(), {startX + 5, startY + 75}, 15,
+                0.5F, Colors::descriptionOrange);
   }
   inline void DrawRangeCircle() const noexcept {
     if (skillStats.range > 0) {
@@ -139,14 +179,13 @@ struct Skill {
 
 #include "skills/Skills.h"
 inline static std::array<Skill*, ProjectileType::PROJECTILE_END> SKILLS;
-Skill* Skill::GetSkillInstance(ProjectileType type, const SkillStats& stats, int val1,
-                               int val2) noexcept {
+Skill* Skill::GetSkillInstance(ProjectileType type, const SkillStats& stats) noexcept {
   switch (type) {
     case POISON_BALL:
       break;
     case FIRE_STRIKE:
     case FIRE_STRIKE_II:
-      return new FireStrike_Skill(stats, val1);
+      return new FireStrike_Skill(stats);
     case FIRE_BALL:
       return new FireBall_Skill(stats);
     case BLAST_HAMMER:

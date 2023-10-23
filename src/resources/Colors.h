@@ -36,6 +36,9 @@ inline const Color StatGreen = {24, 145, 21, 255};
 inline const Color LightGrey = {192, 203, 220, 255};
 inline const Color xpbarOrange = {254, 132, 23, 229};
 
+//TOOLTIPS
+inline const Color descriptionOrange = {220, 119, 29, 255};
+
 // MAP
 inline const Color map_green = {99, 199, 77, 255};
 inline const Color mediumLightGreyTransparent = {155, 169, 194, 229};
@@ -51,10 +54,11 @@ inline const Color white = {252, 252, 252, 255};
 
 // DAMAGE TYPES
 inline const Color fire_red = {230, 34, 34, 255};
-inline const Color arcane_blue = {106, 190, 250, 255};
-inline const Color dark_magic_purple = {128, 0, 128, 255};
+inline const Color arcaneBlue = {58, 199, 234, 255};
+inline const Color darkMagicPurple = {128, 0, 128, 255};
 inline const Color physical_grey = {90, 105, 136, 255};
 inline const Color poison_green = {105, 215, 44, 255};
+inline const Color frostBlue = {31, 77, 233, 255};
 
 // MISC
 inline const Color transparent = {0, 0, 0, 77};

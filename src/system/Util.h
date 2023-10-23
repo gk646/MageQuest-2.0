@@ -57,10 +57,17 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
 }
 std::string WrapText(const std::string& txt, float width, const Font& font,
-                     float fontSize) {
+                     float fontSize, int* lineBreakCount = nullptr) {
+  if (lineBreakCount) {
+    *lineBreakCount = 0;
+  }
+
   std::istringstream iss(txt);
   std::string word;
   std::string wrappedText;
+
+  wrappedText.reserve(txt.size() + 50);
+
   float currentLineWidth = 0;
   float spaceWidth = MeasureTextEx(font, " ", fontSize, 0.5).x;
 
@@ -68,6 +75,9 @@ std::string WrapText(const std::string& txt, float width, const Font& font,
     float wordWidth = MeasureTextEx(font, word.c_str(), fontSize, 0.5).x;
     if (currentLineWidth + wordWidth + spaceWidth > width) {
       wrappedText += '\n';
+      if (lineBreakCount) {
+        (*lineBreakCount)++;
+      }
       currentLineWidth = 0;
     }
     wrappedText += word + " ";
@@ -112,6 +122,45 @@ inline PointI ParsePointI(const std::string& string) noexcept {
 }
 inline Point ParsePoint(const std::string& string) noexcept {
   return {std::stof(SplitString(string, ',')[0]), std::stof(SplitString(string, ',')[1])};
+}
+inline std::string CreateToolTipString(const std::string& s, float damage,
+                                       float val1 = 0.0f, float val2 = 0.0f) {
+  std::string ret = s;
+  std::string minDmgStr = std::to_string((int)(damage * 0.9F));
+  std::string maxDmgStr = std::to_string((int)(damage * 1.1F));
+
+  std::string val1Str = std::to_string((int)val1);
+  std::string val2Str = std::to_string((int)val2);
+
+  size_t pos;
+
+  pos = s.find("MAX_DMG");
+  if (pos != std::string::npos) {
+    ret.replace(pos, 7, maxDmgStr);
+  }
+
+
+  pos = s.find("MIN_DMG");
+  if (pos != std::string::npos) {
+    ret.replace(pos, 7, minDmgStr);
+  }
+
+
+  if (val1 != 0) {
+    pos = s.find("VAL1");
+    if (pos != std::string::npos) {
+      ret.replace(pos, 4, val1Str);
+    }
+  }
+
+  if (val2 != 0) {
+    pos = s.find("VAL2");
+    if (pos != std::string::npos) {
+      ret.replace(pos, 4, val2Str);
+    }
+  }
+
+  return ret;
 }
 inline static bool e_previous[2] = {false, false};
 inline static void update() noexcept {
