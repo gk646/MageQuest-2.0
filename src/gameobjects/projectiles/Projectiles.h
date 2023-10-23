@@ -156,8 +156,8 @@ struct FrostNova final : Projectile {
                    sound::frostNova, &textures::projectile::FROST_NOVA, sender) {}
 
   void Draw() final {
-    if (spriteCounter > 83) return;
-    DrawTextureProFastEx(resources->frames[spriteCounter % 84 / 3], pos.x_ + DRAW_X - 50,
+    if (spriteCounter > 55) return;
+    DrawTextureProFastEx(resources->frames[spriteCounter % 56 / 2], pos.x_ + DRAW_X - 50,
                          pos.y_ + DRAW_Y - 50, 0, 0, false, WHITE);
 
     DRAW_HITBOXES();

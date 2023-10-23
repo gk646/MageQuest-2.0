@@ -18,15 +18,15 @@ static void Load() noexcept {
   for (const auto& vec : ret) {
     auto type = stringToProjectile[vec[0]];
     SkillStats stats;
-    int val1 = std::stoi(vec[SpecificValue1_INDEX]);
-    int val2 = std::stoi(vec[SpecificValue2_INDEX]);
+    stats.specialVal1 = std::stof(vec[SpecificValue1_INDEX]);
+    stats.specialVal2 = std::stof(vec[SpecificValue2_INDEX]);
     stats.baseDamage = std::stof(vec[BaseDamage_INDEX]);
     stats.lifeSpan = std::stoi(vec[LifeSpan_INDEX]);
     stats.speed = std::stof(vec[Speed_INDEX]);
-    stats.cool_down = std::stoi(vec[Cooldown_INDEX]);
+    stats.coolDownTicks = std::stoi(vec[Cooldown_INDEX]);
     stats.range = std::stoi(vec[Range_INDEX]);
-    stats.mana_cost = std::stof(vec[ManaCost_INDEX]);
-    auto skillPtr = Skill::GetSkillInstance(type, stats, val1, val2);
+    stats.manaCost = std::stof(vec[ManaCost_INDEX]);
+    auto skillPtr = Skill::GetSkillInstance(type, stats);
     skillPtr->description = vec[Description_INDEX];
     skillPtr->name = vec[DisplayName_INDEX];
     SKILLS[type] = skillPtr;

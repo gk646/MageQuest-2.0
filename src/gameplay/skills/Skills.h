@@ -12,7 +12,8 @@ struct BlastHammer_Skill final : public Skill {
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - BlastHammer::height / 2.0F};
     float damage = PLAYER_STATS.get_ability_dmg(damageStats);
 
-    Multiplayer::UDP_SEND_PROJECTILE(BLAST_HAMMER, pos.x_, pos.y_, 0, 0, 0, damage);
+    Multiplayer::UDP_SEND_PROJECTILE(BLAST_HAMMER, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0,
+                                     0, damage);
 
     PROJECTILES.emplace_back(new BlastHammer(pos, true, skillStats.lifeSpan, 0, damage,
                                              HitType::ONE_TICK, {}, 0, {0, 0},
@@ -20,19 +21,17 @@ struct BlastHammer_Skill final : public Skill {
   }
 };
 struct FireStrike_Skill final : public Skill {
-  int numFireballs = 6;
-  FireStrike_Skill(const SkillStats& stats, int numFireballs)
+  explicit FireStrike_Skill(const SkillStats& stats)
       : Skill(stats, DamageStats{DamageType::FIRE, stats.baseDamage}, from_player, 2,
-              textures::ui::skillbar::icons::fireBurst),
-        numFireballs(numFireballs) {}
+              textures::ui::skillbar::icons::fireBurst) {}
   void Activate() final {
     if (!RangeLineOfSightCheck()) return;
     TriggerSkill();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - FireBall::width / 2,
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - FireBall::height / 2};
-    const float interval_angle = 360.0f / numFireballs;
+    const float interval_angle = 360.0f / skillStats.specialVal1;
     float damage = PLAYER_STATS.get_ability_dmg(damageStats) / 60.0F;
-    for (int_fast32_t i = 0; i < numFireballs; i++) {
+    for (int_fast32_t i = 0; i < skillStats.specialVal1; i++) {
       float angle_rad = interval_angle * i * DEG2RAD;
       float x_component = std::cos(angle_rad);
       float y_component = std::sin(angle_rad);
@@ -92,7 +91,8 @@ struct FireBall_Skill final : public Skill {
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
 
-    Multiplayer::UDP_SEND_PROJECTILE(FIRE_BALL, posX, posY, pov, x_move, y_move, damage);
+    Multiplayer::UDP_SEND_PROJECTILE(FIRE_BALL, (int16_t)posX, (int16_t)posY, pov, x_move,
+                                     y_move, damage);
 
     PROJECTILES.emplace_back(new FireBall({posX, posY}, true, skillStats.lifeSpan,
                                           skillStats.speed, damage, HitType::ONE_HIT, {},
@@ -115,9 +115,7 @@ struct LockedSlot_Skill final : public Skill {
   explicit LockedSlot_Skill(const SkillStats& stats = {})
       : Skill({}, DamageStats{DamageType::TRUE_DMG, 0}, from_player, 1,
               textures::ui::skillbar::icons::locked) {}
-  void Activate() final {
-
-  }
+  void Activate() final {}
 };
 struct Lightning_Skill final : public Skill {
   explicit Lightning_Skill(const SkillStats& stats)
@@ -131,7 +129,8 @@ struct Lightning_Skill final : public Skill {
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - Lightning::HEIGHT / 2};
     float damage = PLAYER_STATS.get_ability_dmg(damageStats);
 
-    Multiplayer::UDP_SEND_PROJECTILE(LIGHTNING, pos.x_, pos.y_, 0, 0, 0, damage);
+    Multiplayer::UDP_SEND_PROJECTILE(LIGHTNING, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0, 0,
+                                     damage);
 
     PROJECTILES.emplace_back(new Lightning(pos, true, skillStats.lifeSpan, 0, damage,
                                            HitType::ONE_TICK, {}, 0, {0, 0},
@@ -145,10 +144,11 @@ struct FrostNova_Skill final : public Skill {
 
   void Activate() final {
     TriggerSkill();
-    Point pos = {PLAYER_X + PLAYER.size.x_/2 - FrostNova::WIDTH / 2,
-                 PLAYER_Y + PLAYER.size.y_/2 - FrostNova::HEIGHT / 2};
+    Point pos = {PLAYER_X + PLAYER.size.x_ / 2 - FrostNova::WIDTH / 2,
+                 PLAYER_Y + PLAYER.size.y_ / 2 - FrostNova::HEIGHT / 2};
     float damage = PLAYER_STATS.get_ability_dmg(damageStats);
-    Multiplayer::UDP_SEND_PROJECTILE(FROST_NOVA, pos.x_, pos.y_, 0, 0, 0, damage);
+    Multiplayer::UDP_SEND_PROJECTILE(FROST_NOVA, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0,
+                                     0, damage);
 
     PROJECTILES.emplace_back(new FrostNova(pos, true, skillStats.lifeSpan, 0, damage,
                                            HitType::ONE_TICK, {}, 0, {0, 0}, &PLAYER));

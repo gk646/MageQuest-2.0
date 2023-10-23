@@ -49,10 +49,10 @@ enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::FIRE, Colors::fire_red},
-    {DamageType::ICE, Colors::blue_npc},
+    {DamageType::ICE, Colors::frostBlue},
     {DamageType::POISON, Colors::poison_green},
-    {DamageType::ARCANE, Colors::arcane_blue},
-    {DamageType::DARK, Colors::dark_magic_purple},
+    {DamageType::ARCANE, Colors::arcaneBlue},
+    {DamageType::DARK, Colors::darkMagicPurple},
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
