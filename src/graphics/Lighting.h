@@ -38,16 +38,21 @@ inline static void GenerateShadowMap() noexcept {
   }
 }
 inline static void DrawAmbientOcclusion() noexcept {
-
-  for (auto obj : CURRENT_SHADOW_TREE.get_subrect(
+  int var = 255 - currentNightAlpha * 270;
+  unsigned char alpha = 0;
+  if (var > 0) {
+    alpha = (unsigned char)var;
+  }
+  for (const auto obj : CURRENT_SHADOW_TREE.get_subrect(
            {PLAYER_TILE->x - SCREEN_TILE_WIDTH / 2.0F,
             PLAYER_TILE->y - SCREEN_TILE_HEIGHT / 2.0F, (float)SCREEN_TILE_WIDTH,
             (float)SCREEN_TILE_HEIGHT})) {
     PointI tilePos = {obj->xTile * 48, obj->yTile * 48 + 48};
     auto& tex = shadowToTexture[obj->type];
-    DrawTextureProFastRotOffset(
-        tex, 24.0F + tilePos.x + DRAW_X - tex.width / 2, tilePos.y + DRAW_Y - 12.0F, 0,
-        {255, 255, 255, static_cast<unsigned char>(255 - currentNightAlpha * 254)}, 0, 0);
+
+    DrawTextureProFastRotOffset(tex, 24.0F + tilePos.x + DRAW_X - tex.width / 2,
+                                tilePos.y + DRAW_Y - 12.0F, 0, {255, 255, 255, alpha}, 0,
+                                0);
   }
 }
 inline static Vector2 CalculateShadowDirection() noexcept {
@@ -58,7 +63,6 @@ inline static Vector2 CalculateShadowDirection() noexcept {
 
   return Vector2(shadowX, shadowY);
 }
-
 }  // namespace AmbientOcclusion
 namespace Shaders {
 inline static bool lightOn = false;

@@ -6,7 +6,7 @@ struct Monster : public Entity {
   EntityStats stats;
   ThreatManager threatManager{*this};
   std::string name;
-  StatusEffectHandler status_effects{stats};
+  StatusEffectHandler effectHandler{stats};
   MonsterResource* resource;
   Entity* target = nullptr;
   HealthBar health_bar;
@@ -14,7 +14,7 @@ struct Monster : public Entity {
   int16_t attack_cd = 0;
   int16_t attack = 0;
   bool moving = false;
-  bool prev_moving = false;
+  bool prevMoveState = false;
   bool flip = false;
   uint8_t AttackRange = 10;
   uint8_t ChaseRange = 15;
@@ -62,7 +62,7 @@ struct Monster : public Entity {
   ENTITY_UPDATE()                                                \
   spriteCounter++;                                               \
   health_bar.update();                                           \
-  status_effects.Update();                                       \
+  effectHandler.Update();                                       \
   CheckForDeath();                                               \
   if (MP_TYPE == MultiplayerType::CLIENT || attack != 0) return; \
   flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;                    \
@@ -74,7 +74,7 @@ struct Monster : public Entity {
   void Hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && attack != -100) {
       health_bar.hit();
-      status_effects.AddEffects(p.statusEffects);
+      effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.take_damage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
       p.dead = p.hitType == HitType::ONE_HIT;
@@ -125,14 +125,14 @@ struct Monster : public Entity {
 
     flip = ((float)data->x < pos.x_);
     if ((int)pos.x_ == data->x && (int)pos.y_ == data->y) {
-      if (prev_moving) {
-        prev_moving = false;
+      if (prevMoveState) {
+        prevMoveState = false;
         return;
       }
       moving = false;
     } else {
       moving = true;
-      prev_moving = true;
+      prevMoveState = true;
     }
     pos.x_ = data->x;
     pos.y_ = data->y;
@@ -159,13 +159,17 @@ struct Monster : public Entity {
   inline RectangleR GetAttackConeBounds(int attackWidth, int attackHeight) noexcept {
     RectangleR ret = {0};
     auto playerPos = PLAYER.pos;
+    ret.width = attackWidth;
+    ret.height = attackHeight;
+    ret.y = playerPos.y_ < pos.y_ ? pos.y_ - size.y_ / 3 : pos.y_ + size.y_ / 3;
 
-    ret.y = playerPos.y_ < pos.y_ ? pos.y_ - 15 : pos.y_ + 15;
     if (flip) {
-      ret.x = pos.x_ - (size.x_ - 5);
+      ret.x = pos.x_ - ret.width;
     } else {
-      ret.x = pos.x_ + 5;
+      ret.x = pos.x_ + size.x_ / 3;
     }
+    ret.width += size.x_;
+    return ret;
   }
 };
 

@@ -111,12 +111,20 @@ struct Skill {
     DrawRangeCircle();
     float startX = MOUSE_POS.x - TOOL_TIP_WIDTH;
     float startY = MOUSE_POS.y - TOOL_TIP_HEIGHT;
-    DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.2F,
+    DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.1F,
                          ROUND_SEGMENTS, Colors::mediumLightGrey);
-    DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.2F,
+    DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, TOOL_TIP_HEIGHT}, 0.1F,
                               ROUND_SEGMENTS, 2, Colors::darkBackground);
 
-    DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0, WHITE);
+    DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0.5F,
+                damageTypeToColor[damageStats.dmgType]);
+
+    auto wrappedText = Util::WrapText(description, TOOL_TIP_WIDTH, MINECRAFT_REGULAR, 15);
+    DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 5, startY + 25}, 15, 0.5F,
+                Colors::darkBackground);
+
+
+
   }
   inline void DrawRangeCircle() const noexcept {
     if (skillStats.range > 0) {
