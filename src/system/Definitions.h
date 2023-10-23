@@ -37,7 +37,7 @@ inline std::string ASSET_PATH = "../res/";
  * |                         GAME                        |
  * |-----------------------------------------------------|
  */
-#define MAX_DYNAMIC_LIGHTS 50
+#define MAX_DYNAMIC_LIGHTS 25
 
 /* |-----------------------------------------------------|
  * |                TILE COLLISIONS                      |
@@ -54,7 +54,7 @@ inline std::string ASSET_PATH = "../res/";
  * |                       DEBUG                         |
  * |-----------------------------------------------------|
  */
-#define MG2_DEBUG
+//#define MG2_DEBUG
 
 #ifdef MG2_DEBUG
 #define DRAW_HITBOXES     //Draws an outline around hitboxes
@@ -76,6 +76,6 @@ inline std::string ASSET_PATH = "../res/";
 #define DRAW_HITBOXES() draw_hitbox()
 #else
 #undef DRAW_HITBOXES
-#define DRAW_HITBOXES_M()
+#define DRAW_HITBOXES()
 #endif
 #endif  //MAGE_QUEST_SRC_SYSTEM_DEFINITIONS_H_

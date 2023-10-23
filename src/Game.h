@@ -196,9 +196,11 @@ class Game {
       Lighting::DrawScreenEffects();
     } else {
       WorldRender::DrawBackGround();
+      Lighting::AmbientOcclusion::DrawAmbientOcclusion();
       DRAW_ENTITIES()
       WorldRender::DrawForeGround();
       UI_MANAGER.player_ui.Draw();
+      Lighting::DrawScreenEffects();
     }
   }
   static inline void DrawFrame() noexcept {

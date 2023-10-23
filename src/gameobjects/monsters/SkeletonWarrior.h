@@ -40,19 +40,17 @@ struct SkeletonWarrior final : public Monster {
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       if (AttackPlayer3Attacks()) {
-        Point attackPoint = {flip ? pos.x_ - 60 : pos.x_ + 30, pos.y_};
-        Point attackSize = {flip ? pos.x_ - 60 : pos.x_ + 30, pos.y_};
         if (attack == 1) {
-          PROJECTILES.emplace_back(new AttackCone(
-              attackPoint, {40, 50}, false, 120, 30,
-              stats.level, {}, resource->attack_sound[0], this));
+          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
+                                                  32, stats.level, {},
+                                                  resource->attack_sound[0], this));
         } else if (attack == 2) {
-          PROJECTILES.emplace_back(new AttackCone(attackPoint, {40, 50}, false, 120, 30,
-                                                  stats.level, {},
+          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
+                                                  16, stats.level, {},
                                                   resource->attack_sound[1], this));
         } else {
-          PROJECTILES.emplace_back(new AttackCone(attackPoint, {40, 50}, false, 120, 30,
-                                                  stats.level, {},
+          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
+                                                  16, stats.level, {},
                                                   resource->attack_sound[0], this));
         }
       }

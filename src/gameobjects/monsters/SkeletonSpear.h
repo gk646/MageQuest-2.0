@@ -29,9 +29,7 @@ struct SkeletonSpear final : public Monster {
     if (health_bar.delay > 0) {
       health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     }
-#ifdef DRAW_HITBOXES
-    draw_hitbox();
-#endif
+    DRAW_HITBOXES();
   }
   inline void draw_death() noexcept {
     int num = spriteCounter % 120 / 20;
@@ -105,7 +103,21 @@ struct SkeletonSpear final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      AttackPlayer3Attacks();
+      if (AttackPlayer3Attacks()) {
+        if (attack == 1) {
+          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
+                                                  15, stats.level, {},
+                                                  resource->attack_sound[0], this));
+        } else if (attack == 2) {
+          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
+                                                  15, stats.level, {},
+                                                  resource->attack_sound[0], this));
+        } else {
+          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
+                                                  24, stats.level, {},
+                                                  resource->attack_sound[0], this));
+        }
+      }
     }
   }
 };

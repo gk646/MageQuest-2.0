@@ -78,7 +78,7 @@ struct Ghost final : public Monster {
     }
   }
   inline void DrawAppear() noexcept {
-    int num = spriteCounter % 56 / 8;
+    int num = spriteCounter % 42 / 6;
     if (num < 6) {
       DrawTextureProFastEx(resource->walk[num], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y, 0,
                            0, !flip, WHITE);

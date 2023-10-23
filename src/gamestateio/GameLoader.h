@@ -55,7 +55,7 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Tutorial, {65, 54});
+    WorldManager::LoadMap(Zone::Tutorial, {5, 5});
 #endif
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
