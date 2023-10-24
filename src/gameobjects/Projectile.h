@@ -15,10 +15,11 @@ struct Projectile : public Entity {
   bool from_player;
   bool isDoingDamage = true;
   ProjectileType projectileType = ProjectileType::FIRE_BALL;
-  Projectile(bool from_player, const Point& pos, const Point& size, ShapeType shape_type,
-             int life_span, float speed, const DamageStats& damage_stats, HitType type,
+  Projectile(bool from_player, const Point& pos, const PointT<int16_t>& size,
+             ShapeType shape_type, int life_span, float speed,
+             const DamageStats& damage_stats, HitType type,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
-             const Vector2& move_vector, float pov, const Sound& sourceSound,
+             const Vector2& move_vector, int16_t pov, const Sound& sourceSound,
              ProjectileResources* res, const Entity* sender) noexcept
       : Entity(pos, size, shape_type, pov),
         lifeSpanTicks(static_cast<int16_t>(life_span)),
@@ -78,25 +79,31 @@ struct Projectile : public Entity {
       delete ptr;
     }
   }
-  inline Vector2 GetMovementVector() noexcept {
-    float angle = std::atan2(MOUSE_POS.y - pos.y_ - DRAW_Y - size.y_ / 2,
-                             MOUSE_POS.x - pos.x_ - DRAW_X - size.x_ / 2);
+  inline Vector2 GetMovementVectorToMouse() noexcept {
+    float angle = std::atan2(MOUSE_POS.y - pos.y_ - DRAW_Y - size.y / 2,
+                             MOUSE_POS.x - pos.x_ - DRAW_X - size.x / 2);
     return {std::cos(angle), std::sin(angle)};
   }
-  [[nodiscard]] inline bool IsActive() const noexcept { return !dead && isDoingDamage; }
+  inline Vector2 GetMovementVectorToWorldPos(const Point& worldPos) {
+    float angle =
+        std::atan2(worldPos.y_ - pos.y_ - size.y / 2, worldPos.x_ - pos.x_ - size.x / 2);
+    pov = angle * RAD2DEG;
+    return {std::cos(angle), std::sin(angle)};
+  }
+  [[nodiscard]] inline bool IsActive() const noexcept { return !isDead && isDoingDamage; }
   void Update() override {
     spriteCounter++;
     pos.x_ += mvmVector.x * speed;
     pos.y_ += mvmVector.y * speed;
-    tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
+    tile_pos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
+    tile_pos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
     if (!BoundCheckMap(tile_pos.x, tile_pos.y) ||
         CheckTileCollision(tile_pos.x, tile_pos.y)) {
-      dead = true;
+      isDead = true;
     }
     lifeSpanTicks--;
     if (lifeSpanTicks <= 0) {
-      dead = true;
+      isDead = true;
     }
   }
 };

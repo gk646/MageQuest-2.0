@@ -11,7 +11,7 @@ struct BenchMark {
 
       sprintf(buffer, "Game Tick: %lld", GAME_TICK_TIME);
       DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.15, 20, GREEN);
-      PLAYER_STATS.mana = PLAYER_STATS.get_max_mana();
+      PLAYER_STATS.mana = PLAYER_STATS.GetMaxMana();
       PLAYER_STATS.effects[CDR_P] = 1;
       Multiplayer::draw_stats(buffer);
     }

@@ -48,10 +48,10 @@ struct GameLoader {
     PlaySoundR(sound::intro);
     for (uint_fast32_t i = 0; i < 10; i++) {
       if (PLAYER_EQUIPPED[i].item) {
-        PLAYER_STATS.equip_item(PLAYER_EQUIPPED[i].item->effects);
+        PLAYER_STATS.EquipItem(PLAYER_EQUIPPED[i].item->effects);
       }
     }
-    PLAYER_STATS.refill_stats();
+    PLAYER_STATS.RefillStats();
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
@@ -70,11 +70,15 @@ struct GameLoader {
     UI_MANAGER.player_ui.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
     UI_MANAGER.player_ui.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
     UI_MANAGER.player_ui.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
+    for (uint_fast32_t i = 0; i < 1; i++) {
+      MONSTERS.push_back(
+          Monster::GetNewMonster(250.0F + i * 5, 150, MonsterType::SKEL_ARCHER, 5));
+    }
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
 std::array<std::function<void()>, 5> GameLoader::load_functions = {
-    EntityLoader::load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load,
+    EntityLoader::Load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load,
     DataBaseHandler::load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

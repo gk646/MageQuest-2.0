@@ -61,7 +61,7 @@ inline static float PLAYER_Y = 0;
 inline static float DRAW_X = 0;
 inline static float DRAW_Y = 0;
 inline static float MIRROR_POINT = 0;
-inline static PointI* PLAYER_TILE = nullptr;
+inline static PointT<int16_t>* PLAYER_TILE = nullptr;
 inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline static std::string PLAYER_NAME;
 struct Item;
@@ -76,6 +76,7 @@ struct WorldObject;
 struct NPC;
 struct Monster;
 struct Player;
+inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline static uint_fast32_t MONSTER_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND = nullptr;
 inline static int16_t** CURRENT_MIDDLE_GROUND = nullptr;
@@ -103,7 +104,5 @@ inline static bool BoundCheckMap(int x, int y) noexcept {
 inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
-
-
 
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

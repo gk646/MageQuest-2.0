@@ -14,7 +14,7 @@ struct NPC : public Entity {
   NPC_ID id;
   bool last = false;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
-      float speed = 2, const Point& size = {30, 48})
+      float speed = 2, const PointT<int16_t>& size = {30, 48})
       : Entity(pos, size, ShapeType::RECT, 0, zone),
         resource(resource),
         id(id),
@@ -31,9 +31,9 @@ struct NPC : public Entity {
   }
   bool MoveToPointI(const PointI& next) noexcept {
     moving = false;
-    PointI next_pos;
+    PointT<int16_t> next_pos;
     if ((next_pos = PathFinding::AStarPathFinding(tile_pos, next)) > 0) {
-      decideMovement(next_pos, speed);
+      CalculateMovement(next_pos, speed);
       moving = true;
     } else if (next_pos == 0) {
       moving = false;
@@ -44,13 +44,13 @@ struct NPC : public Entity {
   void draw_dialogue() noexcept {
     if (dialogueShowDelayTicks > 0) {
       if (dialogue) {
-        TextRenderer::RenderDialogue(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y,
+        TextRenderer::RenderDialogue(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y,
                                      dialogue, dialogueProgressCount, last);
       }
       if (choices) {
         float offSet = 0;
         for (auto& b : *choices) {
-          b.Draw(pos.x_ + DRAW_X + size.x_ / 2, pos.y_ + DRAW_Y + size.x_ * 1.2F + offSet,
+          b.Draw(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y + size.x * 1.2F + offSet,
                  TextAlign::LEFT);
           offSet += 21;
         }
@@ -62,25 +62,25 @@ struct NPC : public Entity {
     dialogue = text;
     dialogueShowDelayTicks = 400;
   }
-  inline static NPC* GetNPCInstance(NPC_ID npcID, float absoluteX, float absoluteY,
-                                    Zone npcZone) noexcept;
+  inline static NPC* GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
+                               Zone npcZone) noexcept;
 };
 
 #include "../quest/QuestHandler.h"
-#define INTERACT_WITH_PLAYER()                                                \
-  if (Util::EPressed() && zone == CURRENT_ZONE && this->intersects(PLAYER)) { \
-    if (!dialogue) {                                                          \
-      PLAYER_QUESTS.InteractWithNPC(this);                                    \
-      dialogueProgressCount = 0;                                              \
-      dialogueShowDelayTicks = 400;                                           \
-    } else if (dialogueShowDelayTicks < 0) {                                  \
-      dialogueProgressCount = 0;                                              \
-      dialogueShowDelayTicks = 400;                                           \
-    } else if (dialogueProgressCount < 1000) {                                \
-      dialogueProgressCount = 1000;                                           \
-    } else {                                                                  \
-      PLAYER_QUESTS.InteractWithNPC(this);                                    \
-    }                                                                         \
+#define INTERACT_WITH_PLAYER()                                                       \
+  if (Util::EPressed() && currentZone == CURRENT_ZONE && this->intersects(PLAYER)) { \
+    if (!dialogue) {                                                                 \
+      PLAYER_QUESTS.InteractWithNPC(this);                                           \
+      dialogueProgressCount = 0;                                                     \
+      dialogueShowDelayTicks = 400;                                                  \
+    } else if (dialogueShowDelayTicks < 0) {                                         \
+      dialogueProgressCount = 0;                                                     \
+      dialogueShowDelayTicks = 400;                                                  \
+    } else if (dialogueProgressCount < 1000) {                                       \
+      dialogueProgressCount = 1000;                                                  \
+    } else {                                                                         \
+      PLAYER_QUESTS.InteractWithNPC(this);                                           \
+    }                                                                                \
   }
 #define DRAW_NPC_DIALOGUE() \
   for (auto npc : NPCS) {   \
@@ -89,16 +89,15 @@ struct NPC : public Entity {
   TextRenderer::RenderPlayerThought();
 
 void Monster::MonsterDiedCallback() noexcept {
-  ItemDropHandler::RollForItemDrop(pos.x_ + size.x_ / 2, pos.y_ + size.y_ / 2,
-                                   stats.level);
+  ItemDropHandler::RollForItemDrop(pos.x_ + size.x / 2, pos.y_ + size.y / 2, stats.level);
   PLAYER_QUESTS.MonsterKilled(type);
   GAME_STATISTICS.MonsterKilled(type);
 }
 #include "npcs/Deckard.h"
 #include "npcs/Aria.h"
 #include "npcs/Marla.h"
-NPC* NPC::GetNPCInstance(NPC_ID npcID, float absoluteX, float absoluteY,
-                         Zone npcZone) noexcept {
+NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
+                    Zone npcZone) noexcept {
   switch (npcID) {
     case NPC_ID::DECKARD:
       return new Deckard(absoluteX, absoluteY, npcZone);

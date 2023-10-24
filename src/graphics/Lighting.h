@@ -89,11 +89,11 @@ float outerRadii[MAX_DYNAMIC_LIGHTS];
 Vector3 lightColors[MAX_DYNAMIC_LIGHTS];
 inline static void UpdateDynamicLights() noexcept {
   int i = 0;
-  for (auto p : PROJECTILES) {
+  for (const auto& p : PROJECTILES) {
     if (i >= MAX_DYNAMIC_LIGHTS) break;
-    if (p->active && p->illuminated) {
-      lightPositions[i] = {p->pos.x_ + DRAW_X + p->size.x_ / 2,
-                           SCREEN_HEIGHT - (p->pos.y_ + DRAW_Y + p->size.y_ / 2)};
+    if (p->isUpdated && p->isIlluminated) {
+      lightPositions[i] = {p->pos.x_ + DRAW_X + p->size.x / 2,
+                           SCREEN_HEIGHT - (p->pos.y_ + DRAW_Y + p->size.y / 2)};
       innerRadii[i] = typeToLight[p->projectileType].innerRadius;
       outerRadii[i] = typeToLight[p->projectileType].outerRadius;
       lightColors[i] = typeToLight[p->projectileType].lightColors;

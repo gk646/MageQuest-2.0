@@ -32,7 +32,7 @@ struct WorldRender {
 
     DRAW_X = -playerX + screenX;
     DRAW_Y = -playerY + screenY;
-    MIRROR_POINT = playerX + PLAYER.size.x_ / 2;
+    MIRROR_POINT = playerX + PLAYER.size.x / 2;
   }
   static void DrawBackGround() noexcept {
     float x_base, y_base;

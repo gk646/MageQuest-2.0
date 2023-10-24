@@ -4,7 +4,7 @@
 struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
-  inline static constexpr float TOOL_TIP_HEIGHT = 90;
+  inline static constexpr float TOOL_TIP_BASE_HEIGHT = 90;
   std::string name;
   std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
@@ -46,7 +46,7 @@ struct Skill {
   [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
     Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
                        PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
-    if (Point(PLAYER_X + PLAYER.size.x_ / 2, PLAYER_Y + PLAYER.size.y_ / 2)
+    if (Point(PLAYER_X + PLAYER.size.x / 2, PLAYER_Y + PLAYER.size.y / 2)
             .dist(targetPos) <= skillStats.range) {
       if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
         return true;
@@ -59,7 +59,7 @@ struct Skill {
     }
     return false;
   }
-  inline static Skill* GetSkillInstance(ProjectileType type,
+  inline static Skill* GetNewSkill(ProjectileType type,
                                         const SkillStats& stats) noexcept;
   inline void DrawTooltip(float x, float y) noexcept {
     if (hitbox.Update(x, y)) {
@@ -113,11 +113,11 @@ struct Skill {
     DrawRangeCircle();
     int lineBreaks = 0;
     auto descriptionText = Util::WrapText(
-        Util::CreateToolTipString(description, PLAYER_STATS.get_ability_dmg(damageStats),
+        Util::CreateToolTipString(description, PLAYER_STATS.GetAbilityDmg(damageStats),
                                   skillStats.specialVal1, skillStats.specialVal2),
         TOOL_TIP_WIDTH, MINECRAFT_REGULAR, 15, &lineBreaks);
 
-    float toolTipHeight = TOOL_TIP_HEIGHT + lineBreaks * 15;
+    float toolTipHeight = TOOL_TIP_BASE_HEIGHT + lineBreaks * 15;
     float startX = MOUSE_POS.x - TOOL_TIP_WIDTH / 2;
     float startY = MOUSE_POS.y - toolTipHeight - 3;
     DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
@@ -180,8 +180,9 @@ struct Skill {
 };
 
 #include "skills/Skills.h"
+
 inline static std::array<Skill*, ProjectileType::PROJECTILE_END> SKILLS;
-Skill* Skill::GetSkillInstance(ProjectileType type, const SkillStats& stats) noexcept {
+Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept {
   switch (type) {
     case POISON_BALL:
       break;
@@ -251,7 +252,7 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
       PROJECTILES.emplace_back(new EnergySphere(
           {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
           SKILLS[ENERGY_SPHERE]->skillStats.lifeSpan,
-          SKILLS[ENERGY_SPHERE]->skillStats.speed, data->damage, HitType::CONTINUOUS,
+          SKILLS[ENERGY_SPHERE]->skillStats.speed, data->damage,
           {nullptr, nullptr, nullptr}, {data->move_x, data->move_y}, ptr));
       break;
     }

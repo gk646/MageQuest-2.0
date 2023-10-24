@@ -14,7 +14,7 @@ static void LoadNamedNPCs() {
     auto absoluteX = static_cast<float>(sqlite3_column_double(stmt, 1));
     auto absoluteY = static_cast<float>(sqlite3_column_double(stmt, 2));
     auto zone = Zone(sqlite3_column_int(stmt, 3));
-    NPCS.push_back(NPC::GetNPCInstance(npcID, absoluteX, absoluteY, zone));
+    NPCS.push_back(NPC::GetNewNPC(npcID, absoluteX, absoluteY, zone));
   }
   sqlite3_finalize(stmt);
 }

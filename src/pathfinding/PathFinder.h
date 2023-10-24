@@ -3,13 +3,13 @@
 namespace PathFinding {
 inline constexpr uint16_t MAX_LENGTH = 1024;
 struct NodeP {
-  PointI position{};
+  PointT<int16_t> position{};
   uint16_t f_cost = 0;
   uint16_t g_cost = 0;
   NodeP* parent = nullptr;
   NodeP() = default;
   NodeP(const NodeP& n) = default;
-  NodeP(const PointI& position, uint16_t g_cost, uint16_t h_cost, NodeP* parent)
+  NodeP(const PointT<int16_t>& position, uint16_t g_cost, uint16_t h_cost, NodeP* parent)
       : position(position), g_cost(g_cost), f_cost(g_cost + h_cost), parent(parent) {}
 
   inline bool operator<(const NodeP& o) const { return f_cost < o.f_cost; }
@@ -19,13 +19,13 @@ struct NodeP {
 };
 static inline std::array<NodeP, 1024> node_pool{};
 static inline PriorityQueue<NodeP> frontier{};
-static inline std::unordered_set<PointI> closedSet{};
+static inline std::unordered_set<PointT<int16_t>> closedSet{};
 static inline PointI star_movement[8] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0},
                                          {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
 
 static inline PointI cross_movement[4] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-static inline PointI FindNextPoint(NodeP* target_node) noexcept {
+static inline PointT<int16_t> FindNextPoint(NodeP* target_node) noexcept {
   NodeP* node = target_node;
 
   while (node->parent && node->parent->parent) {
@@ -35,7 +35,8 @@ static inline PointI FindNextPoint(NodeP* target_node) noexcept {
   return node->position;
 }
 
-static PointI AStarPathFinding(const PointI& start, const PointI& target) noexcept {
+static PointT<int16_t> AStarPathFinding(const PointT<int16_t>& start,
+                                        const PointT<int16_t>& target) noexcept {
   if (start == target) {
     return {0, 0};
   }
@@ -110,7 +111,7 @@ PointI astar_pathfinding_visual(const PointI& start, const PointI& target) {
   return {-1, -1};
 }
  */
-inline static bool LineOfSightCheck(PointI start, const Point& endPoint) {
+inline static bool LineOfSightCheck(PointT<int16_t> start, const Point& endPoint) {
   PointI end = {static_cast<int>(endPoint.x_ / 48), static_cast<int>(endPoint.y_ / 48)};
   int dx = abs(end.x - start.x), sx = start.x < end.x ? 1 : -1;
   int dy = -abs(end.y - start.y), sy = start.y < end.y ? 1 : -1;

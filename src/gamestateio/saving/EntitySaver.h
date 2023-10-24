@@ -14,7 +14,7 @@ inline static void SaveNPC(const NPC* npc, sqlite3_stmt* stmt, int i) noexcept {
   sqlite3_bind_int(stmt, 1, (int)npc->id);
   sqlite3_bind_int(stmt, 2, (int)npc->pos.x_);
   sqlite3_bind_int(stmt, 3, (int)npc->pos.y_);
-  sqlite3_bind_int(stmt, 4, (int)npc->zone);
+  sqlite3_bind_int(stmt, 4, (int)npc->currentZone);
   sqlite3_bind_int(stmt, 5, i);
 
   sqlite3_step(stmt);

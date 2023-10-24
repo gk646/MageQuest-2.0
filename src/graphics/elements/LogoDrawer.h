@@ -6,10 +6,9 @@ struct LogoDrawer {
   float transparency = 0;
   Texture texture;
   int finished = 0;
-  LogoDrawer(const std::string& name) : texture(LoadTexture(name.c_str())) {}
+  explicit LogoDrawer(const std::string& name) : texture(LoadTexture(name.c_str())) {}
   ~LogoDrawer() { UnloadTexture(texture); }
-
-  void draw() noexcept {
+  void Draw() noexcept {
     DrawTextureProFast(texture, GetScreenWidth() / 2 - texture.width/2,
                        GetScreenHeight() / 2 - texture.height/2, 0,
                        {255, 255, 255, (uint8_t)transparency});

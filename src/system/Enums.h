@@ -45,6 +45,7 @@ enum class MonsterType : uint8_t {
   SKEL_SHIELD,
   SNAKE
 };
+
 enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT };
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
@@ -314,6 +315,7 @@ enum ProjectileType : uint8_t {
   FIRE_STRIKE,
   FIRE_STRIKE_II,
   FIRE_BALL,
+  ARROW_NORMAL,
   BLAST_HAMMER,
   ENERGY_SPHERE,
   FIRE_SWORD,
@@ -351,6 +353,7 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
     {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};
+
 inline std::unordered_map<Stat, std::string> statToName = {
     {ARCANE_DMG_P, "Arcane Damage (%)"},
     {DARK_DMG_P, "Dark Damage (%)"},
@@ -447,6 +450,5 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"Goblin_Cave", Zone::Goblin_Cave},
     {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave}};
 
-inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #endif  //MAGE_QUEST_SRC_ENUMS_ENUMS_H_

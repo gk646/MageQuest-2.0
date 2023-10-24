@@ -10,7 +10,7 @@ struct BlastHammer_Skill final : public Skill {
     TriggerSkill();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - BlastHammer::width / 2.0F,
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - BlastHammer::height / 2.0F};
-    float damage = PLAYER_STATS.get_ability_dmg(damageStats);
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
 
     Multiplayer::UDP_SEND_PROJECTILE(BLAST_HAMMER, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0,
                                      0, damage);
@@ -30,7 +30,7 @@ struct FireStrike_Skill final : public Skill {
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - FireBall::width / 2,
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - FireBall::height / 2};
     const float interval_angle = 360.0f / skillStats.specialVal1;
-    float damage = PLAYER_STATS.get_ability_dmg(damageStats) / 60.0F;
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats) / 60.0F;
     for (int_fast32_t i = 0; i < skillStats.specialVal1; i++) {
       float angle_rad = interval_angle * i * DEG2RAD;
       float x_component = std::cos(angle_rad);
@@ -58,11 +58,11 @@ struct EnergySphere_Skill final : public Skill {
   }
   void Activate() final {
     TriggerSkill();
-    float posX = PLAYER_X + PLAYER.size.x_ / 2;
-    float posY = PLAYER_Y + (PLAYER.size.y_ - EnergySphere::HEIGHT) / 2;
+    float posX = PLAYER_X + PLAYER.size.x / 2;
+    float posY = PLAYER_Y + (PLAYER.size.y - EnergySphere::HEIGHT) / 2;
     float angle = std::atan2(MOUSE_POS.y - posY - DRAW_Y - EnergySphere::HEIGHT / 2,
                              MOUSE_POS.x - posX - DRAW_X - EnergySphere::WIDTH / 2);
-    float damage = PLAYER_STATS.get_ability_dmg(damageStats) / 60.0F;
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats) / 60.0F;
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
 
@@ -72,7 +72,7 @@ struct EnergySphere_Skill final : public Skill {
 
     PROJECTILES.emplace_back(
         new EnergySphere({posX, posY}, from_player, skillStats.lifeSpan, skillStats.speed,
-                         damage, HitType::CONTINUOUS, {}, {x_move, y_move}, &PLAYER));
+                         damage, {}, {x_move, y_move}, &PLAYER));
   }
 };
 struct FireBall_Skill final : public Skill {
@@ -84,9 +84,9 @@ struct FireBall_Skill final : public Skill {
     auto mouse_pos = MOUSE_POS;
     float angle =
         std::atan2(mouse_pos.y - (PLAYER_Y + DRAW_Y), mouse_pos.x - (PLAYER_X + DRAW_X));
-    float damage = PLAYER_STATS.get_ability_dmg(damageStats);
-    float posX = PLAYER_X + PLAYER.size.x_ / 2;
-    float posY = PLAYER_Y + PLAYER.size.y_ / 2 - FireBall::height / 2;
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
+    float posX = PLAYER_X + PLAYER.size.x / 2;
+    float posY = PLAYER_Y + PLAYER.size.y / 2 - FireBall::height / 2;
     float pov = angle * (180.0f / PI);
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);
@@ -106,9 +106,9 @@ struct Dummy_Skill final : public Skill {
               textures::EMPTY_TEXTURE) {}
   void Activate() final {
     TriggerSkill();
-    PROJECTILES.push_back(new Dummy({PLAYER_X + PLAYER.size.x_ / 2,
-                                     PLAYER_Y + (PLAYER.size.y_ - FireBall::height) / 2},
-                                    true, PLAYER_STATS.get_ability_dmg(damageStats)));
+    PROJECTILES.push_back(new Dummy({PLAYER_X + PLAYER.size.x / 2,
+                                     PLAYER_Y + (PLAYER.size.y - FireBall::height) / 2},
+                                    true, PLAYER_STATS.GetAbilityDmg(damageStats)));
   }
 };
 struct LockedSlot_Skill final : public Skill {
@@ -127,7 +127,7 @@ struct Lightning_Skill final : public Skill {
     TriggerSkill();
     Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - Lightning::WIDTH / 2,
                  PLAYER_Y + MOUSE_POS.y - CAMERA_Y - Lightning::HEIGHT / 2};
-    float damage = PLAYER_STATS.get_ability_dmg(damageStats);
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
 
     Multiplayer::UDP_SEND_PROJECTILE(LIGHTNING, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0, 0,
                                      damage);
@@ -144,9 +144,9 @@ struct FrostNova_Skill final : public Skill {
 
   void Activate() final {
     TriggerSkill();
-    Point pos = {PLAYER_X + PLAYER.size.x_ / 2 - FrostNova::WIDTH / 2,
-                 PLAYER_Y + PLAYER.size.y_ / 2 - FrostNova::HEIGHT / 2};
-    float damage = PLAYER_STATS.get_ability_dmg(damageStats);
+    Point pos = {PLAYER_X + PLAYER.size.x / 2 - FrostNova::WIDTH / 2,
+                 PLAYER_Y + PLAYER.size.y / 2 - FrostNova::HEIGHT / 2};
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
     Multiplayer::UDP_SEND_PROJECTILE(FROST_NOVA, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0,
                                      0, damage);
 

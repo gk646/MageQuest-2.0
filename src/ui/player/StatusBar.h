@@ -13,9 +13,9 @@ struct StatusBar {
     const auto& stats = PLAYER_STATS;
 
     float health = stats.health;
-    float max_health = stats.get_max_health();
+    float max_health = stats.GetMaxHealth();
     float mana = stats.mana;
-    float max_mana = stats.get_max_mana();
+    float max_mana = stats.GetMaxMana();
     float shield = stats.shield;
 
     if (shield > 0) {
