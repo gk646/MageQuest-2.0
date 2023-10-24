@@ -13,7 +13,7 @@ struct HealthBar {
 
     const float startX = x - (scaledWidth - width) / 2;
     const float startY = y - scaledHeight * 1.2F;
-    const float healthWidth = stats.health / stats.get_max_health() * scaledWidth - 2;
+    const float healthWidth = stats.health / stats.GetMaxHealth() * scaledWidth - 2;
 
     DrawRectanglePro(startX + 1, startY + 4, healthWidth, scaledHeight / 2, {0, 0}, 0,
                      Colors::Red);

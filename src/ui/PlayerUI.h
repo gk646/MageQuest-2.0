@@ -57,7 +57,7 @@ struct PlayerUI {
         InventorySlot::RecoverDraggedItem();
       } else {
         WORLD_OBJECTS.push_back(new DroppedItem(
-            {PLAYER_X + PLAYER.size.x_ / 2 + 50, PLAYER_Y + PLAYER.size.y_ / 2},
+            {PLAYER_X + PLAYER.size.x / 2 + 50, PLAYER_Y + PLAYER.size.y / 2},
             DRAGGED_ITEM));
         DRAGGED_ITEM = nullptr;
         DRAGGED_SLOT = nullptr;

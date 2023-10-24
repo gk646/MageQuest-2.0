@@ -3,7 +3,7 @@
 
 struct WorldObject : public Entity {
 
-  WorldObject(const Point& pos, const Point& size, ShapeType shape_type)
+  WorldObject(const Point& pos, const PointT<int16_t>& size, ShapeType shape_type)
       : Entity(pos, size, shape_type) {}
 
 };

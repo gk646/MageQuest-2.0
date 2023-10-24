@@ -1,12 +1,37 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
-struct MonsterScaleStats {
+struct MonsterScaler {
   float baseHealth = 5;
   float healthPerLevel = 1;
   float speed = 2;
   int16_t attackCD = 50;
+  uint8_t attackRange = 5;
+  uint8_t chaseRange = 8;
+  [[nodiscard]] inline float GetMaxHealth(uint8_t level) const noexcept {
+    return (baseHealth +
+            ((level - 1.0F) * healthPerLevel * cxstructs::fast_sqrt(level))) *
+           DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
+  }
 };
+
+struct MonsterAttackStats {
+  int16_t attackCooldown;
+  int16_t currentCooldown = 0;
+  uint8_t attackRange;
+  uint8_t chaseRange;
+  explicit MonsterAttackStats(const MonsterScaler& scaler)
+      : attackCooldown(scaler.attackCD),
+        attackRange(scaler.attackRange),
+        chaseRange(scaler.chaseRange) {}
+  [[nodiscard]] inline bool IsAttackReady(int8_t actionState) const noexcept {
+    return actionState == 0 && currentCooldown <= 0;
+  }
+  inline void Update(int8_t actionState) noexcept { currentCooldown -= actionState == 0; }
+  inline void ResetCooldown() noexcept { currentCooldown = attackCooldown; }
+};
+
+
 struct SkillStats {
   float manaCost = 0;
   float healthCost = 0;
@@ -56,31 +81,21 @@ struct EntityStats {
   float shield = 0;
   uint8_t level = 1;
   bool stunned = false;
-  EntityStats() {
-    Init();
-    effects[HEALTH_REGEN] = 0.2F;
-    effects[MANA_REGEN] = 1;
-    effects[MAX_HEALTH] = 10;
-    effects[MAX_MANA] = 20;
-    effects[WEAPON_DAMAGE] = 0;
-  };
-  EntityStats(float base_health, int level, float per_level, float speed) noexcept
-      : level((int8_t)level), speed(speed) {
-    Init();
-    effects[MAX_HEALTH] =
-        base_health + ((level - 1.0F) * per_level * cxstructs::fast_sqrt(level));
-    effects[MAX_HEALTH] *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
-    health = effects[MAX_HEALTH];
+  EntityStats() noexcept { InitPlayer(); };
+  EntityStats(const MonsterScaler& scaler, uint8_t level) noexcept
+      : level(level), speed(scaler.speed) {
+    effects[MAX_HEALTH] = scaler.GetMaxHealth(level);
+    effects[MAX_HEALTH] *= health = effects[MAX_HEALTH];
   }
   inline void update() noexcept {
-    float max_mana_value = get_max_mana();
+    float max_mana_value = GetMaxMana();
     if (mana < max_mana_value) {
       mana = std::min(mana + effects[MANA_REGEN] / 60, max_mana_value);
     } else {
       mana = max_mana_value;
     }
 
-    float max_health_value = get_max_health();
+    float max_health_value = GetMaxHealth();
     if (health < max_health_value) {
       health = std::min(health + effects[HEALTH_REGEN] / 60, max_health_value);
     } else {
@@ -106,19 +121,19 @@ struct EntityStats {
   inline void UseSkill(const SkillStats& stats) noexcept {
     mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
-  inline void equip_item(const float* effect_arr) noexcept {
+  inline void EquipItem(const float* effect_arr) noexcept {
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
       effects[i] += effect_arr[i];
     }
     ReCalculatePlayerStats();
   }
-  inline void un_equip_item(const float* effect_arr) noexcept {
+  inline void UnEquipItem(const float* effect_arr) noexcept {
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
       effects[i] -= effect_arr[i];
     }
     ReCalculatePlayerStats();
   }
-  inline float get_ability_dmg(const DamageStats& stats) noexcept {
+  inline float GetAbilityDmg(const DamageStats& stats) noexcept {
     switch (stats.dmgType) {
       case DamageType::FIRE:
         return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[FIRE_DMG_P]);
@@ -136,7 +151,7 @@ struct EntityStats {
         return stats.damage + effects[WEAPON_DAMAGE];
     }
   }
-  inline float take_damage(const DamageStats& stats) {
+  inline float TakeDamage(const DamageStats& stats) {
     float& armour = effects[ARMOUR];
     float& armour_mult = effects[ARMOUR_MULT_P];
 
@@ -156,19 +171,10 @@ struct EntityStats {
     health -= total_damage;
     return total_damage;
   }
-  inline void refill_stats() noexcept {
-    mana = get_max_mana();
-    health = get_max_health();
+  inline void RefillStats() noexcept {
+    mana = GetMaxMana();
+    health = GetMaxHealth();
     shield = effects[MAX_SHIELD];
-  }
-  [[nodiscard]] inline float get_max_health() const noexcept {
-    return effects[MAX_HEALTH] * (1 + effects[HEALTH_MULT_P]);
-  }
-  [[nodiscard]] inline float get_max_mana() const noexcept {
-    return effects[MAX_MANA] * (1 + effects[MANA_MULT_P]);
-  }
-  [[nodiscard]] inline float GetSpeed() const noexcept {
-    return speed * (1 + effects[SPEED_MULT_P]);
   }
   static inline void RemoveEffects() noexcept;
   static inline void ApplyEffects() noexcept;
@@ -190,21 +196,35 @@ struct EntityStats {
       ReCalculatePlayerStats();
     }
   }
+  [[nodiscard]] inline float GetMaxHealth() const noexcept {
+    return effects[MAX_HEALTH] * (1 + effects[HEALTH_MULT_P]);
+  }
+  [[nodiscard]] inline float GetMaxMana() const noexcept {
+    return effects[MAX_MANA] * (1 + effects[MANA_MULT_P]);
+  }
+  [[nodiscard]] inline float GetSpeed() const noexcept {
+    return speed * (1 + effects[SPEED_MULT_P]);
+  }
 
  private:
-  inline float RollCriticalHit(float damage) const noexcept {
+  [[nodiscard]] inline float RollCriticalHit(float damage) const noexcept {
     if (RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]) {
       return damage * (1 + effects[CRIT_DAMAGE_P]);
     }
     return damage;
   }
-  inline void Init() noexcept {
+  inline void InitPlayer() noexcept {
     effects[CRIT_CHANCE] = 5;
     effects[CRIT_DAMAGE_P] = 0.5F;
+    effects[HEALTH_REGEN] = 0.2F;
+    effects[MANA_REGEN] = 1;
+    effects[MAX_HEALTH] = 10;
+    effects[MAX_MANA] = 20;
+    effects[WEAPON_DAMAGE] = 0;
   }
 };
 inline EntityStats PLAYER_STATS;
-
+inline static std::unordered_map<MonsterType, MonsterScaler> monsterIdToScaler{};
 bool SpentAttributePoints::IsDefaultValue(Stat stat) const noexcept {
   return spentPoints[stat] - PLAYER_STATS.effects[stat] < 0.05F;
 }

@@ -23,12 +23,12 @@ struct Player final : public Entity {
     //TODO dodge chance
     if (!p.from_player && p.IsActive()) {
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
-      PLAYER_STATS.take_damage(p.damageStats);
-      p.dead = p.hitType == HitType::ONE_HIT;
+      PLAYER_STATS.TakeDamage(p.damageStats);
+      p.isDead = p.hitType == HitType::ONE_HIT;
     }
   }
   void Update() final {
-    if (dead) {
+    if (isDead) {
       GAME_STATE = GameState::GameOver;
       return;
     } else if (PLAYER_STATS.stunned) {
@@ -64,8 +64,8 @@ struct Player final : public Entity {
       flip = false;
     }
 
-    tile_pos.x = static_cast<int>(pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = static_cast<int>(pos.y_ + size.y_ / 2) / TILE_SIZE;
+    tile_pos.x = static_cast<int>(pos.x_ + size.x / 2) / TILE_SIZE;
+    tile_pos.y = static_cast<int>(pos.y_ + size.y / 2) / TILE_SIZE;
 
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
@@ -75,7 +75,7 @@ struct Player final : public Entity {
   void Draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[spriteCounter % 56 / 7],
-                           (int)(pos.x_ + DRAW_X - 25.0F), (int)(pos.y_ + DRAW_Y - 45),
+                           std::round(pos.x_ + DRAW_X - 25.0F), std::round(pos.y_ + DRAW_Y - 45),
                            -23, 0, flip, WHITE);
       actionState = 0;
     } else if (actionState == 1) {
@@ -100,7 +100,7 @@ struct Player final : public Entity {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
     } else {
-      dead = true;
+      isDead = true;
     }
   }
   inline void draw_attack1() noexcept {

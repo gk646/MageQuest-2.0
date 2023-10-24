@@ -14,7 +14,7 @@ struct NetPlayer final : public Entity {
   int action_state = 0;
   bool flip = false;
   explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id,
-                     const Point& size = {28, 50})
+                     const PointT<int16_t>& size = {28, 50})
       : Entity(pos, size, ShapeType::RECT),
         zone(zone),
         name(SteamFriends()->GetFriendPersonaName(steam_id)) {
@@ -51,8 +51,8 @@ struct NetPlayer final : public Entity {
   }
   void Update() final {
     sprite_counter++;
-    tile_pos.x = (pos.x_ + size.x_ / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y_ / 2) / TILE_SIZE;
+    tile_pos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
+    tile_pos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
   }
   inline void update_state(uint16_t x, uint16_t y) noexcept {
     if (pos.x_ == x && pos.y_ == y) {
@@ -73,8 +73,8 @@ struct NetPlayer final : public Entity {
   void hit(Projectile& p) noexcept {
     if (!p.from_player) {
       status_effects.AddEffects(p.statusEffects);
-      stats.take_damage(p.damageStats);
-      p.dead = action_state != -100 && p.hitType == HitType::ONE_HIT;
+      stats.TakeDamage(p.damageStats);
+      p.isDead = action_state != -100 && p.hitType == HitType::ONE_HIT;
     }
   }
   inline void draw_direction_indicator() noexcept {
@@ -86,7 +86,7 @@ struct NetPlayer final : public Entity {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
     } else {
-      dead = true;
+      isDead = true;
     }
   }
   inline void draw_attack1() noexcept {

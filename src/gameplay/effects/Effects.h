@@ -51,7 +51,7 @@ struct Burn final : public StatusEffect {
   void ApplyEffect(EntityStats& stats) noexcept final {}
   void TickEffect(EntityStats& stats) final {
     if (is_damage_tick()) {
-      stats.take_damage(damage_stats);
+      stats.TakeDamage(damage_stats);
     }
     duration--;
   }

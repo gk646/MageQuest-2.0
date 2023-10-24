@@ -26,7 +26,7 @@ static void Load() noexcept {
     stats.coolDownTicks = std::stoi(vec[Cooldown_INDEX]);
     stats.range = std::stoi(vec[Range_INDEX]);
     stats.manaCost = std::stof(vec[ManaCost_INDEX]);
-    auto skillPtr = Skill::GetSkillInstance(type, stats);
+    auto skillPtr = Skill::GetNewSkill(type, stats);
     skillPtr->description = vec[Description_INDEX];
     skillPtr->name = vec[DisplayName_INDEX];
     SKILLS[type] = skillPtr;

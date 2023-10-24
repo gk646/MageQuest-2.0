@@ -3,7 +3,7 @@
 
 struct RegionMap final : public Window {
   Vector2 last_mouse_pos{};
-  PointI tile_offset{};
+  PointT<int16_t> tile_offset{};
   static inline char HEADER[] = "Map";
   float zoom = 5;
   bool dragged = false;
@@ -69,18 +69,20 @@ struct RegionMap final : public Window {
     for (const auto projectile : PROJECTILES) {
       if (projectile->from_player) {
         DrawSquareProFast(base_x + projectile->tile_pos.x * zoom,
-                          base_y + projectile->tile_pos.y * zoom, 0.6F*zoom, Colors::Blue);
+                          base_y + projectile->tile_pos.y * zoom, 0.6F * zoom,
+                          Colors::Blue);
       } else {
         DrawSquareProFast(base_x + projectile->tile_pos.x * zoom,
-                          base_y + projectile->tile_pos.y * zoom, 0.6F*zoom, Colors::Red);
+                          base_y + projectile->tile_pos.y * zoom, 0.6F * zoom,
+                          Colors::Red);
       }
     }
 
     PointI questWaypoint;
     if (PLAYER_QUESTS.activeQuest &&
         (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
-      DrawSquareProFast(base_x + questWaypoint.x * zoom,
-                        base_y + questWaypoint.y * zoom, zoom, Colors::questMarkerYellow);
+      DrawSquareProFast(base_x + questWaypoint.x * zoom, base_y + questWaypoint.y * zoom,
+                        zoom, Colors::questMarkerYellow);
     }
   }
   void DragMap() noexcept {
@@ -111,8 +113,8 @@ struct RegionMap final : public Window {
 
     DrawRectangleRounded(scaled_head, 0.5F, ROUND_SEGMENTS,
                          isHeaderHovered ? isDragged ? Colors::mediumLightGreyDarker
-                                                   : Colors::mediumLightGreyBitDarker
-                                      : Colors::mediumLightGrey);
+                                                     : Colors::mediumLightGreyBitDarker
+                                         : Colors::mediumLightGrey);
 
     DrawRectangleRoundedLines(scaled_whole, 0.03F, ROUND_SEGMENTS, 3,
                               Colors::darkBackground);

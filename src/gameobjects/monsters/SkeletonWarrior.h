@@ -2,31 +2,26 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_MONSTERS_SKELETONWARRIOR_H_
 
 struct SkeletonWarrior final : public Monster {
-  static constexpr int base_health = 7;
-  static constexpr int per_level = 5;
-  static constexpr float base_speed = 1.5;
-  SkeletonWarrior(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
-                &textures::monsters::SKELETON_WARRIOR, MonsterType::SKEL_WAR, {30, 48}) {
-    attack_cd = 50;
-  }
+  SkeletonWarrior(const Point& pos, int level, MonsterType type) noexcept
+      : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::GHOST, type,
+                {30, 48}) {}
   void Draw() final {
-    if (attack == -100) [[unlikely]] {
+    if (actionState == -100) [[unlikely]] {
       draw_death();
-    } else if (attack == 1) {
+    } else if (actionState == 1) {
       draw_attack1();
-    } else if (attack == 2) {
+    } else if (actionState == 2) {
       draw_attack2();
-    } else if (attack == 3) {
+    } else if (actionState == 3) {
       draw_attack3();
     } else {
-      if (moving) {
+      if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 140 / 20],
-                             pos.x_ + DRAW_X - 33, pos.y_ + DRAW_Y - 6, 0, 0, flip,
+                             pos.x_ + DRAW_X - 33, pos.y_ + DRAW_Y - 6, 0, 0, isFlipped,
                              WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 112 / 16],
-                             pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 2, -10, 0, flip,
+                             pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 2, -10, 0, isFlipped,
                              WHITE);
       }
     }
@@ -40,11 +35,11 @@ struct SkeletonWarrior final : public Monster {
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       if (AttackPlayer3Attacks()) {
-        if (attack == 1) {
+        if (actionState == 1) {
           PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
                                                   32, stats.level, {},
                                                   resource->attack_sound[0], this));
-        } else if (attack == 2) {
+        } else if (actionState == 2) {
           PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
                                                   16, stats.level, {},
                                                   resource->attack_sound[1], this));
@@ -60,36 +55,36 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 48, -20, 0, flip, WHITE);
+                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped, WHITE);
     } else {
-      dead = true;
+      isDead = true;
     }
   }
   inline void draw_attack1() noexcept {
     int num = spriteCounter % 96 / 16;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 12, -16, 0, flip, WHITE);
+                           pos.y_ + DRAW_Y - 12, -16, 0, isFlipped, WHITE);
     } else {
-      attack = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack2() noexcept {
     int num = spriteCounter % 112 / 16;
     if (num < 6) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 22,
-                           pos.y_ + DRAW_Y - 20, -15, 0, flip, WHITE);
+                           pos.y_ + DRAW_Y - 20, -15, 0, isFlipped, WHITE);
     } else {
-      attack = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack3() noexcept {
     int num = spriteCounter % 72 / 12;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 23,
-                           pos.y_ + DRAW_Y - 13, -18, 0, flip, WHITE);
+                           pos.y_ + DRAW_Y - 13, -18, 0, isFlipped, WHITE);
     } else {
-      attack = 0;
+      actionState = 0;
     }
   }
 };

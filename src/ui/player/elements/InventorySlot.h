@@ -60,7 +60,7 @@ struct InventorySlot {
       DRAGGED_SLOT = nullptr;
       DRAGGED_ITEM = nullptr;
     } else {
-      PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
+      PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
       DRAGGED_SLOT->item = DRAGGED_ITEM;
       DRAGGED_SLOT = nullptr;
       DRAGGED_ITEM = nullptr;
@@ -113,13 +113,13 @@ struct InventorySlot {
           for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
             if (!PLAYER_BAG[i].item) {
               PLAYER_BAG[i].item = item;
-              PLAYER_STATS.un_equip_item(item->effects);
+              PLAYER_STATS.UnEquipItem(item->effects);
               item = nullptr;
               break;
             }
           }
         } else {
-          PLAYER_STATS.un_equip_item(item->effects);
+          PLAYER_STATS.UnEquipItem(item->effects);
           DRAGGED_ITEM = item;
           DRAGGED_SLOT = this;
           item = nullptr;
@@ -127,15 +127,15 @@ struct InventorySlot {
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  itemType == DRAGGED_ITEM->type) {
         item = DRAGGED_ITEM;
-        PLAYER_STATS.equip_item(item->effects);
+        PLAYER_STATS.EquipItem(item->effects);
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  DRAGGED_ITEM->type == itemType) {
         if (DRAGGED_SLOT->itemType == ItemType::EMPTY) {
-          PLAYER_STATS.un_equip_item(item->effects);
+          PLAYER_STATS.UnEquipItem(item->effects);
         }
-        PLAYER_STATS.equip_item(DRAGGED_ITEM->effects);
+        PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
         DRAGGED_SLOT->item = item;
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
@@ -155,7 +155,7 @@ struct InventorySlot {
           for (uint_fast32_t i = 0; i < 10; i++) {
             if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].itemType == item->type) {
               PLAYER_EQUIPPED[i].item = item;
-              PLAYER_STATS.equip_item(item->effects);
+              PLAYER_STATS.EquipItem(item->effects);
               item = nullptr;
               break;
             }
@@ -173,7 +173,7 @@ struct InventorySlot {
                  (DRAGGED_SLOT->itemType == ItemType::EMPTY ||
                   DRAGGED_SLOT->itemType == item->type)) {
         if (DRAGGED_SLOT->itemType != ItemType::EMPTY) {
-          PLAYER_STATS.equip_item(item->effects);
+          PLAYER_STATS.EquipItem(item->effects);
         }
         DRAGGED_SLOT->item = item;
         item = DRAGGED_ITEM;

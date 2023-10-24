@@ -13,7 +13,6 @@ struct QuestNode {
   };
   virtual bool Progress() noexcept { return false; };
 };
-
 struct GOTO final : public QuestNode {
   PointI target;
   explicit GOTO(std::string obj_txt, const PointI& target)
@@ -148,12 +147,12 @@ struct SPAWN final : public QuestNode {
   bool Progress() noexcept final {
     if (npcID == NPC_ID::NPC_END) {
       for (const auto& p : positions) {
-        MONSTERS.push_back(Monster::GetMonster(p.x * 48, p.y * 48, mType, level));
+        MONSTERS.push_back(Monster::GetNewMonster(p.x * 48, p.y * 48, mType, level));
       }
       return true;
     } else if (mType == MonsterType::ANY) {
       for (const auto& p : positions) {
-        NPCS.push_back(NPC::GetNPCInstance(npcID, p.x * 48, p.y * 48, CURRENT_ZONE));
+        NPCS.push_back(NPC::GetNewNPC(npcID, p.x * 48, p.y * 48, CURRENT_ZONE));
       }
       return true;
     } else {
@@ -197,7 +196,7 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
     if (currentLine == lines.size()) currentLine = 0;
     for (auto npc : NPCS) {
       if (npc->id == target) {
-        if (npc->zone != CURRENT_ZONE) return false;
+        if (npc->currentZone != CURRENT_ZONE) return false;
         auto distance = PLAYER.tile_pos.dist(npc->tile_pos);
         if (distance == 0) return true;
         if (distance <= activationDistance) {

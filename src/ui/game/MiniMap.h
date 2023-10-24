@@ -13,7 +13,7 @@ struct MiniMap {
   bool* region_map_open;
   explicit MiniMap(bool* region_map_status) : region_map_open(region_map_status) {}
   static inline bool BoundCheckObject(const Entity* e, int tile_x, int tile_y) noexcept {
-    return !e->active || e->tile_pos.x < tile_x || e->tile_pos.y < tile_y ||
+    return !e->isUpdated || e->tile_pos.x < tile_x || e->tile_pos.y < tile_y ||
            e->tile_pos.x >= tile_x + MINIMAP_TILE_WIDTH ||
            e->tile_pos.y >= tile_y + MINIMAP_TILE_WIDTH;
   }
@@ -100,13 +100,13 @@ struct MiniMap {
       }
     }
     for (const auto monster : MONSTERS) {
-      if (!monster->active || BoundCheckObject(monster, tile_x, tile_y)) continue;
+      if (!monster->isUpdated || BoundCheckObject(monster, tile_x, tile_y)) continue;
       DrawSquareProFast(draw_x + (monster->tile_pos.x - tile_x) * ZOOM,
                         START_Y + (monster->tile_pos.y - tile_y) * ZOOM, ZOOM,
                         Colors::Red);
     }
     for (const auto npc : NPCS) {
-      if (!npc->active || BoundCheckObject(npc, tile_x, tile_y)) continue;
+      if (!npc->isUpdated || BoundCheckObject(npc, tile_x, tile_y)) continue;
       if (npc->id == NPC_ID::RANDOM || npc->id == NPC_ID::VILLAGER) {
         DrawSquareProFast(draw_x + (npc->tile_pos.x - tile_x) * ZOOM,
                           START_Y + (npc->tile_pos.y - tile_y) * ZOOM, ZOOM,

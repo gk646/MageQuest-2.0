@@ -2,21 +2,21 @@
 #define MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
 namespace WorldManager {
 struct TransitionPoint {
-  PointI origin;
-  PointI dest;
+  PointT<int16_t> origin;
+  PointT<int16_t> dest;
   Zone destZone;
 };
 std::array<std::vector<TransitionPoint>, (int)Zone::ZONE_END> zoneTPoints;
 }  // namespace WorldManager
 #include "elements/TransitionParser.h"
 namespace WorldManager {
-static void LoadMap(Zone zone, const PointI& pos) {
+static void LoadMap(Zone zone, const PointT<int16_t>& pos) {
   for (const auto& map : MAPS) {
     if (map.zone == zone) {
       CURRENT_BACK_GROUND = map.mapBackGround;
       CURRENT_MIDDLE_GROUND = map.mapMiddleGround;
       CURRENT_FORE_GROUND = map.mapForeGround;
-      PLAYER.pos = PointI::GetPoint(pos * 48);
+      PLAYER.pos = PointT<int16_t>::GetPoint(pos * 48);
       CURRENT_MAP_COVER = map.map_cover;
       CURRENT_MAP_SIZE = map.map_size;
       CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
@@ -37,7 +37,7 @@ inline static void CheckTransitions() noexcept {
   }
 }
 inline static void CheckSpawnTriggers() noexcept {
-  if(!CURRENT_SPAWN_TRIGGERS) return;
+  if (!CURRENT_SPAWN_TRIGGERS) return;
   for (auto& t : *CURRENT_SPAWN_TRIGGERS) {
     if (t.IsClose()) {
       t.Trigger();

@@ -1,26 +1,20 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_SKELETONSPEAR_H_
 struct SkeletonSpear final : public Monster {
-  static constexpr int base_health = 5;
-  static constexpr float per_level = 3.5;
-  static constexpr float base_speed = 2;
-  SkeletonSpear(const Point& pos, int level) noexcept
-      : Monster(pos, EntityStats{base_health, level, per_level, base_speed},
-                &textures::monsters::SKELETON_SPEAR, MonsterType::SKEL_SPEAR, {30, 50}) {
-    attack_cd = 120;
-  }
-
+  SkeletonSpear(const Point& pos, uint8_t level, MonsterType type) noexcept
+      : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_SPEAR,
+                type, {30, 50}) {}
   void Draw() final {
-    if (attack == -100) [[unlikely]] {
+    if (actionState == -100) [[unlikely]] {
       draw_death();
-    } else if (attack == 1) {
+    } else if (actionState == 1) {
       draw_attack1();
-    } else if (attack == 2) {
+    } else if (actionState == 2) {
       draw_attack2();
-    } else if (attack == 3) {
+    } else if (actionState == 3) {
       draw_attack3();
     } else {
-      if (moving) {
+      if (isMoving) {
         draw_walk();
       } else {
         draw_idle();
@@ -35,10 +29,10 @@ struct SkeletonSpear final : public Monster {
     int num = spriteCounter % 120 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
-                           pos.y_ + DRAW_Y - 46, 0, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.y_ + DRAW_Y - 46, 0, 0, pos.x_ + size.x / 2 > MIRROR_POINT,
+                           WHITE);
     } else {
-      dead = true;
+      isDead = true;
     }
   }
   inline void draw_attack1() noexcept {
@@ -46,9 +40,9 @@ struct SkeletonSpear final : public Monster {
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
                            pos.y_ + DRAW_Y - 46, -30, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           isFlipped, WHITE);
     } else {
-      attack = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack2() noexcept {
@@ -56,9 +50,9 @@ struct SkeletonSpear final : public Monster {
     if (num < 4) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 27,
                            pos.y_ + DRAW_Y - 46, -10, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.x_ + size.x / 2 > MIRROR_POINT, WHITE);
     } else {
-      attack = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack3() noexcept {
@@ -66,13 +60,13 @@ struct SkeletonSpear final : public Monster {
     if (num < 5) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 16,
                            pos.y_ + DRAW_Y - 46, -32, 0,
-                           pos.x_ + size.x_ / 2 > MIRROR_POINT, WHITE);
+                           pos.x_ + size.x / 2 > MIRROR_POINT, WHITE);
     } else {
-      attack = 0;
+      actionState = 0;
     }
   }
   inline void draw_walk() noexcept {
-    if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
+    if (pos.x_ + size.x / 2 > MIRROR_POINT) {
       auto texture = resource->walk[spriteCounter % 105 / 15];
       DrawTexturePro(
           texture,
@@ -86,7 +80,7 @@ struct SkeletonSpear final : public Monster {
     }
   }
   inline void draw_idle() noexcept {
-    if (pos.x_ + size.x_ / 2 > MIRROR_POINT) {
+    if (pos.x_ + size.x / 2 > MIRROR_POINT) {
       auto texture = resource->idle[spriteCounter % 84 / 12];
       DrawTexturePro(
           texture,
@@ -104,11 +98,11 @@ struct SkeletonSpear final : public Monster {
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       if (AttackPlayer3Attacks()) {
-        if (attack == 1) {
+        if (actionState == 1) {
           PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
                                                   15, stats.level, {},
                                                   resource->attack_sound[0], this));
-        } else if (attack == 2) {
+        } else if (actionState == 2) {
           PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
                                                   15, stats.level, {},
                                                   resource->attack_sound[0], this));

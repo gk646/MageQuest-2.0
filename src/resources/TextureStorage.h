@@ -51,6 +51,7 @@ inline ProjectileResources VOID_ERUPTION;
 inline ProjectileResources VOID_FIELD;
 inline ProjectileResources DUMMY;
 inline ProjectileResources PSYCHIC_SCREAM;
+inline ProjectileResources ARROW_NORMAL;
 
 }  // namespace projectile
 

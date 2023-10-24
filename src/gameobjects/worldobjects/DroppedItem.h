@@ -9,13 +9,13 @@ struct DroppedItem final : public WorldObject {
   void Update() final {
     ENTITY_UPDATE();
     if (this->intersects(PLAYER)) {
-      dead = CharacterBag::AddItem(item);
+      isDead = CharacterBag::AddItem(item);
     }
   }
   void Draw() final {
     DrawTextureScaled(item->texture,
                       {(int)pos.x_ + DRAW_X, (int)pos.y_ + DRAW_Y,
-                       size.x_, size.y_},
+                       (float)size.x, (float)size.y},
                       0, false, 0, WHITE);
     DRAW_HITBOXES();
   }

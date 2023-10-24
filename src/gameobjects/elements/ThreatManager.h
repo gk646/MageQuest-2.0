@@ -12,7 +12,6 @@ struct ThreatManager {
   int8_t TargetCount = 0;
 
   explicit ThreatManager(Monster* self) : self(self) {}
-
   ThreatManager& operator=(const ThreatManager& other) {
     if (this != &other) {
       targets = other.targets;
@@ -21,7 +20,6 @@ struct ThreatManager {
     }
     return *this;
   }
-
   inline void Reset() noexcept {
     for (auto& te : targets) {
       te.entity = nullptr;
@@ -29,9 +27,7 @@ struct ThreatManager {
     }
     TargetCount = 0;
   }
-
   inline void Update() noexcept;
-
   [[nodiscard]] inline Entity* GetHighestThreatTarget() noexcept {
     float HighestThreat = 0;
     Entity* HighestPtr = nullptr;
@@ -45,7 +41,6 @@ struct ThreatManager {
     }
     return HighestPtr;
   }
-
   inline void AddThreat(const Entity* ent, float threat) noexcept {
     for (auto& te : targets) {
       if (te.entity == ent) {
@@ -65,7 +60,6 @@ struct ThreatManager {
       }
     }
   }
-
   inline void RemoveTarget(Entity* NewEnt) noexcept {
     for (auto& te : targets) {
       if (te.entity == NewEnt) {

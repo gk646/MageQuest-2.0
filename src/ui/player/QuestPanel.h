@@ -17,7 +17,7 @@ struct QuestSidePanel final : public Panel {
                             body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                             Colors::black);
     } else {
-      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(15), "No active Quest",
+      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(15), "No isUpdated Quest",
                             body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                             Colors::black);
     }

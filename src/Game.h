@@ -8,7 +8,7 @@ class Game {
   static void UPDATE_AND_COLLISION() {
     SIMD_PRAGMA
     for (auto it = WORLD_OBJECTS.begin(); it != WORLD_OBJECTS.end();) {
-      if ((*it)->dead) {
+      if ((*it)->isDead) {
         delete *it;
         it = WORLD_OBJECTS.erase(it);
       } else {
@@ -26,7 +26,7 @@ class Game {
 
     SIMD_PRAGMA
     for (auto it = NPCS.begin(); it != NPCS.end();) {
-      if ((*it)->dead) {
+      if ((*it)->isDead) {
         it = NPCS.erase(it);
       } else {
         (*it)->Update();
@@ -36,7 +36,7 @@ class Game {
 
     SIMD_PRAGMA
     for (auto it = MONSTERS.begin(); it != MONSTERS.end();) {
-      if ((*it)->dead) [[unlikely]] {
+      if ((*it)->isDead) [[unlikely]] {
         delete *it;
         it = MONSTERS.erase(it);
       } else {
@@ -48,18 +48,18 @@ class Game {
     for (auto it = PROJECTILES.begin(); it != PROJECTILES.end();) {
       (*it)->Update();
 
-      if ((*it)->dead) [[unlikely]] {
+      if ((*it)->isDead) [[unlikely]] {
         delete *it;
         it = PROJECTILES.erase(it);
       } else if (MP_TYPE == MultiplayerType::CLIENT) {
         ++it;
       } else {
         for (auto m_it = MONSTERS.begin(); m_it != MONSTERS.end();) {
-          if ((*m_it)->dead) [[unlikely]] {
+          if ((*m_it)->isDead) [[unlikely]] {
             delete *m_it;
             m_it = MONSTERS.erase(m_it);
           } else {
-            if ((*m_it)->active && (*it)->intersects(**m_it)) [[unlikely]] {
+            if ((*m_it)->isUpdated && (*it)->intersects(**m_it)) [[unlikely]] {
               (*m_it)->Hit(**it);
             }
             ++m_it;
@@ -141,7 +141,7 @@ class Game {
 
 #define DRAW_ENTITIES()                   \
   for (auto object : WORLD_OBJECTS) {     \
-    if (object->active) {                 \
+    if (object->isUpdated) {              \
       object->Draw();                     \
     }                                     \
   }                                       \
@@ -149,12 +149,12 @@ class Game {
     projectile->Draw();                   \
   }                                       \
   for (auto monster : MONSTERS) {         \
-    if (monster->active) {                \
+    if (monster->isUpdated) {             \
       monster->Draw();                    \
     }                                     \
   }                                       \
   for (auto npc : NPCS) {                 \
-    if (npc->active) {                    \
+    if (npc->isUpdated) {                 \
       npc->Draw();                        \
     }                                     \
   }                                       \
@@ -280,9 +280,6 @@ class Game {
 #ifdef MG2_DEBUG
     //SetMasterVolume(0);
 #endif
-    for (uint_fast32_t i = 0; i < 3; i++) {
-      MONSTERS.push_back(new Ghost({250.0F + i * 5, 150}, 10));
-    }
     SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {
