@@ -28,9 +28,6 @@ struct Skill {
   virtual void Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
     DrawCooldown(x, y, size);
-    if (hitbox.Update(x, y)) {
-      DrawToolTip(x, y);
-    }
   }
   static inline void DrawSupportBar(float x, float y, float percent) noexcept {
     DrawRectangleProFast(x - SCALE(2), y - SCALE(12), SCALE(53) * percent, SCALE(7),
@@ -64,6 +61,11 @@ struct Skill {
   }
   inline static Skill* GetSkillInstance(ProjectileType type,
                                         const SkillStats& stats) noexcept;
+  inline void DrawTooltip(float x, float y) noexcept {
+    if (hitbox.Update(x, y)) {
+      DrawToolTipImpl(x, y);
+    }
+  }
 
  private:
   void DrawCooldown(float x, float y, float size) const noexcept {
@@ -105,7 +107,7 @@ struct Skill {
       }
     }
   }
-  void DrawToolTip(float x, float y) noexcept {
+  void DrawToolTipImpl(float x, float y) noexcept {
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();

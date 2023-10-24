@@ -5,6 +5,18 @@ struct TextureLoader {
   static void load() {
     shadowToTexture[ShadowType::TREE_GREEN_BUSH] =
         LoadTexture((ASSET_PATH + "textures/Shadows/0.png").c_str());
+    shadowToTexture[ShadowType::TREE_GREEN_POINTY] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/9.png").c_str());
+    shadowToTexture[ShadowType::TREE_GREEN_SWAMPY] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/10.png").c_str());
+    shadowToTexture[ShadowType::ROCK_SMALL_1] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/1.png").c_str());
+    shadowToTexture[ShadowType::ROCK_SMALL_2] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/6.png").c_str());
+    shadowToTexture[ShadowType::ROCK_SMALL_3] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/7.png").c_str());
+    shadowToTexture[ShadowType::ROCK_SMALL_4] =
+        LoadTexture((ASSET_PATH + "textures/Shadows/8.png").c_str());
 
     textures::ui::questpanel::choiceBox =
         LoadTexture((ASSET_PATH + "ui/questpanel/choice_normal.png").c_str());

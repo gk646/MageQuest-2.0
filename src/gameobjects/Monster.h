@@ -4,8 +4,7 @@
 #include "../ui/game/HealthBar.h"
 struct Monster : public Entity {
   EntityStats stats;
-  ThreatManager threatManager{*this};
-  std::string name;
+  ThreatManager threatManager{this};
   StatusEffectHandler effectHandler{stats};
   MonsterResource* resource;
   Entity* target = nullptr;
@@ -19,14 +18,14 @@ struct Monster : public Entity {
   uint8_t AttackRange = 10;
   uint8_t ChaseRange = 15;
   MonsterType type;
-  Monster(const Point& pos, const EntityStats& stats, MonsterResource* resource,
-          MonsterType type, const Point& size = {50, 50},
+  Monster(const Point& pos, const EntityStats& statsArg, MonsterResource* resourceArg,
+          MonsterType typeArg, const Point& size = {50, 50},
           ShapeType shape_type = ShapeType::RECT)
       : Entity(pos, size, shape_type),
-        health_bar((int)size.x_),
-        stats(stats),
-        resource(resource),
-        type(type) {
+        stats(statsArg),
+        resource(resourceArg),
+        type(typeArg),
+        health_bar(static_cast<int>(size.x_)) {
     if (MP_TYPE == MultiplayerType::SERVER) {
       Server::SendMsgToAllUsers(
           UDP_MONSTER_SPAWN,
@@ -38,23 +37,23 @@ struct Monster : public Entity {
   Monster(const Monster& other)
       : Entity(other),
         stats(other.stats),
-        name(other.name),
-        health_bar(other.health_bar),
+        threatManager(this),
+        effectHandler(stats),
         resource(other.resource),
+        target(other.target),
+        health_bar(other.health_bar),
         type(other.type) {}
   Monster& operator=(const Monster& other) {
-    if (this == &other) {
-      return *this;
+    if (this != &other) {
+      Entity::operator=(other);
+      stats = other.stats;
+      threatManager = other.threatManager;
+      effectHandler = other.effectHandler;
+      resource = other.resource;
+      target = other.target;
+      health_bar = other.health_bar;
+      type = other.type;
     }
-
-    Entity::operator=(other);
-
-    type = other.type;
-    health_bar = other.health_bar;
-    stats = other.stats;
-    name = other.name;
-    pov = other.pov;
-
     return *this;
   }
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
@@ -62,7 +61,7 @@ struct Monster : public Entity {
   ENTITY_UPDATE()                                                \
   spriteCounter++;                                               \
   health_bar.update();                                           \
-  effectHandler.Update();                                       \
+  effectHandler.Update();                                        \
   CheckForDeath();                                               \
   if (MP_TYPE == MultiplayerType::CLIENT || attack != 0) return; \
   flip = pos.x_ + size.x_ / 2 > MIRROR_POINT;                    \
@@ -201,8 +200,6 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
       break;
     case MonsterType::MUSHROOM:
       return new BloodHound({x, y}, level);
-      //TODO new monsters
-      //TODO finish blood hound texture
     case MonsterType::SKEL_ARCHER:
       return new SkeletonSpear({x, y}, level);
       break;
@@ -215,7 +212,7 @@ Monster* Monster::GetMonster(float x, float y, MonsterType type, int level) noex
     case MonsterType::BLOOD_HOUND:
       return new BloodHound({x, y}, level);
   }
-  std::cout << (int)type << std::endl;
+  std::cout << "MISSING MONSTER ID AT ENUM ID:" << (int)type << std::endl;
   return nullptr;
 }
 
@@ -257,7 +254,7 @@ void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
 void ThreatManager::Update() noexcept {
   if (TargetCount > 0) {
     for (auto& te : targets) {
-      if (te.entity && te.entity->tile_pos.dist(Self.tile_pos) > Self.ChaseRange) {
+      if (te.entity && te.entity->tile_pos.dist(self->tile_pos) > self->ChaseRange) {
         te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
         if (te.threat <= 0) {
           RemoveTarget(te.entity);
@@ -265,13 +262,13 @@ void ThreatManager::Update() noexcept {
       }
     }
   } else {
-    if (PLAYER.tile_pos.dist(Self.tile_pos) <= Self.AttackRange) {
+    if (PLAYER.tile_pos.dist(self->tile_pos) <= self->AttackRange) {
       AddTarget(&PLAYER, PLAYER_STATS.level);
     }
 
     for (const auto np : OTHER_PLAYERS) {
       if (np) {
-        if (np->tile_pos.dist(Self.tile_pos) <= Self.AttackRange) {
+        if (np->tile_pos.dist(self->tile_pos) <= self->AttackRange) {
           AddTarget(np, np->stats.level);
         }
       }

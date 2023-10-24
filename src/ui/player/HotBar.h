@@ -39,28 +39,39 @@ struct HotBar {
   RectangleR BASE_RECT = {0, 0, 480, 120};
   HotBar() noexcept = default;
   void Draw() noexcept {
-    float size = SCALE(50);
-    float offx = SCALE(46);
-    float offy = SCALE(23);
+    const float scaleFactors[3] = {50, 46, 23};
+    float size = SCALE(scaleFactors[0]);
+    float offx = SCALE(scaleFactors[1]);
+    float offy = SCALE(scaleFactors[2]);
     float width = SCALE(BASE_RECT.width);
     float height = SCALE(BASE_RECT.height);
-    float dx = (SCREEN_WIDTH - width) / 2.0F;
-    float dy = SCREEN_HEIGHT - height * 0.93;
-    xp_bar.Draw(dx, dy);
-    DrawTextureScaled(textures::ui::skillbar::skillbar, {dx, dy, width, height}, 0, false,
-                      0, WHITE);
+    float startX = (SCREEN_WIDTH - width) / 2.0F;
+    float startY = SCREEN_HEIGHT - height * 0.93;
+
+    xp_bar.Draw(startX, startY);
+    DrawTextureScaled(textures::ui::skillbar::skillbar, {startX, startY, width, height}, 0, false, 0, WHITE);
+
+    float currentX = startX;
     for (uint_fast32_t i = 0; i < 6; i++) {
-      skills[i]->Draw(dx + offx, dy + offy, size);
-      DrawTextureProFast(icons[i], dx + offx + SCALE(50) / 2 - icons[i].width / 2,
-                         dy + height * 0.72, 0, WHITE);
-      dx += SCALE(65);
+      skills[i]->Draw(currentX + offx, startY + offy, size);
+      DrawTextureProFast(icons[i], currentX + offx + SCALE(50) / 2 - icons[i].width / 2,
+                         startY + height * 0.72, 0, WHITE);
+      currentX += SCALE(65);
     }
-    dx += 450;
+
+    currentX = startX;
+    for (uint_fast32_t i = 0; i < 6; i++) {
+      skills[i]->DrawTooltip(currentX + offx, startY + offy);
+      currentX += SCALE(65);
+    }
+
+    currentX += 450;
     for (int i = 5; i > -1; i--) {
-      menuButtons[i].Draw(dx, SCREEN_HEIGHT - menuButtons[i].bounds.height);
-      dx -= 32;
+      menuButtons[i].Draw(currentX, SCREEN_HEIGHT - menuButtons[i].bounds.height);
+      currentX -= 32;
     }
   }
+
   void Update() noexcept {
     xp_bar.update();
     for (const auto& mb : menuButtons) {
