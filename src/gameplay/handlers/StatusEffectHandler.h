@@ -5,6 +5,22 @@ struct StatusEffectHandler {
   std::vector<StatusEffect*> status_effects{};
   EntityStats& stats;
   explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
+  StatusEffectHandler& operator=(const StatusEffectHandler& other) {
+    if (this == &other) {
+      return *this;
+    }
+
+    for (auto effect : status_effects) {
+      delete effect;
+    }
+    status_effects.clear();
+
+    for (auto effect : other.status_effects) {
+      status_effects.push_back(effect->clone());
+    }
+
+    return *this;
+  }
   ~StatusEffectHandler(){
     for(auto effect : status_effects){
       delete effect;

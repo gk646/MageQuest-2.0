@@ -30,9 +30,10 @@ inline static void GenerateShadowMap() noexcept {
       {0.0F, 0.0F, (float)CURRENT_MAP_SIZE, (float)CURRENT_MAP_SIZE});
   for (uint16_t j = 0; j < CURRENT_MAP_SIZE; j++) {
     for (uint16_t i = 0; i < CURRENT_MAP_SIZE; i++) {
-      if (CURRENT_BACK_GROUND[i][j] == (int16_t)ShadowType::TREE_GREEN_BUSH ||
-          CURRENT_MIDDLE_GROUND[i][j] == (int16_t)ShadowType::TREE_GREEN_BUSH) {
-        CURRENT_SHADOW_TREE.insert(ShadowObject{i, j, ShadowType::TREE_GREEN_BUSH});
+      for (const int16_t shadowTileNumber : shadowTileNumbers) {
+        if (CURRENT_MIDDLE_GROUND[i][j] == shadowTileNumber) {
+          CURRENT_SHADOW_TREE.insert(ShadowObject{i, j, ShadowType(shadowTileNumber)});
+        }
       }
     }
   }
@@ -43,10 +44,10 @@ inline static void DrawAmbientOcclusion() noexcept {
   if (var > 0) {
     alpha = (unsigned char)var;
   }
-  for (const auto obj : CURRENT_SHADOW_TREE.get_subrect(
+  for (const auto& obj : CURRENT_SHADOW_TREE.get_subrect(
            {PLAYER_TILE->x - SCREEN_TILE_WIDTH / 2.0F,
-            PLAYER_TILE->y - SCREEN_TILE_HEIGHT / 2.0F, (float)SCREEN_TILE_WIDTH,
-            (float)SCREEN_TILE_HEIGHT})) {
+            PLAYER_TILE->y - SCREEN_TILE_HEIGHT / 2.0F - 4, (float)SCREEN_TILE_WIDTH,
+            (float)SCREEN_TILE_HEIGHT + 4})) {
     PointI tilePos = {obj->xTile * 48, obj->yTile * 48 + 48};
     auto& tex = shadowToTexture[obj->type];
 

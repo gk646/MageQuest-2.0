@@ -1,6 +1,12 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
+struct MonsterScaleStats {
+  float baseHealth = 5;
+  float healthPerLevel = 1;
+  float speed = 2;
+  int16_t attackCD = 50;
+};
 struct SkillStats {
   float manaCost = 0;
   float healthCost = 0;
@@ -200,6 +206,6 @@ struct EntityStats {
 inline EntityStats PLAYER_STATS;
 
 bool SpentAttributePoints::IsDefaultValue(Stat stat) const noexcept {
-  return spentPoints[stat] == PLAYER_STATS.effects[stat];
+  return spentPoints[stat] - PLAYER_STATS.effects[stat] < 0.05F;
 }
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_

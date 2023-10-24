@@ -27,6 +27,7 @@ enum class Class {
   WARLOCK,
   WIZARD
 };
+
 enum class MonsterType : uint8_t {
   ANY,
   BLOOD_HOUND,
@@ -47,6 +48,8 @@ enum class MonsterType : uint8_t {
 enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT };
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
+
+
 inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::FIRE, Colors::fire_red},
     {DamageType::ICE, Colors::frostBlue},
@@ -59,15 +62,35 @@ enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
 enum class TextAlign : uint8_t { LEFT, RIGHT, MIDDLE };
-enum class ShadowType : int16_t {
+
+enum class ShadowType : uint16_t {
   TREE_GREEN_BUSH = 886,
-  TREE_GREEN_POINTY,
-  TREE_GREEN_SWAMPY,
-  ROCK_SMALL_1,
-  ROCK_SMALL_2
+  TREE_GREEN_POINTY = 890,
+  TREE_GREEN_SWAMPY = 894,
+  ROCK_SMALL_1 = 266,
+  ROCK_SMALL_2 = 267,
+  ROCK_SMALL_3 = 268,
+  ROCK_SMALL_4 = 269,
+  END
 };
+
+inline static int16_t shadowTileNumbers[(int)ShadowType::END] = {
+    static_cast<int16_t>(ShadowType::TREE_GREEN_BUSH),
+    static_cast<int16_t>(ShadowType::TREE_GREEN_POINTY),
+    static_cast<int16_t>(ShadowType::TREE_GREEN_SWAMPY),
+    static_cast<int16_t>(ShadowType::ROCK_SMALL_1),
+    static_cast<int16_t>(ShadowType::ROCK_SMALL_2),
+    static_cast<int16_t>(ShadowType::ROCK_SMALL_3),
+    static_cast<int16_t>(ShadowType::ROCK_SMALL_4)};
+
 std::unordered_map<ShadowType, Texture> shadowToTexture{
-    {ShadowType::TREE_GREEN_BUSH, Texture()}};
+    {ShadowType::TREE_GREEN_BUSH, Texture()}, {ShadowType::TREE_GREEN_BUSH, Texture()},
+    {ShadowType::TREE_GREEN_BUSH, Texture()}, {ShadowType::TREE_GREEN_BUSH, Texture()},
+    {ShadowType::TREE_GREEN_BUSH, Texture()}, {ShadowType::TREE_GREEN_BUSH, Texture()},
+    {ShadowType::TREE_GREEN_BUSH, Texture()}, {ShadowType::TREE_GREEN_BUSH, Texture()},
+    {ShadowType::TREE_GREEN_BUSH, Texture()},
+
+};
 enum class Keybind : uint8_t {
   PLAYER_LIGHT,
   ABILITY_1,
