@@ -11,6 +11,7 @@ inline MonsterResource ARIA;
 inline MonsterResource NIETZSCHE;
 inline MonsterResource realmKeeper;
 inline MonsterResource MARLA;
+inline MonsterResource SATIRO;
 }  // namespace npc
 
 namespace monsters {

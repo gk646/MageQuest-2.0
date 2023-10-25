@@ -20,18 +20,20 @@ struct SkeletonArcher final : public Monster {
                              WHITE);
       }
     }
-    if (health_bar.delay > 0) {
-      health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
-    }
+    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   void Update() final {
+    if (actionState == 1 && spriteCounter == 50) {
+      PROJECTILES.emplace_back(new ArrowNormal(GetMiddlePoint(), false, 300, 3,
+                                               stats.level, {}, Vector2(),
+                                               resource->attack_sound[0], this));
+    }
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && WalkCloseToEntity(target,5) && attackStats.IsAttackReady(actionState)) {
+    if (target && WalkCloseToEntity(target, attackStats.attackRange) &&
+        attackStats.IsAttackReady(actionState)) {
       attackStats.ResetCooldown();
-      PROJECTILES.emplace_back(
-          new ArrowNormal(pos, false, 300, 3, stats.level, {}, Vector2(), resource->attack_sound[0], this));
       spriteCounter = 0;
       actionState = 1;
     }
@@ -48,8 +50,8 @@ struct SkeletonArcher final : public Monster {
   inline void draw_attack1() noexcept {
     int num = spriteCounter % 80 / 5;
     if (num < 15) {
-      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 12, -16, 0, isFlipped, WHITE);
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 30,
+                           pos.y_ + DRAW_Y - 5, -16, 0, isFlipped, WHITE);
     } else {
       actionState = 0;
     }

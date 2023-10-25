@@ -5,15 +5,15 @@
  * |                          SYSTEM                      |
  * |-----------------------------------------------------|
  */
-enum class GameState { MainMenu, GameMenu, Game, Loading, GameOver };
-enum class MenuState { Main, Settings, ServerBrowser, HostGame };
+enum class GameState : uint8_t { MainMenu, GameMenu, Game, Loading, GameOver };
+enum class MenuState : uint8_t { Main, Settings, ServerBrowser, HostGame };
 enum class MapLayer : uint8_t { BACK_GROUND, MIDDLE_GROUND, FRONT };
 
 /* |-----------------------------------------------------|
  * |                    GAMEPLAY                         |
  * |-----------------------------------------------------|
  */
-enum class Class {
+enum class Class : uint8_t {
   BARBARIAN,
   BARD,
   CLERIC,
@@ -49,7 +49,6 @@ enum class MonsterType : uint8_t {
 enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT };
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
-
 
 inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::FIRE, Colors::fire_red},
@@ -140,6 +139,7 @@ enum class Zone : uint8_t {
   TestRoom,
   Goblin_Cave,
   Hillcrest_Hermit_Cave,
+  Oasis,
   ZONE_END
 };
 enum GameStatistic : uint8_t {
@@ -252,8 +252,10 @@ enum class NPC_ID : uint8_t {
   VILLAGER,
   TRADER,
   RANDOM,
+  SATIRO,
   NPC_END
 };
+
 std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"DECKARD", NPC_ID::DECKARD},
     {"MARLA", NPC_ID::MARLA},
@@ -265,6 +267,7 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"VILLAGER", NPC_ID::VILLAGER},
     {"TRADER", NPC_ID::TRADER},
     {"RANDOM", NPC_ID::RANDOM},
+    {"SATIRO", NPC_ID::SATIRO},
     {"END", NPC_ID::NPC_END}};
 
 std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
@@ -276,9 +279,11 @@ std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
     {NPC_ID::NIETZSCHE, "Nietzsche"},
     {NPC_ID::VILLAGER, "Villager"},
     {NPC_ID::TRADER, "Trader"},
-    {NPC_ID::RANDOM, "Person"}};
+    {NPC_ID::RANDOM, "Person"},
+    {NPC_ID::SATIRO, "Satiro"}};
 
 enum class MultiplayerType { CLIENT, SERVER, OFFLINE };
+
 enum UDP_Channel : uint8_t {
   FILL,
   UDP_PLAYER_POS_UPDATE,
@@ -294,6 +299,7 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"SKEL_WAR", MonsterType::SKEL_WAR},
     {"SKEL_SPEAR", MonsterType::SKEL_SPEAR},
     {"WOLF", MonsterType::WOLF},
+    {"GHOST", MonsterType::GHOST},
     {"BOSS_DEATH_BRINGER", MonsterType::BOSS_DEATH_BRINGER},
     {"BOSS_KNIGHT", MonsterType::BOSS_KNIGHT},
     {"BOSS_SLIME", MonsterType::BOSS_SLIME},

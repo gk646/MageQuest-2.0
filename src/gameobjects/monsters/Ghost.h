@@ -22,9 +22,7 @@ struct Ghost final : public Monster {
       DrawTextureProFastEx(resource->idle[spriteCounter % 105 / 15], pos.x_ + DRAW_X - 17,
                            pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped, WHITE);
     }
-    if (health_bar.delay > 0) {
-      health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
-    }
+    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   void Update() final {

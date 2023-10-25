@@ -62,6 +62,7 @@ static void Load() {
   textures::npc::realmKeeper.load("npc/realmKeeper/");
   textures::npc::NIETZSCHE.load("npc/nietzsche/");
   textures::npc::MARLA.load("npc/marla/");
+  textures::npc::SATIRO.load("npc/satiro/");
   LoadScaling();
 }
 

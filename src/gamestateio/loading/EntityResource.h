@@ -53,8 +53,9 @@ struct MonsterResource {
     if (pos != std::string::npos) {
       soundPath.erase(pos, std::string("enemies/").length());
     }
+
     for (uint_fast32_t i = 0; i < 5; i++) {
-      path = ASSET_PATH + "sound/effects/Entities/" +=
+      path = ASSET_PATH + "sound/effects/entities/" +=
           soundPath + std::to_string(i) + ".wav";
       if (std::filesystem::exists(path)) {
         attack_sound.emplace_back(LoadSound(path.c_str()));

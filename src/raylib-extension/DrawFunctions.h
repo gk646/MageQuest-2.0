@@ -76,7 +76,7 @@ void DrawTextureScaled(const Texture2D& texture, const RectangleR& dest, float r
 
     // Only calculate rotation if needed
     if (rotation == 0.0f) {
-      float x =destX;
+      float x = destX;
       float y = dest.y;
       topLeft = {x, y};
       topRight = {x + dest.width, y};
@@ -392,4 +392,46 @@ void DrawTextureProFastUltra(unsigned int id, float drawX, float drawY) {
   rlEnd();
   rlSetTexture(0);
 }
+void DrawRectOutlineMiddleRotation(const RectangleR& rect, float rotation, Color color) {
+
+  float halfWidth = rect.width * 0.5f;
+  float halfHeight = rect.height * 0.5f;
+
+  float sinRotation = sinf(rotation * DEG2RAD);
+  float cosRotation = cosf(rotation * DEG2RAD);
+
+  float topLeftX = rect.x + halfWidth - halfWidth * cosRotation + halfHeight * sinRotation;
+  float topLeftY = rect.y + halfHeight - halfWidth * sinRotation - halfHeight * cosRotation;
+
+  float topRightX = rect.x + halfWidth + halfWidth * cosRotation + halfHeight * sinRotation;
+  float topRightY = rect.y + halfHeight + halfWidth * sinRotation - halfHeight * cosRotation;
+
+  float bottomLeftX = rect.x + halfWidth - halfWidth * cosRotation - halfHeight * sinRotation;
+  float bottomLeftY = rect.y + halfHeight - halfWidth * sinRotation + halfHeight * cosRotation;
+
+  float bottomRightX = rect.x + halfWidth + halfWidth * cosRotation - halfHeight * sinRotation;
+  float bottomRightY = rect.y + halfHeight + halfWidth * sinRotation + halfHeight * cosRotation;
+
+  rlBegin(RL_LINES);
+  rlColor4ub(color.r, color.g, color.b, color.a);
+
+  // Top line
+  rlVertex2f(topLeftX, topLeftY);
+  rlVertex2f(topRightX, topRightY);
+
+  // Bottom line
+  rlVertex2f(bottomLeftX, bottomLeftY);
+  rlVertex2f(bottomRightX, bottomRightY);
+
+  // Left line
+  rlVertex2f(topLeftX, topLeftY);
+  rlVertex2f(bottomLeftX, bottomLeftY);
+
+  // Right line
+  rlVertex2f(topRightX, topRightY);
+  rlVertex2f(bottomRightX, bottomRightY);
+
+  rlEnd();
+}
+
 #endif  //MAGEQUEST_SRC_RAYLIB_EXTENSION_DRAWFUNCTIONS_H_
