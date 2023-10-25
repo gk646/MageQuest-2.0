@@ -21,8 +21,7 @@ struct DataBaseHandler {
 
     std::cout << "ITEMS LOADED: " << ITEMS.size() << std::endl;
     load_items_from_table(PLAYER_EQUIPPED, "PLAYER_INV", 10);
-    CharacterBag::AddSlots(9);
-    load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_BAG_SIZE);
+    load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_STATS.GetBagSlots());
   }
   static bool prepare_stmt(const std::string& sql, sqlite3* db,
                            sqlite3_stmt** stmt) noexcept {
@@ -67,9 +66,9 @@ struct DataBaseHandler {
     if (!prepare_stmt("SELECT * FROM " + table, gamesave, &stmt)) return;
 
     for (int i = 0; i < length && sqlite3_step(stmt) == SQLITE_ROW; ++i) {
-      slots[i].item =
-          ItemDropHandler::GetNewItem(sqlite3_column_int(stmt, 0), ItemType(sqlite3_column_int(stmt, 1)),
-                     sqlite3_column_int(stmt, 2), sqlite3_column_int(stmt, 3));
+      slots[i].item = ItemDropHandler::GetShallowCloneItem(
+          sqlite3_column_int(stmt, 0), ItemType(sqlite3_column_int(stmt, 1)),
+          sqlite3_column_int(stmt, 2), sqlite3_column_int(stmt, 3));
       parse_effect_text(slots[i].item->effects, sqlite3_column_text(stmt, 4));
     }
     sqlite3_finalize(stmt);
@@ -91,14 +90,13 @@ struct DataBaseHandler {
     }
   }
   static void ParseAttributeStats(float* arr, const std::string& input) {
-    std::regex pattern(R"((\w+)([-+]?\d+))");
+    std::regex pattern(R"(([a-zA-Z]+)([-+]?\d+))");
     std::smatch matches;
 
     auto it = input.cbegin();
     while (std::regex_search(it, input.cend(), matches, pattern)) {
       std::string attribute = matches[1].str();
       int value = std::stoi(matches[2].str());
-
       if (attrToStat.find(attribute) != attrToStat.end()) {
         Stat stat = attrToStat[attribute];
         arr[stat] += value;
@@ -106,7 +104,6 @@ struct DataBaseHandler {
       it = matches.suffix().first;
     }
   }
-  inline static void apply_item_effects() {}
 };
 sqlite3* DataBaseHandler::database = nullptr;
 sqlite3* DataBaseHandler::gamesave = nullptr;

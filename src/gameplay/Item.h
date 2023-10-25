@@ -38,7 +38,6 @@ struct Item {
     this->quality = quality;
     this->level = level;
     this->durability = durability;
-    scale(quality, level);
   }
   Item(const Item& other)
       : id(other.id),
@@ -99,7 +98,7 @@ struct Item {
   void Draw(const RectangleR& rect) const noexcept {
     DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
-  void draw_tooltip() const noexcept {
+  void DrawToolTip() const noexcept {
     auto mouse = MOUSE_POS;
     float startX, startY;
     float width = tooltip_x * UI_SCALE;
@@ -209,7 +208,11 @@ struct Item {
     }
     for (uint_fast32_t i = WEAPON_DAMAGE; i < STATS_ENDING; i++) {
       if (effects[i] != 0) {
-        snprintf(textBuffer, 10, "%+0.2f", effects[i]);
+        if (std::round(effects[i]) == effects[i]) {
+          snprintf(textBuffer, 10, "+%d", (int)effects[i]);
+        } else {
+          snprintf(textBuffer, 10, "%+0.2f", effects[i]);
+        }
         std::string displayText = std::string(textBuffer) + " " + statToName[Stat(i)];
         DrawTextExR(MINECRAFT_REGULAR, displayText.c_str(),
                     {startX + off_setX, startY + off_sety}, font_size, 1,
@@ -252,12 +255,6 @@ struct Item {
     } else {
       return Colors::mediumQuality;
     }
-  }
-
-  inline static void scale(int quality, int level) {}
-  [[nodiscard]] Item* scale_clone(int new_level, int new_quality) const noexcept {
-    auto new_item = new Item(*this);
-    return new_item;
   }
 };
 char Item::textBuffer[10];

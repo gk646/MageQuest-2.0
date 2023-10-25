@@ -4,7 +4,6 @@ class InventorySlot;
 inline static InventorySlot* DRAGGED_SLOT;
 inline static InventorySlot* PLAYER_EQUIPPED;
 inline static InventorySlot* PLAYER_BAG;
-inline static int PLAYER_BAG_SIZE = 0;
 struct InventorySlot {
   RectangleR hitBox = {0};
   Item* item = nullptr;
@@ -109,12 +108,12 @@ struct InventorySlot {
     }
   }
   void UpdateCharacterSlots() {
-    hitBox.height = 40 * UI_SCALE;
-    hitBox.width = 40 * UI_SCALE;
+    hitBox.height = baseWidth * UI_SCALE;
+    hitBox.width = baseHeight * UI_SCALE;
     if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
-          for (uint_fast32_t i = 0; i < PLAYER_BAG_SIZE; i++) {
+          for (uint_fast32_t i = 0; i < PLAYER_STATS.effects[BAG_SLOTS]; i++) {
             if (!PLAYER_BAG[i].item) {
               PLAYER_BAG[i].item = item;
               PLAYER_STATS.UnEquipItem(item->effects);
@@ -173,9 +172,6 @@ struct InventorySlot {
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
-        if(item->type == ItemType::BAG){
-
-        }
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  (DRAGGED_SLOT->itemType == ItemType::EMPTY ||
                   DRAGGED_SLOT->itemType == item->type)) {

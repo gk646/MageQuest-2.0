@@ -27,5 +27,6 @@ struct SlideComponent {
   [[nodiscard]] inline bool IsAnimationFinished() const noexcept {
     return currentTick == 0;
   }
+  inline void Reset() noexcept { currentTick = 0; }
 };
 #endif  //MAGEQUEST_SRC_UI_ELEMENTS_SLIDECOMPONENT_H_

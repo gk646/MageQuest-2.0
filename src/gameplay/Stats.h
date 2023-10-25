@@ -206,6 +206,7 @@ struct EntityStats {
   [[nodiscard]] inline float GetSpeed() const noexcept {
     return speed * (1 + effects[SPEED_MULT_P]);
   }
+  [[nodiscard]] inline float GetBagSlots() const noexcept { return effects[BAG_SLOTS]; }
 
  private:
   [[nodiscard]] inline float RollCriticalHit(float damage) const noexcept {
