@@ -155,6 +155,7 @@ enum GameStatistic : uint8_t {
 
 //_P = percentile => 0.5, 0.05
 enum Stat : uint8_t {
+  //always add at bottom -> before WEAPON_DAMGE or before BAG_SLOTS
   STRENGTH,
   INTELLIGENCE,
   WISDOM,
@@ -181,7 +182,6 @@ enum Stat : uint8_t {
   HEALTH_MULT_P,
   MANA_MULT_P,
   WEAPON_DAMAGE,  // the first after _P enums || other percentile only before mana mult
-  BAG_SLOTS,
   DODGE_CHANCE,
   CRIT_CHANCE,
   ARMOUR,
@@ -191,6 +191,7 @@ enum Stat : uint8_t {
   MAX_MANA,
   HEALTH_REGEN,
   MANA_REGEN,
+  BAG_SLOTS,//always second last
   STATS_ENDING
 };
 
@@ -380,6 +381,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {AGILITY, "Agility"},
     {FOCUS, "Focus"},
     {LUCK, "Luck"},
+    {BAG_SLOTS, "Bag Slots"},
     {CHARISMA, "Charisma"},
     {ENDURANCE, "Endurance"},
     {BUFF_LENGTH_P, "Buff Length (%)"},

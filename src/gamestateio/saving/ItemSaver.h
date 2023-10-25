@@ -4,7 +4,7 @@ struct ItemSaver {
 
   static void Save() noexcept {
     save_items(PLAYER_EQUIPPED, 10, "PLAYER_INV");
-    save_items(PLAYER_BAG, PLAYER_BAG_SIZE, "PLAYER_BAG");
+    save_items(PLAYER_BAG, 60, "PLAYER_BAG");
   }
   static void save_items(InventorySlot* slots, int size,
                          const std::string& table) noexcept {

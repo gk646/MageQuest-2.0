@@ -47,7 +47,7 @@ struct PlayerUI {
       DRAGGED_ITEM->Draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
     }
     if (TOOL_TIP_ITEM) {
-      TOOL_TIP_ITEM->draw_tooltip();
+      TOOL_TIP_ITEM->DrawToolTip();
       TOOL_TIP_ITEM = nullptr;
     }
   }

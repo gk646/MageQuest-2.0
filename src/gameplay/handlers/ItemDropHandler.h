@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_
 
 namespace ItemDropHandler {
-inline static Item* GetNewItem(int id, ItemType type, int quality, int level) {
+inline static Item* GetShallowCloneItem(int id, ItemType type, int quality, int level) {
   for (const auto& item : ITEMS) {
     if (item.id == id && item.type == type) {
       return new Item(item.id, item.name, item.rarity, item.type, item.description,
@@ -15,6 +15,14 @@ inline static const Item* GetRandomItemPtr() noexcept {
   const Item* item;
   while ((item = &ITEMS[RANGE_EXISTING_ITEMS(RNG_ENGINE)]) &&
          item->type == ItemType::MISC) {}
+  return item;
+}
+inline static const Item* GetRandomItemPtr(ItemType type) noexcept {
+  const Item* item;
+  while ((item = &ITEMS[RANGE_EXISTING_ITEMS(RNG_ENGINE)]) &&
+             item->type == ItemType::MISC ||
+         item->type != type) {}
+
   return item;
 }
 inline static const Item* GetRandomItemPtr(ItemRarity rarity) noexcept {
@@ -40,15 +48,18 @@ inline static ItemRarity RollRarity(float luck) noexcept {
 inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
                                         int level) noexcept {
   Item* newItem = new Item(ptr, quality, level);
+
   float levelMult = std::sqrt(level);
   float rarityMult = std::min(4, (int)ptr->rarity);
-  float qualityMult = quality/100.0F;
-  if(qualityMult == 1) {
+  float qualityMult = quality / 100.0F;
+  if (qualityMult == 1) {
     qualityMult = 1.1F;
   }
-  for (float& effect : newItem->effects) {
-    effect *= levelMult * rarityMult * qualityMult;
+
+  for (uint_fast32_t i = 0; i < BAG_SLOTS; i++) {
+    newItem->effects[i] *= levelMult * rarityMult * qualityMult;
   }
+
   return newItem;
 }
 inline static void RollForItemDrop(float x, float y, int level) noexcept {
