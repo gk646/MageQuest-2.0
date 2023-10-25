@@ -11,12 +11,16 @@ struct InventorySlot {
   uint16_t baseX = 0, baseY = 0;
   ItemType itemType = ItemType::EMPTY;
   int8_t toolTipHoverTicks = 0;
+  uint8_t baseWidth = 40, baseHeight = 40;
   InventorySlot() = default;
-  InventorySlot(int x, int y, ItemType item_type) noexcept
-      : hitBox((uint16_t)x, (uint16_t)y, 40, 40),
+  InventorySlot(int x, int y, ItemType item_type, float width = 40,
+                float height = 40) noexcept
+      : hitBox((uint16_t)x, (uint16_t)y, width, height),
         baseX(x),
         baseY(y),
-        itemType(item_type) {}
+        itemType(item_type),
+        baseWidth(width),
+        baseHeight(height) {}
   void Draw(float x, float y) noexcept {
     hitBox.x = (x + (float)baseX) * UI_SCALE;
     hitBox.y = (y + (float)baseY) * UI_SCALE;
@@ -147,8 +151,8 @@ struct InventorySlot {
     }
   }
   void Update() noexcept {
-    hitBox.height = 40 * UI_SCALE;
-    hitBox.width = 40 * UI_SCALE;
+    hitBox.height = baseWidth * UI_SCALE;
+    hitBox.width = baseHeight * UI_SCALE;
     if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
@@ -169,6 +173,9 @@ struct InventorySlot {
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
+        if(item->type == ItemType::BAG){
+
+        }
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  (DRAGGED_SLOT->itemType == ItemType::EMPTY ||
                   DRAGGED_SLOT->itemType == item->type)) {

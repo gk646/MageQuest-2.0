@@ -16,6 +16,7 @@ struct Quest final {
   QuestState state = QuestState::IN_ACTIVE;
   bool hidden = false;
   uint8_t questLevel = 0;
+  Zone questZone;
   explicit Quest(Quest_ID id, bool hidden) : id(id), hidden(hidden) {}
   ~Quest() {
     for (auto obj : objectives) {
