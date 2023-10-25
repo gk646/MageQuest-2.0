@@ -55,7 +55,7 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Tutorial, {5, 5});
+    WorldManager::LoadMap(Zone::Oasis, {4, 96});
 #endif
     GAME_STATE = GameState::MainMenu;
     LoadingScreen::progress = 0;
@@ -70,9 +70,11 @@ struct GameLoader {
     UI_MANAGER.player_ui.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
     UI_MANAGER.player_ui.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
     UI_MANAGER.player_ui.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
+    NPCS.push_back(NPC::GetNewNPC(NPC_ID::SATIRO, 4 * 48, 96 * 48, CURRENT_ZONE));
     for (uint_fast32_t i = 0; i < 1; i++) {
+      // MONSTERS.push_back(          Monster::GetNewMonster(250.0F + i * 5, 150, MonsterType::SKEL_ARCHER, 5));
       MONSTERS.push_back(
-          Monster::GetNewMonster(250.0F + i * 5, 150, MonsterType::SKEL_ARCHER, 5));
+          Monster::GetNewMonster(250.0F + i * 5, 150, MonsterType::GHOST, 5));
     }
   }
 };

@@ -18,9 +18,7 @@ struct Wolf final : public Monster {
                              pos.y_ + DRAW_Y - 17, 5, 0, !isFlipped, WHITE);
       }
     }
-    if (health_bar.delay > 0) {
-      health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
-    }
+    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   void Update() final {

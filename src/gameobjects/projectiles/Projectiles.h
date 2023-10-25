@@ -86,6 +86,7 @@ struct FireBall final : Projectile {
   void Draw() final {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 60 / 15],
                                 pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -10, -3);
+    DRAW_HITBOXES();
   }
 };
 struct PsychicScream final : Projectile {
@@ -193,7 +194,7 @@ struct AttackCone final : Projectile {
   }
 };
 struct ArrowNormal final : Projectile {
-  static constexpr int WIDTH = 15;
+  static constexpr int WIDTH = 18;
   static constexpr int HEIGHT = 10;
   ArrowNormal(const Point& position, bool isFromPlayer, int lifespan,
               float projectileSpeed, float damageValue,

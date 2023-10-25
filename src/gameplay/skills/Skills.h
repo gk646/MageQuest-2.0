@@ -70,9 +70,9 @@ struct EnergySphere_Skill final : public Skill {
                                      static_cast<int16_t>(posY), 0, x_move, y_move,
                                      damage);
 
-    PROJECTILES.emplace_back(
-        new EnergySphere({posX, posY}, from_player, skillStats.lifeSpan, skillStats.speed,
-                         damage, {}, {x_move, y_move}, &PLAYER));
+    PROJECTILES.emplace_back(new EnergySphere({posX, posY}, from_player,
+                                              skillStats.lifeSpan, skillStats.speed,
+                                              damage, {}, {x_move, y_move}, &PLAYER));
   }
 };
 struct FireBall_Skill final : public Skill {
@@ -105,10 +105,7 @@ struct Dummy_Skill final : public Skill {
       : Skill(stats, DamageStats{DamageType::FIRE, base_dmg}, from_player, 1,
               textures::EMPTY_TEXTURE) {}
   void Activate() final {
-    TriggerSkill();
-    PROJECTILES.push_back(new Dummy({PLAYER_X + PLAYER.size.x / 2,
-                                     PLAYER_Y + (PLAYER.size.y - FireBall::height) / 2},
-                                    true, PLAYER_STATS.GetAbilityDmg(damageStats)));
+    //no skill triggered
   }
 };
 struct LockedSlot_Skill final : public Skill {

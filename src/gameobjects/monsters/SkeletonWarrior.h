@@ -3,8 +3,8 @@
 
 struct SkeletonWarrior final : public Monster {
   SkeletonWarrior(const Point& pos, int level, MonsterType type) noexcept
-      : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::GHOST, type,
-                {30, 48}) {}
+      : Monster(pos, monsterIdToScaler[type], level,
+                &textures::monsters::SKELETON_WARRIOR, type, {30, 48}) {}
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
       draw_death();
@@ -25,9 +25,7 @@ struct SkeletonWarrior final : public Monster {
                              WHITE);
       }
     }
-    if (health_bar.delay > 0) {
-      health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
-    }
+    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   void Update() final {

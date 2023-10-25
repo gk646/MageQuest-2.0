@@ -3,23 +3,30 @@
 
 struct NPC : public Entity {
   //TODO npc scripting
+  std::string name;
   MonsterResource* resource;
   std::string* dialogue = nullptr;
   std::vector<TexturedButton>* choices = nullptr;
   float speed;
   float dialogueProgressCount = 1000;
   int16_t dialogueShowDelayTicks = -1;
-  bool flip = false;
+  uint8_t actionState = 0;
+  bool isFlipped = false;
   bool moving = false;
   NPC_ID id;
   bool last = false;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
-      float speed = 2, const PointT<int16_t>& size = {30, 48})
+      float speed = 2, const PointT<int16_t>& size = {25, 35})
       : Entity(pos, size, ShapeType::RECT, 0, zone),
         resource(resource),
         id(id),
-        speed(speed) {}
-  void Draw() override = 0;
+        speed(speed),
+        name(npcIdToStringMap[id]) {}
+  void Draw() override {
+    Util::DrawCenteredText(MINECRAFT_BOLD, 15, name.c_str(), pos.x_ + DRAW_X + size.x / 2,
+                           pos.y_ + DRAW_Y - 20, Colors::LightGreyAlpha);
+  };
+
   void Update() override {
     ENTITY_UPDATE();
     spriteCounter++;
@@ -96,6 +103,7 @@ void Monster::MonsterDiedCallback() noexcept {
 #include "npcs/Deckard.h"
 #include "npcs/Aria.h"
 #include "npcs/Marla.h"
+#include "npcs/Satiro.h"
 NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
                     Zone npcZone) noexcept {
   switch (npcID) {
@@ -121,6 +129,8 @@ NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
       break;
     case NPC_ID::NPC_END:
       break;
+    case NPC_ID::SATIRO:
+      return new Satiro(absoluteX, absoluteY, npcZone);
   }
 }
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_NPC_H_

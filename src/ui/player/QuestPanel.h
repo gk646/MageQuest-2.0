@@ -5,19 +5,19 @@
 
 struct QuestSidePanel final : public Panel {
   static inline char HEADER[] = "Objectives";
-  QuestSidePanel() : Panel(200, 150, 16, MINECRAFT_BOLD, HEADER) {}
+  QuestSidePanel() : Panel(270, 150, 16, MINECRAFT_BOLD, HEADER) {}
 
   void DrawContent() noexcept final {
     if (PLAYER_QUESTS.HasActiveQuest()) {
       Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(16),
                             PLAYER_QUESTS.activeQuest->name.c_str(), body.x + SCALE(2),
                             body.y + SCALE(35), 1, Colors::LightGrey, Colors::black);
-      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(15),
+      Util::DrawOutlineText(MINECRAFT_REGULAR, SCALE(15),
                             PLAYER_QUESTS.activeQuest->GetActiveObjective().c_str(),
                             body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                             Colors::black);
     } else {
-      Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(15), "No isUpdated Quest",
+      Util::DrawOutlineText(MINECRAFT_REGULAR, SCALE(15), "No isUpdated Quest",
                             body.x + SCALE(20), body.y + SCALE(50), 1, Colors::LightGrey,
                             Colors::black);
     }
@@ -36,7 +36,7 @@ struct QuestPanel final : public Window {
                HEADER, KEY_J),
         questMenu(WIDTH / 2, HEIGHT) {}
   void Draw() {
-    side_panel.Draw(SCREEN_WIDTH - 230, SCALE(300));
+    side_panel.Draw(SCREEN_WIDTH - side_panel.body.width, SCALE(300));
     WINDOW_LOGIC()
     DrawWindow();
     questMenu.Draw(wholeWindow.x, wholeWindow.y);

@@ -93,8 +93,8 @@ struct Entity {
   void draw_hitbox() const {
     switch (hitboxShape) {
       case ShapeType::RECT:
-        DrawRectangleOutlinePro(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, size.x, size.y, {0, 0},
-                                pov, 3, GREEN);
+        DrawRectOutlineMiddleRotation({pos.x_ + DRAW_X, pos.y_ + DRAW_Y, static_cast<float>(size.x), static_cast<float>(size.y)},
+                                      pov, GREEN);
         break;
       case ShapeType::CIRCLE:
         DrawCircleSectorLines(
@@ -166,6 +166,9 @@ struct Entity {
     return !BoundCheckMap(entXLeft, entYDown) ||
            CheckTileCollision(entXLeft, entYDown) && tile_collision_left(speed) ||
            tile_collision_down(speed);
+  }
+  [[nodiscard]] inline Point GetMiddlePoint() const noexcept {
+    return {pos.x_ + size.x / 2, pos.y_ + size.y / 2};
   }
   void CalculateMovement(const PointT<int16_t>& next, float speed) noexcept {
     bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);

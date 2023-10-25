@@ -2,16 +2,18 @@
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 
 struct MonsterScaler {
-  float baseHealth = 5;
-  float healthPerLevel = 1;
-  float speed = 2;
-  int16_t attackCD = 50;
-  uint8_t attackRange = 5;
-  uint8_t chaseRange = 8;
+  float baseHealth;
+  float healthPerLevel;
+  float speed;
+  int16_t attackCD;
+  uint8_t attackRange;
+  uint8_t chaseRange;
   [[nodiscard]] inline float GetMaxHealth(uint8_t level) const noexcept {
-    return (baseHealth +
-            ((level - 1.0F) * healthPerLevel * cxstructs::fast_sqrt(level))) *
-           DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
+    float maxHealth =
+        baseHealth + ((level - 1) * healthPerLevel) * cxstructs::fast_sqrt(level);
+    maxHealth *= cxstructs::fast_sqrt(level);
+    maxHealth *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
+    return maxHealth;
   }
 };
 
@@ -30,7 +32,6 @@ struct MonsterAttackStats {
   inline void Update(int8_t actionState) noexcept { currentCooldown -= actionState == 0; }
   inline void ResetCooldown() noexcept { currentCooldown = attackCooldown; }
 };
-
 
 struct SkillStats {
   float manaCost = 0;
@@ -85,7 +86,7 @@ struct EntityStats {
   EntityStats(const MonsterScaler& scaler, uint8_t level) noexcept
       : level(level), speed(scaler.speed) {
     effects[MAX_HEALTH] = scaler.GetMaxHealth(level);
-    effects[MAX_HEALTH] *= health = effects[MAX_HEALTH];
+    health = effects[MAX_HEALTH];
   }
   inline void update() noexcept {
     float max_mana_value = GetMaxMana();

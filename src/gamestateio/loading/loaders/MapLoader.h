@@ -38,7 +38,7 @@ struct MapLoader {
   }
 
   static void load() {
-    MAPS.reserve(11);
+    MAPS.reserve(15);
     MAPS.emplace_back("hermitCaveHillcrest", 70, Zone::Hillcrest_Hermit_Cave);
     MAPS.emplace_back("goblinCave", 120, Zone::Goblin_Cave);
     MAPS.emplace_back("TestRoom", 50, Zone::TestRoom);
@@ -50,6 +50,7 @@ struct MapLoader {
     MAPS.emplace_back("caveMarla", 60, Zone::Hillcrest_Mountain_Cave);
     MAPS.emplace_back("TheGrove", 200, Zone::The_Grove);
     MAPS.emplace_back("DeadPlains", 200, Zone::DeadPlains);
+    MAPS.emplace_back("Oasis", 100, Zone::Oasis);
     LoadMapCovers();
   }
 };

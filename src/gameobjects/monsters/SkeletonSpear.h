@@ -20,9 +20,7 @@ struct SkeletonSpear final : public Monster {
         draw_idle();
       }
     }
-    if (health_bar.delay > 0) {
-      health_bar.draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
-    }
+    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   inline void draw_death() noexcept {
@@ -39,8 +37,7 @@ struct SkeletonSpear final : public Monster {
     int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
-                           pos.y_ + DRAW_Y - 46, -30, 0,
-                           isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 46, -30, 0, isFlipped, WHITE);
     } else {
       actionState = 0;
     }

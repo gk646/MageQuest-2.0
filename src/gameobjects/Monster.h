@@ -16,16 +16,17 @@
     }                                                                              \
   }
 
-#define MONSTER_UPDATE()                                              \
-  ENTITY_UPDATE()                                                     \
-  spriteCounter++;                                                    \
-  health_bar.update();                                                \
-  effectHandler.Update();                                             \
-  CheckForDeath();                                                    \
-  if (MP_TYPE == MultiplayerType::CLIENT || actionState != 0) return; \
-  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT;                  \
-  threatManager.Update();                                             \
-  attackStats.Update(actionState);                                    \
+#define MONSTER_UPDATE()                             \
+  ENTITY_UPDATE()                                    \
+  spriteCounter++;                                   \
+  health_bar.update();                               \
+  effectHandler.Update();                            \
+  CheckForDeath();                                   \
+  if (MP_TYPE == MultiplayerType::CLIENT) return;    \
+  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT; \
+  if (actionState != 0) return;                      \
+  threatManager.Update();                            \
+  attackStats.Update(actionState);                   \
   isMoving = false;
 
 struct Monster : public Entity {
@@ -43,7 +44,7 @@ struct Monster : public Entity {
   MonsterType type;
   Monster(const Point& pos, const MonsterScaler& scaler, uint8_t level,
           const MonsterResource* resourceArg, MonsterType typeArg,
-          const PointT<int16_t>& size = {50, 50}, ShapeType hitboxShape = ShapeType::RECT)
+          const PointT<int16_t>& size , ShapeType hitboxShape = ShapeType::RECT)
       : Entity(pos, size, hitboxShape),
         stats({scaler, level}),
         resource(resourceArg),
@@ -248,6 +249,7 @@ Monster* Monster::GetNewMonster(float x, float y, MonsterType type,
     case MonsterType::SNAKE:
       return new BloodHound({x, y}, level, type);
     case MonsterType::GHOST:
+      return new Ghost({x, y}, level, type);
       break;
     case MonsterType::BLOOD_HOUND:
       return new BloodHound({x, y}, level, type);
