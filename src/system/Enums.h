@@ -181,6 +181,7 @@ enum Stat : uint8_t {
   HEALTH_MULT_P,
   MANA_MULT_P,
   WEAPON_DAMAGE,  // the first after _P enums || other percentile only before mana mult
+  BAG_SLOTS,
   DODGE_CHANCE,
   CRIT_CHANCE,
   ARMOUR,
@@ -235,10 +236,12 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"CHOICE_DIALOGUE_SIMPLE", NodeType::CHOICE_DIALOGUE_SIMPLE}};
 
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
-enum class Quest_ID : uint8_t { TUTORIAL, MARLA, END };
+enum class Quest_ID : uint8_t { TUTORIAL, MARLA, START_SOMETHING_NEW, END };
+
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
     {"TUTORIAL", Quest_ID::TUTORIAL},
     {"MARLA", Quest_ID::MARLA},
+    {"START_SOMETHING_NEW", Quest_ID::START_SOMETHING_NEW},
 };
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving
@@ -422,7 +425,7 @@ inline std::unordered_map<Class, std::string> classToString = {
 inline std::unordered_map<std::string, Stat> attrToStat = {
     {"FOC", FOCUS},        {"END", ENDURANCE}, {"STR", STRENGTH},
     {"INT", INTELLIGENCE}, {"WIS", WISDOM},    {"CHA", CHARISMA},
-    {"VIT", VITALITY},     {"AGI", AGILITY},   {"LUC", LUCK},
+    {"VIT", VITALITY},     {"AGI", AGILITY},   {"LUC", LUCK}, {"BAG", BAG_SLOTS}
 };
 inline std::unordered_map<ItemType, std::string> type_to_string = {
     {ItemType::HEAD, "Head"},         {ItemType::CHEST, "Chest"},
@@ -454,7 +457,8 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"TheGrove", Zone::The_Grove},
     {"TestRoom", Zone::TestRoom},
     {"Goblin_Cave", Zone::Goblin_Cave},
-    {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave}};
+    {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave},
+    {"Oasis", Zone::Oasis}};
 
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #endif  //MAGE_QUEST_SRC_ENUMS_ENUMS_H_

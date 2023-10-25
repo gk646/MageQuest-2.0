@@ -21,6 +21,8 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
   std::getline(file, line);
   std::getline(file, line);
   quest->description = Util::SplitString(line, ':')[1];
+  std::getline(file, line);
+  quest->questZone = stringToZoneMap[Util::SplitString(line, ':')[1]];
   std::vector<std::string> parts;
   while (std::getline(file, line)) {
     if (line.empty() || line.starts_with('#')) continue;

@@ -5,16 +5,16 @@ struct Item {
   static constexpr int tooltip_x = 260;
   static constexpr int tooltip_y = 350;
   static char textBuffer[10];
+  std::string name;
+  std::string description;
+  Texture texture;
+  float effects[STATS_ENDING] = {0};
   uint8_t quality = 70;
   uint8_t durability = 100;
   uint8_t level = 1;
   uint8_t id = 0;
-  Texture texture;
-  float effects[STATS_ENDING] = {0};
   ItemRarity rarity = ItemRarity::NORMAL;
   ItemType type = ItemType::RING;
-  std::string name;
-  std::string description;
   Item(int id, std::string name, ItemRarity rarity, ItemType type,
        std::string description, const Texture& texture)
       : id(id),
@@ -97,7 +97,7 @@ struct Item {
     return *this;
   }
   void Draw(const RectangleR& rect) const noexcept {
-    DrawTextureScaled(texture,rect, 0, false, 0, WHITE);
+    DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
   void draw_tooltip() const noexcept {
     auto mouse = MOUSE_POS;
@@ -220,10 +220,11 @@ struct Item {
 
     //description
     off_sety = 240 * UI_SCALE;
-    std::string wrappedText =  Util::WrapText(description,width-5,MINECRAFT_ITALIC,SCALE(15));
-      DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {startX + off_setX, startY + off_sety},
-                SCALE(15), 0.5F, Colors::darkBackground);
-
+    std::string wrappedText =
+        Util::WrapText(description, width - 5, MINECRAFT_ITALIC, SCALE(15));
+    DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(),
+                {startX + off_setX, startY + off_sety}, SCALE(15), 0.5F,
+                Colors::darkBackground);
 
     //durability
     snprintf(textBuffer, 10, "D:%d", durability);

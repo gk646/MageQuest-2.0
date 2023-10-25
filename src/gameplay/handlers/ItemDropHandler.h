@@ -2,6 +2,15 @@
 #define MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_
 
 namespace ItemDropHandler {
+inline static Item* GetNewItem(int id, ItemType type, int quality, int level) {
+  for (const auto& item : ITEMS) {
+    if (item.id == id && item.type == type) {
+      return new Item(item.id, item.name, item.rarity, item.type, item.description,
+                      item.texture, quality, level);
+    }
+  }
+  return nullptr;
+}
 inline static const Item* GetRandomItemPtr() noexcept {
   const Item* item;
   while ((item = &ITEMS[RANGE_EXISTING_ITEMS(RNG_ENGINE)]) &&

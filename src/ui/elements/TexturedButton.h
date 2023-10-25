@@ -33,12 +33,12 @@ struct TexturedButton {
   bool Draw(float x, float y, TextAlign align = TextAlign::MIDDLE) noexcept {
     Update(x, y);
     if (isHovered) {
-      ToolTip::DrawToolTip(toolTip, ANT_PARTY, fontSize);
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         DrawTextureScaled(pressed, bounds, 0, false, 0, {255, 255, 255, 255});
       } else {
         DrawTextureScaled(hovered, bounds, 0, false, 0, {255, 255, 255, 255});
       }
+      ToolTip::DrawToolTip(toolTip, ANT_PARTY, fontSize);
     } else {
       DrawTextureScaled(normal, bounds, 0, false, 0, {255, 255, 255, alpha});
     }

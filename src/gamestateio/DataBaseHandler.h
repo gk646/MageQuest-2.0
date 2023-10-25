@@ -18,9 +18,10 @@ struct DataBaseHandler {
       create_items_from_table(name);
     }
     RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, ITEMS.size() - 1);
+
     std::cout << "ITEMS LOADED: " << ITEMS.size() << std::endl;
     load_items_from_table(PLAYER_EQUIPPED, "PLAYER_INV", 10);
-    CharacterBag::add_slots(8);
+    CharacterBag::AddSlots(9);
     load_items_from_table(PLAYER_BAG, "PLAYER_BAG", PLAYER_BAG_SIZE);
   }
   static bool prepare_stmt(const std::string& sql, sqlite3* db,
@@ -66,22 +67,14 @@ struct DataBaseHandler {
     if (!prepare_stmt("SELECT * FROM " + table, gamesave, &stmt)) return;
 
     for (int i = 0; i < length && sqlite3_step(stmt) == SQLITE_ROW; ++i) {
-      slots[i].item = get_matching_item(
-          sqlite3_column_int(stmt, 0), ItemType(sqlite3_column_int(stmt, 1)),
-          sqlite3_column_int(stmt, 2), sqlite3_column_int(stmt, 3));
+      slots[i].item =
+          ItemDropHandler::GetNewItem(sqlite3_column_int(stmt, 0), ItemType(sqlite3_column_int(stmt, 1)),
+                     sqlite3_column_int(stmt, 2), sqlite3_column_int(stmt, 3));
       parse_effect_text(slots[i].item->effects, sqlite3_column_text(stmt, 4));
     }
     sqlite3_finalize(stmt);
   }
-  inline static Item* get_matching_item(int id, ItemType type, int quality, int level) {
-    for (const auto& item : ITEMS) {
-      if (item.id == id && item.type == type) {
-        return new Item(item.id, item.name, item.rarity, item.type, item.description,
-                        item.texture, quality, level);
-      }
-    }
-    return nullptr;
-  }
+
   inline static void parse_effect_text(float* arr, const unsigned char* ptr) {
     if (!ptr || !arr) {
       return;

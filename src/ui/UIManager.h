@@ -5,11 +5,13 @@ namespace UIFunctions {
 inline void RestUIPosition();
 }
 
+#include "elements/SlideComponent.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"
 #include "menus/MainMenu.h"
 #include "menus/GameMenu.h"
+
 
 struct UIManager {
   PlayerUI player_ui;
