@@ -84,7 +84,12 @@ struct CharacterBag final : public Window {
   }
 };
 
-void BagPanel::RemoveSlots(int n) {
-  CharacterBag::RemoveSlots(n);
+void EntityStats::UnEquipItem(const float* effect_arr) noexcept {
+  for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
+    effects[i] -= effect_arr[i];
+  }
+  CharacterBag::RemoveSlots(effect_arr[BAG_SLOTS]);
+  ReCalculatePlayerStats();
 }
+
 #endif  //MAGEQUEST_SRC_UI_PLAYER_CHARACTERBAG_H_

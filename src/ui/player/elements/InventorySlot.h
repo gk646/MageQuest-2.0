@@ -8,7 +8,7 @@ struct InventorySlot {
   RectangleR hitBox = {0};
   Item* item = nullptr;
   uint16_t baseX = 0, baseY = 0;
-  ItemType itemType = ItemType::EMPTY;
+  ItemType slotType = ItemType::EMPTY;
   int8_t toolTipHoverTicks = 0;
   uint8_t baseWidth = 40, baseHeight = 40;
   InventorySlot() = default;
@@ -17,7 +17,7 @@ struct InventorySlot {
       : hitBox((uint16_t)x, (uint16_t)y, width, height),
         baseX(x),
         baseY(y),
-        itemType(item_type),
+        slotType(item_type),
         baseWidth(width),
         baseHeight(height) {}
   void Draw(float x, float y) noexcept {
@@ -52,13 +52,13 @@ struct InventorySlot {
                   SCALE(14), 0, rarity_to_color[ptr->rarity]);
     }
   }
+
   static void RecoverDraggedItem() noexcept {
-    if (DRAGGED_SLOT->itemType == ItemType::EMPTY) {
+    if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
       DRAGGED_SLOT->item = DRAGGED_ITEM;
       DRAGGED_SLOT = nullptr;
       DRAGGED_ITEM = nullptr;
-    } else if (DRAGGED_SLOT->itemType == ItemType::BAG) {
-      //TODO
+    } else if (DRAGGED_SLOT->slotType == ItemType::BAG) {
       DRAGGED_SLOT->item = DRAGGED_ITEM;
       DRAGGED_SLOT = nullptr;
       DRAGGED_ITEM = nullptr;
@@ -71,7 +71,7 @@ struct InventorySlot {
   }
   inline void DrawBackGroundIcons() const noexcept {
     if (item) return;
-    switch (itemType) {
+    switch (slotType) {
       case ItemType::HEAD:
         DrawTexturePro(textures::helm, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
         break;
@@ -128,14 +128,14 @@ struct InventorySlot {
           item = nullptr;
         }
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 itemType == DRAGGED_ITEM->type) {
+                 slotType == DRAGGED_ITEM->type) {
         item = DRAGGED_ITEM;
         PLAYER_STATS.EquipItem(item->effects);
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 DRAGGED_ITEM->type == itemType) {
-        if (DRAGGED_SLOT->itemType == ItemType::EMPTY) {
+                 DRAGGED_ITEM->type == slotType) {
+        if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
           PLAYER_STATS.UnEquipItem(item->effects);
         }
         PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
@@ -156,7 +156,7 @@ struct InventorySlot {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
           for (uint_fast32_t i = 0; i < 10; i++) {
-            if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].itemType == item->type) {
+            if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].slotType == item->type) {
               PLAYER_EQUIPPED[i].item = item;
               PLAYER_STATS.EquipItem(item->effects);
               item = nullptr;
@@ -173,9 +173,9 @@ struct InventorySlot {
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 (DRAGGED_SLOT->itemType == ItemType::EMPTY ||
-                  DRAGGED_SLOT->itemType == item->type)) {
-        if (DRAGGED_SLOT->itemType != ItemType::EMPTY) {
+                 (DRAGGED_SLOT->slotType == ItemType::EMPTY ||
+                  DRAGGED_SLOT->slotType == item->type)) {
+        if (DRAGGED_SLOT->slotType != ItemType::EMPTY) {
           PLAYER_STATS.EquipItem(item->effects);
         }
         DRAGGED_SLOT->item = item;

@@ -23,13 +23,12 @@ struct DroppedItem final : public WorldObject {
 
 void CharacterBag::RemoveSlots(int n) noexcept {
   int playerSlots = (int)PLAYER_STATS.GetBagSlots();
-  for (uint_fast32_t i = playerSlots - n; i < playerSlots; i++) {
+  for (uint_fast32_t i = playerSlots; i < playerSlots+n; i++) {
     if (PLAYER_BAG[i].item) {
       WORLD_OBJECTS.emplace_back(
           new DroppedItem({PLAYER_X + 50, PLAYER_Y}, PLAYER_BAG[i].item));
     }
     PLAYER_BAG[i].item = nullptr;
-    PLAYER_STATS.effects[BAG_SLOTS]--;
   }
 }
 

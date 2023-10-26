@@ -39,7 +39,7 @@ inline static void Save() noexcept {
   std::string sql = "UPDATE MAP_COVERS SET COVER = ? WHERE ROWID = ?";
 
   for (const auto& map : MAPS) {
-    if (!DataBaseHandler::prepare_stmt(sql, DataBaseHandler::gamesave, &stmt)) return;
+    if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
 
     auto data = SerializeBooleans(map.map_cover, map.map_size);
     sqlite3_bind_int(stmt, 2, (int)map.zone + 1);

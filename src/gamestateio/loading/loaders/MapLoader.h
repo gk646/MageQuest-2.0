@@ -22,7 +22,7 @@ struct MapLoader {
     std::string sql = "SELECT COVER FROM MAP_COVERS WHERE ROWID = ?";
 
     for (auto& map : MAPS) {
-      if (!DataBaseHandler::prepare_stmt(sql, DataBaseHandler::gamesave, &stmt)) return;
+      if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
 
       sqlite3_bind_int(stmt, 1, (int)map.zone + 1);
 
