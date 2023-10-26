@@ -2,6 +2,7 @@
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_
 
 struct MonsterResource {
+  static constexpr int MAX_LOAD_NUM = 20;
   std::vector<Texture> attack1{};
   std::vector<Texture> attack2{};
   std::vector<Texture> attack3{};
@@ -16,8 +17,7 @@ struct MonsterResource {
   std::vector<Texture> death{};
 
   std::vector<Sound> attack_sound{};
-  static constexpr int load_num = 20;
-  void load(const std::string& name) {
+  void Load(const std::string& name) {
     load_textures(name);
     load_sound(name);
   }
@@ -34,7 +34,7 @@ struct MonsterResource {
 
     std::string path;
     for (size_t i = 0; i < folder_names.size(); ++i) {
-      for (uint_fast32_t j = 0; j < load_num; ++j) {
+      for (uint_fast32_t j = 0; j < MAX_LOAD_NUM; ++j) {
         path = ASSET_PATH + "Entities/" +=
             name + folder_names[i] + std::to_string(j) + ".png";
         if (std::filesystem::exists(path)) {
@@ -54,7 +54,7 @@ struct MonsterResource {
       soundPath.erase(pos, std::string("enemies/").length());
     }
 
-    for (uint_fast32_t i = 0; i < 5; i++) {
+    for (uint_fast32_t i = 0; i < MAX_LOAD_NUM; i++) {
       path = ASSET_PATH + "sound/effects/entities/" +=
           soundPath + std::to_string(i) + ".wav";
       if (std::filesystem::exists(path)) {

@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_SAVING_ITEMSAVER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_SAVING_ITEMSAVER_H_
 struct ItemSaver {
-
   static void Save() noexcept {
     SaveItemsToTable(PLAYER_EQUIPPED, 10, "PLAYER_INV");
     SaveItemsToTable(PLAYER_BAG, 60, "PLAYER_BAG");

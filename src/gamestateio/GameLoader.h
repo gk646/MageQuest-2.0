@@ -11,15 +11,16 @@
 #include "loading/loaders/EntityStateLoader.h"
 #include "loading/loaders/GameInfoLoader.h"
 #include "loading/loaders/SkillLoader.h"
+#include "loading/loaders/MusicLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
   static std::array<std::function<void()>, 5> load_functions;
-  static void load() {
-    std::thread worker(load_game);
+  static void LoadGame() {
+    std::thread worker(Load);
     worker.detach();
   }
-  static void finish_loading() {
+  static void LoadWithGPU() {
     if (finished_cpu_loading &&
         load_util::current_step < load_functions.size() + load_util::cpu_steps) {
       LoadStep(load_functions[load_util::current_step - load_util::cpu_steps]);
@@ -33,13 +34,14 @@ struct GameLoader {
   }
 
  private:
-  static void load_game() {
+  static void Load() {
+    LoadStep(MusicLoader::Load);
     LoadStep(SkillLoader::Load);
     LoadStep(GameInfoLoader::Load);
     LoadStep(TransitionParser::ParseTransitionFile);
     LoadStep(NPCLoader::LoadNamedNPCs);
     LoadStep(QuestLoader::load);
-    LoadStep(SoundLoader::load);
+    LoadStep(SoundLoader::Load);
     LoadStep(TileLoader::load);
     LoadStep(MapLoader::load);
     finished_cpu_loading = true;

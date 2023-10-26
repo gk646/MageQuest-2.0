@@ -2,20 +2,18 @@
 #define MAGEQUEST_SRC_SYSTEM_BENCHMARK_H_
 
 struct BenchMark {
-  static char buffer[25];
 
   static void draw_stats() {
     if (IsKeyDown(KEY_H)) {
-      sprintf(buffer, "Frame Time: %lld", FRAME_TIME);
-      DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.1, 20, GREEN);
+      sprintf(TEXT_BUFFER, "Frame Time: %lld", FRAME_TIME);
+      DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.1, 20, GREEN);
 
-      sprintf(buffer, "Game Tick: %lld", GAME_TICK_TIME);
-      DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.15, 20, GREEN);
+      sprintf(TEXT_BUFFER, "Game Tick: %lld", GAME_TICK_TIME);
+      DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.15, 20, GREEN);
       PLAYER_STATS.mana = PLAYER_STATS.GetMaxMana();
       PLAYER_STATS.effects[CDR_P] = 1;
-      Multiplayer::draw_stats(buffer);
+      Multiplayer::DrawStats(TEXT_BUFFER);
     }
   }
 };
-char BenchMark::buffer[25];
 #endif  //MAGEQUEST_SRC_SYSTEM_BENCHMARK_H_

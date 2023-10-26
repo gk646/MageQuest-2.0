@@ -18,22 +18,22 @@ static void LoadScaling() noexcept {
   }
 }
 static void Load() {
-  textures::PLAYER_RESOURCE.load("player/");
+  textures::PLAYER_RESOURCE.Load("player/");
 
-  textures::monsters::SKELETON_WARRIOR.load("enemies/skeletonWarrior/");
-  textures::monsters::SKELETON_SPEAR.load("enemies/skeletonSpear/");
-  textures::monsters::SKELETON_SHIELD.load("enemies/skeletonShield/");
-  textures::monsters::SKELETON_ARCHER.load("enemies/skeletonArcher/");
-  textures::monsters::BOSS_DEATH_BRINGER.load("enemies/BOSSDeathBringer/");
-  textures::monsters::BOSS_KNIGHT.load("enemies/BOSSKnight/");
-  textures::monsters::BOSS_SLIME.load("enemies/BossSlime/");
-  textures::monsters::GOBLIN.load("enemies/goblin/");
-  textures::monsters::KNIGHT.load("enemies/Knight/");
-  textures::monsters::MUSHROOM.load("enemies/mushroom/");
-  textures::monsters::SNAKE.load("enemies/snake/");
-  textures::monsters::WOLF.load("enemies/wolf/");
-  textures::monsters::BLOOD_HOUND.load("enemies/bloodHound/");
-  textures::monsters::GHOST.load("enemies/Ghost/");
+  textures::monsters::SKELETON_WARRIOR.Load("enemies/skeletonWarrior/");
+  textures::monsters::SKELETON_SPEAR.Load("enemies/skeletonSpear/");
+  textures::monsters::SKELETON_SHIELD.Load("enemies/skeletonShield/");
+  textures::monsters::SKELETON_ARCHER.Load("enemies/skeletonArcher/");
+  textures::monsters::BOSS_DEATH_BRINGER.Load("enemies/BOSSDeathBringer/");
+  textures::monsters::BOSS_KNIGHT.Load("enemies/BOSSKnight/");
+  textures::monsters::BOSS_SLIME.Load("enemies/BossSlime/");
+  textures::monsters::GOBLIN.Load("enemies/goblin/");
+  textures::monsters::KNIGHT.Load("enemies/Knight/");
+  textures::monsters::MUSHROOM.Load("enemies/mushroom/");
+  textures::monsters::SNAKE.Load("enemies/snake/");
+  textures::monsters::WOLF.Load("enemies/wolf/");
+  textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
+  textures::monsters::GHOST.Load("enemies/Ghost/");
 
   textures::projectile::BLAST_HAMMER.load("blastHammer/");
   textures::projectile::ENERGY_SPHERE.load("EnergySphere/");
@@ -57,12 +57,12 @@ static void Load() {
   textures::projectile::PSYCHIC_SCREAM.load("PsychicScream/");
   textures::projectile::ARROW_NORMAL.load("arrowNormal/");
 
-  textures::npc::ARIA.load("npc/aria/");
-  textures::npc::OLD_MAN.load("npc/oldman/");
-  textures::npc::realmKeeper.load("npc/realmKeeper/");
-  textures::npc::NIETZSCHE.load("npc/nietzsche/");
-  textures::npc::MARLA.load("npc/marla/");
-  textures::npc::SATIRO.load("npc/satiro/");
+  textures::npc::ARIA.Load("npc/aria/");
+  textures::npc::OLD_MAN.Load("npc/oldman/");
+  textures::npc::realmKeeper.Load("npc/realmKeeper/");
+  textures::npc::NIETZSCHE.Load("npc/nietzsche/");
+  textures::npc::MARLA.Load("npc/marla/");
+  textures::npc::SATIRO.Load("npc/satiro/");
   LoadScaling();
 }
 

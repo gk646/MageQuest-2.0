@@ -126,7 +126,7 @@ inline static void BroadCastGameState() noexcept {
     Server::BroadCastGameState();
   }
 }
-inline static void draw_stats(char* buffer) noexcept {
+inline static void DrawStats(char* buffer) noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     float download = 0;
     float upload = 0;

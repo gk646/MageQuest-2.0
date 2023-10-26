@@ -4,7 +4,7 @@
 struct DataBaseHandler {
   static sqlite3* dataBase;
   static sqlite3* gameSave;
-  inline static void init() noexcept {
+  inline static void Init() noexcept {
     sqlite3_open("../DataBase.sqlite", &dataBase);
     sqlite3_open("../GameSave.sqlite", &gameSave);
   }
@@ -15,18 +15,18 @@ struct DataBaseHandler {
         "ARM_HEAD",   "ARM_OFFHAND", "ARM_ONEHAND", "ARM_PANTS",
         "ARM_RELICS", "ARM_RINGS",   "ARM_TWOHANDS"};
     for (const auto& name : table_names) {
-      create_items_from_table(name);
+      CreateItemsFromTable(name);
     }
     RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, ITEMS.size() - 1);
-
     std::cout << "ITEMS LOADED: " << ITEMS.size() << std::endl;
     LoadItemsFromTable(PLAYER_EQUIPPED, "PLAYER_INV", 10, true);
     LoadItemsFromTable(UI_MANAGER.playerUI.charBag.bagPanel.bagSlots.data(), "PLAYER_INV",
                        4, true, 12);
     LoadItemsFromTable(PLAYER_BAG, "PLAYER_BAG", PLAYER_STATS.GetBagSlots());
   }
-  static bool PrepareStmt(const std::string& sql, sqlite3* db,
-                          sqlite3_stmt** stmt) noexcept {
+  //Prepares a statement for the given database
+  inline static bool PrepareStmt(const std::string& sql, sqlite3* db,
+                                 sqlite3_stmt** stmt) noexcept {
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, stmt, nullptr);
     if (rc != SQLITE_OK) {
       std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
@@ -36,8 +36,23 @@ struct DataBaseHandler {
     return true;
   }
 
+  //Assumes database has column with name: NUM
+  inline static void SaveNumToTable(int value, const std::string& name, int y) noexcept {
+    sqlite3_stmt* stmt;
+    std::string sql = "UPDATE " + name + " SET NUM = ? WHERE ROWID = ?";
+
+    if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
+
+    sqlite3_bind_int(stmt, 1, value);
+    sqlite3_bind_int(stmt, 2, y);
+
+    sqlite3_step(stmt);
+
+    sqlite3_finalize(stmt);
+  }
+
  private:
-  static void create_items_from_table(const std::string& table) noexcept {
+  static void CreateItemsFromTable(const std::string& table) noexcept {
     sqlite3_stmt* stmt;
     if (!PrepareStmt("SELECT * FROM " + table, dataBase, &stmt)) return;
 

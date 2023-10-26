@@ -1,7 +1,21 @@
 #ifndef MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
 #define MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
 
-namespace sound{
+namespace sound {
+
+//music
+namespace music {
+inline static Music firePlace;
+inline static Music lava;
+inline static Music hillcrestVillage;
+inline static std::vector<Music> waterAmbience;
+inline static std::vector<Music> townAmbience;
+inline static std::vector<Music> forestAmbience;
+inline static std::vector<Music> dungeonAmbience;
+inline static std::vector<Music> bossMusic;
+inline static Music moonLightSonata;
+}  // namespace music
+
 inline Sound intro;
 
 inline Sound menu_back;
@@ -17,8 +31,6 @@ inline Sound read_book;
 inline Sound sell;
 inline Sound zipTabs;
 
-
-
 //quests
 inline static Sound majorObjective;
 inline static Sound completeQuest;
@@ -28,7 +40,6 @@ inline static Sound speak;
  * |                    PROJECTILES                      |
  * |-----------------------------------------------------|
  */
-
 
 inline static Sound blastHammer;
 inline static Sound energySphere;
@@ -45,5 +56,5 @@ inline static Sound pyroBlast;
 inline static Sound solarFlare;
 inline static Sound thunderSplash;
 inline static Sound thunderStrike;
-}
+}  // namespace sound
 #endif  //MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_

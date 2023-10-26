@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_
 struct SoundLoader {
 
-  static void load() {
+  static void Load() {
     //Projectile SOUNDS
 
     sound::energySphere = LoadSound(

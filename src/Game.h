@@ -107,6 +107,7 @@ class Game {
   static inline void GameTick() noexcept {
     GAME_STATISTICS.Update();
     WorldManager::Update();
+    MusicStreamer::Update();
     Lighting::UpdateScreenEffects();
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
@@ -223,7 +224,7 @@ class Game {
       case GameState::Loading: {
         LoadingScreen::draw();
         if (GameLoader::finished_cpu_loading) {
-          GameLoader::finish_loading();
+          GameLoader::LoadWithGPU();
         }
         break;
       }
@@ -296,7 +297,7 @@ class Game {
     SteamAPI_Shutdown();
   }
   void start() noexcept {
-    GameLoader::load();
+    GameLoader::LoadGame();
     logic_thread = std::thread(Game::LogicLoop);
     RenderLoop();
   }
