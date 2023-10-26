@@ -22,45 +22,41 @@ struct BagPanel {
 
   void Draw(float x, float y) noexcept {
     y += 25;
-    if (bagPanelButton.Draw(x + 25, y)) {
-      isOpen = !isOpen;
-    }
-    x += 45;
+    DrawBagPanelButton(x, y);
     if (IsOpened()) {
-      int i = 0;
-      bool once = false;
-      for (auto& slot : bagSlots) {
-        slot.Draw(x, y);
-        i++;
-        if (slide.GetCurrentOffset() > i * 28) {
-          x += 28;
-        } else if (!once) {
-          x += (int)slide.GetCurrentOffset() % 28;
-          once = true;
-        }
-      }
+      DrawBagSlots(x + 45, y);
     }
   }
   void Update() noexcept {
     slide.UpdateAnimation();
-    int size = BASE_BAG_SLOTS;
     for (auto& slot : bagSlots) {
-      if (slot.item) {
-        size += slot.item->effects[BAG_SLOTS];
-      }
+      if (slot.item) {}
       slot.UpdateCharacterSlots();
     }
-
-    int playerBagSlots = (int)PLAYER_STATS.GetBagSlots();
-    if (playerBagSlots < size) {
-      PLAYER_STATS.effects[BAG_SLOTS] += size - playerBagSlots;
-    } else if (playerBagSlots > size) {
-      RemoveSlots(playerBagSlots - size);
-    }
   }
-  [[nodiscard]] inline bool IsOpened() const noexcept { return isOpen || !slide.IsAnimationFinished(); }
+  [[nodiscard]] inline bool IsOpened() const noexcept {
+    return isOpen || !slide.IsAnimationFinished();
+  }
 
  private:
-  static inline void RemoveSlots(int n);
+  inline void DrawBagPanelButton(float x, float y) noexcept {
+    if (bagPanelButton.Draw(x + 25, y)) {
+      isOpen = !isOpen;
+    }
+  }
+  inline void DrawBagSlots(float x, float y) noexcept {
+    int i = 0;
+    bool once = false;
+    for (auto& slot : bagSlots) {
+      slot.Draw(x, y);
+      i++;
+      if (slide.GetCurrentOffset() > i * 28) {
+        x += 28;
+      } else if (!once) {
+        x += static_cast<int>(slide.GetCurrentOffset()) % 28;
+        once = true;
+      }
+    }
+  }
 };
 #endif  //MAGEQUEST_SRC_UI_PLAYER_BAGPANEL_H_

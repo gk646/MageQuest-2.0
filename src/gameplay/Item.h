@@ -99,7 +99,7 @@ struct Item {
     DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
   void DrawToolTip() const noexcept {
-    auto mouse = MOUSE_POS;
+    auto mouse = GetMousePosition();
     float startX, startY;
     float width = tooltip_x * UI_SCALE;
     float height = tooltip_y * UI_SCALE;

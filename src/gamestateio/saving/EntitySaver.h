@@ -25,7 +25,7 @@ static void SaveNamedNPCs() noexcept {
   std::string sql =
       "UPDATE NPC_STATES SET TYPE = ?, X_POS = ?, Y_POS = ?, ZONE = ? WHERE ROWID = ?";
 
-  if (!DataBaseHandler::prepare_stmt(sql, DataBaseHandler::gamesave, &stmt)) return;
+  if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
   int i = 1;
   for (auto& npc : NPCS) {
     if (npc->id != NPC_ID::RANDOM && npc->id != NPC_ID::VILLAGER &&

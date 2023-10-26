@@ -64,7 +64,6 @@ inline static float MIRROR_POINT = 0;
 inline static PointT<int16_t>* PLAYER_TILE = nullptr;
 inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline static std::string PLAYER_NAME;
-struct Item;
 inline static Item* DRAGGED_ITEM = nullptr;
 inline static Item* TOOL_TIP_ITEM = nullptr;
 /* |-----------------------------------------------------|

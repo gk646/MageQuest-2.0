@@ -14,28 +14,28 @@ inline void RestUIPosition();
 
 
 struct UIManager {
-  PlayerUI player_ui;
+  PlayerUI playerUI;
   SettingsMenu settings_menu;
   GameMenu game_menu{settings_menu};
   MainMenu main_menu{settings_menu};
   UIManager() {
-    player_ui.playerHotbar.menuButtons[0].onPressedFunc = [&]() {
-      player_ui.char_bag.ToggleWindow();
+    playerUI.playerHotbar.menuButtons[0].onPressedFunc = [&]() {
+      playerUI.charBag.ToggleWindow();
     };
-    player_ui.playerHotbar.menuButtons[1].onPressedFunc = [&]() {
-      player_ui.char_bag.ToggleWindow();
+    playerUI.playerHotbar.menuButtons[1].onPressedFunc = [&]() {
+      playerUI.charBag.ToggleWindow();
     };
-    player_ui.playerHotbar.menuButtons[2].onPressedFunc = [&]() {
-      player_ui.char_panel.ToggleWindow();
+    playerUI.playerHotbar.menuButtons[2].onPressedFunc = [&]() {
+      playerUI.char_panel.ToggleWindow();
     };
-    player_ui.playerHotbar.menuButtons[3].onPressedFunc = [&]() {
-      player_ui.region_map.ToggleWindow();
+    playerUI.playerHotbar.menuButtons[3].onPressedFunc = [&]() {
+      playerUI.region_map.ToggleWindow();
     };
-    player_ui.playerHotbar.menuButtons[4].onPressedFunc = [&]() {
+    playerUI.playerHotbar.menuButtons[4].onPressedFunc = [&]() {
       GAME_STATE = GameState::GameMenu;
     };
-    player_ui.playerHotbar.menuButtons[5].onPressedFunc = [&]() {
-      player_ui.char_bag.ToggleWindow();
+    playerUI.playerHotbar.menuButtons[5].onPressedFunc = [&]() {
+      playerUI.charBag.ToggleWindow();
     };
   }
   void UIUpdate() noexcept {
@@ -52,14 +52,14 @@ struct UIManager {
       if (GAME_STATE == GameState::GameMenu && game_menu.menu_state == MenuState::Main) {
         GAME_STATE = GameState::Game;
       } else if (GAME_STATE == GameState::Game) {
-        if (!player_ui.window_closeable()) {
+        if (!playerUI.window_closeable()) {
           GAME_STATE = GameState::GameMenu;
         }
       }
     }
   }
-  inline void Update() noexcept { player_ui.Update(); }
-  inline void ResetUIPosition() { player_ui.ResetPosition(); }
+  inline void Update() noexcept { playerUI.Update(); }
+  inline void ResetUIPosition() { playerUI.ResetPosition(); }
 };
 
 inline UIManager UI_MANAGER{};

@@ -12,7 +12,7 @@ struct PlayerUI {
   RegionMap region_map{};
   MiniMap mini_map{&region_map.isWindowOpen};
   CharacterPanel char_panel{};
-  CharacterBag char_bag{};
+  CharacterBag charBag{};
   StatusBar status_bar{};
   QuestPanel questPanel{};
   HotBar playerHotbar{};
@@ -25,7 +25,7 @@ struct PlayerUI {
     status_bar.draw();
     mini_map.Draw();
     char_panel.Draw();
-    char_bag.Draw();
+    charBag.Draw();
     region_map.Draw();
     DrawDraggedAndToolTip();
   }
@@ -36,7 +36,7 @@ struct PlayerUI {
     mini_map.Update();
     status_bar.update();
     char_panel.update();
-    char_bag.Update();
+    charBag.Update();
     region_map.Update();
     playerHotbar.Update();
     Util::update();
@@ -65,9 +65,9 @@ struct PlayerUI {
     }
   }
   inline bool window_closeable() noexcept {
-    if (char_panel.isWindowOpen || char_bag.isWindowOpen || region_map.isWindowOpen) {
+    if (char_panel.isWindowOpen || charBag.isWindowOpen || region_map.isWindowOpen) {
       char_panel.isWindowOpen = false;
-      char_bag.isWindowOpen = false;
+      charBag.isWindowOpen = false;
       region_map.isWindowOpen = false;
       return true;
     } else {
@@ -76,7 +76,7 @@ struct PlayerUI {
   }
   inline void ResetPosition() noexcept {
     char_panel.ResetPosition();
-    char_bag.ResetPosition();
+    charBag.ResetPosition();
     questPanel.ResetPosition();
     region_map.ResetPosition();
   }

@@ -128,12 +128,7 @@ struct EntityStats {
     }
     ReCalculatePlayerStats();
   }
-  inline void UnEquipItem(const float* effect_arr) noexcept {
-    for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
-      effects[i] -= effect_arr[i];
-    }
-    ReCalculatePlayerStats();
-  }
+  inline void UnEquipItem(const float* effect_arr) noexcept;
   inline float GetAbilityDmg(const DamageStats& stats) noexcept {
     switch (stats.dmgType) {
       case DamageType::FIRE:
@@ -177,19 +172,6 @@ struct EntityStats {
     health = GetMaxHealth();
     shield = effects[MAX_SHIELD];
   }
-  static inline void RemoveEffects() noexcept;
-  static inline void ApplyEffects() noexcept;
-  inline void ReCalculatePlayerStats() noexcept {
-    RemoveEffects();
-    effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
-    effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
-
-    effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
-    effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
-
-    effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
-    ApplyEffects();
-  }
   inline void SpendAttributePoint(uint8_t i) noexcept {
 
     if (PLAYER_SPENT_POINTS.SpendPoint(i)) {
@@ -207,8 +189,22 @@ struct EntityStats {
     return speed * (1 + effects[SPEED_MULT_P]);
   }
   [[nodiscard]] inline float GetBagSlots() const noexcept { return effects[BAG_SLOTS]; }
+  inline void ReCalculatePlayerStats() noexcept {
+    RemoveEffects();
+    effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
+    effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
+
+    effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
+    effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
+
+    effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
+    ApplyEffects();
+  }
 
  private:
+  static inline void RemoveEffects() noexcept;
+  static inline void ApplyEffects() noexcept;
+
   [[nodiscard]] inline float RollCriticalHit(float damage) const noexcept {
     if (RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]) {
       return damage * (1 + effects[CRIT_DAMAGE_P]);

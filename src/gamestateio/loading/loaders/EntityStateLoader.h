@@ -4,8 +4,8 @@ namespace NPCLoader {
 
 static void LoadNamedNPCs() {
   sqlite3_stmt* stmt;
-  if (!DataBaseHandler::prepare_stmt("SELECT * FROM NPC_STATES",
-                                     DataBaseHandler::gamesave, &stmt))
+  if (!DataBaseHandler::PrepareStmt("SELECT * FROM NPC_STATES", DataBaseHandler::gameSave,
+                                    &stmt))
     return;
 
   while (sqlite3_step(stmt) == SQLITE_ROW) {

@@ -46,11 +46,6 @@ struct GameLoader {
   }
   static void SetupGame() {
     PlaySoundR(sound::intro);
-    for (uint_fast32_t i = 0; i < 10; i++) {
-      if (PLAYER_EQUIPPED[i].item) {
-        PLAYER_STATS.EquipItem(PLAYER_EQUIPPED[i].item->effects);
-      }
-    }
     PLAYER_STATS.RefillStats();
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
@@ -66,10 +61,10 @@ struct GameLoader {
     PLAYER_QUESTS.SetAsActiveQuest(Quest_ID::TUTORIAL);
     PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
     PLAYER_QUESTS.GetQuest(Quest_ID::MARLA)->state = QuestState::ACTIVE;
-    UI_MANAGER.player_ui.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
-    UI_MANAGER.player_ui.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
-    UI_MANAGER.player_ui.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
-    UI_MANAGER.player_ui.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
+    UI_MANAGER.playerUI.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
+    UI_MANAGER.playerUI.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
+    UI_MANAGER.playerUI.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
+    UI_MANAGER.playerUI.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
     NPCS.push_back(NPC::GetNewNPC(NPC_ID::SATIRO, 4 * 48, 96 * 48, CURRENT_ZONE));
     for (uint_fast32_t i = 0; i < 20; i++) {
       // MONSTERS.push_back(          Monster::GetNewMonster(250.0F + i * 5, 150, MonsterType::SKEL_ARCHER, 5));
