@@ -1,11 +1,13 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
-namespace WorldManager {
+
 struct TransitionPoint {
   PointT<int16_t> origin;
   PointT<int16_t> dest;
   Zone destZone;
 };
+
+namespace WorldManager {
 std::array<std::vector<TransitionPoint>, (int)Zone::ZONE_END> zoneTPoints;
 }  // namespace WorldManager
 #include "elements/TransitionParser.h"

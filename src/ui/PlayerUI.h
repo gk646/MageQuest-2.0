@@ -22,7 +22,7 @@ struct PlayerUI {
     PLAYER_EFFECTS.Draw();
     playerHotbar.Draw();
     questPanel.Draw();
-    status_bar.draw();
+    status_bar.Draw();
     mini_map.Draw();
     char_panel.Draw();
     charBag.Draw();
@@ -34,7 +34,7 @@ struct PlayerUI {
     WINDOW_FOCUSED = false;
     questPanel.Update();
     mini_map.Update();
-    status_bar.update();
+    status_bar.Update();
     char_panel.update();
     charBag.Update();
     region_map.Update();

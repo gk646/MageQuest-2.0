@@ -75,7 +75,7 @@ struct Player final : public Entity {
   void Draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[spriteCounter % 56 / 7],
-                           std::round(pos.x_ + DRAW_X - 25.0F), std::round(pos.y_ + DRAW_Y - 45),
+                           std::floor(pos.x_ + DRAW_X - 25.0F), std::floor(pos.y_ + DRAW_Y - 45),
                            -23, 0, flip, WHITE);
       actionState = 0;
     } else if (actionState == 1) {

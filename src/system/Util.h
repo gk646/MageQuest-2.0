@@ -139,12 +139,10 @@ inline std::string CreateToolTipString(const std::string& s, float damage,
     ret.replace(pos, 7, maxDmgStr);
   }
 
-
   pos = s.find("MIN_DMG");
   if (pos != std::string::npos) {
     ret.replace(pos, 7, minDmgStr);
   }
-
 
   if (val1 != 0) {
     pos = s.find("VAL1");

@@ -8,7 +8,7 @@ int main() {
     exit(1);
   }
   SteamNetworkingUtils()->InitRelayNetworkAccess();
-  DataBaseHandler::init();
+  DataBaseHandler::Init();
   auto game = new Game();
   game->start();
   delete game;
