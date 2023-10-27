@@ -2,9 +2,8 @@
 #define MAGE_QUEST_SRC_GRAPHICS_TILEMANAGER_H_
 
 struct TileLoader {
-  static constexpr int TEXTURE_COUNT = 5589;
   static std::vector<Image> images;
-  static void load() {
+  static void Load() {
     load_texture_span(0, TEXTURE_COUNT);
     load_tile_collision();
   }

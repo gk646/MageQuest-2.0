@@ -42,7 +42,7 @@ struct GameLoader {
     LoadStep(NPCLoader::LoadNamedNPCs);
     LoadStep(QuestLoader::load);
     LoadStep(SoundLoader::Load);
-    LoadStep(TileLoader::load);
+    LoadStep(TileLoader::Load);
     LoadStep(MapLoader::load);
     finished_cpu_loading = true;
   }

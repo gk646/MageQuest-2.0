@@ -36,7 +36,7 @@ inline static bool FRIENDLY_FIRE = false;
 inline static GameStatistics GAME_STATISTICS{};
 inline static constexpr float UPDATE_DISTANCE = 32;
 inline static RenderTexture FIRST_LAYER_BUFFER;
-
+static constexpr int TEXTURE_COUNT = 8500;
 /* |-----------------------------------------------------|
  * |                      STEAM                          |
  * |-----------------------------------------------------|
@@ -84,8 +84,8 @@ inline static bool** CURRENT_MAP_COVER = nullptr;
 inline static std::vector<SpawnTrigger>* CURRENT_SPAWN_TRIGGERS;
 inline static Zone CURRENT_ZONE = Zone::Tutorial;
 inline static int CURRENT_MAP_SIZE = 100;
-inline static int8_t COLLISIONS[6000] = {0};
-inline static uint16_t TILES[6000] = {0};
+inline static int8_t COLLISIONS[TEXTURE_COUNT] = {0};
+inline static uint16_t TILES[TEXTURE_COUNT] = {0};
 inline static std::vector<Map> MAPS;
 inline static std::vector<Item> ITEMS;
 inline static std::vector<Projectile*> PROJECTILES;
