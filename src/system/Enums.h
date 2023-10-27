@@ -259,7 +259,16 @@ enum class NPC_ID : uint8_t {
   SATIRO,
   NPC_END
 };
-enum class WorldObjectType : uint8_t { BASIC_CHEST, NORMAL_CHEST, EPIC_CHEST };
+enum class WorldObjectType : int16_t {
+  BASIC_CHEST = 7176,
+  NORMAL_CHEST = 824,
+  EPIC_CHEST = 2191
+
+};
+inline static std::unordered_set<int16_t> worldObjectTable{
+    (int16_t)WorldObjectType::BASIC_CHEST, (int16_t)WorldObjectType::NORMAL_CHEST,
+    (int16_t)WorldObjectType::EPIC_CHEST};
+
 std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"DECKARD", NPC_ID::DECKARD},
     {"MARLA", NPC_ID::MARLA},

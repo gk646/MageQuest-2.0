@@ -2,6 +2,7 @@
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ENTITYLOADER_H_
 
 namespace EntityLoader {
+//Loads the enemies scaling and behaviour from file
 static void LoadScaling() noexcept {
   auto table = Util::ReadMGI("mgi/Monsters.mgi");
 
@@ -17,6 +18,7 @@ static void LoadScaling() noexcept {
     monsterIdToScaler.insert({id, scaler});
   }
 }
+//Loads entity resources
 static void Load() {
   textures::PLAYER_RESOURCE.Load("player/");
 
@@ -63,6 +65,10 @@ static void Load() {
   textures::npc::NIETZSCHE.Load("npc/nietzsche/");
   textures::npc::MARLA.Load("npc/marla/");
   textures::npc::SATIRO.Load("npc/satiro/");
+
+  MonsterResource::LoadImagesIntoVector("Entities/container/basicChest/",
+                                        textures::container::basicChest);
+
   LoadScaling();
 }
 

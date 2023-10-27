@@ -12,6 +12,7 @@
 #include "loading/loaders/GameInfoLoader.h"
 #include "loading/loaders/SkillLoader.h"
 #include "loading/loaders/MusicLoader.h"
+#include "loading/loaders/ItemLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -43,21 +44,24 @@ struct GameLoader {
     LoadStep(QuestLoader::load);
     LoadStep(SoundLoader::Load);
     LoadStep(TileLoader::Load);
-    LoadStep(MapLoader::load);
+    LoadStep(MapLoader::Load);
     finished_cpu_loading = true;
   }
-  static void SetupGame() {
+  static void SetupGameImpl() {
+    delete RAYLIB_LOGO;
     PlaySoundR(sound::intro);
     PLAYER_STATS.RefillStats();
+    GAME_STATE = GameState::MainMenu;
+    LoadingScreen::progress = 0;
+    finished_cpu_loading = false;
+  }
+  static void SetupGame() {
+    SetupGameImpl();
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
     WorldManager::LoadMap(Zone::Oasis, {4, 96});
 #endif
-    GAME_STATE = GameState::MainMenu;
-    LoadingScreen::progress = 0;
-    finished_cpu_loading = false;
-    delete RAYLIB_LOGO;
     PLAYER_QUESTS.AddQuest(Quests::TUTORIAL);
     PLAYER_QUESTS.GetQuest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
     PLAYER_QUESTS.SetAsActiveQuest(Quest_ID::TUTORIAL);
@@ -83,6 +87,6 @@ struct GameLoader {
 std::atomic_bool GameLoader::finished_cpu_loading{false};
 std::array<std::function<void()>, 5> GameLoader::load_functions = {
     EntityLoader::Load, GuiLoadStyleAshes, TileLoader::LoadToGPU, TextureLoader::load,
-    DataBaseHandler::load};
+    ItemLoader::Load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

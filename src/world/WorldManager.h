@@ -19,8 +19,8 @@ static void LoadMap(Zone zone, const PointT<int16_t>& pos) {
       CURRENT_MIDDLE_GROUND = map.mapMiddleGround;
       CURRENT_FORE_GROUND = map.mapForeGround;
       PLAYER.pos = PointT<int16_t>::GetPoint(pos * 48);
-      CURRENT_MAP_COVER = map.map_cover;
-      CURRENT_MAP_SIZE = map.map_size;
+      CURRENT_MAP_COVER = map.mapCover;
+      CURRENT_MAP_SIZE = map.mapSize;
       CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
       CURRENT_ZONE = zone;
       Lighting::fadeAlpha = 253;

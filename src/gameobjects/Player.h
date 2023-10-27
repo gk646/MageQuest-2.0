@@ -1,6 +1,6 @@
 #ifndef MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
 #define MAGE_QUEST_SRC_ENTITIES_PLAYER_H_
-
+//The player character class
 struct Player final : public Entity {
   std::string name;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
@@ -8,7 +8,7 @@ struct Player final : public Entity {
   bool flip = false;
   bool moving = false;
   uint8_t uncoverRadius = 8;
-  explicit Player(const Point& pos) : Entity(pos, {28, 50}, ShapeType::RECT) {
+  explicit Player(const Point& pos) : Entity(pos, {28, 48}, ShapeType::RECT) {
     PLAYER_TILE = &tile_pos;
   }
   Player(const Player& other) noexcept : Entity(other) {}
@@ -28,7 +28,7 @@ struct Player final : public Entity {
     }
   }
   void Update() final {
-    if (isDead) {
+    if (PLAYER_STATS.health <= 0) {
       GAME_STATE = GameState::GameOver;
       return;
     } else if (PLAYER_STATS.stunned) {
@@ -75,8 +75,8 @@ struct Player final : public Entity {
   void Draw() final {
     if (moving) {
       DrawTextureProFastEx(resource->walk[spriteCounter % 56 / 7],
-                           std::floor(pos.x_ + DRAW_X - 25.0F), std::floor(pos.y_ + DRAW_Y - 45),
-                           -23, 0, flip, WHITE);
+                           std::floor(pos.x_ + DRAW_X - 25.0F),
+                           std::floor(pos.y_ + DRAW_Y - 45), -23, 0, flip, WHITE);
       actionState = 0;
     } else if (actionState == 1) {
       draw_attack1();
@@ -154,6 +154,7 @@ struct Player final : public Entity {
 inline static Player PLAYER({150, 150});
 #include "../ui/player/HotBar.h"
 #include "WorldObject.h"
+
 void EntityStats::RemoveEffects() noexcept {
   PLAYER_EFFECTS.RemoveEffects();
 }
@@ -161,6 +162,7 @@ void EntityStats::ApplyEffects() noexcept {
   PLAYER_EFFECTS.ApplyEffects();
 }
 
+//Returns true if the player is close to the spawn trigger
 bool SpawnTrigger::IsClose() const noexcept {
   return PLAYER.pos.dist(pos.x + size.x / 2, pos.y + size.y / 2) < UPDATE_DISTANCE * 48;
 }
