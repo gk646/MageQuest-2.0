@@ -14,6 +14,9 @@ inline MonsterResource MARLA;
 inline MonsterResource SATIRO;
 }  // namespace npc
 
+namespace container {
+inline std::vector<Texture> basicChest;
+}
 namespace monsters {
 inline MonsterResource SKELETON_WARRIOR;
 inline MonsterResource SKELETON_SPEAR;

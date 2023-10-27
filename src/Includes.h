@@ -108,6 +108,7 @@ using namespace cxstructs;
  * |-----------------------------------------------------|
  */
 #include "raylib-extension/DrawFunctions.h"
+#include "gamestateio/DataBaseHandler.h"
 #include "world/MusicStreamer.h"
 #include "system/CollisionDetection.h"
 #include "system/Definitions.h"
@@ -118,9 +119,9 @@ using namespace cxstructs;
 #include "graphics/elements/LogoDrawer.h"
 #include "system/Util.h"
 #include "world/Map.h"
-#include "gamestateio/loading/EntityResource.h"
 #include "gameplay/Item.h"
 #include "system/GlobalVariables.h"
+#include "gamestateio/loading/EntityResource.h"
 #include "resources/SoundStorage.h"
 #include "resources/TextureStorage.h"
 #include "ui/game/DialogueRender.h"
@@ -143,7 +144,6 @@ using namespace cxstructs;
 #include "world/WorldManager.h"
 #include "multiplayer/menus/ServerBrowser.h"
 #include "ui/UIManager.h"
-#include "gamestateio/DataBaseHandler.h"
 #include "ui/game/LoadingScreen.h"
 #include "gamestateio/loading/LoadingUtil.h"
 #include "system/BenchMark.h"

@@ -16,7 +16,6 @@ struct MapLoader {
       }
     }
   }
-
   inline static void LoadMapCovers() noexcept {
     sqlite3_stmt* stmt;
     std::string sql = "SELECT COVER FROM MAP_COVERS WHERE ROWID = ?";
@@ -30,14 +29,14 @@ struct MapLoader {
         const auto* data =
             reinterpret_cast<const unsigned char*>(sqlite3_column_blob(stmt, 0));
         if (!data) break;
-        DeserializeBooleans(data, map.map_cover, map.map_size);
+        DeserializeBooleans(data, map.mapCover, map.mapSize);
       }
 
       sqlite3_finalize(stmt);
     }
   }
-
-  static void load() {
+  static void Load() {
+    cxstructs::now(2);
     MAPS.reserve(15);
     MAPS.emplace_back("hermitCaveHillcrest", 70, Zone::Hillcrest_Hermit_Cave);
     MAPS.emplace_back("goblinCave", 120, Zone::Goblin_Cave);
@@ -51,6 +50,7 @@ struct MapLoader {
     MAPS.emplace_back("TheGrove", 200, Zone::The_Grove);
     MAPS.emplace_back("DeadPlains", 200, Zone::DeadPlains);
     MAPS.emplace_back("Oasis", 100, Zone::Oasis);
+    cxstructs::printTime<std::chrono::milliseconds>("",2);
     LoadMapCovers();
   }
 };

@@ -106,7 +106,6 @@ class Game {
   }
   static inline void GameTick() noexcept {
     GAME_STATISTICS.Update();
-    WorldManager::Update();
     MusicStreamer::Update();
     Lighting::UpdateScreenEffects();
     SteamAPI_RunCallbacks();
@@ -118,6 +117,7 @@ class Game {
       }
       case GameState::Game:
         [[likely]] {
+          WorldManager::Update();
           PLAYER_STATS.update();
           PLAYER_EFFECTS.Update();
           PLAYER.Update();
@@ -126,6 +126,7 @@ class Game {
         }
         break;
       case GameState::GameMenu: {
+        WorldManager::Update();
         PLAYER_STATS.update();
         PLAYER_EFFECTS.Update();
         UPDATE_AND_COLLISION();

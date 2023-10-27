@@ -3,6 +3,17 @@
 
 struct MonsterResource {
   static constexpr int MAX_LOAD_NUM = 20;
+  inline static void LoadImagesIntoVector(const std::string& name,
+                                          std::vector<Texture>& vec) noexcept {
+    for (uint_fast32_t j = 0; j < MAX_LOAD_NUM; ++j) {
+      sprintf(TEXT_BUFFER, "%s%s%d.png", ASSET_PATH.c_str(), name.c_str(), j);
+      if (std::filesystem::exists(std::string(TEXT_BUFFER))) {
+        vec.push_back(LoadTexture(TEXT_BUFFER));
+      } else {
+        break;
+      }
+    }
+  }
   std::vector<Texture> attack1{};
   std::vector<Texture> attack2{};
   std::vector<Texture> attack3{};
@@ -34,15 +45,7 @@ struct MonsterResource {
 
     std::string path;
     for (size_t i = 0; i < folder_names.size(); ++i) {
-      for (uint_fast32_t j = 0; j < MAX_LOAD_NUM; ++j) {
-        path = ASSET_PATH + "Entities/" +=
-            name + folder_names[i] + std::to_string(j) + ".png";
-        if (std::filesystem::exists(path)) {
-          texture_arrays[i]->push_back(LoadTexture(path.c_str()));
-        } else {
-          break;
-        }
-      }
+      LoadImagesIntoVector("Entities/" + name + folder_names[i], *texture_arrays[i]);
     }
   }
   void load_sound(const std::string& name) {

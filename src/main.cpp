@@ -8,6 +8,7 @@ int main() {
     exit(1);
   }
   SteamNetworkingUtils()->InitRelayNetworkAccess();
+  std::ios::sync_with_stdio(false);
   DataBaseHandler::Init();
   auto game = new Game();
   game->start();

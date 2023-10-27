@@ -41,9 +41,9 @@ inline static void Save() noexcept {
   for (const auto& map : MAPS) {
     if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
 
-    auto data = SerializeBooleans(map.map_cover, map.map_size);
+    auto data = SerializeBooleans(map.mapCover, map.mapSize);
     sqlite3_bind_int(stmt, 2, (int)map.zone + 1);
-    InsertBooleanBLOB(stmt, data, (map.map_size*map.map_size)/8);
+    InsertBooleanBLOB(stmt, data, (map.mapSize *map.mapSize)/8);
 
     delete[] data;
   }

@@ -110,8 +110,7 @@ inline static std::vector<std::string> SplitString(const std::string& s,
   return result;
 }
 //Loads .mgi (simple table format) into a vector
-static std::vector<std::vector<std::string>> ReadMGI(
-    const std::string& filePath) noexcept {
+std::vector<std::vector<std::string>> ReadMGI(const std::string& filePath) noexcept {
   auto ret = std::vector<std::vector<std::string>>{};
   std::ifstream file(ASSET_PATH + filePath);
 

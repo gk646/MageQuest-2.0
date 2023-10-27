@@ -14,60 +14,60 @@
   type = MonsterType::ANY;
 
 struct Map {
-  Zone zone;
   int16_t** mapBackGround;
   int16_t** mapMiddleGround;
   int16_t** mapForeGround;
-  bool** map_cover;
+  bool** mapCover;
   std::vector<SpawnTrigger>* spawnTriggers;
-
-  int16_t map_size;
+  //All maps are squares
+  int16_t mapSize;
+  Zone zone;
 
   Map(const std::string& name, int16_t size, Zone zone) noexcept
-      : map_size(size), zone(zone) {
+      : mapSize(size), zone(zone) {
     mapBackGround = LoadMapData(name + "/" + name + "_BG");
     mapMiddleGround = LoadMapData(name + "/" + name + "_BG1");
     mapForeGround = LoadMapData(name + "/" + name + "_FG");
-    map_cover = Util::Create2DArr<bool>(map_size,map_size);
+    mapCover = Util::Create2DArr<bool>(mapSize, mapSize);
     spawnTriggers = LoadSpawnTriggers(name + "/" + name);
-    for (int16_t i = 0; i < map_size; i++) {
-      for (int16_t j = 0; j < map_size; j++) {
-        map_cover[i][j] = true;
-      }
-    }
   }
   ~Map() {
-    Util::Delete2DArr(mapBackGround, map_size);
-    Util::Delete2DArr(mapMiddleGround, map_size);
-    Util::Delete2DArr(mapForeGround, map_size);
+    Util::Delete2DArr(mapBackGround, mapSize);
+    Util::Delete2DArr(mapMiddleGround, mapSize);
+    Util::Delete2DArr(mapForeGround, mapSize);
     delete spawnTriggers;
   }
+  //Parses the ".csv" map files
   [[nodiscard]] int16_t** LoadMapData(const std::string& name) const noexcept {
     std::string filepath = ASSET_PATH + "Maps/" + name + ".csv";
     std::ifstream infile(filepath);
-
     if (!infile.is_open()) {
       return nullptr;
     }
 
-    auto arr = Util::Create2DArr<int16_t>(map_size, map_size);
+    auto arr = Util::Create2DArr<int16_t>(mapSize, mapSize);
     std::string line;
-    for (int i = 0; i < map_size; ++i) {
+    line.reserve(200);
+
+    char* endptr;
+    for (int i = 0; i < mapSize; ++i) {
       if (std::getline(infile, line)) {
-        std::istringstream iss(line);
-        std::string token;
-        for (int b = 0; b < map_size; ++b) {
-          if (std::getline(iss, token, ',')) {
-            arr[b][i] = static_cast<int16_t>(std::stoi(token));
+        const char* start = line.c_str();
+        for (int b = 0; b < mapSize; ++b) {
+          auto value = static_cast<int16_t>(std::strtol(start, &endptr, 10));
+          if (worldObjectTable.contains(value)) {
+            RegisterWorldObject(WorldObjectType(value), {b, i}, zone);
+            value = -1;
           }
+          arr[b][i] = value;
+          start = endptr + 1;
         }
       }
     }
-
-    infile.close();
     return arr;
   }
 
+  //Parses the maps ".tmj" file to load the spawn triggers
   [[nodiscard]] static std::vector<SpawnTrigger>* LoadSpawnTriggers(
       const std::string& name) noexcept {
     auto vector = new std::vector<SpawnTrigger>;
@@ -138,6 +138,7 @@ struct Map {
   }
 
  private:
+  static void RegisterWorldObject(WorldObjectType type, const PointI& pos, Zone zone);
   inline static bool ParseTriggerType(const std::string& s, TriggerSpreadType& ts,
                                       MonsterType& mt) noexcept {
     auto it = stringToMonsterID.find(s);
