@@ -80,7 +80,7 @@ struct TextCell {
   static std::array<TextCell, 18> CreateCharacterCells(float width, float height,
                                                        const Font& font,
                                                        float fontSize) noexcept {
-    auto toolTips = Util::loadStringsFromFile(ASSET_PATH + "Text/Codex/StatsToolTip.txt");
+    auto toolTips = Util::LoadTextLines(ASSET_PATH + "Text/Codex/StatsToolTip.txt");
     std::array<TextCell, 18> cells{
         TextCell(width, height, toolTips[0], font, fontSize),
         TextCell(width, height, toolTips[1], font, fontSize),

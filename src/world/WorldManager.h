@@ -1,20 +1,20 @@
 #ifndef MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
 #define MAGE_QUEST_SRC_GRAPHICS_MAPMANAGER_H_
-
 struct TransitionPoint {
   PointT<int16_t> origin;
   PointT<int16_t> dest;
   Zone destZone;
 };
-
 namespace WorldManager {
 std::array<std::vector<TransitionPoint>, (int)Zone::ZONE_END> zoneTPoints;
 }  // namespace WorldManager
 #include "elements/TransitionParser.h"
 namespace WorldManager {
+//Teleports player into the new map at position "pos * 48"
 static void LoadMap(Zone zone, const PointT<int16_t>& pos) {
   for (const auto& map : MAPS) {
     if (map.zone == zone) {
+      PROJECTILES.clear();
       CURRENT_BACK_GROUND = map.mapBackGround;
       CURRENT_MIDDLE_GROUND = map.mapMiddleGround;
       CURRENT_FORE_GROUND = map.mapForeGround;
@@ -30,6 +30,7 @@ static void LoadMap(Zone zone, const PointT<int16_t>& pos) {
     }
   }
 }
+//Check if the player is inside a teleport tile
 inline static void CheckTransitions() noexcept {
   for (const auto& tPoint : zoneTPoints[(int)CURRENT_ZONE]) {
     if (tPoint.origin == PLAYER.tile_pos) {
@@ -38,6 +39,7 @@ inline static void CheckTransitions() noexcept {
     }
   }
 }
+//Iterate all spawn triggers and trigger them on proximity
 inline static void CheckSpawnTriggers() noexcept {
   if (!CURRENT_SPAWN_TRIGGERS) return;
   for (auto& t : *CURRENT_SPAWN_TRIGGERS) {

@@ -82,7 +82,7 @@ struct GameLoader {
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
 std::array<std::function<void()>, 5> GameLoader::load_functions = {
-    EntityLoader::Load, GuiLoadStyleAshes, TileLoader::load_to_vram, TextureLoader::load,
+    EntityLoader::Load, GuiLoadStyleAshes, TileLoader::LoadToGPU, TextureLoader::load,
     DataBaseHandler::load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

@@ -1,32 +1,37 @@
 #ifndef MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 #define MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 namespace Util {
+//creates a 2D array of the given type and size
 template <typename T>
-T** Create2DArr(int x, int y) {
+inline static T** Create2DArr(int x, int y) {
   auto ptr = new T*[x];
   for (uint_fast32_t i = 0; i < y; i++) {
     ptr[i] = new T[y];
   }
   return ptr;
 }
+//frees a 2D array of the given type and size
 template <typename T>
-void Delete2DArr(T** arr, int rows) {
+inline static void Delete2DArr(T** arr, int rows) {
   for (uint_fast32_t i = 0; i < rows; i++) {
     delete[] arr[i];
   }
   delete[] arr;
 }
+//Draws text aligned to the right with "align" / uses 0.5 spacing
 inline static void DrawRightAlignedText(const Font& font, float fontSize, const char* txt,
                                         float align, float y, const Color& color) {
   DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x, y},
               fontSize, 0.5F, color);
 }
+//Draws text centered to "align" / uses 0.5 spacing
 inline static void DrawCenteredText(const Font& font, float fontSize, const char* txt,
                                     float align, float y, const Color& color) {
-  DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 1).x / 2, y},
-              fontSize, 1, color);
+  DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x / 2, y},
+              fontSize, 0.5F, color);
 }
-std::vector<std::string> loadStringsFromFile(const std::string& filePath) {
+//Loads individual lines from a file into a vector
+static std::vector<std::string> LoadTextLines(const std::string& filePath) {
   std::vector<std::string> lines;
   std::ifstream file(filePath);
 
@@ -42,6 +47,7 @@ std::vector<std::string> loadStringsFromFile(const std::string& filePath) {
   file.close();
   return lines;
 }
+//Draws outlined text by doing multiple draw calls with offset and coloring
 inline static void DrawOutlineText(const Font& font, float fontSize, const char* txt,
                                    float dx, float dy, int thickness,
                                    const Color& textColor,
@@ -56,10 +62,11 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
 
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
 }
-std::string WrapText(const std::string& txt, float width, const Font& font,
-                     float fontSize, int* lineBreakCount = nullptr) {
-  if (lineBreakCount) {
-    *lineBreakCount = 0;
+//Wraps "txt" according to "width" / Uses 0.5 spacing / "lineBreaks" is set the number of line breaks
+inline static std::string WrapText(const std::string& txt, float width, const Font& font,
+                                   float fontSize, int* lineBreaks = nullptr) {
+  if (lineBreaks) {
+    *lineBreaks = 0;
   }
 
   std::istringstream iss(txt);
@@ -75,8 +82,8 @@ std::string WrapText(const std::string& txt, float width, const Font& font,
     float wordWidth = MeasureTextEx(font, word.c_str(), fontSize, 0.5).x;
     if (currentLineWidth + wordWidth + spaceWidth > width) {
       wrappedText += '\n';
-      if (lineBreakCount) {
-        (*lineBreakCount)++;
+      if (lineBreaks) {
+        (*lineBreaks)++;
       }
       currentLineWidth = 0;
     }
@@ -85,7 +92,9 @@ std::string WrapText(const std::string& txt, float width, const Font& font,
   }
   return wrappedText;
 }
-std::vector<std::string> SplitString(const std::string& s, char delim) noexcept {
+//Splits a string around "delim"
+inline static std::vector<std::string> SplitString(const std::string& s,
+                                                   char delim) noexcept {
   std::vector<std::string> result;
   std::string_view sv(s);
   while (!sv.empty()) {
@@ -100,13 +109,14 @@ std::vector<std::string> SplitString(const std::string& s, char delim) noexcept 
   }
   return result;
 }
+//Loads .mgi (simple table format) into a vector
 static std::vector<std::vector<std::string>> ReadMGI(
     const std::string& filePath) noexcept {
   auto ret = std::vector<std::vector<std::string>>{};
   std::ifstream file(ASSET_PATH + filePath);
 
   if (!file.is_open()) {
-    std::cerr << "Failed to open .mgi (MageQuestInfo) file." << std::endl;
+    std::cerr << "Failed to open .mgi (MageQuestInfo) file:" << filePath << std::endl;
   }
 
   std::string line;
@@ -117,14 +127,14 @@ static std::vector<std::vector<std::string>> ReadMGI(
   }
   return ret;
 }
-inline PointI ParsePointI(const std::string& string) noexcept {
+inline static PointI ParsePointI(const std::string& string) noexcept {
   return {std::stoi(SplitString(string, ',')[0]), std::stoi(SplitString(string, ',')[1])};
 }
-inline Point ParsePoint(const std::string& string) noexcept {
+inline static Point ParsePoint(const std::string& string) noexcept {
   return {std::stof(SplitString(string, ',')[0]), std::stof(SplitString(string, ',')[1])};
 }
-inline std::string CreateToolTipString(const std::string& s, float damage,
-                                       float val1 = 0.0f, float val2 = 0.0f) {
+inline static std::string CreateToolTipString(const std::string& s, float damage,
+                                              float val1 = 0.0f, float val2 = 0.0f) {
   std::string ret = s;
   std::string minDmgStr = std::to_string((int)(damage * 0.9F));
   std::string maxDmgStr = std::to_string((int)(damage * 1.1F));
@@ -160,6 +170,7 @@ inline std::string CreateToolTipString(const std::string& s, float damage,
 
   return ret;
 }
+//Key press module / used for detecting key press on update tickrate(60)
 inline static bool e_previous[2] = {false, false};
 inline static void update() noexcept {
   e_previous[0] = e_previous[1];
