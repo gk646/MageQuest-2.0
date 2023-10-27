@@ -8,6 +8,13 @@ inline static void Init() noexcept {
   sqlite3_open("../DataBase.sqlite", &dataBase);
   sqlite3_open("../GameSave.sqlite", &gameSave);
 }
+//Takes a created UPDATE (with "columns" amount of "=?") stmt and fills it with null values the given row
+inline static void AddNULLRow(sqlite3_stmt* stmt, int columns, int row) noexcept {
+  for (uint_fast32_t i = 0; i < row; i++) {
+    sqlite3_bind_null(stmt, i);
+  }
+  sqlite3_bind_int(stmt, columns + 1, row);
+}
 //Prepares a statement for the given database
 inline static bool PrepareStmt(const std::string& sql, sqlite3* db,
                                sqlite3_stmt** stmt) noexcept {
@@ -19,7 +26,6 @@ inline static bool PrepareStmt(const std::string& sql, sqlite3* db,
   }
   return true;
 }
-
 //Assumes database has column with name: NUM
 inline static void SaveNumToTable(int value, const std::string& name, int y) noexcept {
   sqlite3_stmt* stmt;
@@ -36,7 +42,7 @@ inline static void SaveNumToTable(int value, const std::string& name, int y) noe
 }
 //Works for all *_STATE tables / returns true if an entry with the given values exists
 inline static bool StateExistsInTable(const std::string& tableName, int enumVal, int xPos,
-                                      int yPos) {
+                                      int yPos) noexcept {
   sqlite3_stmt* stmt;
   int exists = 0;
   std::string sql = "SELECT EXISTS(SELECT 1 FROM " + tableName +
@@ -54,6 +60,9 @@ inline static bool StateExistsInTable(const std::string& tableName, int enumVal,
 
   return exists;
 }
+//Appends a state with the given value to the table
+inline static void AddStateToTable(const std::string& tableName, int enumVal, int xPos,
+                                   int yPos) noexcept {}
 
 }  // namespace DataBaseHandler
 

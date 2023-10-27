@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
 namespace ItemLoader {
-//Parses the effects column of an entry in the form:"35:12.000000;"
+//Parses the effects column of an entry in the form:"35:12.000000;" and adds it on top of existing values
 inline static void ParseEffectText(float* arr, const unsigned char* ptr) {
   if (!ptr) return;
   std::stringstream ss(reinterpret_cast<const char*>(ptr));
@@ -19,10 +19,11 @@ inline static void ParseAttributeStats(float* arr, const std::string& input) {
        ++it) {
     const std::string& attribute = (*it)[1].str();
     if (attrToStat.count(attribute)) {
-      arr[attrToStat[attribute]] += std::stoi((*it)[2].str());
+      arr[attrToStat[attribute]] += (float)std::stoi((*it)[2].str());
     }
   }
 }
+//Creates new base items from the database tables
 static void CreateItemsFromTable(const std::string& table) noexcept {
   sqlite3_stmt* stmt;
   if (!DataBaseHandler::PrepareStmt("SELECT * FROM " + table, DataBaseHandler::dataBase,
@@ -50,6 +51,7 @@ static void CreateItemsFromTable(const std::string& table) noexcept {
   }
   sqlite3_finalize(stmt);
 }
+//Loads saved items from the bag or inventory
 static void LoadItemsFromTable(InventorySlot* slots, const std::string& table, int length,
                                bool equip = false, int offsetY = 0) noexcept {
   sqlite3_stmt* stmt;
@@ -60,11 +62,14 @@ static void LoadItemsFromTable(InventorySlot* slots, const std::string& table, i
   for (int i = 0; i < length + offsetY && sqlite3_step(stmt) == SQLITE_ROW; ++i) {
     if (i < offsetY) continue;
 
-    slots[i - offsetY].item = ItemDropHandler::GetShallowCloneItem(
+    slots[i - offsetY].item = Item::FindBaseItem(
         sqlite3_column_int(stmt, 0), ItemType(sqlite3_column_int(stmt, 1)),
         sqlite3_column_int(stmt, 2), sqlite3_column_int(stmt, 3));
 
     if (slots[i - offsetY].item) {
+      //Clear any previous effects
+      std::fill(slots[i - offsetY].item->effects,
+                slots[i - offsetY].item->effects + STATS_ENDING, 0.0f);
       ParseEffectText(slots[i - offsetY].item->effects, sqlite3_column_text(stmt, 4));
       if (equip) {
         PLAYER_STATS.EquipItem(slots[i - offsetY].item->effects);
@@ -81,12 +86,12 @@ static void Load() noexcept {
   for (const auto& name : table_names) {
     CreateItemsFromTable(name);
   }
-  RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, ITEMS.size() - 1);
+  RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, (int)ITEMS.size() - 1);
   std::cout << "ITEMS LOADED: " << ITEMS.size() << std::endl;
   LoadItemsFromTable(PLAYER_EQUIPPED, "PLAYER_INV", 10, true);
   LoadItemsFromTable(UI_MANAGER.playerUI.charBag.bagPanel.bagSlots.data(), "PLAYER_INV",
                      4, true, 12);
-  LoadItemsFromTable(PLAYER_BAG, "PLAYER_BAG", PLAYER_STATS.GetBagSlots());
+  LoadItemsFromTable(PLAYER_BAG, "PLAYER_BAG", (int)PLAYER_STATS.GetBagSlots());
 }
 }  // namespace ItemLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
