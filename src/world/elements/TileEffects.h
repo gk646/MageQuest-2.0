@@ -1,0 +1,9 @@
+#ifndef MAGEQUEST_SRC_WORLD_TILEEFFECTS_H_
+#define MAGEQUEST_SRC_WORLD_TILEEFFECTS_H_
+
+
+namespace TileEffects {
+
+
+}
+#endif  //MAGEQUEST_SRC_WORLD_TILEEFFECTS_H_

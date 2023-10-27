@@ -121,6 +121,7 @@ using namespace cxstructs;
 #include "gamestateio/loading/EntityResource.h"
 #include "gameplay/Item.h"
 #include "system/GlobalVariables.h"
+#include "world/TileEvents.h"
 #include "resources/SoundStorage.h"
 #include "resources/TextureStorage.h"
 #include "ui/game/DialogueRender.h"
