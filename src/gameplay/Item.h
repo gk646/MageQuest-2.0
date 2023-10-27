@@ -15,6 +15,7 @@ struct Item {
   uint8_t id = 0;
   ItemRarity rarity = ItemRarity::NORMAL;
   ItemType type = ItemType::RING;
+  //Creating the item
   Item(int id, std::string name, ItemRarity rarity, ItemType type,
        std::string description, const Texture& texture)
       : id(id),
@@ -23,22 +24,6 @@ struct Item {
         type(type),
         description(std::move(description)),
         texture(texture) {}
-  Item(int id, std::string name, ItemRarity rarity, ItemType type,
-       std::string description, const Texture& texture, int quality, int level)
-      : id(id),
-        name(std::move(name)),
-        rarity(rarity),
-        type(type),
-        description(std::move(description)),
-        texture(texture),
-        quality(quality),
-        level(level) {}
-  Item(const Item* base_item, int quality, int level, int durability = 100)
-      : Item(*base_item) {
-    this->quality = quality;
-    this->level = level;
-    this->durability = durability;
-  }
   Item(const Item& other)
       : id(other.id),
         quality(other.quality),
@@ -133,11 +118,11 @@ struct Item {
     if (quality == 100) [[unlikely]] {
       DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                   {startX + width - 36 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE,
-                  1, get_quality_color());
+                  1, GetQualityColor());
     } else {
       DrawTextExR(MINECRAFT_REGULAR, textBuffer,
                   {startX + width - 29 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE,
-                  1, get_quality_color());
+                  1, GetQualityColor());
     }
 
     //name
@@ -247,7 +232,7 @@ struct Item {
                 {startX + width - 35 * UI_SCALE, startY + height - 15 * UI_SCALE},
                 15 * UI_SCALE, 0.5F, Colors::darkBackground);
   }
-  [[nodiscard]] inline Color get_quality_color() const noexcept {
+  [[nodiscard]] inline Color GetQualityColor() const noexcept {
     if (quality < 90) [[likely]] {
       return Colors::NormalGrey;
     } else if (quality == 100) {
@@ -256,6 +241,8 @@ struct Item {
       return Colors::mediumQuality;
     }
   }
+  //Returns a clone of the base item that matches the given values
+  inline static Item* FindBaseItem(int id, ItemType type, int quality, int level);
 };
 char Item::textBuffer[10];
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_

@@ -30,7 +30,7 @@ struct InteractableObject : public WorldObject {
   };
   void Update() final {
     ENTITY_UPDATE()
-    if (this->intersects(PLAYER) && Util::EPressed()) {
+    if (!isUsed && Util::EPressed() && this->intersects(PLAYER)) {
       isUsed = true;
       Interact();
     }
@@ -63,6 +63,10 @@ void Map::RegisterWorldObject(WorldObjectType type, const cxstructs::PointI& pos
   bool isUsed =
       DataBaseHandler::StateExistsInTable("OBJECT_STATES", (int)type, pos.x, pos.y);
   WORLD_OBJECTS.emplace_back(WorldObject::GetNewWorldObject(type, pos, isUsed, zone));
+}
+
+void ItemDropHandler::DropItem(float x, float y, Item* item) noexcept {
+  WORLD_OBJECTS.push_back(new DroppedItem({x, y}, item));
 }
 
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_WORLDOBJECT_H_

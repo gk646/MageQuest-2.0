@@ -105,7 +105,13 @@ inline static void UpdateDynamicLights() noexcept {
 }
 inline static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
-  if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) lightOn = !lightOn;
+  bool val = lightOn;
+  int v = lightOn;
+  if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT]))
+  {
+    std::cout<< lightOn << std::endl;
+    lightOn = !lightOn;
+  }
   if (lightOn) {
     cameraVec->x = CAMERA_X;
     cameraVec->y = CAMERA_Y;
@@ -113,6 +119,7 @@ inline static void StartDynamicLights() noexcept {
     cameraVec->x = 0;
     cameraVec->y = 0;
   }
+
 
   SetShaderValueV(spotLight, SPOT_LIGHT_POSITION, lightPositions, SHADER_UNIFORM_VEC2,
                   spotLightCount);
