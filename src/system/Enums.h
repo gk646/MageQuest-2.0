@@ -191,7 +191,7 @@ enum Stat : uint8_t {
   MAX_MANA,
   HEALTH_REGEN,
   MANA_REGEN,
-  BAG_SLOTS,//always second last
+  BAG_SLOTS,  //always second last
   STATS_ENDING
 };
 
@@ -259,7 +259,7 @@ enum class NPC_ID : uint8_t {
   SATIRO,
   NPC_END
 };
-
+enum class WorldObjectType : uint8_t { BASIC_CHEST, NORMAL_CHEST, EPIC_CHEST };
 std::unordered_map<std::string, NPC_ID> npcIdMap = {
     {"DECKARD", NPC_ID::DECKARD},
     {"MARLA", NPC_ID::MARLA},
@@ -425,10 +425,9 @@ inline std::unordered_map<Class, std::string> classToString = {
     {Class::WARLOCK, "Warlock"},     {Class::WIZARD, "Wizard"}};
 
 inline std::unordered_map<std::string, Stat> attrToStat = {
-    {"FOC", FOCUS},        {"END", ENDURANCE}, {"STR", STRENGTH},
-    {"INT", INTELLIGENCE}, {"WIS", WISDOM},    {"CHA", CHARISMA},
-    {"VIT", VITALITY},     {"AGI", AGILITY},   {"LUC", LUCK}, {"BAG", BAG_SLOTS}
-};
+    {"FOC", FOCUS},  {"END", ENDURANCE}, {"STR", STRENGTH}, {"INT", INTELLIGENCE},
+    {"WIS", WISDOM}, {"CHA", CHARISMA},  {"VIT", VITALITY}, {"AGI", AGILITY},
+    {"LUC", LUCK},   {"BAG", BAG_SLOTS}};
 inline std::unordered_map<ItemType, std::string> type_to_string = {
     {ItemType::HEAD, "Head"},         {ItemType::CHEST, "Chest"},
     {ItemType::PANTS, "Pants"},       {ItemType::BOOTS, "Boots"},

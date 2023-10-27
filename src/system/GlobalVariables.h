@@ -36,7 +36,7 @@ inline static bool FRIENDLY_FIRE = false;
 inline static GameStatistics GAME_STATISTICS{};
 inline static constexpr float UPDATE_DISTANCE = 32;
 inline static RenderTexture FIRST_LAYER_BUFFER;
-static constexpr int TEXTURE_COUNT = 8500;
+static constexpr int TEXTURE_COUNT = 8935;
 /* |-----------------------------------------------------|
  * |                      STEAM                          |
  * |-----------------------------------------------------|
