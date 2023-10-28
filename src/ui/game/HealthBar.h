@@ -26,6 +26,6 @@ struct HealthBar {
     }
   }
   void update() { delay--; }
-  void hit() { delay = 300; }
+  void Update() { delay = 300; }
 };
 #endif  //MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_

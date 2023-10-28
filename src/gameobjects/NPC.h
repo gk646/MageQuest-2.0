@@ -23,8 +23,8 @@ struct NPC : public Entity {
         speed(speed),
         name(npcIdToStringMap[id]) {}
   void Draw() override {
-    Util::DrawCenteredText(MINECRAFT_BOLD, 15, name.c_str(), pos.x_ + DRAW_X + size.x / 2,
-                           pos.y_ + DRAW_Y - 20, Colors::LightGreyAlpha);
+    Util::DrawCenteredText(VARNISHED, 15, name.c_str(), pos.x_ + DRAW_X + size.x / 2,
+                           pos.y_ + DRAW_Y - 20, Colors::white_smoke);
   };
 
   void Update() override {

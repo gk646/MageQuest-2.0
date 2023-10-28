@@ -9,7 +9,9 @@ struct Satiro final : public NPC {
       DrawSpecial();
     } else {
       if (moving) {
-        DrawTextureProFastEx(resource->walk[spriteCounter % 104 / 13], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y - 18, 0, 0, isFlipped, WHITE);
+        DrawTextureProFastEx(resource->walk[spriteCounter % 104 / 13],
+                             pos.x_ + DRAW_X - 23, pos.y_ + DRAW_Y - 18, 0, 0, isFlipped,
+                             WHITE);
 
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 78 / 13],
@@ -27,8 +29,8 @@ struct Satiro final : public NPC {
   inline void DrawSpecial() noexcept {
     int num = spriteCounter % 150 / 15;
     if (num < 9) {
-      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y - 18, 0, 0,
-                           isFlipped, WHITE);
+      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 20,
+                           pos.y_ + DRAW_Y - 18, 0, 0, isFlipped, WHITE);
     } else {
       actionState = 0;
     }

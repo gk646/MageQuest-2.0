@@ -2,8 +2,17 @@
 #define MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
 
 namespace sound {
+inline static Sound EMPTY_SOUND;
 
-//music
+namespace environment{
+inline static Sound spikes;
+}
+namespace interactable{
+inline static Sound basicChest;
+inline static Sound normalChest;
+inline static Sound epicChest;
+inline static Sound lever;
+}
 namespace music {
 inline static Music firePlace;
 inline static Music lava;

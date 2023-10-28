@@ -108,12 +108,12 @@ using namespace cxstructs;
  * |-----------------------------------------------------|
  */
 #include "raylib-extension/DrawFunctions.h"
-#include "gamestateio/DataBaseHandler.h"
 #include "world/MusicStreamer.h"
 #include "system/CollisionDetection.h"
 #include "system/Definitions.h"
 #include "resources/Colors.h"
 #include "system/Enums.h"
+#include "gamestateio/DataBaseHandler.h"
 #include "system/GameSettings.h"
 #include "resources/FontStorage.h"
 #include "graphics/elements/LogoDrawer.h"

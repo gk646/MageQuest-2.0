@@ -44,7 +44,7 @@ struct Monster : public Entity {
   MonsterType type;
   Monster(const Point& pos, const MonsterScaler& scaler, uint8_t level,
           const MonsterResource* resourceArg, MonsterType typeArg,
-          const PointT<int16_t>& size , ShapeType hitboxShape = ShapeType::RECT)
+          const PointT<int16_t>& size, ShapeType hitboxShape = ShapeType::RECT)
       : Entity(pos, size, hitboxShape),
         stats({scaler, level}),
         resource(resourceArg),
@@ -84,11 +84,11 @@ struct Monster : public Entity {
   void Draw() override = 0;
   void Hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && actionState != -100) {
-      health_bar.hit();
+      p.HitTargetCallback();
+      health_bar.Update();
       effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.TakeDamage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
-      p.isDead = p.hitType == HitType::ONE_HIT;
     }
   }
   inline void CheckForDeath() noexcept {
@@ -152,7 +152,7 @@ struct Monster : public Entity {
   inline void UpdateWithRemoteState(UDP_MonsterUpdate* data) noexcept {
     if (stats.health != (float)data->new_health) {
       stats.health = data->new_health;
-      health_bar.hit();
+      health_bar.Update();
     }
 
     if ((actionState == 0 && spriteCounter > 100) || data->action_state == -100) {

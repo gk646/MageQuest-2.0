@@ -1,8 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_SAVING_ENTITYSAVER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_SAVING_ENTITYSAVER_H_
 namespace NPCSaver {
-inline static constexpr int NAMED_LIMIT = 20;
-
+inline static constexpr int NAMED_LIMIT = 30;
 inline static void SaveNPC(const NPC* npc, sqlite3_stmt* stmt, int i) noexcept {
   sqlite3_bind_int(stmt, 1, (int)npc->id);
   sqlite3_bind_int(stmt, 2, (int)npc->pos.x_);

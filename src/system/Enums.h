@@ -58,7 +58,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::DARK, Colors::darkMagicPurple},
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
-enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
+enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK, ON_HIT_EFFECT };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
 enum class TextAlign : uint8_t { LEFT, RIGHT, MIDDLE };
@@ -348,6 +348,7 @@ enum ProjectileType : uint8_t {
   THUNDER_STRIKE,
   VOID_ERUPTION,
   VOID_FIELD,
+  ARCANE_BOLT,
   PROJECTILE_END
 };
 inline static std::unordered_map<std::string, ProjectileType> stringToProjectile = {
@@ -367,6 +368,7 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
     {"THUNDER_SPLASH", ProjectileType::THUNDER_SPLASH},
     {"THUNDER_STRIKE", ProjectileType::THUNDER_STRIKE},
     {"VOID_ERUPTION", ProjectileType::VOID_ERUPTION},
+    {"ARCANE_BOLT", ProjectileType::ARCANE_BOLT},
     {"VOID_FIELD", ProjectileType::VOID_FIELD}};
 
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
