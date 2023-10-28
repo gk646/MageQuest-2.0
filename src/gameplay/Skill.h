@@ -1,6 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_SKILL_H_
 #define MAGEQUEST_SRC_GAMEPLAY_SKILL_H_
-
+//Metaclass that handles display and activation of projectiles and effects
 struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
@@ -23,19 +23,23 @@ struct Skill {
         icon(icon) {
     coolDownUpCounter = (int16_t)ability_stats.coolDownTicks;
   }
+  //Activates the skill
   inline virtual void Activate() = 0;
   inline void Update() noexcept { coolDownUpCounter++; };
   virtual void Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
     DrawCooldown(x, y, size);
   }
+  //TODO proper link to support bar
   static inline void DrawSupportBar(float x, float y, float percent) noexcept {
     DrawRectangleProFast(x - SCALE(2), y - SCALE(12), SCALE(53) * percent, SCALE(7),
                          Colors::SUPPORT_BAR_ORANGE);
   }
+  //Returns true if skill is ready to use
   [[nodiscard]] inline bool IsUsable() const noexcept {
     return PLAYER_STATS.skill_useable(skillStats, coolDownUpCounter);
   }
+  //Handles logic for when the skill is used
   inline void TriggerSkill() noexcept {
     coolDownUpCounter = 0;
     PLAYER.flip = MOUSE_POS.x < CAMERA_X;
@@ -43,11 +47,13 @@ struct Skill {
     PLAYER.actionState = attackAnimation;
     PLAYER_STATS.UseSkill(skillStats);
   }
+  //Does a ray-cast and range-check from player to mouse position
   [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
     Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
                        PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
-    if (Point(PLAYER_X + PLAYER.size.x / 2, PLAYER_Y + PLAYER.size.y / 2)
-            .dist(targetPos) <= skillStats.range) {
+    if (Point(PLAYER_X + (float)PLAYER.size.x / 2.0F,
+              PLAYER_Y + (float)PLAYER.size.y / 2.0F)
+            .dist(targetPos) <= (float)skillStats.range) {
       if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
         return true;
         //TODO quick notifications
@@ -59,8 +65,8 @@ struct Skill {
     }
     return false;
   }
-  inline static Skill* GetNewSkill(ProjectileType type,
-                                        const SkillStats& stats) noexcept;
+  //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
+  inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
   inline void DrawTooltip(float x, float y) noexcept {
     if (hitbox.Update(x, y)) {
       DrawToolTipImpl(x, y);
@@ -125,15 +131,14 @@ struct Skill {
     DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
                               ROUND_SEGMENTS, 2, damageTypeToColor[damageStats.dmgType]);
 
-    char buffer[25];
     //-----------Name-----------//
     DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0.5F,
                 damageTypeToColor[damageStats.dmgType]);
 
     //-------------ResourceCost---------------//
     if (skillStats.manaCost > 0) {
-      sprintf(buffer, "%i Mana", (int)skillStats.manaCost);
-      DrawTextExR(MINECRAFT_REGULAR, buffer, {startX + 5, startY + 35}, 15, 0.5F,
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%i Mana", (int)skillStats.manaCost);
+      DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {startX + 5, startY + 35}, 15, 0.5F,
                   Colors::darkBackground);
     }
 
@@ -143,8 +148,8 @@ struct Skill {
       DrawTextExR(MINECRAFT_REGULAR, "Instant", {startX + 5, startY + 53}, 15, 0.5F,
                   Colors::darkBackground);
     } else {
-      sprintf(buffer, "%f sec cast", skillStats.castTime / 60.0F);
-      DrawTextExR(MINECRAFT_REGULAR, buffer, {startX + 5, startY + 53}, 15, 0.5F,
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%f sec cast", skillStats.castTime / 60.0F);
+      DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {startX + 5, startY + 53}, 15, 0.5F,
                   Colors::darkBackground);
     }
 
@@ -154,12 +159,12 @@ struct Skill {
       float cooldownInSeconds = skillStats.coolDownTicks / 60.0F;
 
       if (cooldownInSeconds == floor(cooldownInSeconds)) {
-        sprintf(buffer, "%.0f sec cast", cooldownInSeconds);
+        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f sec cast", cooldownInSeconds);
       } else {
-        sprintf(buffer, "%.1f sec cast", cooldownInSeconds);
+        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f sec cast", cooldownInSeconds);
       }
 
-      Util::DrawRightAlignedText(MINECRAFT_REGULAR, 15, buffer,
+      Util::DrawRightAlignedText(MINECRAFT_REGULAR, 15, TEXT_BUFFER,
                                  startX + TOOL_TIP_WIDTH - 5, startY + 53,
                                  Colors::darkBackground);
     }
@@ -172,7 +177,7 @@ struct Skill {
     if (skillStats.range > 0) {
       DrawTextureScaled(
           textures::ui::skillbar::skillRange,
-          {(CAMERA_X + 14) - skillStats.range, (CAMERA_Y + 25) - skillStats.range,
+          {(CAMERA_X + 14) - (float)skillStats.range, (CAMERA_Y + 25) - skillStats.range,
            skillStats.range * 2.05F, skillStats.range * 2.05F},
           0, false, 0, WHITE);
     }

@@ -2,15 +2,12 @@
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 
 struct CharacterPanel : public Window {
-  //2212
-  //2032
-  //1888
+
   static constexpr int WIDTH = 350;
   static constexpr int PADDING_LEFT = 22;
   static constexpr int PADDING_TOP = 60;
   static constexpr int PADDING_RIGHT = 290;
   static constexpr int GAP_TOP = 55;
-  static char buffer[30];
   std::array<TextCell, 18> baseStats =
       TextCell::CreateCharacterCells(WIDTH / 2.5F, 12, MINECRAFT_BOLD, 15);
   std::array<InventorySlot, 10> equipSlots = {
@@ -110,13 +107,14 @@ struct CharacterPanel : public Window {
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
     if (PLAYER_SPENT_POINTS.HasPointsToSpend()) {
-      sprintf(buffer, "Unspent Attribute Points!: %i", PLAYER_SPENT_POINTS.pointsToSpend);
-      Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(15), buffer, x + size / 2,
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Unspent Attribute Points!: %i",
+                PLAYER_SPENT_POINTS.pointsToSpend);
+      Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(15), TEXT_BUFFER, x + size / 2,
                              y + SCALE(40), Colors::darkBackground);
     }
-    sprintf(buffer, "Level: %i", (int)PLAYER_STATS.level);
-    Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(16), buffer, x + size / 2, y + SCALE(25),
-                           Colors::darkBackground);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Level: %i", (int)PLAYER_STATS.level);
+    Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(16), TEXT_BUFFER, x + size / 2,
+                           y + SCALE(25), Colors::darkBackground);
   }
   void DrawStatCells(float x, float y) noexcept {
     x += baseStats[0].bounds.width + SCALE(22);
@@ -139,8 +137,8 @@ struct CharacterPanel : public Window {
           spendPoint.Draw(x + WIDTH / 2.5F + SCALE(10), y)) {
         PLAYER_STATS.SpendAttributePoint(j);
       }
-      sprintf(buffer, "%s:", statToName[stat].c_str());
-      baseStats[j].DrawStatCell(x, y, buffer, (int)PLAYER_STATS.effects[j],
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
+      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)PLAYER_STATS.effects[j],
                                 PLAYER_SPENT_POINTS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
@@ -157,14 +155,13 @@ struct CharacterPanel : public Window {
 
  private:
   inline void DrawSingleStatCell(Stat stat, float x, float& y, int& i) noexcept {
-    sprintf_s(buffer, "%s:", statToName[stat].c_str());
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
     if (i == 16) {
-      baseStats[i++].DrawStatCell(x, y, buffer, 1 + PLAYER_STATS.effects[stat]);
+      baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, 1 + PLAYER_STATS.effects[stat]);
     } else {
-      baseStats[i++].DrawStatCell(x, y, buffer, PLAYER_STATS.effects[stat]);
+      baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, PLAYER_STATS.effects[stat]);
     }
     y += baseStats[0].bounds.height + 1;
   }
 };
-char CharacterPanel::buffer[30];
 #endif  //MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_

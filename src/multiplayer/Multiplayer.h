@@ -126,7 +126,7 @@ inline static void BroadCastGameState() noexcept {
     Server::BroadCastGameState();
   }
 }
-inline static void DrawStats(char* buffer) noexcept {
+inline static void DrawStats() noexcept {
   if (MP_TYPE == MultiplayerType::SERVER) {
     float download = 0;
     float upload = 0;
@@ -138,19 +138,19 @@ inline static void DrawStats(char* buffer) noexcept {
         upload += connect_status.m_flOutBytesPerSec;
       }
     }
-    sprintf(buffer, "Upload: %.1f Bps", upload);
-    DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 20, GREEN);
-    sprintf(buffer, "Download: %.1f Bps", download);
-    DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.25, 20, GREEN);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE,"Upload: %.1f Bps", upload);
+    DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 20, GREEN);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Download: %.1f Bps", download);
+    DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.25, 20, GREEN);
   } else if (MP_TYPE == MultiplayerType::CLIENT) {
     SteamNetworkingMessages()->GetSessionConnectionInfo(HOST_ID, nullptr,
                                                         &connect_status);
-    sprintf(buffer, "Upload: %.1f Bps", connect_status.m_flOutBytesPerSec);
-    DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 20, GREEN);
-    sprintf(buffer, "Download: %.1f Bps", connect_status.m_flInBytesPerSec);
-    DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.25, 20, GREEN);
-    sprintf(buffer, "Ping: %d ms", connect_status.m_nPing);
-    DrawTextR(buffer, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.35, 20, GREEN);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE,"Upload: %.1f Bps", connect_status.m_flOutBytesPerSec);
+    DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.2, 20, GREEN);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Download: %.1f Bps", connect_status.m_flInBytesPerSec);
+    DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.25, 20, GREEN);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Ping: %d ms", connect_status.m_nPing);
+    DrawTextR(TEXT_BUFFER, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.35, 20, GREEN);
   }
 }
 }  // namespace Multiplayer

@@ -40,13 +40,13 @@ struct InventorySlot {
     Draw(x, y);
     auto ptr = item;
     if (!ptr) return;
-    sprintf(Item::textBuffer, "%i", ptr->level);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%i", ptr->level);
     if (baseX < 175) {
       Util::DrawRightAlignedText(
-          MINECRAFT_BOLD, SCALE(14), Item::textBuffer, hitBox.x - SCALE(4),
+          MINECRAFT_BOLD, SCALE(14), TEXT_BUFFER, hitBox.x - SCALE(4),
           hitBox.y + (hitBox.height - SCALE(14)) / 2, rarity_to_color[ptr->rarity]);
     } else {
-      DrawTextExR(MINECRAFT_BOLD, Item::textBuffer,
+      DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER,
                   {hitBox.x + hitBox.width + SCALE(4),
                    hitBox.y + (hitBox.height - SCALE(14)) / 2},
                   SCALE(14), 0, rarity_to_color[ptr->rarity]);
