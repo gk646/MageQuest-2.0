@@ -14,21 +14,31 @@ struct Window {
   Vector2 lastMousePos = {0};
   Vector2 basePosition;
   char* header_text;
+  const Sound& openSound;
+  const Sound& closeSound;
   int windowOpenKey;
   float fontSize = 17;
   bool isDragged = false;
   bool isWindowOpen = false;
   bool isHeaderHovered = false;
   Window(int start_x, int start_y, int width, int height, int header_height,
-         char* header_text, int open_key)
+         char* header_text, int open_key, const Sound& openSound, const Sound& closeSound)
       : wholeWindow(start_x, start_y, width, height),
         header_bar(start_x, start_y + 2, width, header_height),
         header_text(header_text),
         windowOpenKey(open_key),
-        basePosition(start_x, start_y) {}
+        basePosition(start_x, start_y),
+        openSound(openSound),
+        closeSound(closeSound) {}
 
 #define WINDOW_LOGIC()                                              \
   if (IsKeyPressed(windowOpenKey)) {                                \
+    if (isWindowOpen) {                                             \
+      PlaySoundR(closeSound);                                       \
+                                                                    \
+    } else {                                                        \
+      PlaySoundR(openSound);                                        \
+    }                                                               \
     isWindowOpen = !isWindowOpen;                                   \
     isDragged = false;                                              \
   }                                                                 \
@@ -96,8 +106,8 @@ struct Window {
   if (CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && !DRAGGED_ITEM) { \
     isHeaderHovered = true;                                                         \
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                     \
-      if (!isDragged) {                                                            \
-        isDragged = true;                                                          \
+      if (!isDragged) {                                                             \
+        isDragged = true;                                                           \
         lastMousePos = MOUSE_POS;                                                   \
       }                                                                             \
     }                                                                               \
@@ -105,7 +115,7 @@ struct Window {
                                                                                     \
   if (!WINDOW_FOCUSED) {                                                            \
     WINDOW_FOCUSED =                                                                \
-        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));   \
+        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));    \
   }
   inline void ToggleWindow() noexcept {
     if (!isWindowOpen) {

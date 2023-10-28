@@ -32,9 +32,11 @@ inline Sound menu_switch;
 
 //inventory
 inline Sound buy;
-inline Sound close_inventory;
+inline Sound closeBags;
+inline Sound openBags;
+inline Sound closeInventory;
+inline Sound openInventory;
 inline Sound equip;
-inline Sound open_inventory;
 inline Sound pickup_gold;
 inline Sound read_book;
 inline Sound sell;

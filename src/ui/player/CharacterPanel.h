@@ -38,7 +38,7 @@ struct CharacterPanel : public Window {
 
   CharacterPanel() noexcept
       : Window(SCREEN_WIDTH * 0.1F, SCREEN_HEIGHT * 0.2F, WIDTH, 450, 18,
-               PLAYER_NAME.data(), KEY_C) {
+               PLAYER_NAME.data(), KEY_C, sound::openInventory, sound::openInventory) {
     PLAYER_EQUIPPED = equipSlots.data();
   }
   void Draw() {

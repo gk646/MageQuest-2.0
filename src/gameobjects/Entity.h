@@ -2,16 +2,19 @@
 #define MAGE_QUEST_SRC_ENTITY_H_
 
 #include "../pathfinding/PathFinder.h"
-
+//Base class of objects in the game
 struct Entity {
+  //Float
   Point pos;
   PointT<int16_t> tile_pos;
   PointT<int16_t> size;
+  //In degree
   int16_t pov;
   uint16_t spriteCounter = 0;
   ShapeType hitboxShape;
   bool isDead = false;
   Zone currentZone;
+  //Is in the same zone and closer than "UPDATE_RANGE"
   bool isUpdated = true;
   bool isIlluminated = false;
   Entity(const Point& pos, const PointT<int16_t>& size, ShapeType hitboxShape,
@@ -41,15 +44,17 @@ struct Entity {
     return *this;
   }
   virtual ~Entity() = default;
-  virtual void Update() = 0;
+
 #define ENTITY_UPDATE()                                                  \
   tile_pos.x = static_cast<int16_t>(pos.x_ + size.x / 2.0F) / TILE_SIZE; \
   tile_pos.y = static_cast<int16_t>(pos.y_ + size.y / 2.0F) / TILE_SIZE; \
   isUpdated = currentZone == CURRENT_ZONE &&                             \
               PLAYER.tile_pos.dist(this->tile_pos) < UPDATE_DISTANCE;    \
   if (!isUpdated) return;
-
+  //Called on the draw thread
   virtual void Draw() = 0;
+  //Called on the update thread
+  virtual void Update() = 0;
   [[nodiscard]] bool intersects(const Entity& o) const noexcept {
     if (pov == 0) {
       if (hitboxShape == ShapeType::RECT) {
@@ -93,8 +98,10 @@ struct Entity {
   void draw_hitbox() const {
     switch (hitboxShape) {
       case ShapeType::RECT:
-        DrawRectOutlineMiddleRotation({pos.x_ + DRAW_X, pos.y_ + DRAW_Y, static_cast<float>(size.x), static_cast<float>(size.y)},
-                                      pov, GREEN);
+        DrawRectOutlineMiddleRotation(
+            {pos.x_ + DRAW_X, pos.y_ + DRAW_Y, static_cast<float>(size.x),
+             static_cast<float>(size.y)},
+            pov, GREEN);
         break;
       case ShapeType::CIRCLE:
         DrawCircleSectorLines(

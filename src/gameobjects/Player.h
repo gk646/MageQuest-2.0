@@ -31,7 +31,7 @@ struct Player final : public Entity {
     if (PLAYER_STATS.health <= 0) {
       GAME_STATE = GameState::GameOver;
       return;
-    } else if (PLAYER_STATS.stunned) {
+    } else if (PLAYER_STATS.stunned|| GAME_STATE == GameState::GameMenu) {
       return;
     }
 

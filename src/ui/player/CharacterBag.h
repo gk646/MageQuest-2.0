@@ -17,27 +17,17 @@ struct CharacterBag final : public Window {
   BagPanel bagPanel;
   explicit CharacterBag() noexcept
       : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, HEADER,
-               KEY_B) {
+               KEY_B, sound::openBags, sound::closeBags) {
     PLAYER_BAG = new InventorySlot[max_slots];
     CalculateSlots(max_slots);
     PLAYER_STATS.effects[BAG_SLOTS] = BagPanel::BASE_BAG_SLOTS;
   }
   void Draw() noexcept {
-    if (IsKeyPressed(windowOpenKey)) {
-      if (isWindowOpen) {
-        PlaySoundR(sound::close_inventory);
-        isWindowOpen = false;
-      } else {
-        PlaySoundR(sound::open_inventory);
-        isWindowOpen = true;
-      }
-      isDragged = false;
-    }
     if (!isWindowOpen) {
       bagPanel.isOpen = false;
       bagPanel.slide.Reset();
-      return;
     }
+    WINDOW_LOGIC();
     DRAG_WINDOW()
     DrawWindow();
     for (uint_fast32_t i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {
