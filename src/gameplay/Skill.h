@@ -159,9 +159,9 @@ struct Skill {
       float cooldownInSeconds = skillStats.coolDownTicks / 60.0F;
 
       if (cooldownInSeconds == floor(cooldownInSeconds)) {
-        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f sec cast", cooldownInSeconds);
+        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f sec cooldown", cooldownInSeconds);
       } else {
-        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f sec cast", cooldownInSeconds);
+        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f sec cooldown", cooldownInSeconds);
       }
 
       Util::DrawRightAlignedText(MINECRAFT_REGULAR, 15, TEXT_BUFFER,
@@ -224,6 +224,10 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
       break;
     case PROJECTILE_END:
       return nullptr;
+    case ARROW_NORMAL:
+      break;
+    case ARCANE_BOLT:
+      return new ArcaneBolt_Skill(stats);
   }
 }
 inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,

@@ -3,8 +3,21 @@
 struct SoundLoader {
 
   static void Load() {
-    //Projectile SOUNDS
 
+
+
+    sound::interactable::basicChest = LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
+    sound::interactable::normalChest = LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
+    sound::interactable::epicChest = LoadSound((ASSET_PATH + "sound/effects/interactable/epicChestOpen.wav").c_str());
+    sound::interactable::lever = LoadSound((ASSET_PATH + "sound/effects/interactable/lever.wav").c_str());
+
+
+    sound::environment::spikes = LoadSound((ASSET_PATH + "sound/effects/environment/spike.wav").c_str());
+
+
+
+
+    //Projectile SOUNDS
     sound::energySphere = LoadSound(
         (ASSET_PATH + "sound/effects/projectiles/energySphere/fullsound.wav").c_str());
     sound::energySphere_hit = LoadSound(
@@ -65,11 +78,13 @@ struct SoundLoader {
     sound::menu_switch =
         LoadSound((ASSET_PATH + "sound/effects/menu_switch.wav").c_str());
     sound::menu_back = LoadSound((ASSET_PATH + "sound/effects/menu_back.wav").c_str());
+
+    sound::EMPTY_SOUND =LoadSound((ASSET_PATH + "sound/effects/empty.wav").c_str());
     SetVolumes();
   }
   static void SetVolumes() noexcept {
     SetSoundVolume(sound::energySphere, 0.4F);
-    SetSoundVolume(sound::fireBurst, 0.2F);
+    SetSoundVolume(sound::fireBurst, 0.7F);
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

@@ -60,18 +60,19 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Oasis, {4, 96});
+    WorldManager::LoadMap(Zone::Oasis, {86, 72});
 #endif
     PLAYER_QUESTS.AddQuest(Quests::TUTORIAL);
     PLAYER_QUESTS.GetQuest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
     PLAYER_QUESTS.SetAsActiveQuest(Quest_ID::TUTORIAL);
     PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
     PLAYER_QUESTS.GetQuest(Quest_ID::MARLA)->state = QuestState::ACTIVE;
+    UI_MANAGER.playerUI.playerHotbar.skills[0] = SKILLS[ARCANE_BOLT];
     UI_MANAGER.playerUI.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
     UI_MANAGER.playerUI.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
     UI_MANAGER.playerUI.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
     UI_MANAGER.playerUI.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
-    NPCS.push_back(NPC::GetNewNPC(NPC_ID::SATIRO, 4 * 48, 96 * 48, CURRENT_ZONE));
+    //NPCS.push_back(NPC::GetNewNPC(NPC_ID::SATIRO, 4 * 48, 96 * 48, CURRENT_ZONE));
     for (uint_fast32_t i = 0; i < 20; i++) {
       // MONSTERS.push_back(          Monster::GetNewMonster(250.0F + i * 5, 150, MonsterType::SKEL_ARCHER, 5));
       MONSTERS.push_back(

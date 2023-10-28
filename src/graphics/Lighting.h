@@ -2,7 +2,6 @@
 #define MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_
 namespace Lighting {
 struct SpotLightInfo {
-  float innerRadius;
   float outerRadius;
   Vector3 lightColors;
 };
@@ -15,8 +14,10 @@ struct ShadowObject {
 };
 
 inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
-    {FIRE_BALL, {7, 120, {0.8745f, 0.2431f, 0.1373f}}},
-    {ENERGY_SPHERE, {15, 200, {0.3804f, 0.6588f, 0.8902f}}}};
+    {FIRE_BALL, { 100, {0.8745f, 0.2431f, 0.1373f}}},
+    {ARCANE_BOLT, { 100, {0.3804f, 0.6588f, 0.8902f}}},
+    {BLAST_HAMMER, { 180, {0.8745f, 0.2431f, 0.1373f}}},
+    {ENERGY_SPHERE, { 180, {0.3804f, 0.6588f, 0.8902f}}}};
 
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
 inline static uint16_t dayTicks = 0;
@@ -74,7 +75,6 @@ inline static Shader postProcessing;
 inline static int SPOT_LIGHT_RADIUS;
 inline static int SPOT_LIGHT_POSITION;
 inline static int SPOT_LIGHT_COLOR;
-inline static int SPOT_LIGHT_INNER_RADIUS;
 inline static int SPOT_LIGHT_NUM;
 inline static int SPOT_LIGHT_TIME;
 inline static int SPOT_LIGHT_PLAYER;
@@ -84,7 +84,6 @@ inline static int NIGHT_SHADER_PLAYER;
 inline static int spotLightCount = 0;
 inline static float spotLightTime = 0;
 Vector2 lightPositions[MAX_DYNAMIC_LIGHTS];
-float innerRadii[MAX_DYNAMIC_LIGHTS];
 float outerRadii[MAX_DYNAMIC_LIGHTS];
 Vector3 lightColors[MAX_DYNAMIC_LIGHTS];
 //Run on the update thread / updates the dynamic lights array
@@ -96,7 +95,6 @@ inline static void UpdateDynamicLights() noexcept {
       lightPositions[i] = {
           p->pos.x_ + DRAW_X + (float)p->size.x / 2.0F,
           SCREEN_HEIGHT - (p->pos.y_ + DRAW_Y + (float)p->size.y / 2.0F)};
-      innerRadii[i] = typeToLight[p->projectileType].innerRadius;
       outerRadii[i] = typeToLight[p->projectileType].outerRadius;
       lightColors[i] = typeToLight[p->projectileType].lightColors;
       i++;
@@ -121,8 +119,6 @@ inline static void StartDynamicLights() noexcept {
   SetShaderValueV(spotLight, SPOT_LIGHT_COLOR, lightColors, SHADER_UNIFORM_VEC3,
                   spotLightCount);
   SetShaderValueV(spotLight, SPOT_LIGHT_RADIUS, outerRadii, SHADER_UNIFORM_FLOAT,
-                  spotLightCount);
-  SetShaderValueV(spotLight, SPOT_LIGHT_INNER_RADIUS, innerRadii, SHADER_UNIFORM_FLOAT,
                   spotLightCount);
   SetShaderValue(spotLight, SPOT_LIGHT_NUM, &spotLightCount, SHADER_UNIFORM_INT);
   SetShaderValue(spotLight, SPOT_LIGHT_TIME, &spotLightTime, SHADER_UNIFORM_FLOAT);

@@ -14,6 +14,7 @@ struct BlastHammer final : Projectile {
         flip(flip) {
     projectileType = BLAST_HAMMER;
     isDoingDamage = false;
+    isIlluminated = true;
   }
   void Draw() final {
     if (spriteCounter < 110) {
@@ -76,10 +77,11 @@ struct FireBall final : Projectile {
   FireBall(const Point& pos, bool from_player, int life_span, float speed, float damage,
            HitType hit_type,
            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
-           const Vector2& move, const Entity* sender)
+           const Vector2& move, const Entity* sender, bool sound = true)
       : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
                    {DamageType::FIRE, damage}, hit_type, effects, move, pov,
-                   sound::fireBurst, &textures::projectile::FIRE_BURST, sender) {
+                   sound ? sound::EMPTY_SOUND : sound::fireBurst,
+                   &textures::projectile::FIRE_BURST, sender) {
     projectileType = ProjectileType::FIRE_BALL;
     isIlluminated = true;
   }
@@ -214,6 +216,57 @@ struct ArrowNormal final : Projectile {
                                 pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, 0, 0);
 
     DRAW_HITBOXES();
+  }
+};
+//Flies normally expect when hitting anything / Does damage for 1 tick and then plays explode animation
+struct ArcaneBolt final : Projectile {
+  static constexpr int width = 40;
+  static constexpr int height = 30;
+  bool hitTarget = false;
+  ArcaneBolt(const Point& pos, bool from_player, int life_span, float speed, float damage,
+             HitType hit_type,
+             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
+             const Vector2& move, const Entity* sender)
+      : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
+                   {DamageType::ARCANE, damage}, hit_type, effects, move, pov,
+                   sound::fireBurst, &textures::projectile::ARCANE_BOLT, sender) {
+    projectileType = ProjectileType::ARCANE_BOLT;
+    isIlluminated = true;
+    isDoingDamage = true;
+  }
+  void Draw() final {
+    if (!hitTarget) {
+      DrawTextureProFastRotOffset(resources->frames[spriteCounter % 60 / 15],
+                                  pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -12, -50);
+    } else {
+      DrawTextureProFastRotOffset(resources->frames[spriteCounter % 117 / 13],
+                                  pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -15, -50);
+    }
+    DRAW_HITBOXES();
+  }
+  void Update() noexcept final {
+    Projectile::Update();
+    if (hitTarget) {
+      isDoingDamage = false;
+    }
+  }
+  void HitTargetCallback() noexcept final {
+    if (!hitTarget) {
+      mvmVector.x = 0;
+      mvmVector.y = 0;
+      hitTarget = true;
+      spriteCounter = 78;
+      lifeSpanTicks = 40;
+    }
+  }
+  void HitWallCallback() noexcept final {
+    if (!hitTarget) {
+      mvmVector.x = 0;
+      mvmVector.y = 0;
+      hitTarget = true;
+      spriteCounter = 78;
+      lifeSpanTicks = 40;
+    }
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_

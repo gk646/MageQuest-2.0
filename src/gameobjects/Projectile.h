@@ -91,7 +91,7 @@ struct Projectile : public Entity {
     return {std::cos(angle), std::sin(angle)};
   }
   [[nodiscard]] inline bool IsActive() const noexcept { return !isDead && isDoingDamage; }
-  void Update() override {
+  inline void Update() override {
     spriteCounter++;
     pos.x_ += mvmVector.x * speed;
     pos.y_ += mvmVector.y * speed;
@@ -99,13 +99,15 @@ struct Projectile : public Entity {
     tile_pos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
     if (!BoundCheckMap(tile_pos.x, tile_pos.y) ||
         CheckTileCollision(tile_pos.x, tile_pos.y)) {
-      isDead = true;
+      HitWallCallback();
     }
     lifeSpanTicks--;
     if (lifeSpanTicks <= 0) {
       isDead = true;
     }
   }
+  virtual void HitTargetCallback() noexcept { isDead = hitType == HitType::ONE_HIT; }
+  virtual void HitWallCallback() noexcept { isDead = true; }
 };
 
 #include "projectiles/Projectiles.h"

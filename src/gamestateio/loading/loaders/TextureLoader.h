@@ -96,6 +96,7 @@ struct TextureLoader {
 
     textures::amulet = LoadTexture((ASSET_PATH + "ui/inventory/amulet.png").c_str());
     textures::bag = LoadTexture((ASSET_PATH + "ui/inventory/bag.png").c_str());
+    textures::slot = LoadTexture((ASSET_PATH + "ui/inventory/slot.png").c_str());
     textures::boots = LoadTexture((ASSET_PATH + "ui/inventory/boots.png").c_str());
     textures::chest = LoadTexture((ASSET_PATH + "ui/inventory/chest.png").c_str());
     textures::helm = LoadTexture((ASSET_PATH + "ui/inventory/helm.png").c_str());
@@ -152,6 +153,7 @@ struct TextureLoader {
 
     textures::ui::skillbar::icons::infernoRay =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/infernoRay.png").c_str());
     textures::ui::skillbar::icons::frostNova =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/frostNova.png").c_str());
+    textures::ui::skillbar::icons::arcaneBolt =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/arcaneBolt.png").c_str());
     textures::ui::skillbar::icons::locked =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/locked.png").c_str());
     textures::ui::skillbar::icons::inspiration =
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/inspiration.png").c_str());

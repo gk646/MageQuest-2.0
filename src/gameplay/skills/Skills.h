@@ -42,7 +42,7 @@ struct FireStrike_Skill final : public Skill {
 
       PROJECTILES.emplace_back(new FireBall(
           pos, true, skillStats.lifeSpan, skillStats.speed, damage, HitType::CONTINUOUS,
-          {}, pov, {x_component, y_component}, &PLAYER));
+          {}, pov, {x_component, y_component}, &PLAYER, i > 0));
     }
   }
 };
@@ -138,7 +138,6 @@ struct FrostNova_Skill final : public Skill {
   explicit FrostNova_Skill(const SkillStats& stats)
       : Skill(stats, DamageStats{DamageType::ICE, stats.baseDamage}, true, 1,
               textures::ui::skillbar::icons::frostNova) {}
-
   void Activate() final {
     TriggerSkill();
     Point pos = {PLAYER_X + PLAYER.size.x / 2 - FrostNova::WIDTH / 2,
@@ -149,6 +148,31 @@ struct FrostNova_Skill final : public Skill {
 
     PROJECTILES.emplace_back(new FrostNova(pos, true, skillStats.lifeSpan, 0, damage,
                                            HitType::ONE_TICK, {}, 0, {0, 0}, &PLAYER));
+  }
+};
+
+struct ArcaneBolt_Skill final : public Skill {
+  explicit ArcaneBolt_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::ARCANE, stats.baseDamage}, true, 1,
+              textures::ui::skillbar::icons::arcaneBolt) {}
+  void Activate() final {
+    TriggerSkill();
+    auto mouse_pos = MOUSE_POS;
+    float angle =
+        std::atan2(mouse_pos.y - (PLAYER_Y + DRAW_Y), mouse_pos.x - (PLAYER_X + DRAW_X));
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
+    float posX = PLAYER_X + PLAYER.size.x / 2;
+    float posY = PLAYER_Y + PLAYER.size.y / 2 - ArcaneBolt::height / 2;
+    float pov = angle * (180.0f / PI);
+    float x_move = std::cos(angle);
+    float y_move = std::sin(angle);
+
+    Multiplayer::UDP_SEND_PROJECTILE(ARCANE_BOLT, (int16_t)posX, (int16_t)posY, pov,
+                                     x_move, y_move, damage);
+
+    PROJECTILES.emplace_back(new ArcaneBolt({posX, posY}, true, skillStats.lifeSpan,
+                                            skillStats.speed, damage, HitType::ONE_HIT,
+                                            {}, pov, {x_move, y_move}, &PLAYER));
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILLS_SKILLS_H_

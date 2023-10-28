@@ -2,6 +2,7 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_WORLDOBJECT_H_
 
 struct WorldObject : public Entity {
+
   WorldObject(const Point& pos, const PointT<int16_t>& size, ShapeType shape_type,
               Zone zone)
       : Entity(pos, size, shape_type, 0, zone) {}
@@ -13,11 +14,24 @@ struct WorldObject : public Entity {
 
 //Interactive objects like containers, gates or doors
 struct InteractableObject : public WorldObject {
+  Sound sound;
   const std::vector<Texture>& textures;
-  InteractableObject(std::vector<Texture>& textures, const Point& pos,
-                     const PointT<int16_t> size, ShapeType type, bool isUsed, Zone zone)
-      : WorldObject(pos, size, type, zone), isUsed(isUsed), textures(textures) {}
+  WorldObjectType type;
   bool isUsed = false;
+  InteractableObject(std::vector<Texture>& textures, const Sound& sound, const Point& pos,
+                     const PointT<int16_t> size, ShapeType shapeType, bool isUsed,
+                     Zone zone, WorldObjectType objectType)
+      : WorldObject(pos, size, shapeType, zone),
+        isUsed(isUsed),
+        textures(textures),
+        type(objectType),
+        sound(LoadSoundAlias(sound)) {
+    if (isUsed) {
+      SetSoundVolume(sound, 0);
+      spriteCounter = 150;
+    }
+  }
+  ~InteractableObject() override { UnloadSoundAlias(sound); }
   virtual void Interact() = 0;
   void Draw() final {
     if (!isUsed) {
@@ -33,6 +47,9 @@ struct InteractableObject : public WorldObject {
     if (!isUsed && Util::EPressed() && this->intersects(PLAYER)) {
       isUsed = true;
       Interact();
+      PlaySoundR(sound);
+      DataBaseHandler::AddStateToTable("OBJECT_STATES", (int)type, tile_pos.x, tile_pos.y,
+                                       (int)currentZone);
     }
     if (isUsed && spriteCounter < 150) {
       spriteCounter++;
@@ -60,8 +77,8 @@ WorldObject* WorldObject::GetNewWorldObject(WorldObjectType type,
 //Does a lookup in the database table if the object was already used
 void Map::RegisterWorldObject(WorldObjectType type, const cxstructs::PointI& pos,
                               Zone zone) {
-  bool isUsed =
-      DataBaseHandler::StateExistsInTable("OBJECT_STATES", (int)type, pos.x, pos.y);
+  bool isUsed = DataBaseHandler::StateExistsInTable("OBJECT_STATES", (int)type, pos.x,
+                                                    pos.y, (int)zone);
   WORLD_OBJECTS.emplace_back(WorldObject::GetNewWorldObject(type, pos, isUsed, zone));
 }
 

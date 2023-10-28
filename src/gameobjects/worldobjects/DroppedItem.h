@@ -25,12 +25,12 @@ struct DroppedItem final : public WorldObject {
 struct AnimatedDroppedItem final : public WorldObject {
   Item* item;
   float arcPosition = 0;
-  float startX, startY, endX, endY, controlX, controlY;
+  float startX, startY, endX{}, endY, controlX{}, controlY{};
   AnimatedDroppedItem(const Point& pos, Item* item)
       : WorldObject(pos, {40, 40}, ShapeType::RECT, CURRENT_ZONE),
         item(item),
         endY(pos.y_),
-        startX(pos.y_),
+        startX(pos.x_),
         startY(pos.y_) {
     GetArcEndPoints();
   }

@@ -39,6 +39,7 @@ inline ProjectileResources BLAST_HAMMER;
 inline ProjectileResources ENERGY_SPHERE;
 inline ProjectileResources ETHER_PORTAL;
 inline ProjectileResources FIRE_BURST;
+inline ProjectileResources ARCANE_BOLT;
 inline ProjectileResources FIRE_EXPLOSION;
 inline ProjectileResources FIRE_SWORD;
 inline ProjectileResources FROST_NOVA;
@@ -151,6 +152,7 @@ inline static Texture energy_sphere;
 inline static Texture fireBurst;
 inline static Texture fireSword;
 inline static Texture frostNova;
+inline static Texture arcaneBolt;
 inline static Texture locked;
 }  // namespace icons
 }  // namespace skillbar
@@ -162,6 +164,7 @@ inline std::vector<Texture> GITHUB_ANIMATION;
 
 inline Texture amulet;
 inline Texture bag;
+inline Texture slot;
 inline Texture boots;
 inline Texture chest;
 inline Texture helm;

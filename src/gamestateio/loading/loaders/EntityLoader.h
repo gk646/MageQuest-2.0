@@ -58,6 +58,7 @@ static void Load() {
   textures::projectile::DUMMY.load("dummy/");
   textures::projectile::PSYCHIC_SCREAM.load("PsychicScream/");
   textures::projectile::ARROW_NORMAL.load("arrowNormal/");
+  textures::projectile::ARCANE_BOLT.load("arcaneBolt/");
 
   textures::npc::ARIA.Load("npc/aria/");
   textures::npc::OLD_MAN.Load("npc/oldman/");
