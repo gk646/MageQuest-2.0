@@ -157,12 +157,11 @@ struct ArcaneBolt_Skill final : public Skill {
               textures::ui::skillbar::icons::arcaneBolt) {}
   void Activate() final {
     TriggerSkill();
-    auto mouse_pos = MOUSE_POS;
-    float angle =
-        std::atan2(mouse_pos.y - (PLAYER_Y + DRAW_Y), mouse_pos.x - (PLAYER_X + DRAW_X));
-    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
     float posX = PLAYER_X + PLAYER.size.x / 2;
     float posY = PLAYER_Y + PLAYER.size.y / 2 - ArcaneBolt::height / 2;
+    float angle = std::atan2(MOUSE_POS.y - posY - DRAW_Y - ArcaneBolt::height / 2,
+                             MOUSE_POS.x - posX - DRAW_X - ArcaneBolt::width / 2);
+    float damage = PLAYER_STATS.GetAbilityDmg(damageStats);
     float pov = angle * (180.0f / PI);
     float x_move = std::cos(angle);
     float y_move = std::sin(angle);

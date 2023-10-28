@@ -6,7 +6,7 @@
  * |-----------------------------------------------------|
  */
 enum class GameState : uint8_t { MainMenu, GameMenu, Game, Loading, GameOver };
-enum class MenuState : uint8_t { Main, Settings, ServerBrowser, HostGame };
+enum class MenuState : uint8_t { Main, Settings, ServerBrowser, HostGame , Transition};
 enum class MapLayer : uint8_t { BACK_GROUND, MIDDLE_GROUND, FRONT };
 
 /* |-----------------------------------------------------|

@@ -12,12 +12,11 @@ inline void RestUIPosition();
 #include "menus/MainMenu.h"
 #include "menus/GameMenu.h"
 
-
 struct UIManager {
   PlayerUI playerUI;
   SettingsMenu settings_menu;
-  GameMenu game_menu{settings_menu};
-  MainMenu main_menu{settings_menu};
+  GameMenu gameMenu{settings_menu, playerUI};
+  MainMenu mainMenu{settings_menu};
   UIManager() {
     playerUI.playerHotbar.menuButtons[0].onPressedFunc = [&]() {
       playerUI.charBag.ToggleWindow();
@@ -48,14 +47,8 @@ struct UIManager {
         FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
       }
     }
-    if (IsKeyPressed(KEY_ESCAPE)) {
-      if (GAME_STATE == GameState::GameMenu && game_menu.menu_state == MenuState::Main) {
-        GAME_STATE = GameState::Game;
-      } else if (GAME_STATE == GameState::Game) {
-        if (!playerUI.window_closeable()) {
-          GAME_STATE = GameState::GameMenu;
-        }
-      }
+    if (IsKeyPressed(KEY_ESCAPE) && GAME_STATE == GameState::Game) {
+      gameMenu.Open();
     }
   }
   inline void Update() noexcept { playerUI.Update(); }

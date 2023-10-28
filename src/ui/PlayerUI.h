@@ -65,10 +65,11 @@ struct PlayerUI {
     }
   }
   inline bool window_closeable() noexcept {
-    if (char_panel.isWindowOpen || charBag.isWindowOpen || region_map.isWindowOpen) {
+    if (char_panel.isWindowOpen || charBag.isWindowOpen || region_map.isWindowOpen || questPanel.isWindowOpen) {
       char_panel.isWindowOpen = false;
       charBag.isWindowOpen = false;
       region_map.isWindowOpen = false;
+      questPanel.isWindowOpen = false;
       return true;
     } else {
       return false;

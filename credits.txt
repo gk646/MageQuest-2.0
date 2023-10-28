@@ -21,11 +21,13 @@ TEXTURES
  Effect textures from: craftpix.net / Full copyright with their Freebie License 
  Skilltree design inspired by the Minecraft mod: Craft to Exile [Dissonance] / made by mahjerion 
  Item icons: DALL·E / Image generation AI by OpenAI 
- most talent icon:  Itch.io: https://kyrise.itch.io/
+ Most talent icons:  Itch.io: https://kyrise.itch.io/
 
 SOUNDS 
+[Fantasy Sound Effects Library] by LittleRobotSoundFactory from freesound.org licensed under CC BY 4.0. Source [https://freesound.org/people/LittleRobotSoundFactory/packs/16687/]
+
 [grab-item]" by [1bob] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/1bob/sounds/651515/]
-[unfa's Laser Weapon Sounds ]" by [unfa] from freesound.org, licensed under CC0 1.0. [https://freesound.org/s/187119/]
+[unfa's Laser Weapon Sounds]" by [unfa] from freesound.org, licensed under CC0 1.0. [https://freesound.org/s/187119/]
 [UI Completed Status Alert Notification SFX001.wav ]" by [Headphaze] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/Headphaze/sounds/277033/#]
 [ambienta-soundtrack_crystal_airlines_c4-100bpm.wav]" by [suonho] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/suonho/sounds/56364/]
 [Lava loop.wav]" by [Audionautics] from freesound.org, licensed under CC BY 3.0. Source: [https://freesound.org/people/Audionautics/sounds/133901/]
@@ -36,7 +38,6 @@ SOUNDS
 [Mage FireBall Skill] by [EminYILDIRIM] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/EminYILDIRIM/sounds/555519/] 
 [Flipping Through Pages], A.wav" by [InspectorJ] of Freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/InspectorJ/sounds/403063/]
 [Pickup_Gold_03.wav] by [LittleRobotSoundFactory] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/LittleRobotSoundFactory/sounds/270405/]
-Inventory Open Sound: "UI_Inventory_Open_01" by LittleRobotSoundFactory from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/LittleRobotSoundFactory/sounds/270393/]
 Inventory Close Sound: "Button Click Off" by TriqyStudio from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/TriqyStudio/sounds/467605/]
 Fireplace Sound: "Fireplace" by [leosalom] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/leosalom/sounds/234288/]
 Dog Bite Sound: "Dog Bite" by [StephenSaldanha] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/StephenSaldanha/sounds/121889/]
@@ -63,5 +64,4 @@ Sounds from [SilverIllusionist] from freesound.org, licensed under CC BY 4.0.:
  
 
 Lots of soundeffects licensed under CC0 from freesound.org 
-
 Frost Spell Sound Effects by @danielsoundsgood [https://danielsoundsgood.itch.io/free-frost-mage-sfx]

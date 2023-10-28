@@ -2,31 +2,37 @@
 #define MAGE_QUEST_SRC_UI_GAMEMENU_H_
 
 struct GameMenu {
-  MenuState menu_state = MenuState::Main;
-  SettingsMenu& settings_menu;
+  MenuState menuState = MenuState::Main;
+  SettingsMenu& settingsMenu;
+  PlayerUI& playerUI;
 
-  explicit GameMenu(SettingsMenu& settings_menu) noexcept
-      : settings_menu(settings_menu) {}
-  void draw() noexcept {
+#define Close()                 \
+  PlaySoundR(sound::menu_back); \
+  GAME_STATE = GameState::Game; \
+  menuState = MenuState::Main;  \
+  return;
+
+  explicit GameMenu(SettingsMenu& settings_menu, PlayerUI& playerUI) noexcept
+      : settingsMenu(settings_menu), playerUI(playerUI) {}
+  void Draw() noexcept {
     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, ColorAlpha(GRAY, 0.7));
     const float scaled_width = 110 * UI_SCALE;
     const float scaled_height = 30 * UI_SCALE;
     const float vertical_gap = 10 * UI_SCALE;
     const float xOffset = (SCREEN_WIDTH / 2.0f) - (scaled_width / 2.0f);
 
-    if (menu_state == MenuState::Main) {
+    if (menuState == MenuState::Main) {
       if (GuiButton(
               {xOffset, (SCREEN_HEIGHT / 2.0f) - (4 * scaled_height) - (3 * vertical_gap),
                scaled_width, scaled_height},
               "Resume")) {
-        GAME_STATE = GameState::Game;
-        menu_state = MenuState::Main;
+        Close();
       }
       if (GuiButton(
               {xOffset, (SCREEN_HEIGHT / 2.0f) - (3 * scaled_height) - 2 * vertical_gap,
                scaled_width, scaled_height},
               "Settings")) {
-        menu_state = MenuState::Settings;
+        menuState = MenuState::Settings;
       }
       if (GuiButton({xOffset, (SCREEN_HEIGHT / 2.0f) - (2 * scaled_height) - vertical_gap,
                      scaled_width, scaled_height},
@@ -37,17 +43,30 @@ struct GameMenu {
                      scaled_height},
                     "Back to MainMenu")) {
         GAME_STATE = GameState::MainMenu;
-        menu_state = MenuState::Main;
+        menuState = MenuState::Main;
         PlaySoundR(sound::intro);
         Multiplayer::CloseMultiplayer();
       }
-    } else if (menu_state == MenuState::Settings) {
-      settings_menu.Draw();
+    } else if (menuState == MenuState::Settings) {
+      settingsMenu.Draw();
     }
-    if (IsKeyPressed(KEY_ESCAPE)) {
+
+    if (IsKeyPressed(KEY_ESCAPE) && menuState != MenuState::Transition) {
+      if (menuState == MenuState::Main) {
+        Close()
+      }
       PlaySoundR(sound::menu_back);
-      menu_state = MenuState::Main;
+      menuState = MenuState::Main;
     }
+    if (menuState == MenuState::Transition) {
+      menuState = MenuState::Main;
+    }
+  }
+  inline void Open() noexcept {
+    if (playerUI.window_closeable()) return;
+    PlaySoundR(sound::menu_switch);
+    GAME_STATE = GameState::GameMenu;
+    menuState = MenuState::Transition;
   }
 };
 #endif  //MAGE_QUEST_SRC_UI_GAMEMENU_H_

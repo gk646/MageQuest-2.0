@@ -4,18 +4,17 @@ struct SoundLoader {
 
   static void Load() {
 
+    sound::interactable::basicChest =
+        LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
+    sound::interactable::normalChest =
+        LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
+    sound::interactable::epicChest =
+        LoadSound((ASSET_PATH + "sound/effects/interactable/epicChestOpen.wav").c_str());
+    sound::interactable::lever =
+        LoadSound((ASSET_PATH + "sound/effects/interactable/lever.wav").c_str());
 
-
-    sound::interactable::basicChest = LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
-    sound::interactable::normalChest = LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
-    sound::interactable::epicChest = LoadSound((ASSET_PATH + "sound/effects/interactable/epicChestOpen.wav").c_str());
-    sound::interactable::lever = LoadSound((ASSET_PATH + "sound/effects/interactable/lever.wav").c_str());
-
-
-    sound::environment::spikes = LoadSound((ASSET_PATH + "sound/effects/environment/spike.wav").c_str());
-
-
-
+    sound::environment::spikes =
+        LoadSound((ASSET_PATH + "sound/effects/environment/spike.wav").c_str());
 
     //Projectile SOUNDS
     sound::energySphere = LoadSound(
@@ -54,11 +53,11 @@ struct SoundLoader {
     sound::intro = LoadSound((ASSET_PATH + "sound/music/intro.wav").c_str());
 
     sound::buy = LoadSound((ASSET_PATH + "sound/effects/inventory/buy.wav").c_str());
-    sound::close_inventory =
-        LoadSound((ASSET_PATH + "sound/effects/inventory/closeInventory.wav").c_str());
+    sound::closeBags =        LoadSound((ASSET_PATH + "sound/effects/inventory/closeBags.wav").c_str());
+    sound::openBags =        LoadSound((ASSET_PATH + "sound/effects/inventory/openBags.wav").c_str());
+    sound::openInventory =        LoadSound((ASSET_PATH + "sound/effects/inventory/openInventory.wav").c_str());
+    sound::closeInventory =        LoadSound((ASSET_PATH + "sound/effects/inventory/closeInventory.wav").c_str());
     sound::equip = LoadSound((ASSET_PATH + "sound/effects/inventory/equip.wav").c_str());
-    sound::open_inventory =
-        LoadSound((ASSET_PATH + "sound/effects/inventory/openInventory.wav").c_str());
     sound::pickup_gold =
         LoadSound((ASSET_PATH + "sound/effects/inventory/pickupGold.wav").c_str());
     sound::read_book =
@@ -76,15 +75,23 @@ struct SoundLoader {
     sound::speak = LoadSound((ASSET_PATH + "sound/effects/quest/speak.wav").c_str());
 
     sound::menu_switch =
-        LoadSound((ASSET_PATH + "sound/effects/menu_switch.wav").c_str());
-    sound::menu_back = LoadSound((ASSET_PATH + "sound/effects/menu_back.wav").c_str());
+        LoadSound((ASSET_PATH + "sound/effects/ui/menu_switch.wav").c_str());
+    sound::menu_back = LoadSound((ASSET_PATH + "sound/effects/ui/menu_back.wav").c_str());
 
-    sound::EMPTY_SOUND =LoadSound((ASSET_PATH + "sound/effects/empty.wav").c_str());
+    sound::EMPTY_SOUND = LoadSound((ASSET_PATH + "sound/effects/empty.wav").c_str());
     SetVolumes();
   }
   static void SetVolumes() noexcept {
+    SetSoundVolume(sound::menu_back, 1);
+
     SetSoundVolume(sound::energySphere, 0.4F);
     SetSoundVolume(sound::fireBurst, 0.7F);
+
+    SetSoundVolume(sound::openBags, 0.8F);
+    SetSoundVolume(sound::closeBags, 0.8F);
+
+    SetSoundVolume(sound::openInventory, 0.4F);
+    //SetSoundVolume(sound::closeInventory, 0.8F);
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

@@ -8,7 +8,7 @@ struct RegionMap final : public Window {
   float zoom = 5;
   bool dragged = false;
   RegionMap()
-      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, HEADER, KEY_M) {}
+      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, HEADER, KEY_M, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
   void Draw() noexcept {
     WINDOW_LOGIC();
     DragMap();

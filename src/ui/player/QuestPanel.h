@@ -33,7 +33,7 @@ struct QuestPanel final : public Window {
 
   QuestPanel()
       : Window(SCREEN_WIDTH / 2 - WIDTH / 2, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20,
-               HEADER, KEY_J),
+               HEADER, KEY_J, sound::EMPTY_SOUND, sound::EMPTY_SOUND),
         questMenu(WIDTH / 2, HEIGHT) {}
   void Draw() {
     side_panel.Draw(SCREEN_WIDTH - side_panel.body.width, SCALE(300));

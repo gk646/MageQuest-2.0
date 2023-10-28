@@ -129,6 +129,7 @@ class Game {
         WorldManager::Update();
         PLAYER_STATS.update();
         PLAYER_EFFECTS.Update();
+        PLAYER.Update();
         UPDATE_AND_COLLISION();
         UI_MANAGER.Update();
       } break;
@@ -210,7 +211,7 @@ class Game {
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
-        UI_MANAGER.main_menu.draw();
+        UI_MANAGER.mainMenu.draw();
         break;
       }
       case GameState::Game:
@@ -220,7 +221,7 @@ class Game {
         break;
       case GameState::GameMenu: {
         DrawGame();
-        UI_MANAGER.game_menu.draw();
+        UI_MANAGER.gameMenu.Draw();
       } break;
       case GameState::Loading: {
         LoadingScreen::draw();
@@ -288,7 +289,7 @@ class Game {
     GameSaver::save();
     Multiplayer::CloseMultiplayer();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
-    for (uint16_t i = 0; i < TEXTURE_COUNT +1500; i++) {
+    for (uint16_t i = 0; i < TEXTURE_COUNT + 1500; i++) {
       UnloadTextureI(i);
     }
     logic_thread_running = false;
