@@ -11,7 +11,6 @@ struct XPBar {
   static int prev_req;
   static int next_req;
   static float PLAYER_EXPERIENCE;
-  static char tx_buf[15];
   XPBar() { UpdateRequirements(1); }
   void Draw(float x, float y) noexcept {
     xp_bar.x = x + SCALE(28);
@@ -30,17 +29,18 @@ struct XPBar {
     DrawTextureScaled(textures::ui::skillbar::tooltip,
                       {m.x, m.y, XP_TOOL_TIP_WIDTH, XP_TOOL_TIP_HEIGHT}, false, false, 0,
                       WHITE);
-    sprintf(tx_buf, "%d / %d", (int)PLAYER_EXPERIENCE - prev_req, next_req);
-    DrawTextExR(MINECRAFT_BOLD, tx_buf, {m.x + 10, m.y + 15}, 15, 0.5, WHITE);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%d / %d", (int)PLAYER_EXPERIENCE - prev_req,
+              next_req);
+    DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER, {m.x + 10, m.y + 15}, 15, 0.5, WHITE);
 
-    sprintf(tx_buf, "Collected: %d%%",
-            (int)((PLAYER_EXPERIENCE - prev_req) * 100.0 / next_req));
-    Util::DrawRightAlignedText(MINECRAFT_BOLD, 15, tx_buf, m.x + XP_TOOL_TIP_WIDTH - 10,
-                               m.y + 15, WHITE);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Collected: %d%%",
+              (int)((PLAYER_EXPERIENCE - prev_req) * 100.0 / next_req));
+    Util::DrawRightAlignedText(MINECRAFT_BOLD, 15, TEXT_BUFFER,
+                               m.x + XP_TOOL_TIP_WIDTH - 10, m.y + 15, WHITE);
 
-    sprintf(tx_buf, "Total XP: %.1f", PLAYER_EXPERIENCE);
-    Util::DrawCenteredText(MINECRAFT_BOLD, 16, tx_buf, m.x + XP_TOOL_TIP_WIDTH / 2.0F,
-                           m.y + 35, WHITE);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Total XP: %.1f", PLAYER_EXPERIENCE);
+    Util::DrawCenteredText(MINECRAFT_BOLD, 16, TEXT_BUFFER,
+                           m.x + XP_TOOL_TIP_WIDTH / 2.0F, m.y + 35, WHITE);
   }
   void update() noexcept {
     if (PLAYER_EXPERIENCE - prev_req >= next_req) {
@@ -100,5 +100,4 @@ struct XPBar {
 int XPBar::prev_req = 0;
 int XPBar::next_req = 0;
 float XPBar::PLAYER_EXPERIENCE = 5;
-char XPBar::tx_buf[15] = {0};
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_XPBAR_H_

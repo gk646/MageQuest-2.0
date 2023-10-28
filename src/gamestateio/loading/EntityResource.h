@@ -6,7 +6,7 @@ struct MonsterResource {
   inline static void LoadImagesIntoVector(const std::string& name,
                                           std::vector<Texture>& vec) noexcept {
     for (uint_fast32_t j = 0; j < MAX_LOAD_NUM; ++j) {
-      sprintf(TEXT_BUFFER, "%s%s%d.png", ASSET_PATH.c_str(), name.c_str(), j);
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s%s%d.png", ASSET_PATH.c_str(), name.c_str(), j);
       if (std::filesystem::exists(std::string(TEXT_BUFFER))) {
         vec.push_back(LoadTexture(TEXT_BUFFER));
       } else {

@@ -16,7 +16,7 @@ struct TextCell {
         fontSize((uint8_t)fontSize),
         baseWidth((uint16_t)width),
         baseHeight((uint16_t)height) {}
-  inline void DrawStatCell(float x, float y, char* txt, float rightVal,
+  inline void DrawStatCell(float x, float y, const char* txt, float rightVal,
                            TextAlign align = TextAlign::RIGHT,
                            const Color& rightColor = Colors::darkBackground,
                            const Color& leftColor = Colors::darkBackground) noexcept {
@@ -29,17 +29,17 @@ struct TextCell {
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
     }
 
-    sprintf(txt, "%.1f", rightVal);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f", rightVal);
     if (align == TextAlign::LEFT) {
-      DrawTextExR(MINECRAFT_BOLD, txt,
-                  {x + MeasureTextEx(MINECRAFT_BOLD, txt, 15, 0.5F).x + 5, y},
+      DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER,
+                  {x + MeasureTextEx(MINECRAFT_BOLD, TEXT_BUFFER, 15, 0.5F).x + 5, y},
                   SCALE(fontSize), 0.5F, rightColor);
     } else if (align == TextAlign::RIGHT) {
-      Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width,
-                                 y, rightColor);
+      Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), TEXT_BUFFER,
+                                 x + bounds.width, y, rightColor);
     }
   }
-  inline void DrawStatCell(float x, float y, char* txt, int rightVal,
+  inline void DrawStatCell(float x, float y, const char* txt, int rightVal,
                            const Color& rightColor = Colors::darkBackground,
                            const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
@@ -51,18 +51,16 @@ struct TextCell {
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
     }
 
-    sprintf(txt, "%i", (int)rightVal);
-    Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), txt, x + bounds.width, y,
-                               rightColor);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%i", (int)rightVal);
+    Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), TEXT_BUFFER,
+                               x + bounds.width, y, rightColor);
   }
 
-  inline void DrawFormatCell(
-      float x, float y, const char* txt, const char* format, float val,
-      const Color& numColor = Colors::darkBackground) {
+  inline void DrawFormatCell(float x, float y, const char* txt, const char* format,
+                             float val, const Color& numColor = Colors::darkBackground) {
     Update(x, y);
 
-    char buffer[24];
-    sprintf(buffer, format, val);
+    snprintf(TEXT_BUFFER,TEXT_BUFFER_SIZE, format, val);
 
     Vector2 txtSize = MeasureTextEx(font, txt, SCALE(fontSize), 1);
     float numX = x + txtSize.x;
@@ -70,10 +68,10 @@ struct TextCell {
     if (isHovered) {
       ToolTip::DrawToolTip(toolTip, font, fontSize);
       DrawTextExR(font, txt, {x, y}, SCALE(fontSize), 1, Colors::mediumLightGreyDarker);
-      DrawTextExR(font, buffer, {numX, y}, SCALE(fontSize), 1, numColor);
+      DrawTextExR(font, TEXT_BUFFER, {numX, y}, SCALE(fontSize), 1, numColor);
     } else {
       DrawTextExR(font, txt, {x, y}, SCALE(fontSize), 1, Colors::darkBackground);
-      DrawTextExR(font, buffer, {numX, y}, SCALE(fontSize), 1, numColor);
+      DrawTextExR(font, TEXT_BUFFER, {numX, y}, SCALE(fontSize), 1, numColor);
     }
   }
 

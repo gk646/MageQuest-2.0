@@ -17,7 +17,7 @@ static void LoadToGPU() {
 static void LoadTextureSpan(int start, int end) {
   images.reserve((end - start) + 10);
   for (uint_fast32_t i = start; i < end; ++i) {
-    sprintf(TEXT_BUFFER, "%stextures/Tiles/%d.png", ASSET_PATH.c_str(), i);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%stextures/Tiles/%d.png", ASSET_PATH.c_str(), i);
     images.emplace_back(LoadImageR(TEXT_BUFFER));
   }
 }

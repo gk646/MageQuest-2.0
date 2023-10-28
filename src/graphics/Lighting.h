@@ -87,13 +87,15 @@ Vector2 lightPositions[MAX_DYNAMIC_LIGHTS];
 float innerRadii[MAX_DYNAMIC_LIGHTS];
 float outerRadii[MAX_DYNAMIC_LIGHTS];
 Vector3 lightColors[MAX_DYNAMIC_LIGHTS];
+//Run on the update thread / updates the dynamic lights array
 inline static void UpdateDynamicLights() noexcept {
   int i = 0;
   for (const auto& p : PROJECTILES) {
     if (i >= MAX_DYNAMIC_LIGHTS) break;
     if (p->isUpdated && p->isIlluminated) {
-      lightPositions[i] = {p->pos.x_ + DRAW_X + p->size.x / 2,
-                           SCREEN_HEIGHT - (p->pos.y_ + DRAW_Y + p->size.y / 2)};
+      lightPositions[i] = {
+          p->pos.x_ + DRAW_X + (float)p->size.x / 2.0F,
+          SCREEN_HEIGHT - (p->pos.y_ + DRAW_Y + (float)p->size.y / 2.0F)};
       innerRadii[i] = typeToLight[p->projectileType].innerRadius;
       outerRadii[i] = typeToLight[p->projectileType].outerRadius;
       lightColors[i] = typeToLight[p->projectileType].lightColors;
@@ -105,13 +107,7 @@ inline static void UpdateDynamicLights() noexcept {
 }
 inline static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
-  bool val = lightOn;
-  int v = lightOn;
-  if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT]))
-  {
-    std::cout<< lightOn << std::endl;
-    lightOn = !lightOn;
-  }
+  if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) lightOn = !lightOn;
   if (lightOn) {
     cameraVec->x = CAMERA_X;
     cameraVec->y = CAMERA_Y;
@@ -119,7 +115,6 @@ inline static void StartDynamicLights() noexcept {
     cameraVec->x = 0;
     cameraVec->y = 0;
   }
-
 
   SetShaderValueV(spotLight, SPOT_LIGHT_POSITION, lightPositions, SHADER_UNIFORM_VEC2,
                   spotLightCount);
