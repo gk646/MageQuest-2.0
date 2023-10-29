@@ -6,7 +6,7 @@
  * |-----------------------------------------------------|
  */
 enum class GameState : uint8_t { MainMenu, GameMenu, Game, Loading, GameOver };
-enum class MenuState : uint8_t { Main, Settings, ServerBrowser, HostGame , Transition};
+enum class MenuState : uint8_t { Main, Settings, ServerBrowser, HostGame, Transition };
 enum class MapLayer : uint8_t { BACK_GROUND, MIDDLE_GROUND, FRONT };
 
 /* |-----------------------------------------------------|
@@ -155,7 +155,7 @@ enum GameStatistic : uint8_t {
 
 //_P = percentile => 0.5, 0.05
 enum Stat : uint8_t {
-  //always add at bottom -> before WEAPON_DAMGE or before BAG_SLOTS
+  //always add at bottom -> before WEAPON_DAMAGE or before BAG_SLOTS
   STRENGTH,
   INTELLIGENCE,
   WISDOM,
@@ -216,7 +216,9 @@ enum class NodeType : uint8_t {
   NPC_SAY_PROXIMITY,
   CHOICE_DIALOGUE_SIMPLE,
   TILE_ACTION,
-  PLAYER_THOUGHT
+  PLAYER_THOUGHT,
+  OPTIONAL_POSITION,
+  SKIP
 };
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"SPAWN", NodeType::SPAWN},
@@ -234,6 +236,8 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"NPC_SAY_PROXIMITY", NodeType::NPC_SAY_PROXIMITY},
     {"SET_QUEST_SHOWN", NodeType::SET_QUEST_SHOWN},
     {"PLAYER_THOUGHT", NodeType::PLAYER_THOUGHT},
+    {"OPTIONAL_POSITION", NodeType::OPTIONAL_POSITION},
+    {"SKIP", NodeType::SKIP},
     {"CHOICE_DIALOGUE_SIMPLE", NodeType::CHOICE_DIALOGUE_SIMPLE}};
 
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };

@@ -149,7 +149,7 @@ struct Monster : public Entity {
     }
     return false;
   }
-  inline void UpdateWithRemoteState(UDP_MonsterUpdate* data) noexcept {
+  inline void UpdateWithRemoteState(const UDP_MonsterUpdate* data) noexcept {
     if (stats.health != (float)data->new_health) {
       stats.health = data->new_health;
       health_bar.Update();
@@ -284,9 +284,9 @@ void Multiplayer::HandleMonsterSpawn(UDP_MonsterSpawn* data) noexcept {
   ptr->u_id = data->monster_id;
   MONSTERS.push_back(ptr);
 }
-void Client::UpdateMonsters(UDP_MonsterUpdate* data) noexcept {
-  //TODO optimize
-  for (auto m : MONSTERS) {
+void Client::UpdateMonsters(const UDP_MonsterUpdate* data) noexcept {
+  SIMD_PRAGMA
+  for (const auto& m : MONSTERS) {
     if (m->u_id == data->monster_id) {
       m->UpdateWithRemoteState(data);
     }
