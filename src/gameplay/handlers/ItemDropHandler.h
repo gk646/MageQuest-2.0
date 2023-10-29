@@ -62,14 +62,18 @@ inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
   newItem->durability = (uint8_t)(50 + RANGE_01(RNG_ENGINE) * 50);
 
   float levelMult = std::sqrt(level);
-  float rarityMult = std::min(4, (int)ptr->rarity);
+  float rarityMult = std::min(3, (int)ptr->rarity);
   float qualityMult = quality / 100.0F;
   if (qualityMult == 1) {
     qualityMult = 1.1F;
   }
 
   for (uint_fast32_t i = 0; i < BAG_SLOTS; i++) {
-    newItem->effects[i] *= levelMult * rarityMult * qualityMult;
+    if (newItem->effects[i] < 0) {
+      newItem->effects[i] = (newItem->effects[i] - rarityMult) * levelMult * qualityMult;
+    } else {
+      newItem->effects[i] = (newItem->effects[i] + rarityMult) * levelMult * qualityMult;
+    }
   }
 
   return newItem;

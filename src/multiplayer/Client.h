@@ -28,7 +28,7 @@ inline static void SendMsgToHost(uint8_t channel, const void* msg,
     Multiplayer::CloseMultiplayer();
   }
 }
-inline static void UpdateMonsters(UDP_MonsterUpdate* data) noexcept;
+inline static void UpdateMonsters(const UDP_MonsterUpdate* data) noexcept;
 static void HandlePositionUpdates(ISteamNetworkingMessages* api) noexcept {
   SteamNetworkingMessage_t* pMessages[MP_MAX_MESSAGES_POS];
   int numMsgs;

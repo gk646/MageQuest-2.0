@@ -5,6 +5,7 @@
 #include "elements/QuestReward.h"
 
 struct Quest final {
+  //TODO add message tracking
   std::string name;
   std::vector<std::string> pastObjectives;
   std::vector<std::string> pastDialogue;
@@ -13,7 +14,7 @@ struct Quest final {
   QuestReward* reward = nullptr;
   int stage = 0;
   Quest_ID id;
-  QuestState state = QuestState::IN_ACTIVE;
+  QuestState state = QuestState::ACTIVE;
   bool hidden = false;
   uint8_t questLevel = 0;
   Zone questZone;
@@ -37,7 +38,7 @@ struct Quest final {
       FinishStage(objectives[stage]);
     }
   }
-  void Update() {
+  inline void Update() noexcept {
     if (objectives[stage]->Progress()) {
       FinishStage(objectives[stage]);
     }
@@ -53,6 +54,7 @@ struct Quest final {
   void CompleteQuest() noexcept {
     PlaySoundR(sound::completeQuest);
     state = QuestState::COMPLETED;
+    stage--;
   }
   inline void FinishStage(const QuestNode* obj) noexcept {
     if (obj->isMajorObjective) {

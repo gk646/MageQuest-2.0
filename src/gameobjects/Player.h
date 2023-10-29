@@ -28,6 +28,7 @@ struct Player final : public Entity {
     }
   }
   void Update() final {
+    spriteCounter++;
     if (PLAYER_STATS.health <= 0) {
       GAME_STATE = GameState::GameOver;
       return;
@@ -70,7 +71,6 @@ struct Player final : public Entity {
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
                                    static_cast<int16_t>(pos.y_));
-    spriteCounter++;
   }
   void Draw() final {
     if (moving) {

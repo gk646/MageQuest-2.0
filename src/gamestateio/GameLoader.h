@@ -28,7 +28,7 @@ struct GameLoader {
 #ifdef MG2_DEBUG
     } else if (true) {
 #else
-    } else if (RAYLIB_LOGO->finished) {
+    } else if (RAYLIB_LOGO->isFinished) {
 #endif
       SetupGame();
     }
@@ -60,13 +60,9 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Oasis, {86, 72});
+    WorldManager::LoadMap(Zone::Oasis, {4, 96});
 #endif
-    PLAYER_QUESTS.AddQuest(Quests::TUTORIAL);
-    PLAYER_QUESTS.GetQuest(Quest_ID::TUTORIAL)->state = QuestState::ACTIVE;
-    PLAYER_QUESTS.SetAsActiveQuest(Quest_ID::TUTORIAL);
-    PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
-    PLAYER_QUESTS.GetQuest(Quest_ID::MARLA)->state = QuestState::ACTIVE;
+    PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
     UI_MANAGER.playerUI.playerHotbar.skills[0] = SKILLS[ARCANE_BOLT];
     UI_MANAGER.playerUI.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
     UI_MANAGER.playerUI.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];

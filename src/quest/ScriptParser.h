@@ -6,6 +6,96 @@ namespace ScriptParser {
   obj->isMajorObjective = parts[parts.size() - 1] == "MAJOR"; \
   quest->objectives.push_back(obj);
 
+//Parses and returns a ptr to the next node found in the current line - "parts"
+inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
+                                std::ifstream& file) noexcept {
+  auto type = node_to_type[parts[0]];
+  switch (type) {
+    case NodeType::SKIP:
+      return new SKIP();
+    case NodeType::OPTIONAL_POSITION: {
+      auto obj = new OPTIONAL_POSITION(parts);
+      std::string line;
+      int i = 0;
+      while (std::getline(file, line) && line != "*" && i < obj->limit) {
+        obj->choices[i].node = ParseNextNode(Util::SplitString(line, ':'), file);
+        i++;
+      }
+      return obj;
+    }
+    case NodeType::PLAYER_THOUGHT:
+      return PLAYER_THOUGHT::ParseQuestNode(parts);
+    case NodeType::GOTO:
+      return GOTO::ParseQuestNode(parts);
+    case NodeType::KILL:
+      return KILL::ParseQuestNode(parts);
+    case NodeType::SPEAK: {
+      std::string line;
+      auto obj = SPEAK::ParseQuestNode(parts);
+      while (std::getline(file, line) && line != "*") {
+        obj->lines.push_back(line);
+      }
+      return obj;
+    }
+    case NodeType::COLLECT:
+    case NodeType::REQUIRE:
+    case NodeType::PROTECT:
+    case NodeType::ESCORT:
+    case NodeType::MIX:
+      break;
+    case NodeType::NPC_MOVE:
+      return NPC_MOVE::ParseQuestNode(parts);
+    case NodeType::TILE_ACTION:
+      return TILE_ACTION::ParseQuestNode(parts);
+    case NodeType::NPC_SAY: {
+      std::string line;
+      auto obj = NPC_SAY::ParseQuestNode(parts);
+      std::getline(file, obj->txt);
+      std::getline(file, line);
+      return obj;
+    }
+    case NodeType::SPAWN:
+      return SPAWN::ParseQuestNode(parts);
+    case NodeType::NPC_SAY_PROXIMITY: {
+      std::string line;
+      auto obj = NPC_SAY_PROXIMITY::ParseQuestNode(parts);
+      while (std::getline(file, line) && line != "*") {
+        obj->lines.push_back(line);
+      }
+      return obj;
+    }
+    case NodeType::CHOICE_DIALOGUE_SIMPLE: {
+      std::string line;
+      auto* obj = CHOICE_DIALOGUE_SIMPLE::ParseQuestNode(parts);
+      int i = 0;
+      while (std::getline(file, line) && line != "*") {
+        auto choice = Util::SplitString(line, ':');
+        auto textBound = MeasureTextEx(MINECRAFT_REGULAR, choice[0].c_str(), 16, 0.5F);
+        auto boundFunction = [obj, i] {
+          obj->SetAnswerIndex(i);
+        };
+        obj->choices.emplace_back(
+            textBound.x + 20, 20, choice[0], 16, textures::ui::questpanel::choiceBox,
+            textures::ui::questpanel::choiceBoxHovered,
+            textures::ui::questpanel::choiceBoxHovered, 255, "", boundFunction);
+        obj->answers.emplace_back(choice[1]);
+        i++;
+      }
+      return obj;
+    }
+    case NodeType::SET_QUEST_SHOWN:
+      return new SET_QUEST_SHOWN(stringToQuestID[parts[1]]);
+    default:
+      return nullptr;
+  }
+}
+//Adds the node to the given quest and setting the "isMajor" variable
+inline void AddToQuest(QuestNode* node, Quest* q,
+                       const std::vector<std::string>& parts) noexcept {
+  node->isMajorObjective = parts[parts.size() - 1] == "MAJOR";
+  q->objectives.push_back(node);
+}
+//Parses a ".mgqs" file and returns a ptr to a new instance of this quest
 Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
   auto quest = new Quest(id, hidden);
   std::ifstream file(ASSET_PATH + path);
@@ -28,124 +118,11 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
     if (line.empty() || line.starts_with('#')) continue;
     parts.clear();
     parts = Util::SplitString(line, ':');
-    type = node_to_type[parts[0]];
-    switch (type) {
-      case NodeType::PLAYER_THOUGHT: {
-        auto obj = PLAYER_THOUGHT::ParseQuestNode(parts);
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::GOTO: {
-        auto obj = GOTO::ParseQuestNode(parts);
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::KILL: {
-        auto obj = new KILL(stringToMonsterID[Util::SplitString(parts[1], ',')[0]],
-                            std::stoi(Util::SplitString(parts[1], ',')[1]), parts[2]);
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::SPEAK: {
-        auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
-        if (parts.size() > 3) {
-          obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
-                           std::stoi(Util::SplitString(parts[3], ',')[2])};
-        }
-        while (std::getline(file, line) && line != "*") {
-          obj->lines.push_back(line);
-        }
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::COLLECT:
-        break;
-      case NodeType::REQUIRE:
-        break;
-      case NodeType::PROTECT:
-        break;
-      case NodeType::ESCORT:
-        break;
-      case NodeType::MIX:
-        break;
-      case NodeType::NPC_MOVE: {
-        auto obj = new NPC_MOVE(npcIdMap[parts[1]], parts[2]);
-        obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
-                         std::stoi(Util::SplitString(parts[3], ',')[2])};
-        for (uint_fast32_t i = 4; i < parts.size(); i++) {
-          auto vec = Util::SplitString(parts[i], ',');
-          obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));
-        }
-        ADD_TO_QUEST();
-
-      } break;
-      case NodeType::TILE_ACTION: {
-        int layer = -1;
-        if (parts[2] == "BACK") {
-          layer = 0;
-        } else if (parts[2] == "MIDDLE") {
-          layer = 1;
-        } else if (parts[2] == "FORE") {
-          layer = 2;
-        }
-        auto obj = new TILE_ACTION(stringToZoneMap[parts[1]], layer,
-                                   Util::ParsePointI(parts[3]), std::stoi(parts[4]));
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::NPC_SAY: {
-        auto obj = new NPC_SAY(npcIdMap[parts[1]]);
-        if (parts.size() > 2) {
-          if (parts[2] == "SKIP") {
-            obj->skipWait = true;
-          }
-        }
-        std::getline(file, obj->txt);
-        std::getline(file, line);
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::SPAWN: {
-        SPAWN* obj;
-        if (stringToMonsterID.contains(parts[1])) {
-          obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
-        } else {
-          obj = new SPAWN(npcIdMap[parts[1]], std::stoi(parts[2]));
-        }
-        for (uint_fast32_t i = 3; i < parts.size(); i++) {
-          obj->positions.emplace_back(Util::ParsePointI(parts[i]));
-        }
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::NPC_SAY_PROXIMITY: {
-        auto obj = new NPC_SAY_PROXIMITY(npcIdMap[parts[1]], std::stoi(parts[2]));
-        while (std::getline(file, line) && line != "*") {
-          obj->lines.push_back(line);
-        }
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::CHOICE_DIALOGUE_SIMPLE: {
-        auto* obj =
-            new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2], std::stoi(parts[3]));
-        int i = 0;
-        while (std::getline(file, line) && line != "*") {
-          auto choice = Util::SplitString(line, ':');
-          auto textBound = MeasureTextEx(MINECRAFT_REGULAR, choice[0].c_str(), 16, 0.5F);
-          auto boundFunction = [obj, i] {
-            obj->SetAnswerIndex(i);
-          };
-          obj->choices.emplace_back(
-              textBound.x + 20, 20, choice[0], 16, textures::ui::questpanel::choiceBox,
-              textures::ui::questpanel::choiceBoxHovered,
-              textures::ui::questpanel::choiceBoxHovered, 255, "", boundFunction);
-          obj->answers.emplace_back(choice[1]);
-          i++;
-        }
-        ADD_TO_QUEST();
-      } break;
-      case NodeType::SET_QUEST_SHOWN: {
-        auto obj = new SET_QUEST_SHOWN(stringToQuestID[parts[1]]);
-        ADD_TO_QUEST();
-      } break;
-      default:
-        break;
-    }
+    auto node = ParseNextNode(parts, file);
+    AddToQuest(node, quest, parts);
   }
   return quest;
 }
+
 }  // namespace ScriptParser
 #endif  //MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_

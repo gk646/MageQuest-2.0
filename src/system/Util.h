@@ -55,12 +55,12 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
   for (int x = -thickness; x <= thickness; x++) {
     for (int y = -thickness; y <= thickness; y++) {
       if (x != 0 || y != 0) {
-        DrawTextExR(font, txt, {dx + x, dy + y}, fontSize, 0.5F, outlineColor);
+        DrawTextExR(font, txt, {dx + x, dy + y}, fontSize, 0.8F, outlineColor);
       }
     }
   }
 
-  DrawTextExR(font, txt, {dx, dy}, fontSize, 0.5F, textColor);
+  DrawTextExR(font, txt, {dx, dy}, fontSize, 0.8F, textColor);
 }
 //Wraps "txt" according to "width" / Uses 0.5 spacing / "lineBreaks" is set the number of line breaks
 inline static std::string WrapText(const std::string& txt, float width, const Font& font,
@@ -126,6 +126,7 @@ std::vector<std::vector<std::string>> ReadMGI(const std::string& filePath) noexc
   }
   return ret;
 }
+//Splits the given string by "," and takes the first two values with "std::stoi" into the returned PointI
 inline static PointI ParsePointI(const std::string& string) noexcept {
   return {std::stoi(SplitString(string, ',')[0]), std::stoi(SplitString(string, ',')[1])};
 }

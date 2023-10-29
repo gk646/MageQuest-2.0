@@ -200,7 +200,6 @@ struct EntityStats {
     effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
     ApplyEffects();
   }
-
  private:
   static inline void RemoveEffects() noexcept;
   static inline void ApplyEffects() noexcept;

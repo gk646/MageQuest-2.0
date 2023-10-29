@@ -70,22 +70,25 @@ static void RenderDialogue(int x, int y, const std::string* text, float count,
 }
 static void RenderPlayerThought() noexcept {
   if (!playerText) return;
+  *playerDialogueCount += 0.4F * (60.0F / GetFPS());
   float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
   float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
 
   float startX = CAMERA_X - width / 2;
   float startY = CAMERA_Y - height / 2;
 
-  if (*playerDialogueCount < playerText->size()) {
+  if (*playerDialogueCount < (float)playerText->size()) {
     if (!IsSoundPlaying(sound::speak)) {
       PlaySoundR(sound::speak);
     }
-  } else if (*playerDialogueCount > 300) {
+  }
+  if (*playerDialogueCount > 300) {
     playerText = nullptr;
+    playerDialogueCount = nullptr;
     return;
   }
 
-  auto wrappedText = Util::WrapText(playerText->substr(0, *playerDialogueCount),
+  auto wrappedText = Util::WrapText(playerText->substr(0, (int)*playerDialogueCount),
                                     width - 3, MINECRAFT_REGULAR, SCALE(17));
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);

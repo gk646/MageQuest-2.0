@@ -89,6 +89,7 @@ struct XPBar {
     if (level == 1) return 0;
     return (5 * level) * std::sqrt(level) * std::pow(1.05, level);
   }
+  //Called on a level up event
   static inline void LevelUP() noexcept {
     PLAYER_STATS.level++;
     UpdateRequirements(PLAYER_STATS.level);

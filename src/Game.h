@@ -175,8 +175,8 @@ class Game {
       ClearBackground(BLANK);
       Lighting::Shaders::StartDynamicLights();
       WorldRender::DrawBackGround();
-      Lighting::AmbientOcclusion::DrawAmbientOcclusion();
       DRAW_ENTITIES();
+      Lighting::AmbientOcclusion::DrawAmbientOcclusion();
       EndShaderMode();
       EndTextureMode();
 

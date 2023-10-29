@@ -42,6 +42,16 @@ struct NPC_MOVE final : public QuestNode {
     }
     return false;
   }
+  static NPC_MOVE* ParseQuestNode(const std::vector<std::string>& parts) noexcept {
+    auto obj = new NPC_MOVE(npcIdMap[parts[1]], parts[2]);
+    obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
+                     std::stoi(Util::SplitString(parts[3], ',')[2])};
+    for (uint_fast32_t i = 4; i < parts.size(); i++) {
+      auto vec = Util::SplitString(parts[i], ',');
+      obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));
+    }
+    return obj;
+  }
 };
 struct SPEAK final : public QuestNode {
   int stage = 0;
@@ -67,6 +77,14 @@ struct SPEAK final : public QuestNode {
     }
     return false;
   }
+  inline static SPEAK* ParseQuestNode(const std::vector<std::string>& parts) {
+    auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
+    if (parts.size() > 3) {
+      obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
+                       std::stoi(Util::SplitString(parts[3], ',')[2])};
+    }
+    return obj;
+  }
 };
 struct KILL final : public QuestNode {
   MonsterType target;
@@ -79,6 +97,10 @@ struct KILL final : public QuestNode {
       amount--;
     }
     return amount <= 0;
+  }
+  inline static KILL* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new KILL(stringToMonsterID[Util::SplitString(parts[1], ',')[0]],
+                    std::stoi(Util::SplitString(parts[1], ',')[1]), parts[2]);
   }
 };
 struct TILE_ACTION final : public QuestNode {
@@ -108,6 +130,18 @@ struct TILE_ACTION final : public QuestNode {
       }
     }
     return false;
+  }
+  inline static TILE_ACTION* ParseQuestNode(const std::vector<std::string>& parts) {
+    int layer = -1;
+    if (parts[2] == "BACK") {
+      layer = 0;
+    } else if (parts[2] == "MIDDLE") {
+      layer = 1;
+    } else if (parts[2] == "FORE") {
+      layer = 2;
+    }
+    return new TILE_ACTION(stringToZoneMap[parts[1]], layer, Util::ParsePointI(parts[3]),
+                           std::stoi(parts[4]));
   }
 };
 /**
@@ -159,6 +193,18 @@ struct SPAWN final : public QuestNode {
       return false;
     }
   }
+  inline static SPAWN* ParseQuestNode(const std::vector<std::string>& parts) {
+    SPAWN* obj;
+    if (stringToMonsterID.contains(parts[1])) {
+      obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
+    } else {
+      obj = new SPAWN(npcIdMap[parts[1]], std::stoi(parts[2]));
+    }
+    for (uint_fast32_t i = 3; i < parts.size(); i++) {
+      obj->positions.emplace_back(Util::ParsePointI(parts[i]));
+    }
+    return obj;
+  }
 };
 struct NPC_SAY final : public QuestNode {
   std::string txt;
@@ -179,6 +225,15 @@ struct NPC_SAY final : public QuestNode {
       }
     }
     return false;
+  }
+  inline static NPC_SAY* ParseQuestNode(const std::vector<std::string>& parts) {
+    auto obj = new NPC_SAY(npcIdMap[parts[1]]);
+    if (parts.size() > 2) {
+      if (parts[2] == "SKIP") {
+        obj->skipWait = true;
+      }
+    }
+    return obj;
   }
 };
 struct NPC_SAY_PROXIMITY final : public QuestNode {
@@ -216,6 +271,9 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
       }
     }
     return false;
+  }
+  inline static NPC_SAY_PROXIMITY* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new NPC_SAY_PROXIMITY(npcIdMap[parts[1]], std::stoi(parts[2]));
   }
 };
 struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
@@ -259,22 +317,23 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
     return false;
   }
   inline void SetAnswerIndex(int num) { answerIndex = num; }
+  inline static CHOICE_DIALOGUE_SIMPLE* ParseQuestNode(
+      const std::vector<std::string>& parts) {
+    return new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2], std::stoi(parts[3]));
+  }
 };
 struct SET_QUEST_SHOWN final : public QuestNode {
   Quest_ID id;
   explicit SET_QUEST_SHOWN(Quest_ID id)
       : QuestNode("", NodeType::SET_QUEST_SHOWN), id(id) {}
-  bool Progress() noexcept final {
-    PLAYER_QUESTS.SetQuestShown(id);
-    return true;
-  }
+  bool Progress() noexcept final;
 };
 struct PLAYER_THOUGHT final : public QuestNode {
   std::string thought;
   float count = 0;
   bool assigned = false;
   PLAYER_THOUGHT(std::string thought, std::string objective)
-      : QuestNode(std::move(objective), NodeType::SET_QUEST_SHOWN),
+      : QuestNode(std::move(objective), NodeType::PLAYER_THOUGHT),
         thought(std::move(thought)) {}
   bool Progress() noexcept final {
     if (!assigned) {
@@ -282,12 +341,48 @@ struct PLAYER_THOUGHT final : public QuestNode {
       TextRenderer::playerDialogueCount = &count;
       assigned = true;
     }
-    count += 0.4F;
     //TODO make quest decisions prettier / center them below player (live)
-    return count > 300;
+    return count > 100;
   }
   inline static PLAYER_THOUGHT* ParseQuestNode(const std::vector<std::string>& parts) {
     return new PLAYER_THOUGHT(parts[1], parts[2]);
   }
+};
+struct PointOptional {
+  QuestNode* node = nullptr;
+  PointT<int16_t> point;
+  bool isEssential = false;
+  bool isFinished = false;
+};
+struct OPTIONAL_POSITION final : public QuestNode {
+  std::vector<PointOptional> choices;
+  int limit;
+  explicit OPTIONAL_POSITION(const std::vector<std::string>& parts)
+      : QuestNode(parts[1], NodeType::OPTIONAL_POSITION), limit((int)parts.size() - 2) {
+    for (uint_fast32_t i = 2; i < parts.size(); i++) {
+      PointOptional opt;
+      opt.point = Util::ParsePointI(parts[i]);
+      opt.isEssential = std::stoi(Util::SplitString(parts[i], ',')[2]) == 1;
+      choices.emplace_back(opt);
+    }
+  }
+  bool Progress() noexcept final {
+    bool allFinished = true;
+    for (auto& c : choices) {
+      if (c.isEssential && !c.isFinished) {
+        allFinished = false;
+      }
+
+      if (c.isFinished || c.point.dist(PLAYER.tile_pos) > 3) continue;
+
+      c.isFinished = c.node->Progress();
+    }
+
+    return allFinished;
+  }
+};
+struct SKIP final : public QuestNode {
+  SKIP() : QuestNode("", NodeType::SKIP) {}
+  bool Progress() noexcept final { return true; }
 };
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

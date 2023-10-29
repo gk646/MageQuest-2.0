@@ -1,91 +1,96 @@
 #ifndef MAGEQUEST_SRC_QUEST_QUESTHANDLER_H_
 #define MAGEQUEST_SRC_QUEST_QUESTHANDLER_H_
 
-class Quest;
+#include "Quest.h"
 
 struct QuestHandler {
   std::vector<Quest*> quests;
   Quest* activeQuest = nullptr;
   bool updateHappened = false;
-  ~QuestHandler();
-  /**
-   * Returns nullptr if questID could not be matched
-   * @param questID
-   * @return a ptr to the quest or null
-   */
-  inline Quest* GetQuest(Quest_ID questID);
-  void InteractWithNPC(NPC* npc);
-  void MonsterKilled(MonsterType type);
-  void Update();
-  inline void SetAsActiveQuest(Quest_ID id) noexcept;
-  inline void SetQuestShown(Quest_ID id) noexcept;
-  [[nodiscard]] inline const std::string& GetObjectiveText() const noexcept;
+  ~QuestHandler() {
+    for (auto q : quests) {
+      delete q;
+    }
+  }
+  //Called each tick for misc updates
+  inline void Update() noexcept {
+    for (auto it = quests.begin(); it != quests.end();)
+      if ((*it)->state == QuestState::ACTIVE) {
+        (*it)->Update();
+        ++it;
+      } else if ((*it)->state == QuestState::COMPLETED) {
+        RemoveQuest((*it));
+        it = quests.erase(it);
+      }
+  }
+  //Returns nullptr if questID could not be matched
+  inline Quest* GetQuest(Quest_ID id) {
+    for (auto& quest : quests) {
+      if (quest->id == id) {
+        return quest;
+      }
+    }
+    return nullptr;
+  }
+  //Called when upon interaction with any npc
+  void InteractWithNPC(NPC* npc) {
+    for (auto quest : quests) {
+      if (quest->Progressable(NodeType::SPEAK)) {
+        quest->Progress(npc);
+      }
+    }
+  }
+  //Called when a monster dies
+  void MonsterKilled(MonsterType type) {
+    for (auto quest : quests) {
+      if (quest->Progressable(NodeType::KILL)) {
+        quest->Progress(type);
+      }
+    }
+  }
+  void SetAsActiveQuest(Quest_ID id) noexcept {
+    for (auto& quest : quests) {
+      if (quest->id == id && !quest->hidden) {
+        activeQuest = quest;
+        return;
+      }
+    }
+  }
+  void SetQuestShown(Quest_ID id) noexcept {
+    for (auto& quest : quests) {
+      if (quest->id == id) {
+        quest->hidden = false;
+        updateHappened = true;
+        return;
+      }
+    }
+  }
+  [[nodiscard]] const std::string& GetObjectiveText() const noexcept {
+    if (activeQuest) {
+      return activeQuest->GetActiveObjective();
+    }
+    return "";
+  }
   inline void RemoveActiveQuest() noexcept { activeQuest = nullptr; }
   [[nodiscard]] inline bool HasActiveQuest() const noexcept {
     return activeQuest != nullptr;
   }
   inline void AddQuest(Quest* q) noexcept { quests.push_back(q); }
+
+ private:
+  inline void RemoveQuest(Quest* q) noexcept {
+    if (activeQuest == q) {
+      activeQuest = nullptr;
+    }
+    delete q;
+  }
 };
 
 inline static QuestHandler PLAYER_QUESTS;
 
-#include "Quest.h"
+bool SET_QUEST_SHOWN::Progress() noexcept {
+  PLAYER_QUESTS.SetQuestShown(id);
+  return true;
+}
 
-QuestHandler::~QuestHandler() {
-  for (auto q : quests) {
-    delete q;
-  }
-}
-Quest* QuestHandler::GetQuest(Quest_ID id) {
-  for (auto& quest : quests) {
-    if (quest->id == id) {
-      return quest;
-    }
-  }
-  return nullptr;
-}
-void QuestHandler::InteractWithNPC(NPC* npc) {
-  for (auto quest : quests) {
-    if (quest->Progressable(NodeType::SPEAK)) {
-      quest->Progress(npc);
-    }
-  }
-}
-void QuestHandler::MonsterKilled(MonsterType type) {
-  for (auto quest : quests) {
-    if (quest->Progressable(NodeType::KILL)) {
-      quest->Progress(type);
-    }
-  }
-}
-void QuestHandler::Update() {
-  for (auto quest : quests) {
-    if (quest->state == QuestState::ACTIVE) {
-      quest->Update();
-    }
-  }
-}
-void QuestHandler::SetAsActiveQuest(Quest_ID id) noexcept {
-  for (auto& quest : quests) {
-    if (quest->id == id && !quest->hidden) {
-      activeQuest = quest;
-      return;
-    }
-  }
-}
-void QuestHandler::SetQuestShown(Quest_ID id) noexcept {
-  for (auto& quest : quests) {
-    if (quest->id == id) {
-      quest->hidden = false;
-      updateHappened = true;
-      return;
-    }
-  }
-}
-const std::string& QuestHandler::GetObjectiveText() const noexcept {
-  if (activeQuest) {
-    return activeQuest->GetActiveObjective();
-  }
-  return "";
-}
 #endif  //MAGEQUEST_SRC_QUEST_QUESTHANDLER_H_
