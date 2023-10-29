@@ -1,14 +1,7 @@
-JavaFX 
- The next generation client application framework for desktop mobile and embedded systems. 
-
-OpenJDK
- The open source implementation of the Java Platform Standard Edition (Java SE). 
-
 Map Editor 
  Tiled - Copyright © 2008-2021 Thorbjørn Lindeijer 
 
-DATABASE 
- SQLite JDBC driver 3.4 - developed by Xerial 
+SQLITE 
  SQLite database - developed by D. Richard Hipp 
 
 FastNoise

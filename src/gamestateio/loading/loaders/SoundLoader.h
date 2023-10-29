@@ -3,7 +3,6 @@
 struct SoundLoader {
 
   static void Load() {
-
     sound::interactable::basicChest =
         LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
     sound::interactable::normalChest =
@@ -51,12 +50,16 @@ struct SoundLoader {
 
     //UI SOUNDS
     sound::intro = LoadSound((ASSET_PATH + "sound/music/intro.wav").c_str());
-
     sound::buy = LoadSound((ASSET_PATH + "sound/effects/inventory/buy.wav").c_str());
-    sound::closeBags =        LoadSound((ASSET_PATH + "sound/effects/inventory/closeBags.wav").c_str());
-    sound::openBags =        LoadSound((ASSET_PATH + "sound/effects/inventory/openBags.wav").c_str());
-    sound::openInventory =        LoadSound((ASSET_PATH + "sound/effects/inventory/openInventory.wav").c_str());
-    sound::closeInventory =        LoadSound((ASSET_PATH + "sound/effects/inventory/closeInventory.wav").c_str());
+    sound::equip = LoadSound((ASSET_PATH + "sound/effects/inventory/equip.wav").c_str());
+    sound::closeBags =
+        LoadSound((ASSET_PATH + "sound/effects/inventory/closeBags.wav").c_str());
+    sound::openBags =
+        LoadSound((ASSET_PATH + "sound/effects/inventory/openBags.wav").c_str());
+    sound::openInventory =
+        LoadSound((ASSET_PATH + "sound/effects/inventory/openInventory.wav").c_str());
+    sound::closeInventory =
+        LoadSound((ASSET_PATH + "sound/effects/inventory/closeInventory.wav").c_str());
     sound::equip = LoadSound((ASSET_PATH + "sound/effects/inventory/equip.wav").c_str());
     sound::pickup_gold =
         LoadSound((ASSET_PATH + "sound/effects/inventory/pickupGold.wav").c_str());
@@ -81,6 +84,7 @@ struct SoundLoader {
     sound::EMPTY_SOUND = LoadSound((ASSET_PATH + "sound/effects/empty.wav").c_str());
     SetVolumes();
   }
+
   static void SetVolumes() noexcept {
     SetSoundVolume(sound::menu_back, 1);
 
@@ -90,8 +94,8 @@ struct SoundLoader {
     SetSoundVolume(sound::openBags, 0.8F);
     SetSoundVolume(sound::closeBags, 0.8F);
 
-    SetSoundVolume(sound::openInventory, 0.4F);
-    //SetSoundVolume(sound::closeInventory, 0.8F);
+    SetSoundVolume(sound::openInventory, 0.3F);
+    SetSoundVolume(sound::closeInventory, 0.3F);
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

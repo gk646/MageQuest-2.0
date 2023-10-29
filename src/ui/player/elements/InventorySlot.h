@@ -4,6 +4,7 @@ class InventorySlot;
 inline static InventorySlot* DRAGGED_SLOT;
 inline static InventorySlot* PLAYER_EQUIPPED;
 inline static InventorySlot* PLAYER_BAG;
+//A wrapper
 struct InventorySlot {
   RectangleR hitBox = {0};
   Item* item = nullptr;
@@ -130,6 +131,7 @@ struct InventorySlot {
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                  slotType == DRAGGED_ITEM->type) {
         item = DRAGGED_ITEM;
+        PlaySoundR(sound::equip);
         PLAYER_STATS.EquipItem(item->effects);
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
@@ -138,6 +140,7 @@ struct InventorySlot {
         if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
           PLAYER_STATS.UnEquipItem(item->effects);
         }
+        PlaySoundR(sound::equip);
         PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
         DRAGGED_SLOT->item = item;
         item = DRAGGED_ITEM;
