@@ -30,8 +30,9 @@ struct TexturedButton {
         alpha(alpha),
         toolTip(std::move(toolTip)),
         onPressedFunc(func) {}
-  bool Draw(float x, float y, TextAlign align = TextAlign::MIDDLE) noexcept {
-    Update(x, y);
+  bool Draw(float x, float y, Alignment textAlign = Alignment::MIDDLE,
+            Alignment buttonAlign = Alignment::MIDDLE) noexcept {
+    Update(x, y, buttonAlign);
     if (isHovered) {
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         DrawTextureScaled(pressed, bounds, 0, false, 0, {255, 255, 255, 255});
@@ -42,7 +43,7 @@ struct TexturedButton {
     } else {
       DrawTextureScaled(normal, bounds, 0, false, 0, {255, 255, 255, alpha});
     }
-    DrawButtonText(align);
+    DrawButtonText(textAlign);
     return PlayConfirmSound();
   }
   [[nodiscard]] inline bool IsHovered() const noexcept { return isHovered; }
@@ -51,9 +52,9 @@ struct TexturedButton {
   }
 
  private:
-  inline void DrawButtonText(TextAlign align) noexcept {
+  inline void DrawButtonText(Alignment align) noexcept {
     switch (align) {
-      case TextAlign::LEFT: {
+      case Alignment::LEFT: {
         auto bound = MeasureTextEx(MINECRAFT_BOLD, txt.c_str(), fontSize, 0.5);
         DrawTextExR(MINECRAFT_BOLD, txt.c_str(),
                     {fontSize + bounds.x, bounds.y + bounds.height / 2 - bound.y / 2},
@@ -61,15 +62,16 @@ struct TexturedButton {
       }
 
       break;
-      case TextAlign::RIGHT:
-        Util::        DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
-                             bounds.x + bounds.width - fontSize,
-                             bounds.y + bounds.height / 3.4F, GetTextColor());
+      case Alignment::RIGHT:
+        Util::DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
+                                   bounds.x + bounds.width - fontSize,
+                                   bounds.y + bounds.height / 3.4F, GetTextColor());
 
         break;
-      case TextAlign::MIDDLE:
-        Util::        DrawCenteredText(VARNISHED, fontSize, txt.c_str(), bounds.x + bounds.width / 2.0F,
-                         bounds.y + bounds.height / 3.4F, GetTextColor());
+      case Alignment::MIDDLE:
+        Util::DrawCenteredText(VARNISHED, fontSize, txt.c_str(),
+                               bounds.x + bounds.width / 2.0F,
+                               bounds.y + bounds.height / 3.4F, GetTextColor());
         break;
     }
   }
@@ -79,12 +81,14 @@ struct TexturedButton {
     }
     return Colors::darkBackground;
   }
-  inline void Update(float x, float y) noexcept {
+  inline void Update(float x, float y, Alignment buttonAlign) noexcept {
     bounds.x = x;
     bounds.y = y;
-    bounds.width = SCALE(base_width);
-    bounds.height = SCALE(base_height);
-    bounds.x -= bounds.width / 2;
+    //bounds.width = SCALE(base_width);
+    //bounds.height = SCALE(base_height);
+    if (buttonAlign == Alignment::MIDDLE) {
+      bounds.x -= bounds.width / 2;
+    }
 
     isHovered = CheckCollisionPointRec(MOUSE_POS, bounds);
   }
@@ -99,7 +103,7 @@ struct TexturedButton {
       if (onPressedFunc) {
         onPressedFunc();
       }
-      //PlaySoundR(sound::menu_switch);
+      PlaySoundR(sound::menu_switch);
       return true;
     }
     return false;

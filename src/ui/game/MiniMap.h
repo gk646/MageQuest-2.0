@@ -117,7 +117,7 @@ struct MiniMap {
                           Colors::blue_npc);
       }
     }
-    PointI questWaypoint;
+    PointT<int16_t> questWaypoint;
     if (PLAYER_QUESTS.activeQuest &&
         (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
       DrawSquareProFast(draw_x + (questWaypoint.x - tile_x) * ZOOM,

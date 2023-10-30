@@ -16,7 +16,7 @@ struct Button {
     } else {
       DrawNormalButton(bounds);
     }
-    DrawButtonText(bounds, buttonText, TextAlign::MIDDLE);
+    DrawButtonText(bounds, buttonText, Alignment::MIDDLE);
     return ret;
   }
 
@@ -34,10 +34,10 @@ struct Button {
     DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
   }
   inline static void DrawButtonText(const RectangleR& bounds, const std::string& txt,
-                                    TextAlign align) noexcept {
+                                    Alignment align) noexcept {
     float fontSize = 14;
     switch (align) {
-      case TextAlign::LEFT: {
+      case Alignment::LEFT: {
         auto bound = MeasureTextEx(MINECRAFT_BOLD, txt.c_str(), fontSize, 0.5);
         DrawTextExR(MINECRAFT_BOLD, txt.c_str(),
                     {fontSize + bounds.x, bounds.y + bounds.height / 2 - bound.y / 2},
@@ -45,13 +45,13 @@ struct Button {
       }
 
       break;
-      case TextAlign::RIGHT:
+      case Alignment::RIGHT:
         Util::DrawRightAlignedText(ANT_PARTY, fontSize, txt.c_str(),
                                    bounds.x + bounds.width - fontSize,
                                    bounds.y + bounds.height / 3.4F, GetTextColor());
 
         break;
-      case TextAlign::MIDDLE:
+      case Alignment::MIDDLE:
         Util::DrawCenteredText(MINECRAFT_BOLD, fontSize, txt.c_str(),
                                bounds.x + bounds.width / 2.0F,
                                bounds.y + bounds.height / 3.4F, GetTextColor());

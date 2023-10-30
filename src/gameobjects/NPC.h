@@ -58,7 +58,7 @@ struct NPC : public Entity {
         float offSet = 0;
         for (auto& b : *choices) {
           b.Draw(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y + size.x * 1.2F + offSet,
-                 TextAlign::LEFT);
+                 Alignment::LEFT);
           offSet += 21;
         }
       }

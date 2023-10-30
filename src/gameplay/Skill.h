@@ -11,7 +11,7 @@ struct Skill {
   SkillStats skillStats;
   DamageStats damageStats;
   const Texture& icon;
-  int16_t coolDownUpCounter;
+  uint32_t coolDownUpCounter;
   uint8_t attackAnimation = 0;
   bool from_player;
   Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,

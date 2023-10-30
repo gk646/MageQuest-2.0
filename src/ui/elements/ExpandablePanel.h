@@ -1,6 +1,6 @@
-#ifndef MAGEQUEST_SRC_UI_ELEMENTS_PANEL_H_
-#define MAGEQUEST_SRC_UI_ELEMENTS_PANEL_H_
-struct Panel {
+#ifndef MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEPANEL_H_
+#define MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEPANEL_H_
+struct ExpandablePanel {
   RectangleR button;
   RectangleR body;
   const Font& font;
@@ -10,7 +10,7 @@ struct Panel {
   float baseHeaderHeight;
   bool expanded = false;
   bool isHovered = false;
-  Panel(float width, float height, float headerHeight, const Font& font, char* headerText)
+  ExpandablePanel(float width, float height, float headerHeight, const Font& font, char* headerText)
       : button(0, 0, 16, 16),
         body(0, 0, width, height),
         baseHeight(height),
@@ -58,4 +58,4 @@ struct Panel {
     button.height = SCALE(baseHeaderHeight);
   }
 };
-#endif  //MAGEQUEST_SRC_UI_ELEMENTS_PANEL_H_
+#endif  //MAGEQUEST_SRC_UI_ELEMENTS_EXPANDABLEPANEL_H_

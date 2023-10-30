@@ -28,7 +28,6 @@ struct CharacterBag final : public Window {
       bagPanel.slide.Reset();
     }
     WINDOW_LOGIC();
-    DRAG_WINDOW()
     DrawWindow();
     for (uint_fast32_t i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {
       PLAYER_BAG[i].Draw(wholeWindow.x, wholeWindow.y);

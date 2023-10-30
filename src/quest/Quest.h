@@ -4,20 +4,25 @@
 #include "elements/Nodes.h"
 #include "elements/QuestReward.h"
 
+struct QuestText {
+  std::string text;
+  int16_t enumVal;
+  TextSource source;
+};
+
 struct Quest final {
   //TODO add message tracking
   std::string name;
-  std::vector<std::string> pastObjectives;
-  std::vector<std::string> pastDialogue;
-  std::vector<QuestNode*> objectives;
   std::string description;
+  std::vector<QuestText> pastDialogue;
+  std::vector<QuestNode*> objectives;
   QuestReward* reward = nullptr;
-  int stage = 0;
+  int16_t stage = 0;
   Quest_ID id;
   QuestState state = QuestState::ACTIVE;
   bool hidden = false;
   uint8_t questLevel = 0;
-  Zone questZone;
+  Zone questZone = Zone::TestRoom;
   explicit Quest(Quest_ID id, bool hidden) : id(id), hidden(hidden) {}
   ~Quest() {
     for (auto obj : objectives) {
@@ -46,7 +51,7 @@ struct Quest final {
   [[nodiscard]] inline const std::string& GetActiveObjective() const noexcept {
     return objectives[stage]->objectiveText;
   }
-  [[nodiscard]] inline PointI GetActiveWaypoint() const noexcept {
+  [[nodiscard]] inline PointT<int16_t> GetActiveWaypoint() const noexcept {
     return objectives[stage]->wayPoint;
   }
 
@@ -55,17 +60,28 @@ struct Quest final {
     PlaySoundR(sound::completeQuest);
     state = QuestState::COMPLETED;
     stage--;
+    if (reward) {
+      //TODO reward
+    }
+  }
+  void SaveProgress() noexcept {
+    //TODO save quest state
   }
   inline void FinishStage(const QuestNode* obj) noexcept {
     if (obj->isMajorObjective) {
       PlaySoundR(sound::majorObjective);
     }
     stage++;
+    SaveProgress();
     if (stage == objectives.size()) {
       CompleteQuest();
     }
   }
 };
+void QuestNode::TrackText(const std::string& s, TextSource source, int16_t enumVal) const noexcept {
+  quest->pastDialogue.emplace_back(s,  enumVal,source);
+}
+
 #include "QuestStorage.h"
 #include "ScriptParser.h"
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

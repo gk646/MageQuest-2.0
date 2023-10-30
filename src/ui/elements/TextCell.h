@@ -17,7 +17,7 @@ struct TextCell {
         baseWidth((uint16_t)width),
         baseHeight((uint16_t)height) {}
   inline void DrawStatCell(float x, float y, const char* txt, float rightVal,
-                           TextAlign align = TextAlign::RIGHT,
+                           Alignment align = Alignment::RIGHT,
                            const Color& rightColor = Colors::darkBackground,
                            const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
@@ -30,11 +30,11 @@ struct TextCell {
     }
 
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f", rightVal);
-    if (align == TextAlign::LEFT) {
+    if (align == Alignment::LEFT) {
       DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER,
                   {x + MeasureTextEx(MINECRAFT_BOLD, TEXT_BUFFER, 15, 0.5F).x + 5, y},
                   SCALE(fontSize), 0.5F, rightColor);
-    } else if (align == TextAlign::RIGHT) {
+    } else if (align == Alignment::RIGHT) {
       Util::DrawRightAlignedText(MINECRAFT_BOLD, SCALE(fontSize), TEXT_BUFFER,
                                  x + bounds.width, y, rightColor);
     }
