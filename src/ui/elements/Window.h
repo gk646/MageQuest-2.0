@@ -4,7 +4,7 @@
 #include "ToolTip.h"
 #include "TextCell.h"
 #include "Button.h"
-#include "Panel.h"
+#include "ExpandablePanel.h"
 #include "TexturedButton.h"
 #include "UIHitbox.h"
 
@@ -47,20 +47,6 @@ struct Window {
     return;                                                         \
   }                                                                 \
                                                                     \
-  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
-    auto mouse_pos = MOUSE_POS;                                     \
-    auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
-    auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
-    wholeWindow.x += delta_x;                                       \
-    wholeWindow.y += delta_y;                                       \
-    header_bar.x += delta_x;                                        \
-    header_bar.y += delta_y;                                        \
-    lastMousePos = mouse_pos;                                       \
-  } else {                                                          \
-    isDragged = false;                                              \
-  }
-
-#define DRAG_WINDOW()                                               \
   if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
     auto mouse_pos = MOUSE_POS;                                     \
     auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \

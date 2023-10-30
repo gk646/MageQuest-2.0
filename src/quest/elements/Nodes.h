@@ -1,9 +1,11 @@
 #ifndef MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
 #define MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
+struct Quest;
 
 struct QuestNode {
   std::string objectiveText;
-  PointI wayPoint;
+  PointT<int16_t> wayPoint;
+  Quest* quest = nullptr;
   NodeType type;
   bool isMajorObjective = false;
   QuestNode(std::string objective_text, NodeType type, const PointI& wayPoint = {0, 0})
@@ -12,6 +14,9 @@ struct QuestNode {
     return event_type == type || event_type == NodeType::MIX;
   };
   virtual bool Progress() noexcept { return false; };
+  //Adds an entry to the quests past dialogues with the corresponding source
+  inline void TrackText(const std::string& s, TextSource source,
+                        int16_t enumVal) const noexcept;
 };
 struct GOTO final : public QuestNode {
   PointI target;
@@ -63,6 +68,7 @@ struct SPEAK final : public QuestNode {
     if (npc->id == target) {
       if (stage < lines.size()) {
         npc->update_dialogue(&lines[stage]);
+        TrackText(lines[stage], TextSource::NPC, (int)target);
         if (stage == 0) {
           npc->last = false;
         } else if (stage == lines.size() - 1) {
@@ -206,6 +212,31 @@ struct SPAWN final : public QuestNode {
     return obj;
   }
 };
+/**
+
+    @brief NPC_SAY Command Documentation
+
+    Use NPC_SAY to make a specific NPC say a dialogue text.
+    Syntax:
+    @code
+
+    NPC_SAY:TARGET_ID[:SKIP]
+
+@endcode
+
+    TARGET_ID: The ID of the NPC that will speak.
+
+    SKIP (optional): Skips waiting for the dialogue to finish.
+
+Example:
+@code
+NPC_SAY:GUARD
+
+NPC_SAY:SHOPKEEPER:SKIP
+
+@endcode
+@note No spaces in the command.
+*/
 struct NPC_SAY final : public QuestNode {
   std::string txt;
   NPC_ID target;
@@ -217,6 +248,7 @@ struct NPC_SAY final : public QuestNode {
       if (npc->id == target) {
         if (!startedTalking) {
           npc->update_dialogue(&txt);
+          TrackText(txt, TextSource::NPC, (int)target);
           startedTalking = true;
         } else if (npc->dialogueProgressCount == 1000 || skipWait) {
           return true;

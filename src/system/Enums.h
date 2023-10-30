@@ -61,7 +61,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK, ON_HIT_EFFECT };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
-enum class TextAlign : uint8_t { LEFT, RIGHT, MIDDLE };
+enum class Alignment : uint8_t { LEFT, RIGHT, MIDDLE };
 
 enum class ShadowType : uint16_t {
   TREE_GREEN_BUSH = 886,
@@ -241,6 +241,7 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"CHOICE_DIALOGUE_SIMPLE", NodeType::CHOICE_DIALOGUE_SIMPLE}};
 
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
+enum class TextSource : uint8_t { NPC, MONSTER, PLAYER };
 enum class Quest_ID : uint8_t { TUTORIAL, MARLA, START_SOMETHING_NEW, END };
 
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {

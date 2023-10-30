@@ -6,6 +6,8 @@ inline void RestUIPosition();
 }
 
 #include "elements/SlideComponent.h"
+#include "elements/Content.h"
+#include "elements/ScrollPane.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"

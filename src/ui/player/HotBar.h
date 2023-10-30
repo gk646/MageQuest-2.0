@@ -71,7 +71,6 @@ struct HotBar {
       currentX -= 32;
     }
   }
-
   void Update() noexcept {
     xp_bar.update();
     for (const auto& mb : menuButtons) {

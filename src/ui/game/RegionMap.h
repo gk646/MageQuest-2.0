@@ -78,7 +78,7 @@ struct RegionMap final : public Window {
       }
     }
 
-    PointI questWaypoint;
+    PointT<int16_t>  questWaypoint;
     if (PLAYER_QUESTS.activeQuest &&
         (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
       DrawSquareProFast(base_x + questWaypoint.x * zoom, base_y + questWaypoint.y * zoom,

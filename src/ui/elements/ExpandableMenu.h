@@ -7,9 +7,7 @@ struct QuestBox {
   bool clicked;
 };
 
-struct ExpandableQuestMenu {
-  inline static char TRACK[] = "Track";
-  inline static char UNTRACK[] = "Untrack";
+struct ExpandableQuestMenu final : public Content {
   static inline float ELEMENT_HEIGHT = 50;
   static constexpr inline float INFO_BOX_OFFSET = 50;
   static constexpr inline float INFO_BOX_HEIGHT = 150;
@@ -20,27 +18,36 @@ struct ExpandableQuestMenu {
   ExpandableQuestMenu(float width, float height) : bounds(0, 0, width, height) {
     INFO_BOX_WIDTH = bounds.width - INFO_BOX_OFFSET;
   }
-  void Draw(float x, float y) noexcept {
-    Update(x, y);
-    y += 25;
-    x += bounds.width / 2;
+  void Draw(RectangleR cBounds) noexcept final {
+    Update(cBounds.x, cBounds.y);
+    cBounds.y += 25;
     for (auto& box : items) {
+      box.button.bounds.width = cBounds.width;
       if (box.clicked) {
-        DrawInfoPanel(x, y, box.quest);
+        DrawInfoPanel(cBounds.x, cBounds.y, box.quest);
       }
-      if (box.button.Draw(x, y, TextAlign::LEFT)) {
+      if (box.button.Draw(cBounds.x, cBounds.y, Alignment::LEFT, Alignment::LEFT)) {
         box.clicked = !box.clicked;
       }
-      Util::DrawRightAlignedText(MINECRAFT_BOLD, 17,
-                                 std::to_string(box.quest.questLevel).c_str(),
-                                 x + box.button.bounds.width * 0.3F, y + 16,
-                                 GetLevelRangeColor(box.quest.questLevel));
-      y += ELEMENT_HEIGHT + 1;
+      Util::DrawRightAlignedText(
+          MINECRAFT_BOLD, 17, std::to_string(box.quest.questLevel).c_str(),
+          cBounds.x + box.button.bounds.width * 0.8F, cBounds.y + 16,
+          GetLevelRangeColor(box.quest.questLevel));
+      cBounds.y += ELEMENT_HEIGHT + 1;
       if (box.clicked) {
-        y += INFO_BOX_HEIGHT + 1;
+        cBounds.y += INFO_BOX_HEIGHT + 1;
       }
     }
   }
+  void Update() noexcept final { UpdateQuestBinding(); }
+  int GetWidth() const noexcept final { return 5; }
+  int GetHeight() const noexcept final {
+    if (items.size() > 0) {
+      return items[0].clicked ? 1000 : 0;
+    }
+    return 0;
+  }
+  //Keeps the tabs up to date with the state of the PLAYER_QUESTS quest handler
   void UpdateQuestBinding() noexcept {
     if (prevSize != PLAYER_QUESTS.quests.size() || PLAYER_QUESTS.updateHappened) {
       items.clear();
@@ -72,8 +79,8 @@ struct ExpandableQuestMenu {
   }
   inline void DrawInfoPanel(float x, float y, const Quest& quest) const noexcept {
     //normalize values to Left Top corner of info box
-    x -= (bounds.width / 2 - INFO_BOX_OFFSET / 2);
     y += +ELEMENT_HEIGHT - 5;
+    x += INFO_BOX_OFFSET / 2;
     DrawRectangleRounded({x, y, bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT}, 0.1,
                          ROUND_SEGMENTS, Colors::mediumLightGrey);
 
