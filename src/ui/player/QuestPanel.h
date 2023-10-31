@@ -6,7 +6,6 @@
 struct QuestSidePanel final : public ExpandablePanel {
   static inline char HEADER[] = "Objectives";
   QuestSidePanel() : ExpandablePanel(270, 150, 16, MINECRAFT_BOLD, HEADER) {}
-
   void DrawContent() noexcept final {
     if (PLAYER_QUESTS.HasActiveQuest()) {
       Util::DrawOutlineText(MINECRAFT_BOLD, SCALE(16),
@@ -29,7 +28,7 @@ struct QuestPanel final : public Window {
   ScrollPane questMenu{
       {(SCREEN_WIDTH - WIDTH) / 2, (SCREEN_HEIGHT - HEIGHT) / 2, WIDTH / 2, HEIGHT - 23},
       new ExpandableQuestMenu(WIDTH / 2, HEIGHT)};
-  static inline char HEADER[] = "Quest";
+  static inline char HEADER[] = "Journal";
   inline constexpr static float WIDTH = 750;
   inline constexpr static float HEIGHT = 550;
 
@@ -40,7 +39,7 @@ struct QuestPanel final : public Window {
     side_panel.Draw(SCREEN_WIDTH - side_panel.body.width, SCALE(300));
     WINDOW_LOGIC()
     DrawWindow();
-    questMenu.Draw(wholeWindow.x-3, wholeWindow.y + 20);
+    questMenu.Draw(wholeWindow.x, wholeWindow.y + 25);
   }
   void Update() {
     PLAYER_QUESTS.Update();
