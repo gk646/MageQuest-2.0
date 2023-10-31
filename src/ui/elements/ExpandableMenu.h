@@ -14,9 +14,11 @@ struct ExpandableQuestMenu final : public Content {
   static inline float INFO_BOX_WIDTH;
   float lowerLimit = 0, upperLimit = 0;
   std::vector<QuestBox> items;
+  QuestSidePanel* panel;
   RectangleR bounds;
   uint32_t prevSize = 0;
-  ExpandableQuestMenu(float width, float height) : bounds(0, 0, width, height) {
+  ExpandableQuestMenu(float width, float height, QuestSidePanel* panel)
+      : bounds(0, 0, width, height), panel(panel) {
     INFO_BOX_WIDTH = bounds.width - INFO_BOX_OFFSET;
   }
   void Draw(RectangleR cBounds, float scrollOffset) noexcept final {
@@ -65,11 +67,12 @@ struct ExpandableQuestMenu final : public Content {
       items.clear();
       for (const auto q : PLAYER_QUESTS.quests) {
         if (q->hidden) continue;
-        items.emplace_back(TexturedButton{bounds.width, ELEMENT_HEIGHT, q->name, 15,
-                                          textures::ui::questpanel::questBox,
-                                          textures::ui::questpanel::questBoxHovered,
-                                          textures::ui::questpanel::questBoxPressed},
-                           *q);
+        items.emplace_back(
+            TexturedButton{bounds.width, ELEMENT_HEIGHT, q->name, 15,
+                           textures::ui::questpanel::questBox,
+                           textures::ui::questpanel::questBoxHovered,
+                           textures::ui::questpanel::questBoxPressed, 255, "Expand Quest"},
+            *q);
       }
       PLAYER_QUESTS.updateHappened = false;
       prevSize = PLAYER_QUESTS.quests.size();
@@ -115,11 +118,13 @@ struct ExpandableQuestMenu final : public Content {
       if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Untrack", "")) {
         PLAYER_QUESTS.RemoveActiveQuest();
+
       }
     } else {
       if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Track", "")) {
         PLAYER_QUESTS.SetAsActiveQuest(quest.id);
+        panel->expanded = true;
       }
     }
   }

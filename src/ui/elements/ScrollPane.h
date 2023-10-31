@@ -37,11 +37,16 @@ struct ScrollPane {
       UpdateScrollSlider();
     }
 
-    if (CheckCollisionPointRec(MOUSE_POS, {bounds.x + bounds.width - SCROLL_BUTTON_WIDTH,
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) &&
+        CheckCollisionPointRec(MOUSE_POS, {bounds.x + bounds.width - SCROLL_BUTTON_WIDTH,
                                            scrollBounds.y + bounds.y, scrollBounds.width,
-                                           scrollBounds.height}) &&
-        IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+                                           scrollBounds.height})) {
       isDragged = true;
+    }
+    if (isDragged) {
+      if (!CheckCollisionPointRec(MOUSE_POS, {bounds})) {
+        isDragged = false;
+      }
     }
 
     if (!isScrollShown) {

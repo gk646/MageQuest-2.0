@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_QUESTPANEL_H_
 #define MAGEQUEST_SRC_UI_PLAYER_QUESTPANEL_H_
 
-#include "../elements/ExpandableMenu.h"
+
 
 struct QuestSidePanel final : public ExpandablePanel {
   static inline char HEADER[] = "Objectives";
@@ -23,11 +23,13 @@ struct QuestSidePanel final : public ExpandablePanel {
   }
 };
 
+#include "../elements/ExpandableMenu.h"
+
 struct QuestPanel final : public Window {
-  QuestSidePanel side_panel;
+  QuestSidePanel sidePanel;
   ScrollPane questMenu{
       {(SCREEN_WIDTH - WIDTH) / 2, (SCREEN_HEIGHT - HEIGHT) / 2, WIDTH / 2, HEIGHT - 23},
-      new ExpandableQuestMenu(WIDTH / 2, HEIGHT)};
+      new ExpandableQuestMenu(WIDTH / 2, HEIGHT,&sidePanel)};
   static inline char HEADER[] = "Journal";
   inline constexpr static float WIDTH = 750;
   inline constexpr static float HEIGHT = 550;
@@ -36,14 +38,14 @@ struct QuestPanel final : public Window {
       : Window(SCREEN_WIDTH / 2 - WIDTH / 2, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20,
                HEADER, KEY_J, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
   void Draw() {
-    side_panel.Draw(SCREEN_WIDTH - side_panel.body.width, SCALE(300));
+    sidePanel.Draw(SCREEN_WIDTH - sidePanel.body.width, SCALE(300));
     WINDOW_LOGIC()
     DrawWindow();
     questMenu.Draw(wholeWindow.x, wholeWindow.y + 25);
   }
   void Update() {
     PLAYER_QUESTS.Update();
-    side_panel.Update();
+    sidePanel.Update();
     WINDOW_UPDATE();
     questMenu.Update();
   }
