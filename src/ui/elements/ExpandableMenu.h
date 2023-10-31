@@ -12,40 +12,52 @@ struct ExpandableQuestMenu final : public Content {
   static constexpr inline float INFO_BOX_OFFSET = 50;
   static constexpr inline float INFO_BOX_HEIGHT = 150;
   static inline float INFO_BOX_WIDTH;
+  float lowerLimit = 0, upperLimit = 0;
   std::vector<QuestBox> items;
   RectangleR bounds;
   uint32_t prevSize = 0;
   ExpandableQuestMenu(float width, float height) : bounds(0, 0, width, height) {
     INFO_BOX_WIDTH = bounds.width - INFO_BOX_OFFSET;
   }
-  void Draw(RectangleR cBounds) noexcept final {
-    Update(cBounds.x, cBounds.y);
-    cBounds.y += 25;
+  void Draw(RectangleR cBounds, float scrollOffset) noexcept final {
+    UpdateImpl(cBounds.x, cBounds.y);
+    UpdateLimits(cBounds, scrollOffset);
+    //BeginTextureMode(FIRST_LAYER_BUFFER);
+    //ClearBackground(BLANK);
+    //DrawRectangleRounded({cBounds.x, cBounds.y, bounds.width, GetHeight()}, 0.1F, 30,                         RED);
     for (auto& box : items) {
       box.button.bounds.width = cBounds.width;
-      if (box.clicked) {
-        DrawInfoPanel(cBounds.x, cBounds.y, box.quest);
+      if (box.clicked &&
+          isInBounds(cBounds.y + (ELEMENT_HEIGHT - 5), INFO_BOX_HEIGHT - 5)) {
+        DrawInfoPanel(cBounds.x, cBounds.y + ELEMENT_HEIGHT - 5, box.quest);
       }
-      if (box.button.Draw(cBounds.x, cBounds.y, Alignment::LEFT, Alignment::LEFT)) {
+      if (isInBounds(cBounds.y, ELEMENT_HEIGHT) &&
+          box.button.Draw(cBounds.x, cBounds.y, Alignment::LEFT, Alignment::LEFT)) {
         box.clicked = !box.clicked;
       }
-      Util::DrawRightAlignedText(
-          MINECRAFT_BOLD, 17, std::to_string(box.quest.questLevel).c_str(),
-          cBounds.x + box.button.bounds.width * 0.8F, cBounds.y + 16,
-          GetLevelRangeColor(box.quest.questLevel));
+      if (isInBounds(cBounds.y, ELEMENT_HEIGHT)) {
+        Util::DrawRightAlignedText(
+            MINECRAFT_BOLD, 17, std::to_string(box.quest.questLevel).c_str(),
+            cBounds.x + box.button.bounds.width * 0.8F, cBounds.y + 16,
+            GetLevelRangeColor(box.quest.questLevel));
+      }
       cBounds.y += ELEMENT_HEIGHT + 1;
       if (box.clicked) {
         cBounds.y += INFO_BOX_HEIGHT + 1;
       }
     }
+    //EndTextureMode();
+    //DrawTextureFlipped(FIRST_LAYER_BUFFER.texture, 0, 0, true);
   }
   void Update() noexcept final { UpdateQuestBinding(); }
-  int GetWidth() const noexcept final { return 5; }
-  int GetHeight() const noexcept final {
-    if (items.size() > 0) {
-      return items[0].clicked ? 1000 : 0;
+  [[nodiscard]] float GetWidth() const noexcept final { return 5; }
+  [[nodiscard]] float GetHeight() const noexcept final {
+    float height = 0;
+    for (const auto& box : items) {
+      height += ELEMENT_HEIGHT + 1;
+      if (box.clicked) height += INFO_BOX_HEIGHT + 1;
     }
-    return 0;
+    return height;
   }
   //Keeps the tabs up to date with the state of the PLAYER_QUESTS quest handler
   void UpdateQuestBinding() noexcept {
@@ -65,7 +77,18 @@ struct ExpandableQuestMenu final : public Content {
   }
 
  private:
-  inline void Update(float x, float y) noexcept {
+  //Method to update limits
+  inline void UpdateLimits(RectangleR& cBounds, float offSet) noexcept {
+    lowerLimit = cBounds.y;
+    upperLimit = cBounds.y + cBounds.height;
+    cBounds.y -= offSet;
+    cBounds.y += 5;
+  }
+  //Returns true if within the content bounds
+  [[nodiscard]] inline bool isInBounds(float y, float height) const noexcept {
+    return y >= lowerLimit - 150 && y + height <= upperLimit;
+  }
+  inline void UpdateImpl(float x, float y) noexcept {
     bounds.x = x;
     bounds.y = y;
   }
@@ -79,7 +102,6 @@ struct ExpandableQuestMenu final : public Content {
   }
   inline void DrawInfoPanel(float x, float y, const Quest& quest) const noexcept {
     //normalize values to Left Top corner of info box
-    y += +ELEMENT_HEIGHT - 5;
     x += INFO_BOX_OFFSET / 2;
     DrawRectangleRounded({x, y, bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT}, 0.1,
                          ROUND_SEGMENTS, Colors::mediumLightGrey);

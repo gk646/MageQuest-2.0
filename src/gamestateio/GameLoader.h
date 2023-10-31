@@ -62,7 +62,9 @@ struct GameLoader {
 #else
     WorldManager::LoadMap(Zone::Oasis, {4, 96});
 #endif
-    PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
+    for (uint_fast32_t i = 0; i < 10; i++) {
+      PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
+    }
     UI_MANAGER.playerUI.playerHotbar.skills[0] = SKILLS[ARCANE_BOLT];
     UI_MANAGER.playerUI.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
     UI_MANAGER.playerUI.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
