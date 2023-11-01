@@ -16,6 +16,8 @@ inline MonsterResource SATIRO;
 
 namespace container {
 inline std::vector<Texture> basicChest;
+inline std::vector<Texture> normalChest;
+inline std::vector<Texture> epicChest;
 }
 namespace monsters {
 inline MonsterResource SKELETON_WARRIOR;

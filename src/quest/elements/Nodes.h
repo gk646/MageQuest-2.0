@@ -13,6 +13,7 @@ struct QuestNode {
   [[nodiscard]] inline bool IsNodeTypeCompatible(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
+  //Main function to progress the node
   virtual bool Progress() noexcept { return false; };
   //Adds an entry to the quests past dialogues with the corresponding source
   inline void TrackText(const std::string& s, TextSource source,
@@ -68,7 +69,7 @@ struct SPEAK final : public QuestNode {
     if (npc->id == target) {
       if (stage < lines.size()) {
         npc->update_dialogue(&lines[stage]);
-        TrackText(lines[stage], TextSource::NPC, (int)target);
+        TrackText(lines[stage], TextSource::NPC, (int16_t)target);
         if (stage == 0) {
           npc->last = false;
         } else if (stage == lines.size() - 1) {
@@ -122,16 +123,14 @@ struct TILE_ACTION final : public QuestNode {
         zone(zone) {}
   bool Progress() noexcept final {
     if (CURRENT_ZONE == zone) {
-      std::cout << pos.x << std::endl;
-      std::cout << pos.y << std::endl;
       if (layer == 0) {
-        CURRENT_BACK_GROUND[pos.x][pos.y] = new_tile;
+        CURRENT_BACK_GROUND[pos.x][pos.y] = (int16_t)new_tile;
         return true;
       } else if (layer == 1) {
-        CURRENT_MIDDLE_GROUND[pos.x][pos.y] = new_tile;
+        CURRENT_MIDDLE_GROUND[pos.x][pos.y] = (int16_t)new_tile;
         return true;
       } else if (layer == 2) {
-        CURRENT_FORE_GROUND[pos.x][pos.y] = new_tile;
+        CURRENT_FORE_GROUND[pos.x][pos.y] = (int16_t)new_tile;
         return true;
       }
     }
@@ -172,7 +171,7 @@ struct TILE_ACTION final : public QuestNode {
  * @note No spaces in the command.
  */
 struct SPAWN final : public QuestNode {
-  std::vector<PointI> positions;
+  std::vector<PointT<int16_t>> positions;
   MonsterType mType = MonsterType::ANY;
   NPC_ID npcID = NPC_ID::NPC_END;
   int level;
@@ -187,12 +186,13 @@ struct SPAWN final : public QuestNode {
   bool Progress() noexcept final {
     if (npcID == NPC_ID::NPC_END) {
       for (const auto& p : positions) {
-        MONSTERS.push_back(Monster::GetNewMonster(p.x * 48, p.y * 48, mType, level));
+        MONSTERS.push_back(
+            Monster::GetNewMonster(p.x * 48.0F, p.y * 48.0F, mType, level));
       }
       return true;
     } else if (mType == MonsterType::ANY) {
       for (const auto& p : positions) {
-        NPCS.push_back(NPC::GetNewNPC(npcID, p.x * 48, p.y * 48, CURRENT_ZONE));
+        NPCS.push_back(NPC::GetNewNPC(npcID, p.x * 48.0F, p.y * 48.0F, CURRENT_ZONE));
       }
       return true;
     } else {
@@ -248,7 +248,7 @@ struct NPC_SAY final : public QuestNode {
       if (npc->id == target) {
         if (!startedTalking) {
           npc->update_dialogue(&txt);
-          TrackText(txt, TextSource::NPC, (int)target);
+          TrackText(txt, TextSource::NPC, (int16_t)target);
           startedTalking = true;
         } else if (npc->dialogueProgressCount == 1000 || skipWait) {
           return true;
@@ -348,7 +348,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
     }
     return false;
   }
-  inline void SetAnswerIndex(int num) { answerIndex = num; }
+  inline void SetAnswerIndex(int num) { answerIndex = (int8_t)num; }
   inline static CHOICE_DIALOGUE_SIMPLE* ParseQuestNode(
       const std::vector<std::string>& parts) {
     return new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2], std::stoi(parts[3]));
@@ -404,10 +404,13 @@ struct OPTIONAL_POSITION final : public QuestNode {
       if (c.isEssential && !c.isFinished) {
         allFinished = false;
       }
+      //maybe adjust that behaviour
+      //either keep calling if close once
+      //or just manually set to true like now
+      if (c.isFinished || c.point.dist(PLAYER.tile_pos) > 1.4F) continue;
 
-      if (c.isFinished || c.point.dist(PLAYER.tile_pos) > 3) continue;
-
-      c.isFinished = c.node->Progress();
+      c.node->Progress();
+      c.isFinished = true;
     }
 
     return allFinished;

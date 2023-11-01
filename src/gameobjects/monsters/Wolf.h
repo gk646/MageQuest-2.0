@@ -18,7 +18,7 @@ struct Wolf final : public Monster {
                              pos.y_ + DRAW_Y - 17, 5, 0, !isFlipped, WHITE);
       }
     }
-    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   void Update() final {

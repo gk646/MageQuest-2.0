@@ -140,6 +140,7 @@ enum class Zone : uint8_t {
   Goblin_Cave,
   Hillcrest_Hermit_Cave,
   Oasis,
+  Oasis_Cave,
   ZONE_END
 };
 enum GameStatistic : uint8_t {
@@ -266,7 +267,7 @@ enum class NPC_ID : uint8_t {
 };
 enum class WorldObjectType : int16_t {
   BASIC_CHEST = 7176,
-  NORMAL_CHEST = 824,
+  NORMAL_CHEST = 137,
   EPIC_CHEST = 2191
 
 };
@@ -430,6 +431,8 @@ inline static std::unordered_map<Zone, std::string> zoneMap = {
     {Zone::The_Grove, "The Grove"},
     {Zone::TestRoom, "TestRoom"},
     {Zone::Goblin_Cave, "Goblin Cave"},
+    {Zone::Oasis, "Oasis"},
+    {Zone::Oasis_Cave, "Forgotten Cave"},
     {Zone::Hillcrest_Hermit_Cave, "Hillcrest Hermit Cave"}};
 
 inline std::unordered_map<Class, std::string> classToString = {
@@ -475,7 +478,8 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"TestRoom", Zone::TestRoom},
     {"Goblin_Cave", Zone::Goblin_Cave},
     {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave},
-    {"Oasis", Zone::Oasis}};
+    {"Oasis", Zone::Oasis},
+    {"Oasis_Cave", Zone::Oasis_Cave}};
 
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #endif  //MAGE_QUEST_SRC_ENUMS_ENUMS_H_

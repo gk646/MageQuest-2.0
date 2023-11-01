@@ -69,6 +69,10 @@ static void Load() {
 
   MonsterResource::LoadImagesIntoVector("Entities/container/basicChest/",
                                         textures::container::basicChest);
+  MonsterResource::LoadImagesIntoVector("Entities/container/normalChest/",
+                                        textures::container::normalChest);
+  MonsterResource::LoadImagesIntoVector("Entities/container/epicChest/",
+                                        textures::container::epicChest);
 
   LoadScaling();
 }

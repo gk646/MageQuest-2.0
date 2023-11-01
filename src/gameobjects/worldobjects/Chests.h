@@ -13,7 +13,7 @@ struct BasicChest final : public InteractableObject {
 
 struct NormalChest final : public InteractableObject {
   NormalChest(const PointI& pos, bool isUsed, Zone zone) noexcept
-      : InteractableObject(textures::container::basicChest,sound::interactable::normalChest,
+      : InteractableObject(textures::container::normalChest,sound::interactable::normalChest,
                            {(float)pos.x * 48, (float)pos.y * 48},
                            PointT<int16_t>{48, 46}, ShapeType::RECT, isUsed, zone,WorldObjectType::NORMAL_CHEST) {}
   void Interact() final {}
@@ -21,7 +21,7 @@ struct NormalChest final : public InteractableObject {
 
 struct EpicChest final : public InteractableObject {
   EpicChest(const PointI& pos, bool isUsed, Zone zone) noexcept
-      : InteractableObject(textures::container::basicChest,sound::interactable::epicChest,
+      : InteractableObject(textures::container::epicChest,sound::interactable::epicChest,
                            {(float)pos.x * 48, (float)pos.y * 48},
                            PointT<int16_t>{48, 46}, ShapeType::RECT, isUsed, zone,WorldObjectType::EPIC_CHEST) {}
   void Interact() final {}
