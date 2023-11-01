@@ -1,6 +1,7 @@
 #ifndef MAGEQUEST_SRC_GRAPHICS_MINIMAP_H_
 #define MAGEQUEST_SRC_GRAPHICS_MINIMAP_H_
 
+//Draws the minimap at the top right
 struct MiniMap {
   static constexpr int WIDTH = 200;
   static constexpr int HEIGHT = 200;
@@ -16,6 +17,11 @@ struct MiniMap {
     return !e->isUpdated || e->tile_pos.x < tile_x || e->tile_pos.y < tile_y ||
            e->tile_pos.x >= tile_x + MINIMAP_TILE_WIDTH ||
            e->tile_pos.y >= tile_y + MINIMAP_TILE_WIDTH;
+  }
+  static inline bool BoundCheckPoint(const PointT<int16_t>& p, int tile_x,
+                                     int tile_y) noexcept {
+    return p.x < tile_x || p.y < tile_y || p.x >= tile_x + MINIMAP_TILE_WIDTH ||
+           p.y >= tile_y + MINIMAP_TILE_WIDTH;
   }
   void Draw() const noexcept {
     auto player_tile = PLAYER.tile_pos;
@@ -34,9 +40,8 @@ struct MiniMap {
       return;
     }
 
-    for (int_fast32_t i = 0; i < MINIMAP_TILE_WIDTH; i++) {
-
-      for (int_fast32_t j = 0; j < MINIMAP_TILE_WIDTH; j++) {
+    for (int i = 0; i < MINIMAP_TILE_WIDTH; i++) {
+      for (int j = 0; j < MINIMAP_TILE_WIDTH; j++) {
         if (BoundCheckMap(tile_x + i, tile_y + j)) [[likely]] {
           if (IsTileCovered(tile_x + i, tile_y + j)) {
             DrawSquareProFast(draw_x + i * ZOOM, START_Y + j * ZOOM, ZOOM, Colors::black);
@@ -90,38 +95,41 @@ struct MiniMap {
       if (BoundCheckObject(projectile, tile_x, tile_y)) continue;
 
       if (projectile->from_player) {
-        DrawSquareProFast(draw_x + (projectile->tile_pos.x - tile_x) * ZOOM,
-                          START_Y + (projectile->tile_pos.y - tile_y) * ZOOM, 3,
-                          Colors::Blue);
+        DrawSquareProFast(
+            draw_x + ((float)projectile->tile_pos.x - (float)tile_x) * ZOOM,
+            START_Y + ((float)projectile->tile_pos.y - (float)tile_y) * ZOOM, 3,
+            Colors::Blue);
       } else {
-        DrawSquareProFast(draw_x + (projectile->tile_pos.x - tile_x) * ZOOM,
-                          START_Y + (projectile->tile_pos.y - tile_y) * ZOOM, 3,
-                          Colors::Red);
+        DrawSquareProFast(
+            draw_x + ((float)projectile->tile_pos.x - (float)tile_x) * ZOOM,
+            START_Y + ((float)projectile->tile_pos.y - (float)tile_y) * ZOOM, 3,
+            Colors::Red);
       }
     }
     for (const auto monster : MONSTERS) {
       if (!monster->isUpdated || BoundCheckObject(monster, tile_x, tile_y)) continue;
-      DrawSquareProFast(draw_x + (monster->tile_pos.x - tile_x) * ZOOM,
-                        START_Y + (monster->tile_pos.y - tile_y) * ZOOM, ZOOM,
-                        Colors::Red);
+      DrawSquareProFast(draw_x + ((float)monster->tile_pos.x - (float)tile_x) * ZOOM,
+                        START_Y + ((float)monster->tile_pos.y - (float)tile_y) * ZOOM,
+                        ZOOM, Colors::Red);
     }
     for (const auto npc : NPCS) {
       if (!npc->isUpdated || BoundCheckObject(npc, tile_x, tile_y)) continue;
       if (npc->id == NPC_ID::RANDOM || npc->id == NPC_ID::VILLAGER) {
-        DrawSquareProFast(draw_x + (npc->tile_pos.x - tile_x) * ZOOM,
-                          START_Y + (npc->tile_pos.y - tile_y) * ZOOM, ZOOM,
+        DrawSquareProFast(draw_x + ((float)npc->tile_pos.x - (float)tile_x) * ZOOM,
+                          START_Y + ((float)npc->tile_pos.y - (float)tile_y) * ZOOM, ZOOM,
                           Colors::green_npc);
       } else {
-        DrawSquareProFast(draw_x + (npc->tile_pos.x - tile_x) * ZOOM,
-                          START_Y + (npc->tile_pos.y - tile_y) * ZOOM, ZOOM,
+        DrawSquareProFast(draw_x + ((float)npc->tile_pos.x - (float)tile_x) * ZOOM,
+                          START_Y + ((float)npc->tile_pos.y - (float)tile_y) * ZOOM, ZOOM,
                           Colors::blue_npc);
       }
     }
     PointT<int16_t> questWaypoint;
     if (PLAYER_QUESTS.activeQuest &&
-        (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
-      DrawSquareProFast(draw_x + (questWaypoint.x - tile_x) * ZOOM,
-                        START_Y + (questWaypoint.y - tile_y) * ZOOM, ZOOM,
+        (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0 &&
+        !BoundCheckPoint(questWaypoint, tile_x, tile_y)) {
+      DrawSquareProFast(draw_x + ((float)questWaypoint.x - (float)tile_x) * ZOOM,
+                        START_Y + ((float)questWaypoint.y - (float)tile_y) * ZOOM, ZOOM,
                         Colors::questMarkerYellow);
     }
   }
