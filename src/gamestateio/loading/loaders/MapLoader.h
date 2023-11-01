@@ -50,6 +50,7 @@ struct MapLoader {
     MAPS.emplace_back("TheGrove", 200, Zone::The_Grove);
     MAPS.emplace_back("DeadPlains", 200, Zone::DeadPlains);
     MAPS.emplace_back("Oasis", 100, Zone::Oasis);
+    MAPS.emplace_back("OasisCave", 60, Zone::Oasis_Cave);
     cxstructs::printTime<std::chrono::milliseconds>("",2);
     LoadMapCovers();
   }

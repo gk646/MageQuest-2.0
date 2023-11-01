@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_
 struct TextureLoader {
 
-  static void load() {
+  static void Load() {
     shadowToTexture[ShadowType::TREE_GREEN_BUSH] =
         LoadTexture((ASSET_PATH + "textures/Shadows/0.png").c_str());
     shadowToTexture[ShadowType::TREE_GREEN_POINTY] =

@@ -20,7 +20,7 @@ struct SkeletonSpear final : public Monster {
         draw_idle();
       }
     }
-    health_bar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
   inline void draw_death() noexcept {

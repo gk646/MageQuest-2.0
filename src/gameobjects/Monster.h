@@ -19,7 +19,7 @@
 #define MONSTER_UPDATE()                             \
   ENTITY_UPDATE()                                    \
   spriteCounter++;                                   \
-  health_bar.update();                               \
+  healthBar.update();                               \
   effectHandler.Update();                            \
   CheckForDeath();                                   \
   if (MP_TYPE == MultiplayerType::CLIENT) return;    \
@@ -35,7 +35,7 @@ struct Monster : public Entity {
   StatusEffectHandler effectHandler{stats};
   const MonsterResource* resource;
   MonsterAttackStats attackStats;
-  HealthBar health_bar;
+  HealthBar healthBar;
   uint16_t u_id = MONSTER_ID++;
   int8_t actionState = 0;
   bool isMoving = false;
@@ -50,7 +50,7 @@ struct Monster : public Entity {
         resource(resourceArg),
         attackStats(scaler),
         type(typeArg),
-        health_bar((int)size.x) {
+        healthBar((int)size.x) {
     if (MP_TYPE == MultiplayerType::SERVER) {
       Server::SendMsgToAllUsers(
           UDP_MONSTER_SPAWN,
@@ -65,7 +65,7 @@ struct Monster : public Entity {
         threatManager(this),
         effectHandler(stats),
         resource(other.resource),
-        health_bar(other.health_bar),
+        healthBar(other.healthBar),
         attackStats(other.attackStats),
         type(other.type) {}
   Monster& operator=(const Monster& other) {
@@ -75,7 +75,7 @@ struct Monster : public Entity {
       threatManager = other.threatManager;
       effectHandler = other.effectHandler;
       resource = other.resource;
-      health_bar = other.health_bar;
+      healthBar = other.healthBar;
       type = other.type;
     }
     return *this;
@@ -85,7 +85,7 @@ struct Monster : public Entity {
   void Hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && actionState != -100) {
       p.HitTargetCallback();
-      health_bar.Update();
+      healthBar.Update();
       effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.TakeDamage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
@@ -123,7 +123,7 @@ struct Monster : public Entity {
     }
     return false;
   }
-  inline bool WalkCloseToEntity(const Entity* ent, int distance) noexcept {
+  inline bool WalkCloseToEntity(const Entity* ent, float distance) noexcept {
     if (actionState != 0) return false;
     if (ent->tile_pos.dist(tile_pos) <= distance) return true;
     PointT<int16_t> point;
@@ -152,7 +152,7 @@ struct Monster : public Entity {
   inline void UpdateWithRemoteState(const UDP_MonsterUpdate* data) noexcept {
     if (stats.health != (float)data->new_health) {
       stats.health = data->new_health;
-      health_bar.Update();
+      healthBar.Update();
     }
 
     if ((actionState == 0 && spriteCounter > 100) || data->action_state == -100) {
@@ -269,7 +269,7 @@ void Server::SynchronizeMonsters(const SteamNetworkingIdentity& identity) noexce
 }
 void Server::BroadCastMonsterUpdates() noexcept {
   for (auto m : MONSTERS) {
-    if (m->isMoving || m->health_bar.delay > 0 || m->actionState != 0) {
+    if (m->isMoving || m->healthBar.delay > 0 || m->actionState != 0) {
       Server::SendMsgToAllUsers(
           UDP_MONSTER_UPDATE,
           new UDP_MonsterUpdate(
