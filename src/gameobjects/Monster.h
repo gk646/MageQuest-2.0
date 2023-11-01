@@ -102,7 +102,7 @@ struct Monster : public Entity {
     if (actionState != 0) return false;
     PointT<int16_t> point;
     float speed = stats.GetSpeed();
-    if ((point = PathFinding::AStarPathFinding(tile_pos, ent->tile_pos)) > 0) [[likely]] {
+    if ((point = PathFinding::AStarPathFinding(tilePos, ent->tilePos)) > 0) [[likely]] {
       CalculateMovement(point, speed);
       isMoving = true;
       return false;
@@ -125,10 +125,10 @@ struct Monster : public Entity {
   }
   inline bool WalkCloseToEntity(const Entity* ent, float distance) noexcept {
     if (actionState != 0) return false;
-    if (ent->tile_pos.dist(tile_pos) <= distance) return true;
+    if (ent->tilePos.dist(tilePos) <= distance) return true;
     PointT<int16_t> point;
     float speed = stats.GetSpeed();
-    if ((point = PathFinding::AStarPathFinding(tile_pos, ent->tile_pos)) > 0) [[likely]] {
+    if ((point = PathFinding::AStarPathFinding(tilePos, ent->tilePos)) > 0) [[likely]] {
       CalculateMovement(point, speed);
       isMoving = true;
       return false;
@@ -297,7 +297,7 @@ void ThreatManager::Update() noexcept {
   if (TargetCount > 0) {
     for (auto& te : targets) {
       if (te.entity &&
-          te.entity->tile_pos.dist(self->tile_pos) > self->attackStats.chaseRange) {
+          te.entity->tilePos.dist(self->tilePos) > self->attackStats.chaseRange) {
         te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
         if (te.threat <= 0) {
           RemoveTarget(te.entity);
@@ -305,13 +305,13 @@ void ThreatManager::Update() noexcept {
       }
     }
   } else {
-    if (PLAYER.tile_pos.dist(self->tile_pos) <= self->attackStats.attackRange) {
+    if (PLAYER.tilePos.dist(self->tilePos) <= self->attackStats.attackRange) {
       AddTarget(&PLAYER, PLAYER_STATS.level);
     }
 
     for (const auto np : OTHER_PLAYERS) {
       if (np) {
-        if (np->tile_pos.dist(self->tile_pos) <= self->attackStats.attackRange) {
+        if (np->tilePos.dist(self->tilePos) <= self->attackStats.attackRange) {
           AddTarget(np, np->stats.level);
         }
       }

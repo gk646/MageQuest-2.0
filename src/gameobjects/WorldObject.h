@@ -48,7 +48,7 @@ struct InteractableObject : public WorldObject {
       isUsed = true;
       Interact();
       PlaySoundR(sound);
-      DataBaseHandler::AddStateToTable("OBJECT_STATES", (int)type, tile_pos.x, tile_pos.y,
+      DataBaseHandler::AddStateToTable("OBJECT_STATES", (int)type, tilePos.x, tilePos.y,
                                        (int)currentZone);
     }
     if (isUsed && spriteCounter < 150) {

@@ -106,7 +106,7 @@ class Game {
   }
   static inline void GameTick() noexcept {
     GAME_STATISTICS.Update();
-    MusicStreamer::Update();
+    SoundManager::Update();
     Lighting::UpdateScreenEffects();
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
@@ -116,23 +116,15 @@ class Game {
         break;
       }
       case GameState::Game:
-        [[likely]] {
-          WorldManager::Update();
-          PLAYER_STATS.update();
-          PLAYER_EFFECTS.Update();
-          PLAYER.Update();
-          UPDATE_AND_COLLISION();
-          UI_MANAGER.Update();
-        }
-        break;
-      case GameState::GameMenu: {
+      [[likely]] case GameState::GameMenu:
+        TileEvents::Update();
         WorldManager::Update();
         PLAYER_STATS.update();
         PLAYER_EFFECTS.Update();
         PLAYER.Update();
         UPDATE_AND_COLLISION();
         UI_MANAGER.Update();
-      } break;
+        break;
       case GameState::Loading: {
       } break;
       case GameState::GameOver: {

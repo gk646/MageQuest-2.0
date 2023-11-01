@@ -12,12 +12,11 @@ inline static int16_t ACTIVE_TILES[3];
 namespace TileEvents {
 
 inline void Update() noexcept {
-  auto pos = PLAYER.tile_pos;
+  TileProximity::Update();
+  auto pos = PLAYER.tilePos;
   ACTIVE_TILES[0] = CURRENT_BACK_GROUND[pos.x][pos.y];
   ACTIVE_TILES[1] = CURRENT_MIDDLE_GROUND[pos.x][pos.y];
   ACTIVE_TILES[2] = CURRENT_FORE_GROUND[pos.x][pos.y];
-
-
 }
 }  // namespace TileEvents
 

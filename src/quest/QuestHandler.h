@@ -14,14 +14,16 @@ struct QuestHandler {
   }
   //Called each tick for misc updates
   inline void Update() noexcept {
-    for (auto it = quests.begin(); it != quests.end();)
+    for (auto it = quests.begin(); it != quests.end();) {
       if ((*it)->state == QuestState::ACTIVE) {
         (*it)->Update();
-        ++it;
       } else if ((*it)->state == QuestState::COMPLETED) {
         RemoveQuest((*it));
         it = quests.erase(it);
+        continue;
       }
+      ++it;
+    }
   }
   //Returns nullptr if questID could not be matched
   inline Quest* GetQuest(Quest_ID id) {

@@ -39,7 +39,7 @@ struct NPC : public Entity {
   bool MoveToPointI(const PointI& next) noexcept {
     moving = false;
     PointT<int16_t> next_pos;
-    if ((next_pos = PathFinding::AStarPathFinding(tile_pos, next)) > 0) {
+    if ((next_pos = PathFinding::AStarPathFinding(tilePos, next)) > 0) {
       CalculateMovement(next_pos, speed);
       moving = true;
     } else if (next_pos == 0) {

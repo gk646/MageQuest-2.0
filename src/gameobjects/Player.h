@@ -9,7 +9,7 @@ struct Player final : public Entity {
   bool moving = false;
   uint8_t uncoverRadius = 8;
   explicit Player(const Point& pos) : Entity(pos, {28, 48}, ShapeType::RECT) {
-    PLAYER_TILE = &tile_pos;
+    PLAYER_TILE = &tilePos;
   }
   Player(const Player& other) noexcept : Entity(other) {}
   Player& operator=(const Player& other) {
@@ -65,8 +65,8 @@ struct Player final : public Entity {
       flip = false;
     }
 
-    tile_pos.x = static_cast<int>(pos.x_ + size.x / 2) / TILE_SIZE;
-    tile_pos.y = static_cast<int>(pos.y_ + size.y / 2) / TILE_SIZE;
+    tilePos.x = static_cast<int>(pos.x_ + size.x / 2) / TILE_SIZE;
+    tilePos.y = static_cast<int>(pos.y_ + size.y / 2) / TILE_SIZE;
 
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
@@ -133,8 +133,8 @@ struct Player final : public Entity {
 
  private:
   inline void UncoverMapCover() noexcept {
-    int sx = tile_pos.x;
-    int sy = tile_pos.y;
+    int sx = tilePos.x;
+    int sy = tilePos.y;
     int radiusSqrt = uncoverRadius * uncoverRadius;
     int xMin = std::max(sx - uncoverRadius, 0);
     int xMax = std::min(sx + uncoverRadius, CURRENT_MAP_SIZE);

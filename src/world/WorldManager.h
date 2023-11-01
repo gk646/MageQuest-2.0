@@ -33,7 +33,7 @@ static void LoadMap(Zone zone, const PointT<int16_t>& pos) {
 //Check if the player is inside a teleport tile
 inline static void CheckTransitions() noexcept {
   for (const auto& tPoint : zoneTPoints[(int)CURRENT_ZONE]) {
-    if (tPoint.origin == PLAYER.tile_pos) {
+    if (tPoint.origin == PLAYER.tilePos) {
       LoadMap(tPoint.destZone, tPoint.dest);
       return;
     }
