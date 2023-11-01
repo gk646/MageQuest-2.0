@@ -52,7 +52,8 @@ struct Quest final {
     return objectives[stage]->objectiveText;
   }
   [[nodiscard]] inline PointT<int16_t> GetActiveWaypoint() const noexcept {
-    return objectives[stage]->wayPoint;
+    return CURRENT_ZONE == questZone ? objectives[stage]->wayPoint
+                                     : PointT<int16_t>{0, 0};
   }
 
  private:
@@ -78,8 +79,9 @@ struct Quest final {
     }
   }
 };
-void QuestNode::TrackText(const std::string& s, TextSource source, int16_t enumVal) const noexcept {
-  quest->pastDialogue.emplace_back(s,  enumVal,source);
+void QuestNode::TrackText(const std::string& s, TextSource source,
+                          int16_t enumVal) const noexcept {
+  quest->pastDialogue.emplace_back(s, enumVal, source);
 }
 
 #include "QuestStorage.h"
