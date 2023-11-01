@@ -54,7 +54,7 @@ struct Skill {
     if (Point(PLAYER_X + (float)PLAYER.size.x / 2.0F,
               PLAYER_Y + (float)PLAYER.size.y / 2.0F)
             .dist(targetPos) <= (float)skillStats.range) {
-      if (PathFinding::LineOfSightCheck(PLAYER.tile_pos, targetPos)) {
+      if (PathFinding::LineOfSightCheck(PLAYER.tilePos, targetPos)) {
         return true;
         //TODO quick notifications
       } else {

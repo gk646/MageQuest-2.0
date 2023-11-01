@@ -6,7 +6,7 @@
 struct Entity {
   //Float
   Point pos;
-  PointT<int16_t> tile_pos;
+  PointT<int16_t> tilePos;
   PointT<int16_t> size;
   //In degree
   int16_t pov;
@@ -45,11 +45,11 @@ struct Entity {
   }
   virtual ~Entity() = default;
 
-#define ENTITY_UPDATE()                                                  \
-  tile_pos.x = static_cast<int16_t>(pos.x_ + size.x / 2.0F) / TILE_SIZE; \
-  tile_pos.y = static_cast<int16_t>(pos.y_ + size.y / 2.0F) / TILE_SIZE; \
+#define ENTITY_UPDATE()                                                 \
+  tilePos.x = static_cast<int16_t>(pos.x_ + size.x / 2.0F) / TILE_SIZE; \
+  tilePos.y = static_cast<int16_t>(pos.y_ + size.y / 2.0F) / TILE_SIZE; \
   isUpdated = currentZone == CURRENT_ZONE &&                             \
-              PLAYER.tile_pos.dist(this->tile_pos) < UPDATE_DISTANCE;    \
+              PLAYER.tilePos.dist(this->tilePos) < UPDATE_DISTANCE;    \
   if (!isUpdated) return;
   //Called on the draw thread
   virtual void Draw() = 0;
@@ -178,10 +178,10 @@ struct Entity {
     return {pos.x_ + size.x / 2, pos.y_ + size.y / 2};
   }
   void CalculateMovement(const PointT<int16_t>& next, float speed) noexcept {
-    bool canMoveRight = tile_pos.x < next.x && !tile_collision_right(speed);
-    bool canMoveLeft = tile_pos.x > next.x && !tile_collision_left(speed);
-    bool canMoveUp = tile_pos.y > next.y && !tile_collision_up(speed);
-    bool canMoveDown = tile_pos.y < next.y && !tile_collision_down(speed);
+    bool canMoveRight = tilePos.x < next.x && !tile_collision_right(speed);
+    bool canMoveLeft = tilePos.x > next.x && !tile_collision_left(speed);
+    bool canMoveUp = tilePos.y > next.y && !tile_collision_up(speed);
+    bool canMoveDown = tilePos.y < next.y && !tile_collision_down(speed);
 
     if (RANGE_100(RNG_ENGINE) < 25) {
       if (canMoveRight && canMoveUp && !tile_collision_upright(speed)) {

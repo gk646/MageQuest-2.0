@@ -108,8 +108,6 @@ using namespace cxstructs;
  * |-----------------------------------------------------|
  */
 #include "raylib-extension/DrawFunctions.h"
-#include "world/MusicStreamer.h"
-#include "resources/SoundStorage.h"
 #include "system/CollisionDetection.h"
 #include "system/Definitions.h"
 #include "resources/Colors.h"
@@ -122,6 +120,8 @@ using namespace cxstructs;
 #include "world/Map.h"
 #include "gameplay/Item.h"
 #include "system/GlobalVariables.h"
+#include "resources/SoundStorage.h"
+#include "world/SoundManager.h"
 #include "gameplay/handlers/ItemDropHandler.h"
 #include "gamestateio/loading/EntityResource.h"
 #include "resources/TextureStorage.h"

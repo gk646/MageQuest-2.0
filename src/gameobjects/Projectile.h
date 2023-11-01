@@ -95,10 +95,10 @@ struct Projectile : public Entity {
     spriteCounter++;
     pos.x_ += mvmVector.x * speed;
     pos.y_ += mvmVector.y * speed;
-    tile_pos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
-    if (!BoundCheckMap(tile_pos.x, tile_pos.y) ||
-        CheckTileCollision(tile_pos.x, tile_pos.y)) {
+    tilePos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
+    tilePos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
+    if (!BoundCheckMap(tilePos.x, tilePos.y) ||
+        CheckTileCollision(tilePos.x, tilePos.y)) {
       HitWallCallback();
     }
     lifeSpanTicks--;

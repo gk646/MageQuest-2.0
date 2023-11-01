@@ -61,19 +61,19 @@ struct RegionMap final : public Window {
     }
 
     for (const auto monster : MONSTERS) {
-      if (monster->tile_pos.dist(player_tile) < 20) {
-        DrawSquareProFast(base_x + monster->tile_pos.x * zoom,
-                          base_y + monster->tile_pos.y * zoom, zoom, Colors::Red);
+      if (monster->tilePos.dist(player_tile) < 20) {
+        DrawSquareProFast(base_x + monster->tilePos.x * zoom,
+                          base_y + monster->tilePos.y * zoom, zoom, Colors::Red);
       }
     }
     for (const auto projectile : PROJECTILES) {
       if (projectile->from_player) {
-        DrawSquareProFast(base_x + projectile->tile_pos.x * zoom,
-                          base_y + projectile->tile_pos.y * zoom, 0.6F * zoom,
+        DrawSquareProFast(base_x + projectile->tilePos.x * zoom,
+                          base_y + projectile->tilePos.y * zoom, 0.6F * zoom,
                           Colors::Blue);
       } else {
-        DrawSquareProFast(base_x + projectile->tile_pos.x * zoom,
-                          base_y + projectile->tile_pos.y * zoom, 0.6F * zoom,
+        DrawSquareProFast(base_x + projectile->tilePos.x * zoom,
+                          base_y + projectile->tilePos.y * zoom, 0.6F * zoom,
                           Colors::Red);
       }
     }

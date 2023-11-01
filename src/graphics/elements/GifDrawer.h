@@ -9,7 +9,7 @@ struct GifDrawer {
   int frameDelay = 10;
   int frameCounter = 0;
   int frame_count = 0;
-  bool finished = false;
+  bool isFinished = false;
   explicit GifDrawer(const std::string& path) {
     images = LoadImageAnim(path.c_str(), &anim_frames);
     texture = LoadTextureFromImage(images);
@@ -19,14 +19,14 @@ struct GifDrawer {
     UnloadTexture(texture);
   }
   void draw() {
-    if (finished) return;
+    if (isFinished) return;
 
     frameCounter++;
     if (frameCounter >= frameDelay) {
       currentAnimFrame++;
       frame_count++;
       if (currentAnimFrame >= anim_frames) {
-        finished = true;
+        isFinished = true;
         return;
       }
       unsigned int nextFrameDataOffset =

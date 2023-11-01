@@ -69,10 +69,12 @@ inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
   }
 
   for (uint_fast32_t i = 0; i < BAG_SLOTS; i++) {
-    if (newItem->effects[i] < 0) {
-      newItem->effects[i] = (newItem->effects[i] - rarityMult) * levelMult * qualityMult;
+    auto& val = newItem->effects[i];
+    if (val == 0) continue;
+    if (val < 0) {
+      val = (val - rarityMult) * levelMult * qualityMult;
     } else {
-      newItem->effects[i] = (newItem->effects[i] + rarityMult) * levelMult * qualityMult;
+      val = (val + rarityMult) * levelMult * qualityMult;
     }
   }
 

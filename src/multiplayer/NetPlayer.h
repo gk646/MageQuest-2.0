@@ -51,8 +51,8 @@ struct NetPlayer final : public Entity {
   }
   void Update() final {
     sprite_counter++;
-    tile_pos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
-    tile_pos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
+    tilePos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
+    tilePos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
   }
   inline void update_state(uint16_t x, uint16_t y) noexcept {
     if (pos.x_ == x && pos.y_ == y) {

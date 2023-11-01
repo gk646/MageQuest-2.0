@@ -14,9 +14,9 @@ struct MiniMap {
   bool* region_map_open;
   explicit MiniMap(bool* region_map_status) : region_map_open(region_map_status) {}
   static inline bool BoundCheckObject(const Entity* e, int tile_x, int tile_y) noexcept {
-    return !e->isUpdated || e->tile_pos.x < tile_x || e->tile_pos.y < tile_y ||
-           e->tile_pos.x >= tile_x + MINIMAP_TILE_WIDTH ||
-           e->tile_pos.y >= tile_y + MINIMAP_TILE_WIDTH;
+    return !e->isUpdated || e->tilePos.x < tile_x || e->tilePos.y < tile_y ||
+           e->tilePos.x >= tile_x + MINIMAP_TILE_WIDTH ||
+           e->tilePos.y >= tile_y + MINIMAP_TILE_WIDTH;
   }
   static inline bool BoundCheckPoint(const PointT<int16_t>& p, int tile_x,
                                      int tile_y) noexcept {
@@ -24,7 +24,7 @@ struct MiniMap {
            p.y >= tile_y + MINIMAP_TILE_WIDTH;
   }
   void Draw() const noexcept {
-    auto player_tile = PLAYER.tile_pos;
+    auto player_tile = PLAYER.tilePos;
     float draw_x = SCREEN_WIDTH - 25 - WIDTH;
     int tile_x = player_tile.x - MINIMAP_TILE_WIDTH / 2;
     int tile_y = player_tile.y - MINIMAP_TILE_WIDTH / 2;
@@ -96,31 +96,31 @@ struct MiniMap {
 
       if (projectile->from_player) {
         DrawSquareProFast(
-            draw_x + ((float)projectile->tile_pos.x - (float)tile_x) * ZOOM,
-            START_Y + ((float)projectile->tile_pos.y - (float)tile_y) * ZOOM, 3,
+            draw_x + ((float)projectile->tilePos.x - (float)tile_x) * ZOOM,
+            START_Y + ((float)projectile->tilePos.y - (float)tile_y) * ZOOM, 3,
             Colors::Blue);
       } else {
         DrawSquareProFast(
-            draw_x + ((float)projectile->tile_pos.x - (float)tile_x) * ZOOM,
-            START_Y + ((float)projectile->tile_pos.y - (float)tile_y) * ZOOM, 3,
+            draw_x + ((float)projectile->tilePos.x - (float)tile_x) * ZOOM,
+            START_Y + ((float)projectile->tilePos.y - (float)tile_y) * ZOOM, 3,
             Colors::Red);
       }
     }
     for (const auto monster : MONSTERS) {
       if (!monster->isUpdated || BoundCheckObject(monster, tile_x, tile_y)) continue;
-      DrawSquareProFast(draw_x + ((float)monster->tile_pos.x - (float)tile_x) * ZOOM,
-                        START_Y + ((float)monster->tile_pos.y - (float)tile_y) * ZOOM,
+      DrawSquareProFast(draw_x + ((float)monster->tilePos.x - (float)tile_x) * ZOOM,
+                        START_Y + ((float)monster->tilePos.y - (float)tile_y) * ZOOM,
                         ZOOM, Colors::Red);
     }
     for (const auto npc : NPCS) {
       if (!npc->isUpdated || BoundCheckObject(npc, tile_x, tile_y)) continue;
       if (npc->id == NPC_ID::RANDOM || npc->id == NPC_ID::VILLAGER) {
-        DrawSquareProFast(draw_x + ((float)npc->tile_pos.x - (float)tile_x) * ZOOM,
-                          START_Y + ((float)npc->tile_pos.y - (float)tile_y) * ZOOM, ZOOM,
+        DrawSquareProFast(draw_x + ((float)npc->tilePos.x - (float)tile_x) * ZOOM,
+                          START_Y + ((float)npc->tilePos.y - (float)tile_y) * ZOOM, ZOOM,
                           Colors::green_npc);
       } else {
-        DrawSquareProFast(draw_x + ((float)npc->tile_pos.x - (float)tile_x) * ZOOM,
-                          START_Y + ((float)npc->tile_pos.y - (float)tile_y) * ZOOM, ZOOM,
+        DrawSquareProFast(draw_x + ((float)npc->tilePos.x - (float)tile_x) * ZOOM,
+                          START_Y + ((float)npc->tilePos.y - (float)tile_y) * ZOOM, ZOOM,
                           Colors::blue_npc);
       }
     }

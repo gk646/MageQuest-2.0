@@ -23,7 +23,7 @@ struct GOTO final : public QuestNode {
   PointI target;
   explicit GOTO(std::string obj_txt, const PointI& target)
       : QuestNode(std::move(obj_txt), NodeType::GOTO, target), target(target) {}
-  inline bool Progress() noexcept final { return PLAYER.tile_pos.dist(target) < 3; }
+  inline bool Progress() noexcept final { return PLAYER.tilePos.dist(target) < 3; }
   static GOTO* ParseQuestNode(const std::vector<std::string>& parts) noexcept {
     return new GOTO(parts[2], Util::ParsePointI(parts[1]));
   }
@@ -284,7 +284,7 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
     for (auto npc : NPCS) {
       if (npc->id == target) {
         if (npc->currentZone != CURRENT_ZONE) return false;
-        auto distance = PLAYER.tile_pos.dist(npc->tile_pos);
+        auto distance = PLAYER.tilePos.dist(npc->tilePos);
         if (distance == 0) return true;
         if (distance <= activationDistance) {
           currentTicks += npc->dialogueProgressCount == 1000;
@@ -407,7 +407,7 @@ struct OPTIONAL_POSITION final : public QuestNode {
       //maybe adjust that behaviour
       //either keep calling if close once
       //or just manually set to true like now
-      if (c.isFinished || c.point.dist(PLAYER.tile_pos) > 1.4F) continue;
+      if (c.isFinished || c.point.dist(PLAYER.tilePos) > 1.4F) continue;
 
       c.node->Progress();
       c.isFinished = true;

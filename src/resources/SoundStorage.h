@@ -1,6 +1,7 @@
 #ifndef MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
 #define MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_
 
+#include "../world/elements/MusicStreamer.h"
 namespace sound {
 inline static Sound EMPTY_SOUND;
 
@@ -17,11 +18,11 @@ namespace music {
 inline static Music firePlace;
 inline static Music lava;
 inline static Music hillcrestVillage;
-inline static std::vector<Music> waterAmbience;
-inline static std::vector<Music> townAmbience;
-inline static std::vector<Music> forestAmbience;
-inline static std::vector<Music> dungeonAmbience;
-inline static std::vector<Music> bossMusic;
+inline static Playlist waterAmbience;
+inline static Playlist townAmbience;
+inline static Playlist forestAmbience;
+inline static Playlist dungeonAmbience;
+inline static Playlist bossMusic;
 inline static Music moonLightSonata;
 }  // namespace music
 
