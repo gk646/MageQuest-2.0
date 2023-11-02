@@ -14,9 +14,13 @@ namespace TileEvents {
 inline void Update() noexcept {
   TileProximity::Update();
   auto pos = PLAYER.tilePos;
+  if (pos < 0) return;
   ACTIVE_TILES[0] = CURRENT_BACK_GROUND[pos.x][pos.y];
   ACTIVE_TILES[1] = CURRENT_MIDDLE_GROUND[pos.x][pos.y];
   ACTIVE_TILES[2] = CURRENT_FORE_GROUND[pos.x][pos.y];
+
+
+
 }
 }  // namespace TileEvents
 

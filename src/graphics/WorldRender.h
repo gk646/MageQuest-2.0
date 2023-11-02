@@ -20,7 +20,7 @@ struct WorldRender {
       CAMERA_X = screenX = playerX;
     } else if (playerX > worldWidth - screenX - 28) {
       CAMERA_X = screenX = SCREEN_WIDTH - (worldWidth - playerX);
-      worldCol = std::min(std::max(worldCol - 18, 0), CURRENT_MAP_SIZE);
+      worldCol = std::min(std::max(worldCol - 19, 0), CURRENT_MAP_SIZE);
     }
 
     if (screenY > playerY) {

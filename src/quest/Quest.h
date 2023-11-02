@@ -11,7 +11,6 @@ struct QuestText {
 };
 
 struct Quest final {
-  //TODO add message tracking
   std::string name;
   std::string description;
   std::vector<QuestText> pastDialogue;
@@ -28,7 +27,9 @@ struct Quest final {
     for (auto obj : objectives) {
       delete obj;
     }
-    delete reward;
+    if(reward){
+      delete reward;
+    }
   }
   [[nodiscard]] inline bool Progressable(NodeType type) const noexcept {
     return state == QuestState::ACTIVE && objectives[stage]->IsNodeTypeCompatible(type);

@@ -18,11 +18,12 @@ namespace music {
 inline static Music firePlace;
 inline static Music lava;
 inline static Music hillcrestVillage;
-inline static Playlist waterAmbience;
-inline static Playlist townAmbience;
-inline static Playlist forestAmbience;
-inline static Playlist dungeonAmbience;
-inline static Playlist bossMusic;
+inline static Playlist waterAmbience{};
+inline static Playlist townAmbience{};
+inline static Playlist forestAmbience{};
+inline static Playlist dungeonAmbience{};
+inline static Playlist caveAmbience{};
+inline static Playlist bossMusic{};
 inline static Music moonLightSonata;
 }  // namespace music
 
