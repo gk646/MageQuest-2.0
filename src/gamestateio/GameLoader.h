@@ -60,9 +60,9 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Oasis, {4, 96});
+    WorldManager::LoadMap(Zone::Oasis, {66, 17});
 #endif
-    for (uint_fast32_t i = 0; i < 10; i++) {
+    for (uint_fast32_t i = 0; i < 1; i++) {
       PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
     }
     UI_MANAGER.playerUI.playerHotbar.skills[0] = SKILLS[ARCANE_BOLT];

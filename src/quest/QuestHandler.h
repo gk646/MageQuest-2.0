@@ -8,8 +8,11 @@ struct QuestHandler {
   Quest* activeQuest = nullptr;
   bool updateHappened = false;
   ~QuestHandler() {
-    for (auto q : quests) {
-      delete q;
+    for (auto& q : quests) {
+      if(q) {
+        delete q;
+        q = nullptr;
+      }
     }
   }
   //Called each tick for misc updates

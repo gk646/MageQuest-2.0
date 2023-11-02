@@ -141,6 +141,7 @@ enum class Zone : uint8_t {
   Hillcrest_Hermit_Cave,
   Oasis,
   Oasis_Cave,
+  NO_ZONE,
   ZONE_END
 };
 enum GameStatistic : uint8_t {
