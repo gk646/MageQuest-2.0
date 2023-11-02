@@ -28,7 +28,7 @@ struct SkeletonSpear final : public Monster {
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
                            pos.y_ + DRAW_Y - 46, 0, 0, pos.x_ + size.x / 2 > MIRROR_POINT,
-                           WHITE);
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -37,7 +37,7 @@ struct SkeletonSpear final : public Monster {
     int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
-                           pos.y_ + DRAW_Y - 46, -30, 0, isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 46, -30, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }

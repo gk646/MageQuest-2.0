@@ -13,10 +13,10 @@ struct BloodHound final : public Monster {
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 10], pos.x_ + DRAW_X - 2,
-                             pos.y_ + DRAW_Y - 19, 2, 0, !isFlipped, WHITE);
+                             pos.y_ + DRAW_Y - 19, 2, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 20], pos.x_ + DRAW_X - 5,
-                             pos.y_ + DRAW_Y - 17, 5, 0, !isFlipped, WHITE);
+                             pos.y_ + DRAW_Y - 17, 5, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
     healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
@@ -35,7 +35,7 @@ struct BloodHound final : public Monster {
     int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 5,
-                           pos.y_ + DRAW_Y - 19, 3, 0, !isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 19, 3, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -44,7 +44,7 @@ struct BloodHound final : public Monster {
     int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
-                           pos.y_ + DRAW_Y - 19, 10, 0, !isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 19, 10, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }

@@ -2,14 +2,24 @@
 #define MAGEQUEST_SRC_WORLD_SOUNDMANAGER_H_
 
 namespace SoundManager {
+inline static void DayNightPlaylist(Playlist* dayList, Playlist* nightList) {
+  if (Lighting::currentNightAlpha > 0.6F) {
+    MusicStreamer::StartPlaylist(nightList);
+    MusicStreamer::StopPlaylist(dayList);
+  } else {
+    MusicStreamer::StartPlaylist(dayList);
+    MusicStreamer::StopPlaylist(nightList);
+  }
+}
 inline static void UpdateZoneBasedAudio() noexcept {
   //Start forest playlist
   if (CURRENT_ZONE == Zone::Oasis || CURRENT_ZONE == Zone::Tutorial ||
       CURRENT_ZONE == Zone::The_Grove || CURRENT_ZONE == Zone::Hillcrest ||
       CURRENT_ZONE == Zone::GrassLands) {
-    MusicStreamer::StartPlaylist(&sound::music::forestAmbience);
+    DayNightPlaylist(&sound::music::forestAmbience, &sound::music::forestNightAmbience);
   } else {
     MusicStreamer::StopPlaylist(&sound::music::forestAmbience);
+    MusicStreamer::StopPlaylist(&sound::music::forestNightAmbience);
   }
 
   //Start dungeon playlist

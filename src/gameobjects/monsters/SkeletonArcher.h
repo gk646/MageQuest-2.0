@@ -13,11 +13,11 @@ struct SkeletonArcher final : public Monster {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 160 / 20],
                              pos.x_ + DRAW_X - 33, pos.y_ + DRAW_Y - 6, 0, 0, isFlipped,
-                             WHITE);
+                             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 112 / 16],
                              pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 2, -6, 0, isFlipped,
-                             WHITE);
+                             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
     healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
@@ -42,7 +42,7 @@ struct SkeletonArcher final : public Monster {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -51,7 +51,7 @@ struct SkeletonArcher final : public Monster {
     int num = spriteCounter % 80 / 5;
     if (num < 15) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 30,
-                           pos.y_ + DRAW_Y - 5, -16, 0, isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 5, -16, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }

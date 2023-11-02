@@ -20,7 +20,7 @@ struct Ghost final : public Monster {
       DrawDisappear();
     } else {
       DrawTextureProFastEx(resource->idle[spriteCounter % 105 / 15], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     }
     healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
@@ -62,7 +62,7 @@ struct Ghost final : public Monster {
     int num = spriteCounter % 70 / 10;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -71,7 +71,7 @@ struct Ghost final : public Monster {
     int num = spriteCounter % 42 / 6;
     if (num < 6) {
       DrawTextureProFastEx(resource->walk[num], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y, 0,
-                           0, !isFlipped, WHITE);
+                           0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 1;
       teleported = false;
@@ -85,7 +85,7 @@ struct Ghost final : public Monster {
     int num = spriteCounter % 56 / 8;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped, WHITE);
+                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
       disappeared = true;

@@ -17,6 +17,7 @@ static void Load() noexcept {
   sound::music::bossMusic.Load("bossMusic/");
   sound::music::dungeonAmbience.Load("dungeonAmbience/");
   sound::music::forestAmbience.Load("forestAmbience/");
+  sound::music::forestNightAmbience.Load("forestNightAmbience/");
   sound::music::waterAmbience.Load("waterAmbience/");
   sound::music::caveAmbience.Load("caveAmbience/");
 

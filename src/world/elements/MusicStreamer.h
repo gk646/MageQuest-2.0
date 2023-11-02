@@ -105,6 +105,7 @@ inline void StopPlaylist(Playlist* playlist) noexcept {
       playingPlaylists.erase(it);
       return;
     }
+    ++it;
   }
 }
 }  // namespace MusicStreamer
