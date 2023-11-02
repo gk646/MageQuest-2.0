@@ -14,12 +14,12 @@ struct ShadowObject {
 };
 
 inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
-    {FIRE_BALL, { 100, {0.8745f, 0.2431f, 0.1373f}}},
-    {ARCANE_BOLT, { 100, {0.3804f, 0.6588f, 0.8902f}}},
-    {BLAST_HAMMER, { 180, {0.8745f, 0.2431f, 0.1373f}}},
-    {ENERGY_SPHERE, { 180, {0.3804f, 0.6588f, 0.8902f}}}};
+    {FIRE_BALL, {100, {0.8745f, 0.2431f, 0.1373f}}},
+    {ARCANE_BOLT, {100, {0.3804f, 0.6588f, 0.8902f}}},
+    {BLAST_HAMMER, {180, {0.8745f, 0.2431f, 0.1373f}}},
+    {ENERGY_SPHERE, {180, {0.3804f, 0.6588f, 0.8902f}}}};
 
-inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
+inline static constexpr uint16_t FULL_DAY_TICKS = 3000;
 inline static uint16_t dayTicks = 0;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
@@ -86,7 +86,7 @@ inline static float spotLightTime = 0;
 Vector2 lightPositions[MAX_DYNAMIC_LIGHTS];
 float outerRadii[MAX_DYNAMIC_LIGHTS];
 Vector3 lightColors[MAX_DYNAMIC_LIGHTS];
-//Run on the update thread / updates the dynamic lights array
+//Runs on the update thread // updates the dynamic lights array
 inline static void UpdateDynamicLights() noexcept {
   int i = 0;
   for (const auto& p : PROJECTILES) {
@@ -107,8 +107,8 @@ inline static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
   if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) lightOn = !lightOn;
   if (lightOn) {
-    cameraVec->x = CAMERA_X;
-    cameraVec->y = CAMERA_Y;
+    cameraVec->x = CAMERA_X + 14;
+    cameraVec->y = SCREEN_HEIGHT - CAMERA_Y - 24;
   } else {
     cameraVec->x = 0;
     cameraVec->y = 0;

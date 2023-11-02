@@ -21,6 +21,7 @@ inline static Music hillcrestVillage;
 inline static Playlist waterAmbience{};
 inline static Playlist townAmbience{};
 inline static Playlist forestAmbience{};
+inline static Playlist forestNightAmbience{};
 inline static Playlist dungeonAmbience{};
 inline static Playlist caveAmbience{};
 inline static Playlist bossMusic{};

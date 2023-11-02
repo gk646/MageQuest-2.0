@@ -218,7 +218,7 @@ struct ArrowNormal final : Projectile {
     DRAW_HITBOXES();
   }
 };
-//Flies normally expect when hitting anything / Does damage for 1 tick and then plays explode animation
+//Flies normally expect when hitting anything // Does damage for 1 tick and then explodes
 struct ArcaneBolt final : Projectile {
   static constexpr int width = 40;
   static constexpr int height = 30;
@@ -228,7 +228,7 @@ struct ArcaneBolt final : Projectile {
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
              const Vector2& move, const Entity* sender)
       : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
-                   {DamageType::ARCANE, damage}, hit_type, effects, move, pov,
+                   {DamageType::ARCANE, damage}, hit_type, effects, move, (int16_t)pov,
                    sound::fireBurst, &textures::projectile::ARCANE_BOLT, sender) {
     projectileType = ProjectileType::ARCANE_BOLT;
     isIlluminated = true;

@@ -33,7 +33,6 @@ struct GameLoader {
       SetupGame();
     }
   }
-
  private:
   static void Load() {
     LoadStep(MusicLoader::Load);
@@ -60,7 +59,7 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Oasis, {66, 17});
+    WorldManager::LoadMap(Zone::Hillcrest, {66, 37});
 #endif
     for (uint_fast32_t i = 0; i < 1; i++) {
       PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);

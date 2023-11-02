@@ -17,8 +17,8 @@ inline static void IsRangeInProximity(bool& assign, int16_t tilIndexStart,
 }
 inline static void ScanProximityTiles() noexcept {
   auto pos = PLAYER.tilePos;
-  int sx = pos.x;
-  int sy = pos.y;
+  int sx = (int16_t)pos.x;
+  int sy = (int16_t)pos.y;
   int radiusSqrt = RADIUS * RADIUS;
   int xMin = std::max(sx - RADIUS, 0);
   int xMax = std::min(sx + RADIUS, CURRENT_MAP_SIZE);

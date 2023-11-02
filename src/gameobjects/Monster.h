@@ -16,17 +16,18 @@
     }                                                                              \
   }
 
-#define MONSTER_UPDATE()                             \
-  ENTITY_UPDATE()                                    \
-  spriteCounter++;                                   \
-  healthBar.update();                               \
-  effectHandler.Update();                            \
-  CheckForDeath();                                   \
-  if (MP_TYPE == MultiplayerType::CLIENT) return;    \
-  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT; \
-  if (actionState != 0) return;                      \
-  threatManager.Update();                            \
-  attackStats.Update(actionState);                   \
+#define MONSTER_UPDATE()                                \
+  ENTITY_UPDATE()                                       \
+  spriteCounter++;                                      \
+  healthBar.update();                                   \
+  effectHandler.Update();                               \
+  CheckForDeath();                                      \
+  if (MP_TYPE == MultiplayerType::CLIENT) return;       \
+  hitFlashDuration = std::max(-15, hitFlashDuration - 1); \
+  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT;    \
+  if (actionState != 0) return;                         \
+  threatManager.Update();                               \
+  attackStats.Update(actionState);                      \
   isMoving = false;
 
 struct Monster : public Entity {
@@ -41,6 +42,7 @@ struct Monster : public Entity {
   bool isMoving = false;
   bool prevMoveState = false;
   bool isFlipped = false;
+  int8_t hitFlashDuration = 0;
   MonsterType type;
   Monster(const Point& pos, const MonsterScaler& scaler, uint8_t level,
           const MonsterResource* resourceArg, MonsterType typeArg,
@@ -81,7 +83,6 @@ struct Monster : public Entity {
     return *this;
   }
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
-  void Draw() override = 0;
   void Hit(Projectile& p) noexcept {
     if (p.from_player && p.IsActive() && actionState != -100) {
       p.HitTargetCallback();
@@ -89,6 +90,7 @@ struct Monster : public Entity {
       effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.TakeDamage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
+      hitFlashDuration == -15 ? hitFlashDuration = 15 : hitFlashDuration = hitFlashDuration;
     }
   }
   inline void CheckForDeath() noexcept {
@@ -208,7 +210,6 @@ struct Monster : public Entity {
     ret.width += size.x;
     return ret;
   }
-  inline void SetBaseValues(const MonsterScaler& scaler) noexcept {}
 };
 
 #include "monsters/SkeletonSpear.h"
