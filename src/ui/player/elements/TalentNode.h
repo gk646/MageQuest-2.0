@@ -2,7 +2,10 @@
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_TALENTNODE_H_
 
 #include "../../../gameplay/Talent.h"
+
 struct TalentNode {
+  inline static constexpr float TOOLTIP_WIDTH = 150;
+  inline static constexpr float TOOLTIP_HEIGHT = 75;
   Talent talent;
   RectangleR bounds{};
   Point basePoint{0, 0};
@@ -36,10 +39,13 @@ struct TalentNode {
   inline void Update() noexcept { isHovered = CheckCollisionPointRec(MOUSE_POS, bounds); }
 
  private:
+  inline void DrawToolTip() noexcept {
+
+  }
   inline void SpendTalentPoint() noexcept {
     if (!isActivated && isHovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
       isActivated = true;
-     //TODO sound
+      //TODO sound
     }
   }
 };
