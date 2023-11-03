@@ -4,7 +4,7 @@
 namespace TalentLoader {
 static void LoadConnections() noexcept {
   auto table = Util::ReadMGI("mgi/TalentConnections.mgi");
-  auto& matrix = TalentPanel::matrix;
+  auto& matrix = UI_MANAGER.playerUI.talentPanel.matrix;
   for (const auto& vec : table) {
     matrix.MakeEdge((int16_t)std::stoi(vec[1]), (int16_t)std::stoi(vec[0]));
   }
@@ -30,7 +30,7 @@ static void Load() noexcept {
     const char* iconPath = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s%s%s", ASSET_PATH.c_str(),
              "ui/talents/TalentIcons/", iconPath);
-
+    node.talent.icon = LoadTexture(TEXT_BUFFER);
     if (sqlite3_column_text(stmt, 6) != nullptr) {
       std::string effect = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
       Item::ParseAttributeStats(node.talent.effects, effect);
