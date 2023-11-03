@@ -19,7 +19,7 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {BLAST_HAMMER, {180, {0.8745f, 0.2431f, 0.1373f}}},
     {ENERGY_SPHERE, {180, {0.3804f, 0.6588f, 0.8902f}}}};
 
-inline static constexpr uint16_t FULL_DAY_TICKS = 3000;
+inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
 inline static uint16_t dayTicks = 0;
 inline static float currentNightAlpha = 0;
 inline static uint8_t fadeAlpha = 150;
@@ -39,6 +39,7 @@ inline static void GenerateShadowMap() noexcept {
     }
   }
 }
+//Draws the correct shader texture at the correct spot
 inline static void DrawAmbientOcclusion() noexcept {
   int var = 255 - currentNightAlpha * 270;
   unsigned char alpha = 0;

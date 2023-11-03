@@ -3,6 +3,7 @@
 struct TextureLoader {
 
   static void Load() {
+
     shadowToTexture[ShadowType::TREE_GREEN_BUSH] =
         LoadTexture((ASSET_PATH + "textures/Shadows/0.png").c_str());
     shadowToTexture[ShadowType::TREE_GREEN_POINTY] =
@@ -65,38 +66,37 @@ struct TextureLoader {
     textures::ui::HEALTH_BAR = LoadTexture((ASSET_PATH + "ui/healthbars.png").c_str());
     textures::ui::KEY_MAP = LoadTexture((ASSET_PATH + "ui/keymap.png").c_str());
 
-    textures::TALENT_BACKGROUND_TILE =
+    textures::ui::talentpanel::TALENT_BACKGROUND_TILE =
         LoadTexture((ASSET_PATH + "ui/talents/background.png").c_str());
-    textures::CONNECTION_GREEN =
+    textures::ui::talentpanel::CONNECTION_GREEN =
         LoadTexture((ASSET_PATH + "ui/talents/connection_green.png").c_str());
-    textures::CONNECTION_ORANGE =
+    textures::ui::talentpanel::CONNECTION_ORANGE =
         LoadTexture((ASSET_PATH + "ui/talents/connection_orange.png").c_str());
-    textures::CONNECTION_RED =
+    textures::ui::talentpanel::CONNECTION_RED =
         LoadTexture((ASSET_PATH + "ui/talents/connection_red.png").c_str());
-    textures::NODE_GREEN =
+    textures::ui::talentpanel::NODE_GREEN =
         LoadTexture((ASSET_PATH + "ui/talents/node_green.png").c_str());
-    textures::NODE_ORANGE =
+    textures::ui::talentpanel::NODE_ORANGE =
         LoadTexture((ASSET_PATH + "ui/talents/node_orange.png").c_str());
-    textures::NODE_PURPLE =
+    textures::ui::talentpanel::NODE_PURPLE =
         LoadTexture((ASSET_PATH + "ui/talents/node_purple.png").c_str());
-    textures::TALENT_BIG =
+    textures::ui::talentpanel::TALENT_BIG =
         LoadTexture((ASSET_PATH + "ui/talents/talent_big.png").c_str());
-    textures::TALENT_BIG_GREEN =
+    textures::ui::talentpanel::TALENT_BIG_GREEN =
         LoadTexture((ASSET_PATH + "ui/talents/talent_big_green.png").c_str());
-    textures::TALENT_BIG_PURPLE =
+    textures::ui::talentpanel::TALENT_BIG_PURPLE =
         LoadTexture((ASSET_PATH + "ui/talents/talent_big_purple.png").c_str());
-    textures::TALENT_MID =
+    textures::ui::talentpanel::TALENT_MID =
         LoadTexture((ASSET_PATH + "ui/talents/talent_mid.png").c_str());
-    textures::TALENT_MID_GREEN =
+    textures::ui::talentpanel::TALENT_MID_GREEN =
         LoadTexture((ASSET_PATH + "ui/talents/talent_mid_green.png").c_str());
-    textures::TALENT_MID_PURPLE =
+    textures::ui::talentpanel::TALENT_MID_PURPLE =
         LoadTexture((ASSET_PATH + "ui/talents/talent_mid_purple.png").c_str());
-    textures::TALENT_NODE =
+    textures::ui::talentpanel::TALENT_NODE =
         LoadTexture((ASSET_PATH + "ui/talents/talentnode.png").c_str());
 
     textures::amulet = LoadTexture((ASSET_PATH + "ui/inventory/amulet.png").c_str());
     textures::bag = LoadTexture((ASSET_PATH + "ui/inventory/bag.png").c_str());
-    textures::slot = LoadTexture((ASSET_PATH + "ui/inventory/slot.png").c_str());
     textures::boots = LoadTexture((ASSET_PATH + "ui/inventory/boots.png").c_str());
     textures::chest = LoadTexture((ASSET_PATH + "ui/inventory/chest.png").c_str());
     textures::helm = LoadTexture((ASSET_PATH + "ui/inventory/helm.png").c_str());
@@ -151,10 +151,14 @@ struct TextureLoader {
     textures::ui::skillbar::skillRange =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/skill_range.png").c_str());
 
-    textures::ui::skillbar::icons::infernoRay =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/infernoRay.png").c_str());
-    textures::ui::skillbar::icons::frostNova =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/frostNova.png").c_str());
-    textures::ui::skillbar::icons::arcaneBolt =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/arcaneBolt.png").c_str());
-    textures::ui::skillbar::icons::locked =        LoadTexture((ASSET_PATH + "ui/skillbar/icons/locked.png").c_str());
+    textures::ui::skillbar::icons::infernoRay =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/infernoRay.png").c_str());
+    textures::ui::skillbar::icons::frostNova =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/frostNova.png").c_str());
+    textures::ui::skillbar::icons::arcaneBolt =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/arcaneBolt.png").c_str());
+    textures::ui::skillbar::icons::locked =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/locked.png").c_str());
     textures::ui::skillbar::icons::inspiration =
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/inspiration.png").c_str());
     textures::ui::skillbar::icons::lightning =
@@ -221,10 +225,6 @@ struct TextureLoader {
         (ASSET_PATH + "ui/inventory/characterPanel/plus_stat_hovered.png").c_str());
     textures::ui::spendButtonPressed = LoadTexture(
         (ASSET_PATH + "ui/inventory/characterPanel/plus_stat_pressed.png").c_str());
-
-    textures::misc::blueGlow =
-        LoadTexture((ASSET_PATH + "ui/glows/blue_glow.png").c_str());
-    textures::misc::redGlow = LoadTexture((ASSET_PATH + "ui/glows/red_glow.png").c_str());
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_

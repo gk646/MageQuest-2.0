@@ -2,6 +2,7 @@
 #define MAGEQUEST_SRC_WORLD_SOUNDMANAGER_H_
 
 namespace SoundManager {
+//Choose the right playlist for the current daytime
 inline static void DayNightPlaylist(Playlist* dayList, Playlist* nightList) {
   if (Lighting::currentNightAlpha > 0.6F) {
     MusicStreamer::StartPlaylist(nightList);

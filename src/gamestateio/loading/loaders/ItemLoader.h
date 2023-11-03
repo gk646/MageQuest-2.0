@@ -1,28 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
 namespace ItemLoader {
-//Parses the effects column of an entry in the form:"35:12.000000;" and adds it on top of existing values
-inline static void ParseEffectText(float* arr, const unsigned char* ptr) {
-  if (!ptr) return;
-  std::stringstream ss(reinterpret_cast<const char*>(ptr));
-  std::string pair;
-  while (std::getline(ss, pair, ';')) {
-    size_t sep = pair.find(':');
-    if (sep == std::string::npos) continue;
-    arr[std::stoi(pair.substr(0, sep))] += std::stof(pair.substr(sep + 1));
-  }
-}
-//Parses and inscribes attribute (STR5) from the given string to the float array
-inline static void ParseAttributeStats(float* arr, const std::string& input) {
-  std::regex pattern(R"(([a-zA-Z]+)([-+]?\d+))");
-  for (std::sregex_iterator it(input.begin(), input.end(), pattern), end; it != end;
-       ++it) {
-    const std::string& attribute = (*it)[1].str();
-    if (attrToStat.count(attribute)) {
-      arr[attrToStat[attribute]] += (float)std::stoi((*it)[2].str());
-    }
-  }
-}
 //Creates new base items from the database tables
 static void CreateItemsFromTable(const std::string& table) noexcept {
   sqlite3_stmt* stmt;
@@ -44,9 +22,9 @@ static void CreateItemsFromTable(const std::string& table) noexcept {
                                    ItemRarity(sqlite3_column_int(stmt, 2)),
                                    ItemType(sqlite3_column_int(stmt, 3)), description_ptr,
                                    LoadTexture(texturePath.c_str()));
-      ParseEffectText(s.effects, sqlite3_column_text(stmt, 7));
-      ParseAttributeStats(s.effects,
-                          reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
+      Item::ParseEffectText(s.effects, sqlite3_column_text(stmt, 7));
+      Item::ParseAttributeStats(
+          s.effects, reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6)));
     }
   }
   sqlite3_finalize(stmt);
@@ -70,7 +48,8 @@ static void LoadItemsFromTable(InventorySlot* slots, const std::string& table, i
       //Clear any previous effects
       std::fill(slots[i - offsetY].item->effects,
                 slots[i - offsetY].item->effects + STATS_ENDING, 0.0f);
-      ParseEffectText(slots[i - offsetY].item->effects, sqlite3_column_text(stmt, 4));
+      Item::ParseEffectText(slots[i - offsetY].item->effects,
+                            sqlite3_column_text(stmt, 4));
       if (equip) {
         PLAYER_STATS.EquipItem(slots[i - offsetY].item->effects);
       }

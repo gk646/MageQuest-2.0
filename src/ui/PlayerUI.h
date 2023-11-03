@@ -7,13 +7,15 @@
 #include "player/CharacterBag.h"
 #include "player/StatusBar.h"
 #include "player/QuestPanel.h"
+#include "player/TalentPanel.h"
 
 struct PlayerUI {
-  RegionMap region_map{};
-  MiniMap mini_map{&region_map.isWindowOpen};
-  CharacterPanel char_panel{};
+  TalentPanel talentPanel;
+  RegionMap regionMap{};
+  MiniMap miniMap{&regionMap.isWindowOpen};
+  CharacterPanel charPanel{};
   CharacterBag charBag{};
-  StatusBar status_bar{};
+  StatusBar statusBar{};
   QuestPanel questPanel{};
   HotBar playerHotbar{};
 
@@ -21,25 +23,26 @@ struct PlayerUI {
     DRAW_NPC_DIALOGUE()
     PLAYER_EFFECTS.Draw();
     playerHotbar.Draw();
+    miniMap.Draw();
+    statusBar.Draw();
     questPanel.Draw();
-    status_bar.Draw();
-    mini_map.Draw();
-    char_panel.Draw();
     charBag.Draw();
-    region_map.Draw();
+    charPanel.Draw();
+    regionMap.Draw();
+    talentPanel.Draw();
     DrawDraggedAndToolTip();
   }
-
   void Update() noexcept {
     WINDOW_FOCUSED = false;
     questPanel.Update();
-    mini_map.Update();
-    status_bar.Update();
-    char_panel.update();
+    miniMap.Update();
+    statusBar.Update();
+    charPanel.update();
     charBag.Update();
-    region_map.Update();
+    regionMap.Update();
+    talentPanel.Update();
     playerHotbar.Update();
-    Util::update();
+    Util::Update();
     update_special_items();
   }
   static inline void DrawDraggedAndToolTip() noexcept {
@@ -65,10 +68,11 @@ struct PlayerUI {
     }
   }
   inline bool window_closeable() noexcept {
-    if (char_panel.isWindowOpen || charBag.isWindowOpen || region_map.isWindowOpen || questPanel.isWindowOpen) {
-      char_panel.isWindowOpen = false;
+    if (charPanel.isWindowOpen || charBag.isWindowOpen || regionMap.isWindowOpen ||
+        questPanel.isWindowOpen) {
+      charPanel.isWindowOpen = false;
       charBag.isWindowOpen = false;
-      region_map.isWindowOpen = false;
+      regionMap.isWindowOpen = false;
       questPanel.isWindowOpen = false;
       return true;
     } else {
@@ -76,10 +80,10 @@ struct PlayerUI {
     }
   }
   inline void ResetPosition() noexcept {
-    char_panel.ResetPosition();
+    charPanel.ResetPosition();
     charBag.ResetPosition();
     questPanel.ResetPosition();
-    region_map.ResetPosition();
+    regionMap.ResetPosition();
   }
 };
 

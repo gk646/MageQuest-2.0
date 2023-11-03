@@ -170,9 +170,10 @@ inline static std::string CreateToolTipString(const std::string& s, float damage
 
   return ret;
 }
+
 //Key press module / used for detecting key press on update tickrate(60)
 inline static bool e_previous[2] = {false, false};
-inline static void update() noexcept {
+inline static void Update() noexcept {
   e_previous[0] = e_previous[1];
   e_previous[1] = IsKeyDown(KEY_E);
 }

@@ -21,7 +21,7 @@ struct Window {
   bool isDragged = false;
   bool isWindowOpen = false;
   bool isHeaderHovered = false;
-  Window(int start_x, int start_y, int width, int height, int header_height,
+  Window(float start_x, float start_y, float width, float height, float header_height,
          char* header_text, int open_key, const Sound& openSound, const Sound& closeSound)
       : wholeWindow(start_x, start_y, width, height),
         header_bar(start_x, start_y + 2, width, header_height),
@@ -35,8 +35,8 @@ struct Window {
   if (IsKeyPressed(windowOpenKey)) {                                \
     if (isWindowOpen) {                                             \
       PlaySoundR(closeSound);                                       \
-                                                                    \
     } else {                                                        \
+      OnOpen();                                                              \
       PlaySoundR(openSound);                                        \
     }                                                               \
     isWindowOpen = !isWindowOpen;                                   \
@@ -121,5 +121,6 @@ struct Window {
     return x >= wholeWindow.x && x < wholeWindow.x + wholeWindow.width &&
            y >= wholeWindow.y && y < wholeWindow.y + wholeWindow.height;
   }
+  virtual void OnOpen(){};
 };
 #endif  //MAGEQUEST_SRC_UI_WINDOW_H_

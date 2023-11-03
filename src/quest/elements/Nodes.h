@@ -323,7 +323,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
         correctAnswer(correctAnswer){};
 
   bool Progress() noexcept final {
-    for (const auto& b : choices) {
+    for (auto& b : choices) {
       b.UpdateGlobalWindowState();
     }
     if (!assignedChoices) {
