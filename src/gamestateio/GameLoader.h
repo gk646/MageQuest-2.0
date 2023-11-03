@@ -13,10 +13,11 @@
 #include "loading/loaders/SkillLoader.h"
 #include "loading/loaders/MusicLoader.h"
 #include "loading/loaders/ItemLoader.h"
+#include "loading/loaders/TalentLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
-  static std::array<std::function<void()>, 5> load_functions;
+  static std::array<std::function<void()>, 6> load_functions;
   static void LoadGame() {
     std::thread worker(Load);
     worker.detach();
@@ -33,8 +34,10 @@ struct GameLoader {
       SetupGame();
     }
   }
+
  private:
   static void Load() {
+    LoadStep(TalentLoader::LoadConnections);
     LoadStep(MusicLoader::Load);
     LoadStep(SkillLoader::Load);
     LoadStep(GameInfoLoader::Load);
@@ -78,8 +81,8 @@ struct GameLoader {
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};
-std::array<std::function<void()>, 5> GameLoader::load_functions = {
-    EntityLoader::Load, GuiLoadStyleAshes, TileLoader::LoadToGPU, TextureLoader::Load,
-    ItemLoader::Load};
+std::array<std::function<void()>, 6> GameLoader::load_functions = {
+    EntityLoader::Load,  GuiLoadStyleAshes, TileLoader::LoadToGPU,
+    TextureLoader::Load, ItemLoader::Load,  TalentLoader::Load};
 
 #endif  //MAGE_QUEST_SRC_LOADING_STARTUPLOADER_H_

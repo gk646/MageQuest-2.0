@@ -5,15 +5,15 @@
 namespace sound {
 inline static Sound EMPTY_SOUND;
 
-namespace environment{
+namespace environment {
 inline static Sound spikes;
 }
-namespace interactable{
+namespace interactable {
 inline static Sound basicChest;
 inline static Sound normalChest;
 inline static Sound epicChest;
 inline static Sound lever;
-}
+}  // namespace interactable
 namespace music {
 inline static Music firePlace;
 inline static Music lava;
@@ -28,6 +28,9 @@ inline static Playlist bossMusic{};
 inline static Music moonLightSonata;
 }  // namespace music
 
+namespace talents {
+inline static Sound spendTalentPoint;
+}
 inline Sound intro;
 
 inline Sound menu_back;

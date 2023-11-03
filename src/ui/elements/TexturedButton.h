@@ -4,16 +4,36 @@
 #include "ToolTip.h"
 
 struct TexturedButton {
+  //Callback function triggered when the button is pressed
   std::function<void()> onPressedFunc;
+
+  //Display text on the button
   const std::string txt;
+
+  //Tooltip text that appears on hover
   const std::string toolTip;
+
+  //The button's bounding box for drawing and collision detection
   RectangleR bounds;
+
+  //Textures for different button states
   const Texture& normal;
   const Texture& hovered;
   const Texture& pressed;
+
+  //Original dimensions of the button for scaling purposes
   float base_width, base_height;
+
+  //Font size of the button's text
   float fontSize = 15;
+
+  //Indicates whether the mouse is currently over the button
   bool isHovered = false;
+
+  //If the button is
+  bool isCovered = false;
+
+  //Opacity of the button
   uint8_t alpha = 255;
   TexturedButton(float width, float height, const std::string& txt, float fontSize,
                  const Texture& normal, const Texture& hovered, const Texture& pressed,
@@ -30,10 +50,12 @@ struct TexturedButton {
         alpha(alpha),
         toolTip(std::move(toolTip)),
         onPressedFunc(func) {}
-  bool Draw(float x, float y, Alignment textAlign = Alignment::MIDDLE,
+  //Draws the button and returns true if it was clicked // execute  "onPressedFunc" automatically
+  bool Draw(const float x, const float y, const Alignment textAlign = Alignment::MIDDLE,
             Alignment buttonAlign = Alignment::MIDDLE) noexcept {
-    Update(x, y, buttonAlign);
-    if (isHovered) {
+    UpdateImpl(x, y, buttonAlign);
+    //Render the button based on its state
+    if (!isCovered && isHovered) {
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         DrawTextureScaled(pressed, bounds, 0, false, 0, {255, 255, 255, 255});
       } else {
@@ -44,15 +66,29 @@ struct TexturedButton {
       DrawTextureScaled(normal, bounds, 0, false, 0, {255, 255, 255, alpha});
     }
     DrawButtonText(textAlign);
-    return PlayConfirmSound();
+    return CheckForClick();
   }
-  [[nodiscard]] inline bool IsHovered() const noexcept { return isHovered; }
-  inline void UpdateGlobalWindowState() const noexcept {
-    if (isHovered) WINDOW_FOCUSED = true;
+  //Updates the global window state when the button is hovered
+  inline void UpdateGlobalWindowState() noexcept {
+    isCovered = WINDOW_FOCUSED;
+    if (isHovered) {
+      WINDOW_FOCUSED = true;
+    }
   }
 
  private:
-  inline void DrawButtonText(Alignment align) noexcept {
+  [[nodiscard]] inline bool CheckForClick() const noexcept {
+    if (!isCovered && isHovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+      if (onPressedFunc) {
+        onPressedFunc();
+      }
+      PlaySoundR(sound::menu_switch);
+      return true;
+    }
+    return false;
+  }
+  //Draws the button's text based on the specified alignment
+  inline void DrawButtonText(const Alignment align) noexcept {
     switch (align) {
       case Alignment::LEFT: {
         auto bound = MeasureTextEx(MINECRAFT_BOLD, txt.c_str(), fontSize, 0.5);
@@ -81,7 +117,7 @@ struct TexturedButton {
     }
     return Colors::darkBackground;
   }
-  inline void Update(float x, float y, Alignment buttonAlign) noexcept {
+  inline void UpdateImpl(const float x, const float y, const Alignment buttonAlign) noexcept {
     bounds.x = x;
     bounds.y = y;
     //bounds.width = SCALE(base_width);
@@ -91,22 +127,6 @@ struct TexturedButton {
     }
 
     isHovered = CheckCollisionPointRec(MOUSE_POS, bounds);
-  }
-  inline void PlayerEnterSound() {
-    if (!isHovered) {
-      PlaySoundR(sound::menu_switch);
-      isHovered = true;
-    }
-  }
-  [[nodiscard]] inline bool PlayConfirmSound() const noexcept {
-    if (isHovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-      if (onPressedFunc) {
-        onPressedFunc();
-      }
-      PlaySoundR(sound::menu_switch);
-      return true;
-    }
-    return false;
   }
 };
 #endif  //MAGEQUEST_SRC_UI_ELEMENTS_TEXTUREDBUTTON_H_

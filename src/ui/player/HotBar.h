@@ -49,7 +49,8 @@ struct HotBar {
     float startY = SCREEN_HEIGHT - height * 0.93;
 
     xp_bar.Draw(startX, startY);
-    DrawTextureScaled(textures::ui::skillbar::skillbar, {startX, startY, width, height}, 0, false, 0, WHITE);
+    DrawTextureScaled(textures::ui::skillbar::skillbar, {startX, startY, width, height},
+                      0, false, 0, WHITE);
 
     float currentX = startX;
     for (uint_fast32_t i = 0; i < 6; i++) {
@@ -73,7 +74,7 @@ struct HotBar {
   }
   void Update() noexcept {
     xp_bar.update();
-    for (const auto& mb : menuButtons) {
+    for (auto& mb : menuButtons) {
       mb.UpdateGlobalWindowState();
     }
     for (const auto& skill : skills) {

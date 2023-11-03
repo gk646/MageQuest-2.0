@@ -7,7 +7,7 @@
 
 namespace GameSaver {
 
-static void save() noexcept {
+static void Save() noexcept {
   ItemSaver::Save();
   NPCSaver::SaveNamedNPCs();
   MapCoverSaver::Save();

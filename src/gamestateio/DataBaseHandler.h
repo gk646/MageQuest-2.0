@@ -41,7 +41,7 @@ inline static void SaveNumToTable(int value, const std::string& name, int y) noe
 
   sqlite3_finalize(stmt);
 }
-//Works for all *_STATE tables / returns true if an entry with the given values exists
+//Works for all *_STATE tables // returns true if an entry with the given values exists
 inline static bool StateExistsInTable(const std::string& tableName, int enumVal, int xPos,
                                       int yPos, int zone) noexcept {
   sqlite3_stmt* stmt;

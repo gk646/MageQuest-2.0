@@ -83,6 +83,7 @@ inline static int16_t shadowTileNumbers[(int)ShadowType::END] = {
     static_cast<int16_t>(ShadowType::ROCK_SMALL_3),
     static_cast<int16_t>(ShadowType::ROCK_SMALL_4)};
 
+//Textures are loaded later // dummies for now
 std::unordered_map<ShadowType, Texture> shadowToTexture{
     {ShadowType::TREE_GREEN_BUSH, Texture()}, {ShadowType::TREE_GREEN_BUSH, Texture()},
     {ShadowType::TREE_GREEN_BUSH, Texture()}, {ShadowType::TREE_GREEN_BUSH, Texture()},
@@ -91,6 +92,7 @@ std::unordered_map<ShadowType, Texture> shadowToTexture{
     {ShadowType::TREE_GREEN_BUSH, Texture()},
 
 };
+enum class TalentSize : uint8_t {NORMAL, MID, BIG};
 enum class Keybind : uint8_t {
   PLAYER_LIGHT,
   ABILITY_1,

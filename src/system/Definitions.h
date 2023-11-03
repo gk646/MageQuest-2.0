@@ -7,7 +7,7 @@
  */
 #define SQRT_2 1.2142F
 #define SIMD_PRAGMA _Pragma("omp simd")
-#define TILE_SIZE 48
+#define TILE_SIZE 48.0F
 #define SCALE(val) ((val)*UI_SCALE)
 #define SCALE_RECT(rect) \
   { SCALE((rect).x), SCALE((rect).y), SCALE((rect).width), SCALE((rect).height) }

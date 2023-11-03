@@ -18,7 +18,7 @@ namespace container {
 inline std::vector<Texture> basicChest;
 inline std::vector<Texture> normalChest;
 inline std::vector<Texture> epicChest;
-}
+}  // namespace container
 namespace monsters {
 inline MonsterResource SKELETON_WARRIOR;
 inline MonsterResource SKELETON_SPEAR;
@@ -62,11 +62,6 @@ inline ProjectileResources ARROW_NORMAL;
 
 }  // namespace projectile
 
-namespace misc {
-inline static Texture blueGlow;
-inline static Texture redGlow;
-inline static Texture purpleGlow;
-}  // namespace misc
 namespace ui {
 inline Texture STATUS_BAR;
 inline Texture CROSS_HAIR_AIM;
@@ -101,30 +96,39 @@ inline static Texture questBoxPressed;
 inline static Texture choiceBox;
 inline static Texture choiceBoxHovered;
 }  // namespace questpanel
-
+namespace talentpanel {
+inline Texture TALENT_BACKGROUND_TILE;
+inline Texture CONNECTION_GREEN;
+inline Texture CONNECTION_ORANGE;
+inline Texture CONNECTION_RED;
+inline Texture NODE_GREEN;
+inline Texture NODE_ORANGE;
+inline Texture NODE_PURPLE;
+inline Texture TALENT_BIG;
+inline Texture TALENT_BIG_GREEN;
+inline Texture TALENT_BIG_PURPLE;
+inline Texture TALENT_MID;
+inline Texture TALENT_MID_GREEN;
+inline Texture TALENT_MID_PURPLE;
+inline Texture TALENT_NODE;
+}  // namespace talentpanel
 namespace skillbar {
 inline static Texture bag;
-inline static Texture bag_hovered;
 inline static Texture bag_pressed;
 
 inline static Texture abilities;
-inline static Texture abilities_hovered;
 inline static Texture abilities_pressed;
 
 inline static Texture character;
-inline static Texture character_hovered;
 inline static Texture character_pressed;
 
 inline static Texture map;
-inline static Texture map_hovered;
 inline static Texture map_pressed;
 
 inline static Texture setting;
-inline static Texture setting_hovered;
 inline static Texture setting_pressed;
 
 inline static Texture skilltree;
-inline static Texture skilltree_hovered;
 inline static Texture skilltree_pressed;
 
 inline static Texture tooltip;
@@ -175,22 +179,5 @@ inline Texture pants;
 inline Texture relic;
 inline Texture ring;
 inline Texture weapon;
-
-//TALENTS
-inline Texture TALENT_BACKGROUND_TILE;
-inline Texture CONNECTION_GREEN;
-inline Texture CONNECTION_ORANGE;
-inline Texture CONNECTION_RED;
-inline Texture NODE_GREEN;
-inline Texture NODE_ORANGE;
-inline Texture NODE_PURPLE;
-inline Texture TALENT_BIG;
-inline Texture TALENT_BIG_GREEN;
-inline Texture TALENT_BIG_PURPLE;
-inline Texture TALENT_MID;
-inline Texture TALENT_MID_GREEN;
-inline Texture TALENT_MID_PURPLE;
-inline Texture TALENT_NODE;
-
 }  // namespace textures
 #endif  //MAGEQUEST_SRC_SYSTEM_TEXTURESTORAGE_H_

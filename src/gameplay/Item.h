@@ -243,6 +243,28 @@ struct Item {
   }
   //Returns a clone of the base item that matches the given values
   inline static Item* FindBaseItem(int id, ItemType type, int quality, int level);
+  //Parses the effects column of an entry in the form:"35:12.000000;" and adds it on top of existing values
+  inline static void ParseEffectText(float* arr, const unsigned char* ptr) {
+    if (!ptr) return;
+    std::stringstream ss(reinterpret_cast<const char*>(ptr));
+    std::string pair;
+    while (std::getline(ss, pair, ';')) {
+      size_t sep = pair.find(':');
+      if (sep == std::string::npos) continue;
+      arr[std::stoi(pair.substr(0, sep))] += std::stof(pair.substr(sep + 1));
+    }
+  }
+  //Parses and adds the attribute values (STR5) from the given string to the float array
+  inline static void ParseAttributeStats(float* arr, const std::string& input) {
+    std::regex pattern(R"(([a-zA-Z]+)([-+]?\d+))");
+    for (std::sregex_iterator it(input.begin(), input.end(), pattern), end; it != end;
+         ++it) {
+      const std::string& attribute = (*it)[1].str();
+      if (attrToStat.count(attribute)) {
+        arr[attrToStat[attribute]] += (float)std::stoi((*it)[2].str());
+      }
+    }
+  }
 };
 char Item::textBuffer[10];
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_

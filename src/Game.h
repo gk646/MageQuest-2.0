@@ -264,7 +264,7 @@ class Game {
     SetMouseCursorImage((ASSET_PATH + "ui/cursor.png").c_str(), 0, 0);
     PLAYER_ID = SteamUser()->GetSteamID();
     PLAYER_NAME = SteamFriends()->GetPersonaName();
-    UI_MANAGER.playerUI.char_panel.header_text = PLAYER_NAME.data();
+    UI_MANAGER.playerUI.charPanel.header_text = PLAYER_NAME.data();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");
     Image icon = LoadImageR((ASSET_PATH + "Icons/icon2.png").c_str());
@@ -278,7 +278,7 @@ class Game {
     SettingsMenu::set_full_screen();
   }
   ~Game() noexcept {
-    GameSaver::save();
+    GameSaver::Save();
     Multiplayer::CloseMultiplayer();
     std::cout << PERF_TIME / PERF_FRAMES << std::endl;
     for (uint16_t i = 0; i < TEXTURE_COUNT + 1500; i++) {

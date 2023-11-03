@@ -24,19 +24,19 @@ struct UIManager {
       playerUI.charBag.ToggleWindow();
     };
     playerUI.playerHotbar.menuButtons[1].onPressedFunc = [&]() {
-      playerUI.charBag.ToggleWindow();
+      playerUI.questPanel.ToggleWindow();
     };
     playerUI.playerHotbar.menuButtons[2].onPressedFunc = [&]() {
-      playerUI.char_panel.ToggleWindow();
+      playerUI.charPanel.ToggleWindow();
     };
     playerUI.playerHotbar.menuButtons[3].onPressedFunc = [&]() {
-      playerUI.region_map.ToggleWindow();
+      playerUI.regionMap.ToggleWindow();
     };
     playerUI.playerHotbar.menuButtons[4].onPressedFunc = [&]() {
       GAME_STATE = GameState::GameMenu;
     };
     playerUI.playerHotbar.menuButtons[5].onPressedFunc = [&]() {
-      playerUI.charBag.ToggleWindow();
+      playerUI.talentPanel.ToggleWindow();
     };
   }
   void UIUpdate() noexcept {

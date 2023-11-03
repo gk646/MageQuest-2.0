@@ -3,6 +3,8 @@
 struct SoundLoader {
 
   static void Load() {
+    sound::talents::spendTalentPoint =
+        LoadSound((ASSET_PATH + "sound/effects/levelup/getTalent.wav").c_str());
     sound::interactable::basicChest =
         LoadSound((ASSET_PATH + "sound/effects/interactable/chestOpen.wav").c_str());
     sound::interactable::normalChest =
