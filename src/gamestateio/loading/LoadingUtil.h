@@ -2,9 +2,9 @@
 #define MAGE_QUEST_SRC_LOADING_LOADINGUTIL_H_
 
 namespace load_util {
-inline const std::array<float, 16> weights{1,  3,  1, 2, 2, 1, 5, 10,
+inline const std::array<float, 17> weights{1,1,  3,  1, 2, 2, 1, 5, 10,
                                            10, 10, 7, 1, 3, 2, 3, 3};
-inline int cpu_steps = 10;
+inline int cpu_steps = 11;
 inline int current_step = 0;
 }  // namespace load_util
 

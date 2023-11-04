@@ -76,6 +76,7 @@ struct WorldObject;
 struct NPC;
 struct Monster;
 struct Player;
+struct Skill;
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline static uint_fast32_t MONSTER_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND = nullptr;
@@ -93,6 +94,7 @@ inline static std::vector<Projectile*> PROJECTILES;
 inline static std::vector<WorldObject*> WORLD_OBJECTS;
 inline static std::vector<NPC*> NPCS;
 inline static std::vector<Monster*> MONSTERS;
+inline static std::array<Skill*, ProjectileType::PROJECTILE_END> SKILLS;
 
 inline static bool CheckTileCollision(int x, int y) noexcept {
   return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID ||

@@ -3,7 +3,11 @@
 struct SkeletonSpear final : public Monster {
   SkeletonSpear(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_SPEAR,
-                type, {30, 50}) {}
+                type, {30, 50}) {
+  attackComponent.RegisterConeAttack(1,stats.level,120,40,48,resource->attack_sound[0],15);
+  attackComponent.RegisterConeAttack(2,stats.level,120,40,48,resource->attack_sound[0],15);
+  attackComponent.RegisterConeAttack(3,stats.level,120,40,48,resource->attack_sound[0],24);
+  }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
       draw_death();
@@ -94,21 +98,7 @@ struct SkeletonSpear final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      if (AttackPlayer3Attacks()) {
-        if (actionState == 1) {
-          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
-                                                  15, stats.level, {},
-                                                  resource->attack_sound[0], this));
-        } else if (actionState == 2) {
-          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
-                                                  15, stats.level, {},
-                                                  resource->attack_sound[0], this));
-        } else {
-          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
-                                                  24, stats.level, {},
-                                                  resource->attack_sound[0], this));
-        }
-      }
+      attackComponent.Attack();
     }
   }
 };

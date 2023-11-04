@@ -68,7 +68,7 @@ class Game {
         for (auto np : OTHER_PLAYERS) {
           if (np) {
             if ((*it)->intersects(*np)) {
-              np->hit(**it);
+              np->Hit(**it);
             }
           }
         }
@@ -119,7 +119,7 @@ class Game {
       [[likely]] case GameState::GameMenu:
         TileEvents::Update();
         WorldManager::Update();
-        PLAYER_STATS.update();
+        PLAYER_STATS.Update();
         PLAYER_EFFECTS.Update();
         PLAYER.Update();
         UPDATE_AND_COLLISION();

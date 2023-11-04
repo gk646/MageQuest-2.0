@@ -94,7 +94,7 @@ struct MiniMap {
     for (const auto projectile : PROJECTILES) {
       if (BoundCheckObject(projectile, tile_x, tile_y)) continue;
 
-      if (projectile->from_player) {
+      if (projectile->isFriendlyToPlayer) {
         DrawSquareProFast(
             draw_x + ((float)projectile->tilePos.x - (float)tile_x) * ZOOM,
             START_Y + ((float)projectile->tilePos.y - (float)tile_y) * ZOOM, 3,

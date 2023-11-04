@@ -8,7 +8,9 @@ struct Ghost final : public Monster {
   bool disappeared = true;
   Ghost(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::GHOST, type,
-                {30, 40}) {}
+                {30, 40}) {
+    attackComponent.RegisterProjectileAttack(1, level, 100, PSYCHIC_SCREAM);
+  }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
       draw_death();
@@ -20,7 +22,8 @@ struct Ghost final : public Monster {
       DrawDisappear();
     } else {
       DrawTextureProFastEx(resource->idle[spriteCounter % 105 / 15], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     }
     healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
@@ -28,7 +31,7 @@ struct Ghost final : public Monster {
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && attackStats.IsAttackReady(actionState)) {
+    if (target ) {
       if (!disappeared) {
         actionState = 3;
         spriteCounter = 0;
@@ -62,7 +65,8 @@ struct Ghost final : public Monster {
     int num = spriteCounter % 70 / 10;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -71,21 +75,22 @@ struct Ghost final : public Monster {
     int num = spriteCounter % 42 / 6;
     if (num < 6) {
       DrawTextureProFastEx(resource->walk[num], pos.x_ + DRAW_X - 20, pos.y_ + DRAW_Y, 0,
-                           0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           0, !isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 1;
       teleported = false;
-      PROJECTILES.push_back(new PsychicScream(pos, false, 5, HitType::CONTINUOUS));
+      PROJECTILES.push_back(new PsychicScream(pos, false, stats.level));
       spriteCounter = 0;
       disappeared = false;
-      attackStats.ResetCooldown();
     }
   }
   inline void DrawDisappear() noexcept {
     int num = spriteCounter % 56 / 8;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
-                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 15, 0, 0, !isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
       disappeared = true;

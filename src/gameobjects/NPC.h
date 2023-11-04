@@ -17,7 +17,7 @@ struct NPC : public Entity {
   bool last = false;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
       float speed = 2, const PointT<int16_t>& size = {25, 35})
-      : Entity(pos, size, ShapeType::RECT, 0, zone),
+      : Entity(pos, size, ShapeType::RECT, 0,false, zone),
         resource(resource),
         id(id),
         speed(speed),

@@ -18,8 +18,8 @@ struct Entity {
   bool isUpdated = true;
   bool isIlluminated = false;
   Entity(const Point& pos, const PointT<int16_t>& size, ShapeType hitboxShape,
-         int16_t pov = 0, Zone zone = CURRENT_ZONE)
-      : pos(pos), size(size), hitboxShape(hitboxShape), pov(pov), currentZone(zone) {}
+         int16_t pov = 0,bool isIlluminated = false, Zone zone = CURRENT_ZONE)
+      : pos(pos), size(size), hitboxShape(hitboxShape), pov(pov), currentZone(zone), isIlluminated(isIlluminated) {}
   Entity(const Entity& o) noexcept
       : pos(o.pos),
         size(o.size),
@@ -214,5 +214,6 @@ struct Entity {
     }
   }
 };
-#include "elements/ThreatManager.h"
+#include "components/ThreatManager.h"
+
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

@@ -1,7 +1,7 @@
 #ifndef MAGE_QUEST_SRC_UI_HOTBAR_H_
 #define MAGE_QUEST_SRC_UI_HOTBAR_H_
 
-#include "../../gameplay/Skill.h"
+
 #include "XPBar.h"
 
 struct HotBar {

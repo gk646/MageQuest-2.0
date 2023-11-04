@@ -11,7 +11,7 @@ struct Skill {
   SkillStats skillStats;
   DamageStats damageStats;
   const Texture& icon;
-  uint32_t coolDownUpCounter;
+  uint16_t coolDownUpCounter;
   uint8_t attackAnimation = 0;
   bool from_player;
   Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,
@@ -37,34 +37,12 @@ struct Skill {
   }
   //Returns true if skill is ready to use
   [[nodiscard]] inline bool IsUsable() const noexcept {
-    return PLAYER_STATS.skill_useable(skillStats, coolDownUpCounter);
+    return PLAYER_STATS.IsSkillUsable(skillStats, coolDownUpCounter);
   }
   //Handles logic for when the skill is used
-  inline void TriggerSkill() noexcept {
-    coolDownUpCounter = 0;
-    PLAYER.flip = MOUSE_POS.x < CAMERA_X;
-    PLAYER.spriteCounter = 0;
-    PLAYER.actionState = attackAnimation;
-    PLAYER_STATS.UseSkill(skillStats);
-  }
-  //Does a ray-cast and range-check from player to mouse position
-  [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept {
-    Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
-                       PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
-    if (Point(PLAYER_X + (float)PLAYER.size.x / 2.0F,
-              PLAYER_Y + (float)PLAYER.size.y / 2.0F)
-            .dist(targetPos) <= (float)skillStats.range) {
-      if (PathFinding::LineOfSightCheck(PLAYER.tilePos, targetPos)) {
-        return true;
-        //TODO quick notifications
-      } else {
-        // No line of sight to target
-      }
-    } else {
-      // Target is out of range
-    }
-    return false;
-  }
+  inline void TriggerSkill() noexcept;
+  //Does a ray-cast and range-check from soundPlayer to mouse position
+  [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept;
   //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
   inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
   inline void DrawTooltip(float x, float y) noexcept {
@@ -182,11 +160,68 @@ struct Skill {
           0, false, 0, WHITE);
     }
   }
+
+ protected:
+  inline void SkillAtMouse(ProjectileType type) noexcept;
+  inline void SkillAtMouseRadial(ProjectileType type, int numProjectiles) noexcept;
+  inline void SkillToMouse(ProjectileType type) noexcept;
 };
 
-#include "skills/Skills.h"
+#include "../gameobjects/projectiles/Projectiles.h"
 
-inline static std::array<Skill*, ProjectileType::PROJECTILE_END> SKILLS;
+inline static Projectile* GetProjectileInstance(
+    ProjectileType type, const Point& pos, bool isFriendlyToPlayer, float damage,
+    const Entity* sender, const Vector2& mvmt, int16_t pov,
+    const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects = {nullptr, nullptr,
+                                                                        nullptr},
+    const Sound& sound = sound::EMPTY_SOUND) noexcept {
+  switch (type) {
+    case POISON_BALL:
+      break;
+    case FIRE_STRIKE:
+      return new FireBall(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
+    case FIRE_STRIKE_II:
+      break;
+    case FIRE_BALL:
+      break;
+    case ARROW_NORMAL:
+      return new ArrowNormal(pos, isFriendlyToPlayer, damage, effects, mvmt, sound,
+                             sender);
+    case BLAST_HAMMER:
+      return new BlastHammer(pos, isFriendlyToPlayer, damage, effects, sender);
+    case ENERGY_SPHERE:
+      return new EnergySphere(pos, isFriendlyToPlayer, damage, effects, mvmt, sender);
+    case FIRE_SWORD:
+      break;
+    case FROST_NOVA:
+      return new FrostNova(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
+    case ICE_LANCE:
+      break;
+    case INFERNO_RAY:
+      break;
+    case LIGHTNING:
+      return new Lightning(pos, isFriendlyToPlayer, damage, effects, mvmt, sender);
+    case PYRO_BLAST:
+      break;
+    case SOLAR_FLARE:
+      break;
+    case THUNDER_SPLASH:
+      break;
+    case THUNDER_STRIKE:
+      break;
+    case VOID_ERUPTION:
+      break;
+    case VOID_FIELD:
+      break;
+    case ARCANE_BOLT:
+      return new ArcaneBolt(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
+    case PROJECTILE_END:
+      break;
+  }
+}
+#include "../gameobjects/components/AttackComponent.h"
+
+#include "skills/Skills.h"
 Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept {
   switch (type) {
     case POISON_BALL:
@@ -235,36 +270,31 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
   switch (data->p_type) {
     case FIRE_BALL: {
       PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
-          SKILLS[FIRE_BALL]->skillStats.lifeSpan, SKILLS[FIRE_BALL]->skillStats.speed,
-          data->damage, HitType::ONE_HIT, {nullptr, nullptr, nullptr}, data->pov,
-          {data->move_x, data->move_y}, ptr));
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, data->damage,
+          {nullptr, nullptr, nullptr}, data->pov, {data->move_x, data->move_y}, ptr));
       break;
     }
     case FIRE_STRIKE: {
       PROJECTILES.emplace_back(new FireBall(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
-          SKILLS[FIRE_STRIKE]->skillStats.lifeSpan, SKILLS[FIRE_STRIKE]->skillStats.speed,
-          data->damage, HitType::CONTINUOUS, {nullptr, nullptr, nullptr}, data->pov,
-          {data->move_x, data->move_y}, ptr));
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, data->damage,
+          {nullptr, nullptr, nullptr}, data->pov, {data->move_x, data->move_y}, ptr));
       break;
     }
     case BLAST_HAMMER: {
-      PROJECTILES.emplace_back(
-          new BlastHammer({(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
-                          SKILLS[BLAST_HAMMER]->skillStats.lifeSpan, 0, data->damage,
-                          HitType::ONE_TICK, {nullptr, nullptr, nullptr}, data->pov,
-                          {0, 0}, RANGE_01(RNG_RANDOM) > 0.5F, ptr));
+      PROJECTILES.emplace_back(new BlastHammer({(float)data->x, (float)data->y},
+                                               !FRIENDLY_FIRE, data->damage,
+                                               {nullptr, nullptr, nullptr}, ptr));
       break;
     }
     case ENERGY_SPHERE: {
       PROJECTILES.emplace_back(new EnergySphere(
-          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE,
-          SKILLS[ENERGY_SPHERE]->skillStats.lifeSpan,
-          SKILLS[ENERGY_SPHERE]->skillStats.speed, data->damage,
+          {(float)data->x, (float)data->y}, !FRIENDLY_FIRE, data->damage,
           {nullptr, nullptr, nullptr}, {data->move_x, data->move_y}, ptr));
       break;
     }
   }
 }
+
+
+
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

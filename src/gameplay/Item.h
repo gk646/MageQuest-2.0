@@ -83,6 +83,7 @@ struct Item {
   void Draw(const RectangleR& rect) const noexcept {
     DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
+  //Draws the item tooltip correctly aligned, so It's not outside screen bounds
   void DrawToolTip() const noexcept {
     auto mouse = GetMousePosition();
     float startX, startY;
