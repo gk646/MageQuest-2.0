@@ -1,20 +1,14 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_
+
 struct BlastHammer final : Projectile {
-  static constexpr int width = 50;
-  static constexpr int height = 50;
-  static constexpr int HIT_DELAY = 50;
   bool flip;
-  BlastHammer(const Point& pos, bool from_player, int life_span, float speed,
-              float damage, HitType hit_type, const std::array<StatusEffect*, 3>& effects,
-              float pov, const Vector2& move, bool flip, const Entity* sender)
-      : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
-                   {DamageType::FIRE, damage}, hit_type, effects, move, pov,
-                   sound::blastHammer, &textures::projectile::BLAST_HAMMER, sender),
-        flip(flip) {
-    projectileType = BLAST_HAMMER;
+  BlastHammer(const Point& pos, bool isFriendlyToPlayer, float damage,
+              const std::array<StatusEffect*, 3>& effects, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::FIRE, damage}, effects, {0, 0},
+                   0, sound::blastHammer, sender, BLAST_HAMMER),
+        flip(pos.x_ < MIRROR_POINT) {
     isDoingDamage = false;
-    isIlluminated = true;
   }
   void Draw() final {
     if (spriteCounter < 110) {
@@ -26,65 +20,32 @@ struct BlastHammer final : Projectile {
   }
   void Update() final {
     Projectile::Update();
-    if (spriteCounter == HIT_DELAY) {
+    if (spriteCounter == (int16_t)typeToInfo[projectileType].val1) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;
     }
   }
 };
-struct Dummy final : Projectile {
-  Dummy(const Point& pos, bool from_player, float damage)
-      : Projectile(from_player, pos, {25, 25}, ShapeType::RECT, 240, 4,
-                   {DamageType::FIRE, damage}, HitType::ONE_HIT, {}, {0, 0}, 0,
-                   sound::fireBurst, &textures::projectile::DUMMY, nullptr) {
-    float angle = std::atan2(MOUSE_POS.y - (pos.y_ + DRAW_Y) - size.y / 2,
-                             MOUSE_POS.x - (pos.x_ + DRAW_X) - size.x / 2);
-    pov = angle * (180.0f / PI);
-    mvmVector = GetMovementVectorToMouse();
-  }
-
-  void Draw() final {
-    DrawTextureProFastRot(resources->frames[0], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov,
-                          WHITE);
-    DRAW_HITBOXES();
-  }
-};
 struct EnergySphere final : Projectile {
-  static constexpr int WIDTH = 30;
-  static constexpr int HEIGHT = 30;
-  EnergySphere(const Point& position, bool isFromPlayer, int lifespan,
-               float projectileSpeed, float damageValue,
-               const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& statusEffects,
-               const Vector2& movementDirection, const Entity* sender)
-      : Projectile(isFromPlayer, position, {WIDTH, HEIGHT}, ShapeType::CIRCLE, lifespan,
-                   projectileSpeed, {DamageType::ARCANE, damageValue},
-                   HitType::CONTINUOUS, statusEffects, movementDirection, 0,
-                   sound::energySphere, &textures::projectile::ENERGY_SPHERE, sender) {
-    projectileType = ENERGY_SPHERE;
-    isIlluminated = true;
-  }
+  EnergySphere(const Point& pos, bool isFriendlyToPlayer, float damage,
+               const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+               const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damage}, effects, mvmt,
+                   0, sound::energySphere, sender, ENERGY_SPHERE) {}
   void Draw() final {
     DrawTextureProFast(resources->frames[spriteCounter % 42 / 7], pos.x_ + DRAW_X - 8,
                        pos.y_ + DRAW_Y - 8, 0, WHITE);
-
     DRAW_HITBOXES();
   }
 };
 struct FireBall final : Projectile {
-  static constexpr int width = 25;
-  static constexpr int height = 25;
-  FireBall(const Point& pos, bool from_player, int life_span, float speed, float damage,
-           HitType hit_type,
-           const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
-           const Vector2& move, const Entity* sender, bool sound = true)
-      : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
-                   {DamageType::FIRE, damage}, hit_type, effects, move, pov,
-                   sound ? sound::EMPTY_SOUND : sound::fireBurst,
-                   &textures::projectile::FIRE_BURST, sender) {
-    projectileType = ProjectileType::FIRE_BALL;
-    isIlluminated = true;
-  }
+  FireBall(const Point& pos, bool isFriendlyToPlayer, float damage,
+           const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
+           const Vector2& mvmt, const Entity* sender, bool sound = false)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::FIRE, damage}, effects, mvmt,
+                   pov, sound ? sound::EMPTY_SOUND : sound::fireBurst, sender,
+                   FIRE_BALL) {}
   void Draw() final {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 60 / 15],
                                 pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -10, -3);
@@ -92,15 +53,11 @@ struct FireBall final : Projectile {
   }
 };
 struct PsychicScream final : Projectile {
-  static constexpr int width = 40;
-  static constexpr int height = 40;
-  PsychicScream(const Point& pos, bool from_player, float damage, HitType hit_type)
-      : Projectile(from_player, pos, {width, height}, ShapeType::CIRCLE, 60, 0,
-                   {DamageType::ARCANE, damage}, hit_type, {new Stun(120)}, {0, 0}, 0,
-                   sound::speak, &textures::projectile::PSYCHIC_SCREAM, nullptr) {
+  PsychicScream( const Point& pos,bool isFriendlyToPlayer, float damage)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::DARK, damage}, {new Stun(120)},
+                   {0, 0}, 0, sound::speak, nullptr, PSYCHIC_SCREAM) {
     isDoingDamage = false;
   }
-
   void Draw() final {
     DrawTextureProFast(resources->frames[spriteCounter % 60 / 6], pos.x_ + DRAW_X - 57,
                        pos.y_ + DRAW_Y - 50, 0, WHITE);
@@ -108,7 +65,7 @@ struct PsychicScream final : Projectile {
   }
   void Update() final {
     Projectile::Update();
-    if (lifeSpanTicks == 10) {
+    if (lifeSpanTicks == (int16_t)typeToInfo[projectileType].val1) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;
@@ -116,18 +73,13 @@ struct PsychicScream final : Projectile {
   }
 };
 struct Lightning final : Projectile {
-  static constexpr int WIDTH = 40;
-  static constexpr int HEIGHT = 30;
-  static constexpr int HIT_DELAY = 24;
   bool flip;
-  Lightning(const Point& pos, bool from_player, int life_span, float speed, float damage,
-            HitType hit_type,
-            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
-            const Vector2& move, bool flip, const Entity* sender)
-      : Projectile(from_player, pos, {WIDTH, HEIGHT}, ShapeType::RECT, life_span, speed,
-                   {DamageType::ARCANE, damage}, hit_type, effects, move, pov,
-                   sound::lightning, &textures::projectile::LIGHTNING_STRIKE, sender),
-        flip(flip) {}
+  Lightning(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damage}, effects, mvmt,
+                   0, sound::lightning, sender, LIGHTNING),
+        flip(pos.x_ < MIRROR_POINT) {}
 
   void Draw() final {
     if (Projectile::spriteCounter < 70) {
@@ -139,7 +91,7 @@ struct Lightning final : Projectile {
   }
   void Update() final {
     Projectile::Update();
-    if (spriteCounter == HIT_DELAY) {
+    if (spriteCounter == (int16_t)typeToInfo[projectileType].val1) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;
@@ -147,16 +99,11 @@ struct Lightning final : Projectile {
   }
 };
 struct FrostNova final : Projectile {
-  static constexpr int WIDTH = 90;
-  static constexpr int HEIGHT = 90;
-  static constexpr int HIT_DELAY = 50;
-  FrostNova(const Point& pos, bool from_player, int life_span, float speed, float damage,
-            HitType hit_type,
-            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
-            const Vector2& move, const Entity* sender)
-      : Projectile(from_player, pos, {WIDTH, HEIGHT}, ShapeType::CIRCLE, life_span, speed,
-                   {DamageType::ICE, damage}, hit_type, {new Root(180)}, move, pov,
-                   sound::frostNova, &textures::projectile::FROST_NOVA, sender) {}
+  FrostNova(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, {new Root(180)},
+                   mvmt, 0, sound::frostNova, sender, FROST_NOVA) {}
 
   void Draw() final {
     if (spriteCounter > 55) return;
@@ -167,7 +114,7 @@ struct FrostNova final : Projectile {
   }
   void Update() final {
     Projectile::Update();
-    if (spriteCounter == HIT_DELAY) {
+    if (spriteCounter == (int16_t)typeToInfo[projectileType].val1) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;
@@ -176,15 +123,17 @@ struct FrostNova final : Projectile {
 };
 struct AttackCone final : Projectile {
   uint16_t hitDelay = 0;
-  AttackCone(const RectangleR& rect, bool from_player, uint16_t life_span,
-             uint16_t hitDelay, float damage,
+  AttackCone(const RectangleR& rect, bool isFriendlyToPlayer, int16_t life_span,
+             int16_t hitDelay, float damage,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
              const Sound& sound, const Entity* sender)
-      : Projectile(from_player, {rect.x, rect.y},
-                   {static_cast<int>(rect.width), static_cast<int>(rect.height)},
-                   ShapeType::RECT, life_span, 0, {DamageType::PHYSICAL, damage},
-                   HitType::ONE_TICK, effects, {0, 0}, 0, sound, nullptr, sender),
-        hitDelay(hitDelay) {}
+      : Projectile(isFriendlyToPlayer, {rect.x, rect.y}, {DamageType::PHYSICAL, damage},
+                   effects, {0, 0}, 0, sound, sender, PROJECTILE_END),
+        hitDelay(hitDelay) {
+    hitType = HitType::ONE_TICK;
+    lifeSpanTicks = life_span;
+    size = {static_cast<int16_t>(rect.width), static_cast<int16_t>(rect.height)};
+  }
   void Draw() final { DRAW_HITBOXES(); }
   void Update() final {
     Projectile::Update();
@@ -196,20 +145,14 @@ struct AttackCone final : Projectile {
   }
 };
 struct ArrowNormal final : Projectile {
-  static constexpr int WIDTH = 18;
-  static constexpr int HEIGHT = 10;
-  ArrowNormal(const Point& position, bool isFromPlayer, int lifespan,
-              float projectileSpeed, float damageValue,
+  ArrowNormal(const Point& pos, bool isFriendlyToPlayer, float damageValue,
               const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& statusEffects,
-              const Vector2& movementDirection, const Sound& sound, const Entity* sender)
-      : Projectile(isFromPlayer, position, {WIDTH, HEIGHT}, ShapeType::RECT, lifespan,
-                   projectileSpeed, {DamageType::ARCANE, damageValue}, HitType::ONE_HIT,
-                   statusEffects, movementDirection, 0, sound,
-                   &textures::projectile::ARROW_NORMAL, sender) {
-    if (!isFromPlayer) {
+              const Vector2& mvmt, const Sound& sound, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damageValue},
+                   statusEffects, mvmt, 0, sound, sender, ARROW_NORMAL) {
+    if (!isFriendlyToPlayer) {
       this->mvmVector = GetMovementVectorToWorldPos({PLAYER_X + 15, PLAYER_Y + 24});
     }
-    projectileType = ARROW_NORMAL;
   }
   void Draw() final {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 20 / 2],
@@ -220,16 +163,12 @@ struct ArrowNormal final : Projectile {
 };
 //Flies normally expect when hitting anything // Does damage for 1 tick and then explodes
 struct ArcaneBolt final : Projectile {
-  static constexpr int width = 40;
-  static constexpr int height = 30;
   bool hitTarget = false;
-  ArcaneBolt(const Point& pos, bool from_player, int life_span, float speed, float damage,
-             HitType hit_type,
-             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, float pov,
-             const Vector2& move, const Entity* sender)
-      : Projectile(from_player, pos, {width, height}, ShapeType::RECT, life_span, speed,
-                   {DamageType::ARCANE, damage}, hit_type, effects, move, (int16_t)pov,
-                   sound::fireBurst, &textures::projectile::ARCANE_BOLT, sender) {
+  ArcaneBolt(const Point& pos, bool isFriendlyToPlayer, float damage,
+             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+             int16_t pov, const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damage}, effects, mvmt,
+                   (int16_t)pov, sound::fireBurst, sender, ARCANE_BOLT) {
     projectileType = ProjectileType::ARCANE_BOLT;
     isIlluminated = true;
     isDoingDamage = true;

@@ -19,9 +19,9 @@ struct Player final : public Entity {
     Entity::operator=(other);
     return *this;
   }
-  static void Hit(Projectile& p) noexcept {
+  inline void Hit(Projectile& p) const noexcept {
     //TODO dodge chance
-    if (!p.from_player && p.IsActive()) {
+    if (!p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
       PLAYER_STATS.TakeDamage(p.damageStats);
       p.isDead = p.hitType == HitType::ONE_HIT;
@@ -32,7 +32,7 @@ struct Player final : public Entity {
     if (PLAYER_STATS.health <= 0) {
       GAME_STATE = GameState::GameOver;
       return;
-    } else if (PLAYER_STATS.stunned|| GAME_STATE == GameState::GameMenu) {
+    } else if (PLAYER_STATS.stunned || GAME_STATE == GameState::GameMenu) {
       return;
     }
 
@@ -152,6 +152,7 @@ struct Player final : public Entity {
   }
 };
 inline static Player PLAYER({150, 150});
+
 #include "../ui/player/HotBar.h"
 #include "WorldObject.h"
 
@@ -165,5 +166,84 @@ void EntityStats::ApplyEffects() noexcept {
 //Returns true if the player is close to the spawn trigger
 bool SpawnTrigger::IsClose() const noexcept {
   return PLAYER.pos.dist(pos.x + size.x / 2, pos.y + size.y / 2) < UPDATE_DISTANCE * 48;
+}
+
+void Skill::TriggerSkill() noexcept {
+  coolDownUpCounter = 0;
+  PLAYER.flip = MOUSE_POS.x < CAMERA_X;
+  PLAYER.spriteCounter = 0;
+  PLAYER.actionState = attackAnimation;
+  PLAYER_STATS.UseSkill(skillStats);
+}
+bool Skill::RangeLineOfSightCheck() const noexcept {
+  Point targetPos = {PLAYER_X + MOUSE_POS.x - CAMERA_X,
+                     PLAYER_Y + MOUSE_POS.y - CAMERA_Y};
+  if (Point(PLAYER_X + (float)PLAYER.size.x / 2.0F,
+            PLAYER_Y + (float)PLAYER.size.y / 2.0F)
+          .dist(targetPos) <= (float)skillStats.range) {
+    if (PathFinding::LineOfSightCheck(PLAYER.tilePos, targetPos)) {
+      return true;
+      //TODO quick notifications
+    } else {
+      // No line of sight to target
+    }
+  } else {
+    // Target is out of range
+  }
+  return false;
+}
+void Skill::SkillAtMouse(ProjectileType type) noexcept {
+  if (!RangeLineOfSightCheck()) return;
+  TriggerSkill();
+  Point pos = {
+      PLAYER_X + MOUSE_POS.x - CAMERA_X - typeToInfo[skillStats.type].size.x / 2.0F,
+      PLAYER_Y + MOUSE_POS.y - CAMERA_Y - typeToInfo[skillStats.type].size.y / 2.0F};
+  float damage = PLAYER_STATS.GetAbilityDmg(damageStats) /
+                 (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+
+  auto prj = GetProjectileInstance(type, pos, true, damage, &PLAYER, {0, 0}, {});
+  //TODO add talents
+  PROJECTILES.emplace_back(prj);
+  Multiplayer::UDP_SEND_PROJECTILE(type, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0, 0,
+                                   damage);
+}
+void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles) noexcept {
+  if (!RangeLineOfSightCheck()) return;
+  TriggerSkill();
+  Point pos = {PLAYER_X + MOUSE_POS.x - CAMERA_X - typeToInfo[type].size.x / 2.0F,
+               PLAYER_Y + MOUSE_POS.y - CAMERA_Y - typeToInfo[type].size.y / 2.0F};
+  const float interval_angle = 360.0f / numProjectiles;
+  float damage = PLAYER_STATS.GetAbilityDmg(damageStats) /
+                 (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+  for (int_fast32_t i = 0; i < numProjectiles; i++) {
+    float angle_rad = interval_angle * i * DEG2RAD;
+    float x_component = std::cos(angle_rad);
+    float y_component = std::sin(angle_rad);
+    float pov = angle_rad * RAD2DEG;
+
+    auto prj = GetProjectileInstance(type, pos, true, damage, &PLAYER,
+                                     {x_component, y_component}, pov, {});
+    //TODO add talents
+    PROJECTILES.emplace_back(prj);
+    Multiplayer::UDP_SEND_PROJECTILE(type, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0, 0,
+                                     damage);
+  }
+}
+void Skill::SkillToMouse(ProjectileType type) noexcept {
+  TriggerSkill();
+  float posX = PLAYER_X + PLAYER.size.x / 2;
+  float posY = PLAYER_Y + (PLAYER.size.y - typeToInfo[skillStats.type].size.y) / 2;
+  float angle =
+      std::atan2(MOUSE_POS.y - posY - DRAW_Y - typeToInfo[skillStats.type].size.x / 2,
+                 MOUSE_POS.x - posX - DRAW_X - typeToInfo[skillStats.type].size.y / 2);
+  float damage = PLAYER_STATS.GetAbilityDmg(damageStats) /
+                 (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+  float pov = angle * (180.0f / PI);
+  float x_move = std::cos(angle);
+  float y_move = std::sin(angle);
+
+  auto prj = GetProjectileInstance(type, {posX, posY}, true, damage, &PLAYER,
+                                   {x_move, y_move}, pov, {});
+  PROJECTILES.emplace_back(prj);
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

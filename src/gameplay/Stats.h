@@ -5,6 +5,7 @@ struct MonsterScaler {
   float baseHealth;
   float healthPerLevel;
   float speed;
+  float damage;
   int16_t attackCD;
   uint8_t attackRange;
   uint8_t chaseRange;
@@ -17,46 +18,33 @@ struct MonsterScaler {
   }
 };
 
-struct MonsterAttackStats {
-  int16_t attackCooldown;
-  int16_t currentCooldown = 0;
-  uint8_t attackRange;
-  uint8_t chaseRange;
-  explicit MonsterAttackStats(const MonsterScaler& scaler)
-      : attackCooldown(scaler.attackCD),
-        attackRange(scaler.attackRange),
-        chaseRange(scaler.chaseRange) {}
-  [[nodiscard]] inline bool IsAttackReady(int8_t actionState) const noexcept {
-    return actionState == 0 && currentCooldown <= 0;
-  }
-  inline void Update(int8_t actionState) noexcept { currentCooldown -= actionState == 0; }
-  inline void ResetCooldown() noexcept { currentCooldown = attackCooldown; }
-};
 
 struct SkillStats {
   float manaCost = 0;
   float healthCost = 0;
   float baseDamage = 0;
-  float speed = 0;
   float specialVal1 = 0;
   float specialVal2 = 0;
   uint16_t castTime = 0;
   uint16_t coolDownTicks = 0;
   uint16_t range = 0;
-  uint16_t lifeSpan = 0;
+  ProjectileType type;
 };
 
 struct DamageStats {
   float damage = 1;
+  float critChance;
+  float critDamage;
   DamageType dmgType = DamageType::FIRE;
-  DamageStats(DamageType type, float damage) : damage(damage), dmgType(type) {}
+  DamageStats(DamageType type, float damage, float critChance = 5, float critDamage = 25)
+      : damage(damage), dmgType(type), critDamage(critDamage), critChance(critChance) {}
   inline bool operator==(const DamageStats& d) const noexcept {
     return dmgType == d.dmgType && dmgType == d.dmgType && damage == d.damage;
   }
 };
 
 struct SpentAttributePoints {
-  float spentPoints[9] = {0};
+  int16_t spentPoints[9] = {0};
   uint16_t pointsToSpend = 0;
   inline bool SpendPoint(uint8_t i) noexcept {
     if (pointsToSpend >= 1) {
@@ -66,7 +54,7 @@ struct SpentAttributePoints {
     }
     return false;
   }
-  inline void LevelUP() noexcept { pointsToSpend += 3; }
+  inline void AddLevelUPPoints() noexcept { pointsToSpend += 3; }
   [[nodiscard]] inline bool IsDefaultValue(Stat stat) const noexcept;
   [[nodiscard]] inline bool HasPointsToSpend() const noexcept {
     return pointsToSpend >= 1;
@@ -82,13 +70,22 @@ struct EntityStats {
   float shield = 0;
   uint8_t level = 1;
   bool stunned = false;
-  EntityStats() noexcept { InitPlayer(); };
+  EntityStats() {
+    effects[CRIT_CHANCE] = 5;
+    effects[CRIT_DAMAGE_P] = 0.5F;
+    effects[HEALTH_REGEN] = 0.2F;
+    effects[MANA_REGEN] = 1;
+    effects[MAX_HEALTH] = 10;
+    effects[MAX_MANA] = 20;
+    effects[WEAPON_DAMAGE] = 0;
+  };
   EntityStats(const MonsterScaler& scaler, uint8_t level) noexcept
       : level(level), speed(scaler.speed) {
     effects[MAX_HEALTH] = scaler.GetMaxHealth(level);
     health = effects[MAX_HEALTH];
   }
-  inline void update() noexcept {
+
+  inline void Update() noexcept {
     float max_mana_value = GetMaxMana();
     if (mana < max_mana_value) {
       mana = std::min(mana + effects[MANA_REGEN] / 60, max_mana_value);
@@ -111,9 +108,9 @@ struct EntityStats {
       shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
     }
   }
-  [[nodiscard]] inline bool skill_useable(const SkillStats& stats,
-                                          int ticks_done) const noexcept {
-    return !stunned && ticks_done >= stats.coolDownTicks * (1 - effects[CDR_P]) &&
+  [[nodiscard]] inline bool IsSkillUsable(const SkillStats& stats,
+                                          float ticks_done) const noexcept {
+    return !stunned && ticks_done >= (float)stats.coolDownTicks * (1 - effects[CDR_P]) &&
            mana >= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline int GetRemainingCD(const SkillStats& stats) noexcept {
@@ -151,7 +148,7 @@ struct EntityStats {
     float& armour = effects[ARMOUR];
     float& armour_mult = effects[ARMOUR_MULT_P];
 
-    float total_damage = RollCriticalHit(stats.damage);
+    float total_damage = RollCriticalHit(stats);
 
     if (stats.dmgType == DamageType::PHYSICAL) {
       total_damage *= 1 - (armour * (1 + armour_mult)) / (level * 50.0F);
@@ -200,29 +197,21 @@ struct EntityStats {
     effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
     ApplyEffects();
   }
+  [[nodiscard]] static inline float RollCriticalHit(const DamageStats& stats) noexcept {
+    if (RANGE_100_FLOAT(RNG_ENGINE) < stats.critChance) {
+      return stats.damage * (1 + stats.critDamage);
+    }
+    return stats.damage;
+  }
+
  private:
   static inline void RemoveEffects() noexcept;
   static inline void ApplyEffects() noexcept;
-
-  [[nodiscard]] inline float RollCriticalHit(float damage) const noexcept {
-    if (RANGE_100_FLOAT(RNG_ENGINE) < effects[CRIT_CHANCE]) {
-      return damage * (1 + effects[CRIT_DAMAGE_P]);
-    }
-    return damage;
-  }
-  inline void InitPlayer() noexcept {
-    effects[CRIT_CHANCE] = 5;
-    effects[CRIT_DAMAGE_P] = 0.5F;
-    effects[HEALTH_REGEN] = 0.2F;
-    effects[MANA_REGEN] = 1;
-    effects[MAX_HEALTH] = 10;
-    effects[MAX_MANA] = 20;
-    effects[WEAPON_DAMAGE] = 0;
-  }
 };
 inline EntityStats PLAYER_STATS;
+
 inline static std::unordered_map<MonsterType, MonsterScaler> monsterIdToScaler{};
 bool SpentAttributePoints::IsDefaultValue(Stat stat) const noexcept {
-  return spentPoints[stat] - PLAYER_STATS.effects[stat] < 0.05F;
+  return spentPoints[stat] == (int)PLAYER_STATS.effects[stat];
 }
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_

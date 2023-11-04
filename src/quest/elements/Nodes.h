@@ -373,7 +373,7 @@ struct PLAYER_THOUGHT final : public QuestNode {
       TextRenderer::playerDialogueCount = &count;
       assigned = true;
     }
-    //TODO make quest decisions prettier / center them below player (live)
+    //TODO make quest decisions prettier / center them below soundPlayer (live)
     return count > 100;
   }
   inline static PLAYER_THOUGHT* ParseQuestNode(const std::vector<std::string>& parts) {

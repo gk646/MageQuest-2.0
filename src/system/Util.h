@@ -92,6 +92,12 @@ inline static std::string WrapText(const std::string& txt, float width, const Fo
   }
   return wrappedText;
 }
+inline static void DrawWrappedText(const Vector2& pos, const std::string& txt,
+                                   float width, const Font& font, float fontSize,
+                                   Color tint) {
+  DrawTextExR(font, WrapText(txt, width, font, fontSize).c_str(), pos, fontSize, 0.5F,
+              tint);
+}
 //Splits a string around "delim"
 inline static std::vector<std::string> SplitString(const std::string& s,
                                                    char delim) noexcept {
@@ -170,8 +176,23 @@ inline static std::string CreateToolTipString(const std::string& s, float damage
 
   return ret;
 }
-
-//Key press module / used for detecting key press on update tickrate(60)
+//Returns a correctly aligned rect inside the window bounds with the given measures
+inline static RectangleR GetToolTipRect(float width, float height) noexcept {
+  RectangleR ret = {0, 0, width, height};
+  auto mouse = GetMousePosition();
+  if (mouse.x - width < 0) {
+    ret.x = mouse.x + 10;
+  } else {
+    ret.x = mouse.x - width;
+  }
+  if (mouse.y - height < 0) {
+    ret.y = mouse.y + 5;
+  } else {
+    ret.y = mouse.y - height;
+  }
+  return ret;
+}
+//Key press module / used for detecting key press on update tick rate(60)
 inline static bool e_previous[2] = {false, false};
 inline static void Update() noexcept {
   e_previous[0] = e_previous[1];

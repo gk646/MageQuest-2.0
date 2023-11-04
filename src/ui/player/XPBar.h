@@ -8,7 +8,7 @@ struct XPBar {
   inline static constexpr float XP_TOOL_TIP_HEIGHT = 70;
   bool collision = false;
   RectangleR xp_bar = {2, 2, 2, 13};
-  static int prev_req;
+   static int prev_req;
   static int next_req;
   static float PLAYER_EXPERIENCE;
   XPBar() { UpdateRequirements(1); }
@@ -93,7 +93,7 @@ struct XPBar {
   static inline void LevelUP() noexcept {
     PLAYER_STATS.level++;
     UpdateRequirements(PLAYER_STATS.level);
-    PLAYER_SPENT_POINTS.LevelUP();
+    PLAYER_SPENT_POINTS.AddLevelUPPoints();
     PLAYER_STATS.ReCalculatePlayerStats();
     //TODO animation
   }

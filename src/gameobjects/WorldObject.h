@@ -2,10 +2,9 @@
 #define MAGEQUEST_SRC_GAMEOBJECTS_WORLDOBJECT_H_
 
 struct WorldObject : public Entity {
-
   WorldObject(const Point& pos, const PointT<int16_t>& size, ShapeType shape_type,
               Zone zone)
-      : Entity(pos, size, shape_type, 0, zone) {}
+      : Entity(pos, size, shape_type, 0, false,zone) {}
 
   inline static WorldObject* GetNewWorldObject(WorldObjectType type,
                                                const cxstructs::PointI& pos, bool isUsed,

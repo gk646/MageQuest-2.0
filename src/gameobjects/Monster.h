@@ -16,26 +16,26 @@
     }                                                                              \
   }
 
-#define MONSTER_UPDATE()                                \
-  ENTITY_UPDATE()                                       \
-  spriteCounter++;                                      \
-  healthBar.update();                                   \
-  effectHandler.Update();                               \
-  CheckForDeath();                                      \
-  if (MP_TYPE == MultiplayerType::CLIENT) return;       \
+#define MONSTER_UPDATE()                                  \
+  ENTITY_UPDATE()                                         \
+  spriteCounter++;                                        \
+  healthBar.update();                                     \
+  effectHandler.Update();                                 \
+  CheckForDeath();                                        \
+  if (MP_TYPE == MultiplayerType::CLIENT) return;         \
   hitFlashDuration = std::max(-15, hitFlashDuration - 1); \
-  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT;    \
-  if (actionState != 0) return;                         \
-  threatManager.Update();                               \
-  attackStats.Update(actionState);                      \
+  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT;      \
+  if (actionState != 0) return;                           \
+  threatManager.Update();                                 \
+  attackComponent.Update(actionState);                    \
   isMoving = false;
 
 struct Monster : public Entity {
   EntityStats stats;
   ThreatManager threatManager{this};
+  AttackComponent attackComponent;
   StatusEffectHandler effectHandler{stats};
   const MonsterResource* resource;
-  MonsterAttackStats attackStats;
   HealthBar healthBar;
   uint16_t u_id = MONSTER_ID++;
   int8_t actionState = 0;
@@ -50,7 +50,7 @@ struct Monster : public Entity {
       : Entity(pos, size, hitboxShape),
         stats({scaler, level}),
         resource(resourceArg),
-        attackStats(scaler),
+        attackComponent(this, scaler),
         type(typeArg),
         healthBar((int)size.x) {
     if (MP_TYPE == MultiplayerType::SERVER) {
@@ -68,7 +68,7 @@ struct Monster : public Entity {
         effectHandler(stats),
         resource(other.resource),
         healthBar(other.healthBar),
-        attackStats(other.attackStats),
+        attackComponent(other.attackComponent),
         type(other.type) {}
   Monster& operator=(const Monster& other) {
     if (this != &other) {
@@ -84,13 +84,14 @@ struct Monster : public Entity {
   }
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
   void Hit(Projectile& p) noexcept {
-    if (p.from_player && p.IsActive() && actionState != -100) {
+    if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
       p.HitTargetCallback();
       healthBar.Update();
       effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.TakeDamage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
-      hitFlashDuration == -15 ? hitFlashDuration = 15 : hitFlashDuration = hitFlashDuration;
+      hitFlashDuration == -15 ? hitFlashDuration = 15
+                              : hitFlashDuration = hitFlashDuration;
     }
   }
   inline void CheckForDeath() noexcept {
@@ -175,22 +176,6 @@ struct Monster : public Entity {
     }
     pos.x_ = data->x;
     pos.y_ = data->y;
-  }
-  inline bool AttackPlayer3Attacks() noexcept {
-    if (attackStats.IsAttackReady(actionState)) {
-      int num = RANGE_100(RNG_ENGINE);
-      attackStats.ResetCooldown();
-      spriteCounter = 0;
-      if (num < 33) {
-        actionState = 1;
-      } else if (num < 66) {
-        actionState = 2;
-      } else {
-        actionState = 3;
-      }
-      return true;
-    }
-    return false;
   }
   inline void MonsterDiedCallback() noexcept;
   inline static Monster* GetNewMonster(float x, float y, MonsterType type,
@@ -298,7 +283,7 @@ void ThreatManager::Update() noexcept {
   if (TargetCount > 0) {
     for (auto& te : targets) {
       if (te.entity &&
-          te.entity->tilePos.dist(self->tilePos) > self->attackStats.chaseRange) {
+          te.entity->tilePos.dist(self->tilePos) > self->attackComponent.chaseRange) {
         te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
         if (te.threat <= 0) {
           RemoveTarget(te.entity);
@@ -306,20 +291,19 @@ void ThreatManager::Update() noexcept {
       }
     }
   } else {
-    if (PLAYER.tilePos.dist(self->tilePos) <= self->attackStats.attackRange) {
+    if (PLAYER.tilePos.dist(self->tilePos) <= self->attackComponent.attackRange) {
       AddTarget(&PLAYER, PLAYER_STATS.level);
     }
 
     for (const auto np : OTHER_PLAYERS) {
       if (np) {
-        if (np->tilePos.dist(self->tilePos) <= self->attackStats.attackRange) {
+        if (np->tilePos.dist(self->tilePos) <= self->attackComponent.attackRange) {
           AddTarget(np, np->stats.level);
         }
       }
     }
   }
 }
-
 void SpawnTrigger::Trigger() noexcept {
   if (triggered) return;
   triggered = true;
@@ -329,5 +313,19 @@ void SpawnTrigger::Trigger() noexcept {
     MONSTERS.push_back(Monster::GetNewMonster(pos.x, pos.y, type, level));
   } else {
   }
+}
+
+void AttackComponent::StartAnimation(int8_t actionState) const noexcept {
+  self->spriteCounter = 0;
+  self->actionState = actionState;
+}
+void ProjectileAttack::Execute(Monster* attacker) const {
+  PROJECTILES.emplace_back(GetProjectileInstance(type, attacker->GetMiddlePoint(), false,
+                                                 damage, attacker, Vector2(), {}));
+}
+void ConeAttack::Execute(Monster* attacker) const {
+  PROJECTILES.emplace_back(new AttackCone(attacker->GetAttackConeBounds(width, height),
+                                          false, hitDelay * 2, hitDelay, damage, {},
+                                          sound, attacker));
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

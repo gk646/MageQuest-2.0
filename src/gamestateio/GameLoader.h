@@ -14,6 +14,7 @@
 #include "loading/loaders/MusicLoader.h"
 #include "loading/loaders/ItemLoader.h"
 #include "loading/loaders/TalentLoader.h"
+#include "loading/loaders/ProjectileLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -37,6 +38,7 @@ struct GameLoader {
 
  private:
   static void Load() {
+    LoadStep(ProjectileLoader::Load);
     LoadStep(TalentLoader::LoadConnections);
     LoadStep(MusicLoader::Load);
     LoadStep(SkillLoader::Load);

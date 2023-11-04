@@ -67,7 +67,7 @@ struct RegionMap final : public Window {
       }
     }
     for (const auto projectile : PROJECTILES) {
-      if (projectile->from_player) {
+      if (projectile->isFriendlyToPlayer) {
         DrawSquareProFast(base_x + projectile->tilePos.x * zoom,
                           base_y + projectile->tilePos.y * zoom, 0.6F * zoom,
                           Colors::Blue);

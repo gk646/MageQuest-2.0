@@ -3,7 +3,9 @@
 struct SkeletonArcher final : public Monster {
   SkeletonArcher(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_ARCHER,
-                type, {30, 48}) {}
+                type, {30, 48}) {
+    attackComponent.RegisterProjectileAttack(1,level, 80, ARROW_NORMAL);
+  }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
       draw_death();
@@ -24,25 +26,18 @@ struct SkeletonArcher final : public Monster {
     DRAW_HITBOXES();
   }
   void Update() final {
-    if (actionState == 1 && spriteCounter == 50) {
-      PROJECTILES.emplace_back(new ArrowNormal(GetMiddlePoint(), false, 300, 3,
-                                               stats.level, {}, Vector2(),
-                                               resource->attack_sound[0], this));
-    }
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && WalkCloseToEntity(target, attackStats.attackRange) &&
-        attackStats.IsAttackReady(actionState)) {
-      attackStats.ResetCooldown();
-      spriteCounter = 0;
-      actionState = 1;
+    if (target && WalkCloseToEntity(target, attackComponent.attackRange)) {
+      attackComponent.Attack();
     }
   }
   inline void draw_death() noexcept {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -51,7 +46,8 @@ struct SkeletonArcher final : public Monster {
     int num = spriteCounter % 80 / 5;
     if (num < 15) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 30,
-                           pos.y_ + DRAW_Y - 5, -16, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 5, -16, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }

@@ -4,7 +4,15 @@
 struct SkeletonWarrior final : public Monster {
   SkeletonWarrior(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level,
-                &textures::monsters::SKELETON_WARRIOR, type, {30, 48}) {}
+                &textures::monsters::SKELETON_WARRIOR, type, {30, 48}) {
+
+    attackComponent.RegisterConeAttack(1, stats.level, 120, 40, 48,
+                                       resource->attack_sound[0], 32);
+    attackComponent.RegisterConeAttack(2, stats.level, 120, 40, 48,
+                                       resource->attack_sound[0], 16);
+    attackComponent.RegisterConeAttack(3, stats.level, 120, 40, 48,
+                                       resource->attack_sound[0], 16);
+  }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
       draw_death();
@@ -32,28 +40,15 @@ struct SkeletonWarrior final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      if (AttackPlayer3Attacks()) {
-        if (actionState == 1) {
-          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
-                                                  32, stats.level, {},
-                                                  resource->attack_sound[0], this));
-        } else if (actionState == 2) {
-          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
-                                                  16, stats.level, {},
-                                                  resource->attack_sound[1], this));
-        } else {
-          PROJECTILES.emplace_back(new AttackCone(GetAttackConeBounds(40, 48), false, 120,
-                                                  16, stats.level, {},
-                                                  resource->attack_sound[0], this));
-        }
-      }
+      attackComponent.Attack();
     }
   }
   inline void draw_death() noexcept {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 48, -20, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
@@ -62,7 +57,8 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 96 / 16;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 27,
-                           pos.y_ + DRAW_Y - 12, -16, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 12, -16, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }
@@ -71,7 +67,8 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 112 / 16;
     if (num < 6) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 22,
-                           pos.y_ + DRAW_Y - 20, -15, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 20, -15, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }
@@ -80,7 +77,8 @@ struct SkeletonWarrior final : public Monster {
     int num = spriteCounter % 72 / 12;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 23,
-                           pos.y_ + DRAW_Y - 13, -18, 0, isFlipped, hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+                           pos.y_ + DRAW_Y - 13, -18, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
     }

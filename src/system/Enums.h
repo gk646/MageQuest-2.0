@@ -58,7 +58,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::DARK, Colors::darkMagicPurple},
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
-enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK, ON_HIT_EFFECT };
+enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
 enum class Alignment : uint8_t { LEFT, RIGHT, MIDDLE };
@@ -92,7 +92,7 @@ std::unordered_map<ShadowType, Texture> shadowToTexture{
     {ShadowType::TREE_GREEN_BUSH, Texture()},
 
 };
-enum class TalentSize : uint8_t {NORMAL, MID, BIG};
+enum class TalentSize : uint8_t { NORMAL, MID, BIG };
 enum class Keybind : uint8_t {
   PLAYER_LIGHT,
   ABILITY_1,
@@ -224,6 +224,7 @@ enum class NodeType : uint8_t {
   OPTIONAL_POSITION,
   SKIP
 };
+
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"SPAWN", NodeType::SPAWN},
     {"NPC_SAY", NodeType::NPC_SAY},
@@ -358,8 +359,10 @@ enum ProjectileType : uint8_t {
   VOID_ERUPTION,
   VOID_FIELD,
   ARCANE_BOLT,
+  PSYCHIC_SCREAM,
   PROJECTILE_END
 };
+
 inline static std::unordered_map<std::string, ProjectileType> stringToProjectile = {
     {"POISON_BALL", ProjectileType::POISON_BALL},
     {"FIRE_STRIKE_II", ProjectileType::FIRE_STRIKE_II},
@@ -377,8 +380,42 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
     {"THUNDER_SPLASH", ProjectileType::THUNDER_SPLASH},
     {"THUNDER_STRIKE", ProjectileType::THUNDER_STRIKE},
     {"VOID_ERUPTION", ProjectileType::VOID_ERUPTION},
+    {"PSYCHIC_SCREAM", ProjectileType::PSYCHIC_SCREAM},
     {"ARCANE_BOLT", ProjectileType::ARCANE_BOLT},
     {"VOID_FIELD", ProjectileType::VOID_FIELD}};
+
+struct ProjectileResources;
+struct ProjectileInfo {
+  ProjectileResources* res = nullptr;
+  float speed = 0;
+  float val1 = 0;
+  PointT<int16_t> size;
+  int16_t lifeSpan = 0;
+  ShapeType hitBoxShape = ShapeType::RECT;
+  HitType hitType = HitType::ONE_HIT;
+  bool illuminated = false;
+};
+inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {
+    {ProjectileType::POISON_BALL, ProjectileInfo()},
+    {ProjectileType::FIRE_STRIKE_II, ProjectileInfo()},
+    {ProjectileType::FIRE_STRIKE, ProjectileInfo()},
+    {ProjectileType::FIRE_BALL, ProjectileInfo()},
+    {ProjectileType::BLAST_HAMMER, ProjectileInfo()},
+    {ProjectileType::ENERGY_SPHERE, ProjectileInfo()},
+    {ProjectileType::FIRE_SWORD, ProjectileInfo()},
+    {ProjectileType::FROST_NOVA, ProjectileInfo()},
+    {ProjectileType::ICE_LANCE, ProjectileInfo()},
+    {ProjectileType::INFERNO_RAY, ProjectileInfo()},
+    {ProjectileType::LIGHTNING, ProjectileInfo()},
+    {ProjectileType::PYRO_BLAST, ProjectileInfo()},
+    {ProjectileType::SOLAR_FLARE, ProjectileInfo()},
+    {ProjectileType::THUNDER_SPLASH, ProjectileInfo()},
+    {ProjectileType::THUNDER_STRIKE, ProjectileInfo()},
+    {ProjectileType::VOID_ERUPTION, ProjectileInfo()},
+    {ProjectileType::VOID_FIELD, ProjectileInfo()},
+    {ProjectileType::ARCANE_BOLT, ProjectileInfo()},
+    {ProjectileType::PSYCHIC_SCREAM, ProjectileInfo()},
+};
 
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},

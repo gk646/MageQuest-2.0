@@ -12,24 +12,24 @@ struct Projectile : public Entity {
   int16_t lifeSpanTicks;
   uint16_t spriteCounter = 0;
   HitType hitType = HitType::ONE_HIT;
-  bool from_player;
+  bool isFriendlyToPlayer;
   bool isDoingDamage = true;
   ProjectileType projectileType = ProjectileType::FIRE_BALL;
-  Projectile(bool from_player, const Point& pos, const PointT<int16_t>& size,
-             ShapeType shape_type, int life_span, float speed,
-             const DamageStats& damage_stats, HitType type,
+  Projectile(bool isFriendlyToPlayer, const Point& pos, const DamageStats& damage_stats,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
              const Vector2& move_vector, int16_t pov, const Sound& sourceSound,
-             ProjectileResources* res, const Entity* sender) noexcept
-      : Entity(pos, size, shape_type, pov),
-        lifeSpanTicks(static_cast<int16_t>(life_span)),
-        speed(speed),
+             const Entity* sender, ProjectileType pType) noexcept
+      : Entity(pos, typeToInfo[pType].size, typeToInfo[pType].hitBoxShape, pov,
+               typeToInfo[pType].illuminated),
+        lifeSpanTicks(typeToInfo[pType].lifeSpan),
+        speed(typeToInfo[pType].speed),
         damageStats(damage_stats),
-        from_player(from_player),
-        hitType(type),
+        isFriendlyToPlayer(isFriendlyToPlayer),
+        hitType(typeToInfo[pType].hitType),
         statusEffects(effects),
         mvmVector(move_vector),
-        resources(res),
+        resources(typeToInfo[pType].res),
+        projectileType(pType),
         sound(LoadSoundAlias(sourceSound)),
         sender(sender) {
     PlaySoundR(sound);
@@ -40,7 +40,7 @@ struct Projectile : public Entity {
         speed(p.speed),
         lifeSpanTicks(p.lifeSpanTicks),
         damageStats(p.damageStats),
-        from_player(p.from_player),
+        isFriendlyToPlayer(p.isFriendlyToPlayer),
         hitType(p.hitType),
         sound(p.sound),
         statusEffects() {
@@ -67,7 +67,7 @@ struct Projectile : public Entity {
     speed = other.speed;
     lifeSpanTicks = other.lifeSpanTicks;
     damageStats = other.damageStats;
-    from_player = other.from_player;
+    isFriendlyToPlayer = other.isFriendlyToPlayer;
     hitType = other.hitType;
 
     return *this;
@@ -110,5 +110,4 @@ struct Projectile : public Entity {
   virtual void HitWallCallback() noexcept { isDead = true; }
 };
 
-#include "projectiles/Projectiles.h"
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
