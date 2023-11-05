@@ -4,7 +4,7 @@
 struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
-  inline static constexpr float TOOL_TIP_BASE_HEIGHT = 90;
+  inline static constexpr float TOOL_TIP_BASE_HEIGHT = 93;
   std::string name;
   std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};

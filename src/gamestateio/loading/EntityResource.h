@@ -6,7 +6,8 @@ struct MonsterResource {
   inline static void LoadImagesIntoVector(const std::string& name,
                                           std::vector<Texture>& vec) noexcept {
     for (uint_fast32_t j = 0; j < MAX_LOAD_NUM; ++j) {
-      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s%s%d.png", ASSET_PATH.c_str(), name.c_str(), j);
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s%s%d.png", ASSET_PATH.c_str(),
+               name.c_str(), j);
       if (std::filesystem::exists(std::string(TEXT_BUFFER))) {
         vec.push_back(LoadTexture(TEXT_BUFFER));
       } else {
@@ -61,7 +62,9 @@ struct MonsterResource {
       path = ASSET_PATH + "sound/effects/entities/" +=
           soundPath + std::to_string(i) + ".wav";
       if (std::filesystem::exists(path)) {
-        attack_sound.emplace_back(LoadSound(path.c_str()));
+        auto sound = LoadSound(path.c_str());
+        SetSoundVolume(sound, 0.5F);
+        attack_sound.emplace_back(sound);
       } else {
         break;
       }
@@ -73,7 +76,7 @@ struct ProjectileResources {
   std::vector<Texture> frames{};
   std::vector<Sound> sounds{};
 
-  void load(const std::string& name) {
+  void Load(const std::string& name) {
     load_textures(name);
     load_sound(name);
   }
