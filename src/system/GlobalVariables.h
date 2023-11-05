@@ -77,6 +77,8 @@ struct NPC;
 struct Monster;
 struct Player;
 struct Skill;
+struct TalentEffect;
+inline static std::vector<TalentEffect*> TALENT_EFFECTS;
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline static uint_fast32_t MONSTER_ID = 1;
 inline static int16_t** CURRENT_BACK_GROUND = nullptr;
