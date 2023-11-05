@@ -19,8 +19,8 @@ struct BaseAttack {
       currentDelay--;
     }
     if (currentDelay == 0) {
-      Execute(self);
       currentDelay = -1;
+      Execute(self);
     }
   }
   virtual void Execute(Monster* attacker) const = 0;
@@ -43,7 +43,6 @@ class ConeAttack : public BaseAttack {
         hitDelay(hitDelay) {}
   void Execute(Monster* attacker) const final;
 };
-
 struct ProjectileAttack : public BaseAttack {
   ProjectileType type;
   ProjectileAttack(int8_t actionState, float damage, int16_t cd, ProjectileType t,
@@ -72,13 +71,13 @@ struct AttackComponent {
     }
   }
   inline void Update(int8_t actionState) noexcept {
-    if (globalCooldown > 0) {
-      globalCooldown -= actionState == 0;
-    }
     for (auto& attack : attacks) {
       if (attack) {
         attack->Update(self);
       }
+    }
+    if (globalCooldown > 0) {
+      globalCooldown -= actionState == 0;
     }
   }
   void RegisterConeAttack(int8_t actionState, float damage, int16_t cooldown, int width,
@@ -102,18 +101,20 @@ struct AttackComponent {
       }
     }
   }
-
   void Attack() noexcept {
     if (globalCooldown > 0 || registeredAttacks == 0) return;
     int randomIndex = (int)std::ceil(RANGE_01(RNG_RANDOM) * 5) % registeredAttacks;
-    if (attacks[randomIndex]->animationDelay > 0) {
-      attacks[randomIndex]->currentDelay = attacks[randomIndex]->animationDelay;
-    } else {
-      attacks[randomIndex]->Execute(self);
-      StartAnimation(attacks[randomIndex]->actionState);
-    }
+    StartAnimation(attacks[randomIndex]->actionState);
+    attacks[randomIndex]->currentDelay = attacks[randomIndex]->animationDelay;
     globalCooldown = attacks[randomIndex]->cooldown;
   }
+
+  inline void ExecuteAttack(int index) {
+    attacks[index]->Execute(self);
+    StartAnimation(attacks[index]->actionState);
+    globalCooldown = attacks[index]->cooldown;
+  }
+
  private:
   inline void StartAnimation(int8_t actionState) const noexcept;
 };

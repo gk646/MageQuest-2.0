@@ -9,13 +9,13 @@ struct ThreatManager {
   static constexpr float THREAT_DROP = 0.2F / 60;
   std::array<ThreatEntity, 4> targets{};
   Monster* self;
-  int8_t TargetCount = 0;
+  int8_t targetCount = 0;
 
   explicit ThreatManager(Monster* self) : self(self) {}
   ThreatManager& operator=(const ThreatManager& other) {
     if (this != &other) {
       targets = other.targets;
-      TargetCount = other.TargetCount;
+      targetCount = other.targetCount;
       self = other.self;
     }
     return *this;
@@ -25,7 +25,7 @@ struct ThreatManager {
       te.entity = nullptr;
       te.threat = 0;
     }
-    TargetCount = 0;
+    targetCount = 0;
   }
   inline void Update() noexcept;
   [[nodiscard]] inline Entity* GetHighestThreatTarget() noexcept {
@@ -55,7 +55,7 @@ struct ThreatManager {
       if (!te.entity) {
         te.entity = NewEnt;
         te.threat = threat;
-        TargetCount++;
+        targetCount++;
         break;
       }
     }
@@ -65,7 +65,7 @@ struct ThreatManager {
       if (te.entity == NewEnt) {
         te.entity = nullptr;
         te.threat = 0;
-        TargetCount--;
+        targetCount--;
         break;
       }
     }

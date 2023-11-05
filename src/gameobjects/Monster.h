@@ -16,18 +16,18 @@
     }                                                                              \
   }
 
-#define MONSTER_UPDATE()                                  \
-  ENTITY_UPDATE()                                         \
-  spriteCounter++;                                        \
-  healthBar.update();                                     \
-  effectHandler.Update();                                 \
-  CheckForDeath();                                        \
-  if (MP_TYPE == MultiplayerType::CLIENT) return;         \
-  hitFlashDuration = std::max(-15, hitFlashDuration - 1); \
-  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT;      \
-  if (actionState != 0) return;                           \
-  threatManager.Update();                                 \
-  attackComponent.Update(actionState);                    \
+#define MONSTER_UPDATE()                                                              \
+  ENTITY_UPDATE()                                                                     \
+  spriteCounter++;                                                                    \
+  healthBar.update();                                                                 \
+  effectHandler.Update();                                                             \
+  CheckForDeath();                                                                    \
+  if (MP_TYPE == MultiplayerType::CLIENT) return;                                     \
+  hitFlashDuration = std::max(-15, hitFlashDuration - 1);                             \
+  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT && threatManager.targetCount > 0; \
+  attackComponent.Update(actionState);                                                \
+  if (actionState != 0) return;                                                       \
+  threatManager.Update();                                                             \
   isMoving = false;
 
 struct Monster : public Entity {
@@ -197,12 +197,7 @@ struct Monster : public Entity {
   }
 };
 
-#include "monsters/SkeletonSpear.h"
-#include "monsters/SkeletonWarrior.h"
-#include "monsters/SkeletonArcher.h"
-#include "monsters/Wolf.h"
-#include "monsters/BloodHound.h"
-#include "monsters/Ghost.h"
+#include "monsters/Monsters.h"
 
 Monster* Monster::GetNewMonster(float x, float y, MonsterType type,
                                 uint8_t level) noexcept {
@@ -226,17 +221,15 @@ Monster* Monster::GetNewMonster(float x, float y, MonsterType type,
     case MonsterType::KNIGHT:
       break;
     case MonsterType::MUSHROOM:
-      return new BloodHound({x, y}, level, type);
+      return new FangShroom({x, y}, level, type);
     case MonsterType::SKEL_ARCHER:
       return new SkeletonArcher({x, y}, level, type);
-      break;
     case MonsterType::SKEL_SHIELD:
       break;
     case MonsterType::SNAKE:
-      return new BloodHound({x, y}, level, type);
+      return new Snake({x, y}, level, type);
     case MonsterType::GHOST:
       return new Ghost({x, y}, level, type);
-      break;
     case MonsterType::BLOOD_HOUND:
       return new BloodHound({x, y}, level, type);
   }
@@ -280,7 +273,7 @@ void Client::UpdateMonsters(const UDP_MonsterUpdate* data) noexcept {
 }
 
 void ThreatManager::Update() noexcept {
-  if (TargetCount > 0) {
+  if (targetCount > 0) {
     for (auto& te : targets) {
       if (te.entity &&
           te.entity->tilePos.dist(self->tilePos) > self->attackComponent.chaseRange) {
@@ -325,7 +318,7 @@ void ProjectileAttack::Execute(Monster* attacker) const {
 }
 void ConeAttack::Execute(Monster* attacker) const {
   PROJECTILES.emplace_back(new AttackCone(attacker->GetAttackConeBounds(width, height),
-                                          false, hitDelay * 2, hitDelay, damage, {},
+                                          false, std::max(hitDelay*2,90), hitDelay, damage, {},
                                           sound, attacker));
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
