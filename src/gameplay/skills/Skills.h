@@ -10,7 +10,7 @@ struct BlastHammer_Skill final : public Skill {
 };
 struct FireStrike_Skill final : public Skill {
   explicit FireStrike_Skill(const SkillStats& stats)
-      : Skill(stats, DamageStats{DamageType::FIRE, stats.baseDamage}, from_player, 2,
+      : Skill(stats, DamageStats{DamageType::FIRE, stats.baseDamage}, true, 2,
               textures::ui::skillbar::icons::fireBurst) {}
   void Activate() final {
     SkillAtMouseRadial(skillStats.type, (int)skillStats.specialVal1);
@@ -37,15 +37,15 @@ struct FireBall_Skill final : public Skill {
 struct Dummy_Skill final : public Skill {
   static constexpr float base_dmg = 0.5;
   explicit Dummy_Skill(const SkillStats& stats = {})
-      : Skill(stats, DamageStats{DamageType::FIRE, base_dmg}, from_player, 1,
+      : Skill(stats, DamageStats{DamageType::FIRE, base_dmg}, true, 1,
               textures::EMPTY_TEXTURE) {}
   void Activate() final {
     //no skill triggered
   }
 };
 struct LockedSlot_Skill final : public Skill {
-  explicit LockedSlot_Skill(const SkillStats& stats = {})
-      : Skill({}, DamageStats{DamageType::TRUE_DMG, 0}, from_player, 1,
+  explicit LockedSlot_Skill()
+      : Skill({}, DamageStats{DamageType::TRUE_DMG, 0}, true, 1,
               textures::ui::skillbar::icons::locked) {}
   void Activate() final {}
 };
@@ -60,9 +60,8 @@ struct FrostNova_Skill final : public Skill {
   explicit FrostNova_Skill(const SkillStats& stats)
       : Skill(stats, DamageStats{DamageType::ICE, stats.baseDamage}, true, 1,
               textures::ui::skillbar::icons::frostNova) {}
-  void Activate() final { SkillToMouse(FROST_NOVA); }
+  void Activate() final { SkillAtPlayer(FROST_NOVA); }
 };
-
 struct ArcaneBolt_Skill final : public Skill {
   explicit ArcaneBolt_Skill(const SkillStats& stats)
       : Skill(stats, DamageStats{DamageType::ARCANE, stats.baseDamage}, true, 1,

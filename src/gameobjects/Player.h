@@ -221,8 +221,9 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles) noexcept
     float y_component = std::sin(angle_rad);
     float pov = angle_rad * RAD2DEG;
 
-    auto prj = GetProjectileInstance(type, pos, true, damage, &PLAYER,
-                                     {x_component, y_component}, pov, {});
+    auto prj = GetProjectileInstance(
+        type, pos, true, damage, &PLAYER, {x_component, y_component}, pov, {},
+        i == numProjectiles - 1 ? sound::fireBurst : sound::EMPTY_SOUND);
     //TODO add talents
     PROJECTILES.emplace_back(prj);
     Multiplayer::UDP_SEND_PROJECTILE(type, (int16_t)pos.x_, (int16_t)pos.y_, 0, 0, 0,
@@ -233,6 +234,23 @@ void Skill::SkillToMouse(ProjectileType type) noexcept {
   TriggerSkill();
   float posX = PLAYER_X + PLAYER.size.x / 2;
   float posY = PLAYER_Y + (PLAYER.size.y - typeToInfo[skillStats.type].size.y) / 2;
+  float angle =
+      std::atan2(MOUSE_POS.y - posY - DRAW_Y - typeToInfo[skillStats.type].size.x / 2,
+                 MOUSE_POS.x - posX - DRAW_X - typeToInfo[skillStats.type].size.y / 2);
+  float damage = PLAYER_STATS.GetAbilityDmg(damageStats) /
+                 (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+  float pov = angle * (180.0f / PI);
+  float x_move = std::cos(angle);
+  float y_move = std::sin(angle);
+
+  auto prj = GetProjectileInstance(type, {posX, posY}, true, damage, &PLAYER,
+                                   {x_move, y_move}, pov, {});
+  PROJECTILES.emplace_back(prj);
+}
+void Skill::SkillAtPlayer(ProjectileType type) noexcept {
+  TriggerSkill();
+  float posX = PLAYER_X - typeToInfo[skillStats.type].size.x / 2.0F + PLAYER.size.x / 2;
+  float posY = PLAYER_Y - typeToInfo[skillStats.type].size.y / 2.0F + PLAYER.size.y / 2;
   float angle =
       std::atan2(MOUSE_POS.y - posY - DRAW_Y - typeToInfo[skillStats.type].size.x / 2,
                  MOUSE_POS.x - posX - DRAW_X - typeToInfo[skillStats.type].size.y / 2);

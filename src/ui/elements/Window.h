@@ -89,7 +89,7 @@ struct Window {
     return;                                                                         \
   }                                                                                 \
   isHeaderHovered = false;                                                          \
-  if (CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && !DRAGGED_ITEM) { \
+  if (!WINDOW_FOCUSED && CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && !DRAGGED_ITEM) { \
     isHeaderHovered = true;                                                         \
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                     \
       if (!isDragged) {                                                             \

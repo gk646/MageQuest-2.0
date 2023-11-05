@@ -23,7 +23,7 @@
   effectHandler.Update();                                                             \
   CheckForDeath();                                                                    \
   if (MP_TYPE == MultiplayerType::CLIENT) return;                                     \
-  hitFlashDuration = std::max(-15, hitFlashDuration - 1);                             \
+  hitFlashDuration = std::max(-12, hitFlashDuration - 1);                             \
   isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT && threatManager.targetCount > 0; \
   attackComponent.Update(actionState);                                                \
   if (actionState != 0) return;                                                       \
@@ -90,7 +90,7 @@ struct Monster : public Entity {
       effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.TakeDamage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
-      hitFlashDuration == -15 ? hitFlashDuration = 15
+      hitFlashDuration == -12 ? hitFlashDuration = 12
                               : hitFlashDuration = hitFlashDuration;
     }
   }

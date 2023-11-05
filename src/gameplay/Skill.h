@@ -165,6 +165,7 @@ struct Skill {
   inline void SkillAtMouse(ProjectileType type) noexcept;
   inline void SkillAtMouseRadial(ProjectileType type, int numProjectiles) noexcept;
   inline void SkillToMouse(ProjectileType type) noexcept;
+  inline void SkillAtPlayer(ProjectileType type) noexcept;
 };
 
 #include "../gameobjects/projectiles/Projectiles.h"
@@ -179,7 +180,7 @@ inline static Projectile* GetProjectileInstance(
     case POISON_BALL:
       break;
     case FIRE_STRIKE:
-      return new FireBall(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
+      return new FireBall(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender,&sound == &sound::EMPTY_SOUND);
     case FIRE_STRIKE_II:
       break;
     case FIRE_BALL:

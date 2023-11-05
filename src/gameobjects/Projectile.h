@@ -1,6 +1,5 @@
 #ifndef MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
 #define MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_
-
 struct Projectile : public Entity {
   Sound sound;
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> statusEffects;
