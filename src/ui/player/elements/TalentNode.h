@@ -37,7 +37,7 @@ struct TalentNode {
   }
   inline void Update() noexcept { isHovered = CheckCollisionPointRec(MOUSE_POS, bounds); }
   //Draws the tooltip with the given bounds
-  inline void DrawToolTip(const RectangleR& toolTipBounds) noexcept {
+  inline void DrawToolTip(const RectangleR& toolTipBounds) const noexcept {
     DrawRectangleRounded(toolTipBounds, 0.1F, ROUND_SEGMENTS,
                          Colors::mediumLightGreyTransparent);
     DrawRectangleRoundedLines(toolTipBounds, 0.1F, ROUND_SEGMENTS, 2,
@@ -64,7 +64,7 @@ struct TalentNode {
     if (sizeType == TalentSize::NORMAL) {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     } else if (sizeType == TalentSize::BIG) {
-      DrawTextureProFast(talent.icon, bounds.x + 6, bounds.y + 6, 0, WHITE);
+      DrawTextureProFast(talent.icon, bounds.x + 7, bounds.y + 6, 0, WHITE);
     } else {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     }

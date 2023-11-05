@@ -20,8 +20,6 @@ struct SoundLoader {
     //Projectile SOUNDS
     sound::energySphere = LoadSound(
         (ASSET_PATH + "sound/effects/projectiles/energySphere/fullsound.wav").c_str());
-    sound::energySphere_hit = LoadSound(
-        (ASSET_PATH + "sound/effects/projectiles/energySphere/hit.wav").c_str());
     sound::powerSurgeUp =
         LoadSound((ASSET_PATH + "sound/effects/projectiles/powerSurge/0.wav").c_str());
     sound::powerSurgeDown =
