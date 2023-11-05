@@ -82,24 +82,24 @@ struct HotBar {
     }
     if (GAME_STATE != GameState::GameMenu) {
       if (IsKeyDown(KEY_ONE) && skills[0]->IsUsable()) {
-        skills[0]->Activate();
+        skills[0]->Activate(false);
       }
       if (IsKeyDown(KEY_TWO) && skills[1]->IsUsable()) {
-        skills[1]->Activate();
+        skills[1]->Activate(false);
       }
       if (IsKeyDown(KEY_THREE) && skills[2]->IsUsable()) {
-        skills[2]->Activate();
+        skills[2]->Activate(false);
       }
       if (IsKeyDown(KEY_FOUR) && skills[3]->IsUsable()) {
-        skills[3]->Activate();
+        skills[3]->Activate(false);
       }
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && skills[4]->IsUsable() &&
           !WINDOW_FOCUSED && !DRAGGED_ITEM) {
-        skills[4]->Activate();
+        skills[4]->Activate(false);
       }
       if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && skills[5]->IsUsable() &&
           !WINDOW_FOCUSED) {
-        skills[5]->Activate();
+        skills[5]->Activate(false);
       }
     }
   }

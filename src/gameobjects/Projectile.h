@@ -32,6 +32,7 @@ struct Projectile : public Entity {
         sound(LoadSoundAlias(sourceSound)),
         sender(sender) {
     PlaySoundR(sound);
+    ApplyTalentsToProjectile(this);
   }
   Projectile(const Projectile& p) noexcept
       : Entity(p),
@@ -109,4 +110,12 @@ struct Projectile : public Entity {
   virtual void HitWallCallback() noexcept { isDead = true; }
 };
 
+void TalentEffect::AddStatusEffect(Projectile* prj, StatusEffect* effect) noexcept {
+  for (auto& e : prj->statusEffects) {
+    if (!e) {
+      e = effect;
+      return;
+    }
+  }
+}
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

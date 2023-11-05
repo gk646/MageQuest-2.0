@@ -24,7 +24,7 @@ struct Skill {
     coolDownUpCounter = (int16_t)ability_stats.coolDownTicks;
   }
   //Activates the skill
-  inline virtual void Activate() = 0;
+  inline virtual void Activate(bool isFree) = 0;
   inline void Update() noexcept { coolDownUpCounter++; };
   virtual void Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
@@ -40,9 +40,9 @@ struct Skill {
     return PLAYER_STATS.IsSkillUsable(skillStats, coolDownUpCounter);
   }
   //Handles logic for when the skill is used
-  inline void TriggerSkill() noexcept;
+  inline void UseResources(bool isFree) noexcept;
   //Does a ray-cast and range-check from soundPlayer to mouse position
-  [[nodiscard]] inline bool RangeLineOfSightCheck() const noexcept;
+  [[nodiscard]] inline bool RangeLineOfSightCheck(const Point& target) const noexcept;
   //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
   inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
   inline void DrawTooltip(float x, float y) noexcept {
@@ -52,6 +52,10 @@ struct Skill {
   }
 
  private:
+  [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {
+    return PLAYER_STATS.GetAbilityDmg(damageStats) /
+           (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+  }
   void DrawCooldown(float x, float y, float size) const noexcept {
     int rcd = PLAYER_STATS.GetRemainingCD(skillStats);
     if (coolDownUpCounter < rcd) {
@@ -162,10 +166,11 @@ struct Skill {
   }
 
  protected:
-  inline void SkillAtMouse(ProjectileType type) noexcept;
-  inline void SkillAtMouseRadial(ProjectileType type, int numProjectiles) noexcept;
-  inline void SkillToMouse(ProjectileType type) noexcept;
-  inline void SkillAtPlayer(ProjectileType type) noexcept;
+  inline void SkillAtMouse(ProjectileType type, bool isFree) noexcept;
+  inline void SkillAtMouseRadial(ProjectileType type, int numProjectiles,
+                                 bool isFree) noexcept;
+  inline void SkillToMouse(ProjectileType type, bool isFree) noexcept;
+  inline void SkillAtPlayer(ProjectileType type, bool isFree) noexcept;
 };
 
 #include "../gameobjects/projectiles/Projectiles.h"
@@ -180,7 +185,8 @@ inline static Projectile* GetProjectileInstance(
     case POISON_BALL:
       break;
     case FIRE_STRIKE:
-      return new FireBall(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender,&sound == &sound::EMPTY_SOUND);
+      return new FireBall(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender,
+                          &sound == &sound::EMPTY_SOUND);
     case FIRE_STRIKE_II:
       break;
     case FIRE_BALL:
@@ -295,7 +301,5 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
     }
   }
 }
-
-
 
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

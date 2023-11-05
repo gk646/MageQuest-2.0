@@ -1,17 +1,16 @@
-#ifndef MAGEQUEST_SRC_GAMEPLAY_EFFECTS_EFFECTS_H_
-#define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_EFFECTS_H_
+#ifndef MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_
+#define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_
 struct Stun final : public StatusEffect {
-  explicit Stun(int duration)
-      : StatusEffect(true, 0, duration, false, EffectType::STUN) {}
+  explicit Stun(int duration) : StatusEffect(true, 0, duration, EffectType::STUN) {}
   [[nodiscard]] Stun* clone() const final { return new Stun(*this); }
   void ApplyEffect(EntityStats& stats) noexcept final { stats.stunned = true; }
   void TickEffect(EntityStats& stats) final { duration--; }
   void RemoveEffect(EntityStats& stats) noexcept final { stats.stunned = false; }
+  void AddStack(StatusEffect* other) noexcept final {}
 };
 struct Root final : public StatusEffect {
   float preValue = -1;
-  explicit Root(int duration)
-      : StatusEffect(true, 0, duration, false, EffectType::ROOT) {}
+  explicit Root(int duration) : StatusEffect(true, 0, duration, EffectType::ROOT) {}
   [[nodiscard]] Root* clone() const final { return new Root(*this); }
   void ApplyEffect(EntityStats& stats) noexcept final {
     preValue = stats.effects[SPEED_MULT_P];
@@ -27,12 +26,12 @@ struct Root final : public StatusEffect {
   void RemoveEffect(EntityStats& stats) noexcept final {
     stats.effects[SPEED_MULT_P] = preValue;
   }
+  void AddStack(StatusEffect* other) noexcept final {}
 };
 struct Slow final : public StatusEffect {
   float slow_percent;
   Slow(float value, int duration)
-      : StatusEffect(true, 0, duration, false, EffectType::SLOW),
-        slow_percent(value / 100) {}
+      : StatusEffect(true, 0, duration, EffectType::SLOW), slow_percent(value / 100) {}
   [[nodiscard]] Slow* clone() const final { return new Slow(*this); }
   void ApplyEffect(EntityStats& stats) noexcept final {
     stats.effects[SPEED_MULT_P] -= slow_percent;
@@ -41,20 +40,31 @@ struct Slow final : public StatusEffect {
   void RemoveEffect(EntityStats& stats) noexcept final {
     stats.effects[SPEED_MULT_P] += slow_percent;
   }
+  void AddStack(StatusEffect* other) noexcept final {}
 };
 struct Burn final : public StatusEffect {
   DamageStats damage_stats;
   Burn(float damage, int duration, int tick_speed)
-      : StatusEffect(true, tick_speed, duration, false, EffectType::BURN),
+      : StatusEffect(true, tick_speed, duration, EffectType::BURN),
         damage_stats({DamageType::FIRE, damage}) {}
   [[nodiscard]] Burn* clone() const final { return new Burn(*this); }
   void ApplyEffect(EntityStats& stats) noexcept final {}
   void TickEffect(EntityStats& stats) final {
-    if (is_damage_tick()) {
+    if (IsDamageTick()) {
       stats.TakeDamage(damage_stats);
     }
     duration--;
   }
   void RemoveEffect(EntityStats& stats) noexcept final {}
+  void AddStack(StatusEffect* other) noexcept final {}
 };
-#endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_EFFECTS_H_
+struct SpellEchoCD final : public StatusEffect {
+  inline static constexpr int SPELL_ECHO_CD = 450;
+  SpellEchoCD() : StatusEffect(true, 0, SPELL_ECHO_CD, EffectType::SPELL_ECHO_CD) {}
+  [[nodiscard]] SpellEchoCD* clone() const final { return new SpellEchoCD(*this); }
+  void ApplyEffect(EntityStats& stats) noexcept final {}
+  void TickEffect(EntityStats& stats) final {}
+  void RemoveEffect(EntityStats& stats) noexcept final {}
+  void AddStack(StatusEffect* other) noexcept final {}
+};
+#endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_

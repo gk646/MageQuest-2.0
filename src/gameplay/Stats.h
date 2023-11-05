@@ -116,7 +116,7 @@ struct EntityStats {
   inline int GetRemainingCD(const SkillStats& stats) noexcept {
     return stats.coolDownTicks * (1 - effects[CDR_P]);
   }
-  inline void UseSkill(const SkillStats& stats) noexcept {
+  inline void ApplySkillCosts(const SkillStats& stats) noexcept {
     mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline void EquipItem(const float* effect_arr) noexcept {

@@ -46,7 +46,7 @@ enum class MonsterType : uint8_t {
   SNAKE
 };
 
-enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT };
+enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT , SPELL_ECHO_CD};
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
 
