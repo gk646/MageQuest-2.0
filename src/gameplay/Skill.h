@@ -28,7 +28,9 @@ struct Skill {
   inline void Update() noexcept { coolDownUpCounter++; };
   bool Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
-    DrawCooldown(x, y, size);
+    Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
+                                  PLAYER_STATS.GetRemainingCD(skillStats),
+                                  coolDownUpCounter);
     return hitbox.Update(x, y);
   }
   //TODO proper link to support bar
@@ -53,45 +55,6 @@ struct Skill {
     return PLAYER_STATS.GetAbilityDmg(damageStats) /
            (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
   }
-  void DrawCooldown(float x, float y, float size) const noexcept {
-    int rcd = PLAYER_STATS.GetRemainingCD(skillStats);
-    if (coolDownUpCounter < rcd) {
-      float side1, side2, side3, side4, side5;
-      float coolDownCoefficient;
-      coolDownCoefficient = coolDownUpCounter * (size * 4 / rcd);
-      side1 = size / 2;
-      side2 = 0;
-      side3 = 0;
-      side4 = 0;
-      side5 = 0;
-      if (coolDownCoefficient > 0) side1 += coolDownCoefficient;
-      if (coolDownCoefficient > size / 2) side2 += coolDownCoefficient - size / 2;
-      if (coolDownCoefficient > size * 1.5F) side3 += coolDownCoefficient - size * 1.5F;
-      if (coolDownCoefficient > size * 2.5F) side4 += coolDownCoefficient - size * 2.5F;
-      if (coolDownCoefficient > size * 3.5F) side5 += coolDownCoefficient - size * 3.5F;
-
-      for (int i = side1; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + i, y,
-                 Colors::mediumLightGreyTransparent);
-      }
-      for (int i = side2; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + size, y + i,
-                 Colors::mediumLightGreyTransparent);
-      }
-      for (int i = side3; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + size - i, y + size,
-                 Colors::mediumLightGreyTransparent);
-      }
-      for (int i = side4; i <= size; i++) {
-        DrawLine(x + size / 2, y + size / 2, x, y + size - i,
-                 Colors::mediumLightGreyTransparent);
-      }
-      for (int i = side5; i <= size / 2; i++) {
-        DrawLine(x + size / 2, y + size / 2, x + i, y,
-                 Colors::mediumLightGreyTransparent);
-      }
-    }
-  }
   void DrawToolTipImpl(float x, float y) noexcept {
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
@@ -102,7 +65,7 @@ struct Skill {
                                   skillStats.specialVal1, skillStats.specialVal2),
         TOOL_TIP_WIDTH, MINECRAFT_REGULAR, 15, &lineBreaks);
 
-    float toolTipHeight = TOOL_TIP_BASE_HEIGHT + lineBreaks * 15;
+    float toolTipHeight = TOOL_TIP_BASE_HEIGHT + (float)lineBreaks * 15.0F;
     float startX = MOUSE_POS.x - TOOL_TIP_WIDTH / 2;
     float startY = MOUSE_POS.y - toolTipHeight - 3;
     DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,

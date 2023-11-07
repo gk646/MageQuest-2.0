@@ -94,6 +94,9 @@ struct StatusEffectHandler {
       }
     }
   }
+
+  //Icons and Tooltips
+ public:
   //Draws the buffs and debuffs in the correct format for the player
   void DrawPlayer(float startY) const noexcept {
     float screenMiddle = SCREEN_WIDTH / 2;
@@ -101,11 +104,17 @@ struct StatusEffectHandler {
     float debuffX = screenMiddle + 230;
     float buffY = startY;
     float debuffY = startY;
-    //TODO tooltip
+    RectangleR hitBox{0, 0, 32, 32};
+    StatusEffect* toolTip = nullptr;
 
     for (const auto& effect : currentEffects) {
       if (!effect->isDebuff) {
         effect->Draw(buffX, buffY, 32);
+        if (!toolTip) {
+          hitBox.x = buffX;
+          hitBox.y = buffY;
+          if (CheckCollisionPointRec(MOUSE_POS, hitBox)) toolTip = effect;
+        }
         buffX += EFFECT_WIDTH;
 
         if (buffX + EFFECT_WIDTH > screenMiddle) {
@@ -115,12 +124,20 @@ struct StatusEffectHandler {
       } else {
         debuffX -= EFFECT_WIDTH;
         effect->Draw(debuffX, debuffY, 32);
-
+        if (!toolTip) {
+          hitBox.x = debuffX;
+          hitBox.y = debuffY;
+          if (CheckCollisionPointRec(MOUSE_POS, hitBox)) toolTip = effect;
+        }
         if (debuffX - EFFECT_WIDTH < screenMiddle) {
           debuffX = screenMiddle + 230;
           debuffY += ROW_HEIGHT;
         }
       }
+    }
+
+    if (toolTip) {
+      toolTip->DrawToolTip(MOUSE_POS.x, MOUSE_POS.y);
     }
   }
   //Draws the buffs and debuffs in the correct format for the entities

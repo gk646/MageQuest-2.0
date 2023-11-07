@@ -81,6 +81,16 @@ enum class DamageType : uint8_t {
   PHYSICAL,
   TRUE_DMG
 };
+std::unordered_map<DamageType, std::string> damageTypeNames = {
+    {DamageType::ARCANE, "arcane"},
+    {DamageType::POISON, "poison"},
+    {DamageType::FIRE, "fire"},
+    {DamageType::ICE, "ice"},
+    {DamageType::DARK, "dark"},
+    {DamageType::PHYSICAL, "physical"},
+    {DamageType::TRUE_DMG, "true damage"}
+};
+
 inline static DamageType commonSchools[4] = {DamageType::FIRE, DamageType::ICE,
                                              DamageType::ARCANE, DamageType::POISON};
 

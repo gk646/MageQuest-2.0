@@ -7,7 +7,7 @@
  * |                        SYSTEM                       |
  * |-----------------------------------------------------|
  */
-inline static constexpr int TEXT_BUFFER_SIZE = 75;
+inline static constexpr int TEXT_BUFFER_SIZE = 100;
 inline static char TEXT_BUFFER[TEXT_BUFFER_SIZE] = {0};
 inline static float SCREEN_WIDTH = 1280;
 inline static float SCREEN_HEIGHT = 960;
