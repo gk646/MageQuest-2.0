@@ -62,7 +62,7 @@ struct TalentNode {
   //Draws the talent icon with the correct offset
   inline void DrawTalentIcon() const noexcept {
     if (sizeType == TalentSize::BIG) {
-      DrawTextureProFast(talent.icon, bounds.x + 7, bounds.y + 6, 0, WHITE);
+      DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     } else {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     }
