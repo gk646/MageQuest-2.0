@@ -21,7 +21,6 @@ struct PlayerUI {
 
   void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
-    PLAYER_EFFECTS.Draw();
     playerHotbar.Draw();
     miniMap.Draw();
     statusBar.Draw();
@@ -34,13 +33,13 @@ struct PlayerUI {
   }
   void Update() noexcept {
     WINDOW_FOCUSED = false;
-    questPanel.Update();
+    talentPanel.Update();
+    regionMap.Update();
     miniMap.Update();
     statusBar.Update();
-    charPanel.update();
+    charPanel.Update();
     charBag.Update();
-    regionMap.Update();
-    talentPanel.Update();
+    questPanel.Update();
     playerHotbar.Update();
     Util::Update();
     update_special_items();

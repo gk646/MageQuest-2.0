@@ -94,6 +94,7 @@ struct Player final : public Entity {
     }
     DRAW_HITBOXES();
   }
+ private:
   inline void draw_death() noexcept {
     int num = spriteCounter % 75 / 15;
     if (num < 4) {
@@ -131,7 +132,6 @@ struct Player final : public Entity {
     }
   }
 
- private:
   inline void UncoverMapCover() noexcept {
     int sx = tilePos.x;
     int sy = tilePos.y;
@@ -235,8 +235,8 @@ void Skill::SkillToMouse(ProjectileType type, bool isFree) noexcept {
       PLAYER_Y +
           ((float)PLAYER.size.y - (float)typeToInfo[skillStats.type].size.y) / 2.0F};
   float angle = std::atan2(
-      MOUSE_POS.y - targetPos.x_ - DRAW_Y - typeToInfo[skillStats.type].size.x / 2,
-      MOUSE_POS.x - targetPos.y_ - DRAW_X - typeToInfo[skillStats.type].size.y / 2);
+      MOUSE_POS.y - targetPos.y_ - DRAW_Y - typeToInfo[skillStats.type].size.y / 2,
+      MOUSE_POS.x - targetPos.x_ - DRAW_X - typeToInfo[skillStats.type].size.x / 2);
   float pov = angle * (180.0f / PI);
   Vector2 mvmt = {std::cos(angle), std::sin(angle)};
   auto prj = GetProjectileInstance(type, targetPos, true, GetSkillDamage(type), &PLAYER,

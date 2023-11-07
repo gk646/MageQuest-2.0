@@ -1,9 +1,16 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_TEXTURELOADER_H_
 struct TextureLoader {
-
+  static void LoadEffectInfo() noexcept {
+    auto table = Util::ReadMGI("mgi/Effects.mgi");
+    for (const auto& vec : table) {
+      effectToInfo.insert(
+          {effectMap[vec[0]],
+           {vec[1], vec[2], LoadTexture((ASSET_PATH + "ui/effects/" + vec[3]).c_str())}});
+    }
+  }
   static void Load() {
-
+    LoadEffectInfo();
     shadowToTexture[ShadowType::TREE_GREEN_BUSH] =
         LoadTexture((ASSET_PATH + "textures/Shadows/0.png").c_str());
     shadowToTexture[ShadowType::TREE_GREEN_POINTY] =

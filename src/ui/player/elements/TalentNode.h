@@ -4,19 +4,19 @@
 #include "../../../gameplay/Talent.h"
 
 struct TalentNode {
-  inline static constexpr float TOOLTIP_WIDTH = 200;
-  inline static constexpr float TOOLTIP_HEIGHT = 100;
+  inline static constexpr float TOOLTIP_WIDTH = 230;
+  inline static constexpr float TOOLTIP_HEIGHT = 130;
   Talent talent;
   SoundComponent soundPlayer;
   RectangleR bounds{};
   Point basePoint{0, 0};
-  int16_t nodeID = -1;
+  int16_t talentID = -1;
   bool isActivated = false;
   bool isUsable = false;
   TalentSize sizeType = TalentSize::NORMAL;
   bool isHovered = false;
   explicit TalentNode(const Point& p, TalentSize sizeType, int16_t nodeID)
-      : sizeType(sizeType), basePoint(p), nodeID(nodeID) {
+      : sizeType(sizeType), basePoint(p), talentID(nodeID) {
     if (sizeType == TalentSize::NORMAL) {
       this->bounds = {944 + p.x(), 524 + p.y(), 32, 32};
     } else if (sizeType == TalentSize::MID) {
@@ -32,7 +32,7 @@ struct TalentNode {
     DrawTalentIcon();
     SpendTalentPoint();
     if (isHovered) {
-      toolTipID = nodeID;
+      toolTipID = talentID;
     }
   }
   inline void Update() noexcept { isHovered = CheckCollisionPointRec(MOUSE_POS, bounds); }
@@ -61,9 +61,7 @@ struct TalentNode {
   }
   //Draws the talent icon with the correct offset
   inline void DrawTalentIcon() const noexcept {
-    if (sizeType == TalentSize::NORMAL) {
-      DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
-    } else if (sizeType == TalentSize::BIG) {
+    if (sizeType == TalentSize::BIG) {
       DrawTextureProFast(talent.icon, bounds.x + 7, bounds.y + 6, 0, WHITE);
     } else {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
@@ -72,7 +70,13 @@ struct TalentNode {
   //Spends a talent point on this node
   inline void SpendTalentPoint() noexcept {
     if (isUsable && !isActivated && isHovered &&
-        IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
+        PLAYER_SPENT_POINTS.SpendTalentPoint()) {
+      DataBaseHandler::AddActivatedTalent(talentID);
+      PLAYER_STATS.EquipItem(talent.effects);
+      if (talent.talentEffect) {
+        TALENT_EFFECTS.push_back(talent.talentEffect);
+      }
       isActivated = true;
       soundPlayer.PlaySound(&sound::talents::spendTalentPoint);
     }

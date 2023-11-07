@@ -20,12 +20,6 @@ struct EnergySphere_Skill final : public Skill {
   explicit EnergySphere_Skill(const SkillStats& stats)
       : Skill(stats, DamageStats{DamageType::ARCANE, stats.baseDamage}, true, 1,
               textures::ui::skillbar::icons::energy_sphere) {}
-  void Draw(float x, float y, float size) noexcept final {
-    if (coolDownUpCounter < 200) {
-      DrawSupportBar(x, y, 1.0F - (float)coolDownUpCounter / 200);
-    }
-    Skill::Draw(x, y, size);
-  }
   void Activate(bool isFree) final { SkillToMouse(ENERGY_SPHERE, isFree); }
 };
 struct FireBall_Skill final : public Skill {

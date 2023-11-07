@@ -26,9 +26,10 @@ struct Skill {
   //Activates the skill
   inline virtual void Activate(bool isFree) = 0;
   inline void Update() noexcept { coolDownUpCounter++; };
-  virtual void Draw(float x, float y, float size) noexcept {
+  bool Draw(float x, float y, float size) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
     DrawCooldown(x, y, size);
+    return hitbox.Update(x, y);
   }
   //TODO proper link to support bar
   static inline void DrawSupportBar(float x, float y, float percent) noexcept {
@@ -45,11 +46,7 @@ struct Skill {
   [[nodiscard]] inline bool RangeLineOfSightCheck(const Point& target) const noexcept;
   //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
   inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
-  inline void DrawTooltip(float x, float y) noexcept {
-    if (hitbox.Update(x, y)) {
-      DrawToolTipImpl(x, y);
-    }
-  }
+  inline void DrawTooltip(float x, float y) noexcept { DrawToolTipImpl(x, y); }
 
  private:
   [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {

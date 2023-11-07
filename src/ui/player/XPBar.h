@@ -42,7 +42,7 @@ struct XPBar {
     Util::DrawCenteredText(MINECRAFT_BOLD, 16, TEXT_BUFFER,
                            m.x + XP_TOOL_TIP_WIDTH / 2.0F, m.y + 35, WHITE);
   }
-  void update() noexcept {
+  void Update() noexcept {
     if (PLAYER_EXPERIENCE - prev_req >= next_req) {
       LevelUP();
     }

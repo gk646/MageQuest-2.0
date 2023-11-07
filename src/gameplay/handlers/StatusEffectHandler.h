@@ -1,7 +1,9 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECTHANDLER_H_
 #define MAGEQUEST_SRC_GAMEPLAY_STATUSEFFECTHANDLER_H_
-
+struct Entity;
 struct StatusEffectHandler {
+  inline static constexpr float ROW_HEIGHT = 33;
+  inline static constexpr float EFFECT_WIDTH = 33;
   std::vector<StatusEffect*> currentEffects{};
   EntityStats& stats;
   explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
@@ -26,6 +28,19 @@ struct StatusEffectHandler {
       delete effect;
     }
   }
+  //Progresses all effects by calling "TickEffect()" and deleting run out effects
+  inline void Update() noexcept {
+    for (auto it = currentEffects.begin(); it != currentEffects.end();) {
+      if ((*it)->duration <= 0) {
+        (*it)->RemoveEffect(stats);
+        delete *it;
+        it = currentEffects.erase(it);
+      } else {
+        (*it)->TickEffect(stats);
+        ++it;
+      }
+    }
+  }
   inline void ApplyEffects() noexcept {
     for (auto effect : currentEffects) {
       effect->ApplyEffect(stats);
@@ -34,6 +49,27 @@ struct StatusEffectHandler {
   inline void RemoveEffects() noexcept {
     for (auto effect : currentEffects) {
       effect->RemoveEffect(stats);
+    }
+  }
+  //Iterates the current effects and returns the existence of the given one
+  inline bool IsEffectActive(EffectType type) noexcept {
+    for (const auto& e : currentEffects) {
+      if (e->type == type) {
+        return true;
+      }
+    }
+    return false;
+  }
+  inline void RemoveEffect(EffectType type) noexcept {
+    for (auto it = currentEffects.begin(); it != currentEffects.end();) {
+      if ((*it)->type == type) {
+        (*it)->RemoveEffect(stats);
+        delete *it;
+        currentEffects.erase(it);
+        return;
+      } else {
+        ++it;
+      }
     }
   }
   //Doesn't take ownership of the ptr but makes its own copy which it manages automatically
@@ -58,35 +94,37 @@ struct StatusEffectHandler {
       }
     }
   }
-  void Update() noexcept {
-    for (auto it = currentEffects.begin(); it != currentEffects.end();) {
-      if ((*it)->duration <= 0) {
-        (*it)->RemoveEffect(stats);
-        delete *it;
-        it = currentEffects.erase(it);
-      } else {
-        (*it)->TickEffect(stats);
-        ++it;
-      }
-    }
-  }
-  void Draw() const noexcept {
-    int buff_start = 500;
-    int debuff_start = 700;
+  //Draws the buffs and debuffs in the correct format for the player
+  void DrawPlayer(float startY) const noexcept {
+    float screenMiddle = SCREEN_WIDTH / 2;
+    float buffX = screenMiddle - 230;
+    float debuffX = screenMiddle + 230;
+    float buffY = startY;
+    float debuffY = startY;
+    //TODO tooltip
+
     for (const auto& effect : currentEffects) {
-      effect->draw(buff_start, 100);
-      buff_start += 50;
-    }
-  }
-  //Iterates the current effects and returns the existence of the given one
-  inline bool IsEffectActive(EffectType type) noexcept {
-    for (const auto& e : currentEffects) {
-      if (e->type == type) {
-        return true;
+      if (!effect->isDebuff) {
+        effect->Draw(buffX, buffY, 32);
+        buffX += EFFECT_WIDTH;
+
+        if (buffX + EFFECT_WIDTH > screenMiddle) {
+          buffX = screenMiddle - 230;
+          buffY += ROW_HEIGHT;
+        }
+      } else {
+        debuffX -= EFFECT_WIDTH;
+        effect->Draw(debuffX, debuffY, 32);
+
+        if (debuffX - EFFECT_WIDTH < screenMiddle) {
+          debuffX = screenMiddle + 230;
+          debuffY += ROW_HEIGHT;
+        }
       }
     }
-    return false;
   }
+  //Draws the buffs and debuffs in the correct format for the entities
+  void DrawEntity(Entity* entity) const noexcept {};
 
  private:
   inline bool TryAddOrStackEffect(StatusEffect* newEffect) {

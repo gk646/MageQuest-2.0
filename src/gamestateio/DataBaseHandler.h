@@ -27,7 +27,7 @@ inline static bool PrepareStmt(const std::string& sql, sqlite3* db,
   }
   return true;
 }
-//Assumes database has column with name: NUM
+//Assumes table has column with name: NUM // only GameSave.sqlite
 inline static void SaveNumToTable(int value, const std::string& name, int y) noexcept {
   sqlite3_stmt* stmt;
   std::string sql = "UPDATE " + name + " SET NUM = ? WHERE ROWID = ?";
@@ -40,6 +40,20 @@ inline static void SaveNumToTable(int value, const std::string& name, int y) noe
   sqlite3_step(stmt);
 
   sqlite3_finalize(stmt);
+}
+//Loads a value from a table in the given row // only GameSave.sqlite
+inline static float GetNumFromTable(const std::string& name, int y) noexcept {
+  sqlite3_stmt* stmt;
+  std::string sql = "SELECT NUM FROM " + name + " WHERE ROWID=?";
+
+  if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return 0;
+
+  sqlite3_bind_int(stmt, 1, y);
+  if (sqlite3_step(stmt) != SQLITE_ROW) return 0;
+  auto val = (float)sqlite3_column_double(stmt, 1);
+
+  sqlite3_finalize(stmt);
+  return val;
 }
 //Works for all *_STATE tables // returns true if an entry with the given values exists
 inline static bool StateExistsInTable(const std::string& tableName, int enumVal, int xPos,
@@ -66,7 +80,8 @@ inline static bool StateExistsInTable(const std::string& tableName, int enumVal,
 inline static void AddStateToTable(const std::string& tableName, int enumVal, int xPos,
                                    int yPos, int zone) noexcept {
   sqlite3_stmt* stmt;
-  std::string sql = "INSERT INTO " + tableName + " (TYPE, X_POS, Y_POS, ZONE) VALUES (?, ?, ?, ?)";
+  std::string sql =
+      "INSERT INTO " + tableName + " (TYPE, X_POS, Y_POS, ZONE) VALUES (?, ?, ?, ?)";
   if (!PrepareStmt(sql, gameSave, &stmt)) return;
 
   sqlite3_bind_int(stmt, 1, enumVal);
@@ -77,6 +92,32 @@ inline static void AddStateToTable(const std::string& tableName, int enumVal, in
   if (sqlite3_step(stmt) != SQLITE_DONE) {
     sqlite3_finalize(stmt);
   }
+  sqlite3_finalize(stmt);
+}
+//Adds the talentID to the table indicating its activation // only GameSave.sqlite
+inline static void AddActivatedTalent(int16_t talentID) noexcept {
+  sqlite3_stmt* stmt;
+  std::string sql = "INSERT OR REPLACE INTO PLAYER_TALENTS (TALENT_ID) VALUES (?);";
+
+  if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
+
+  sqlite3_bind_int(stmt, 1, talentID);
+
+  if (sqlite3_step(stmt) != SQLITE_DONE) {
+    // Handle error
+  }
+
+  sqlite3_finalize(stmt);
+}
+//Deletes all rows with ID greater than 4 (first 4 are the paths -> always activated)// only GameSave.sqlite
+inline static void ClearTalents() noexcept {
+  sqlite3_stmt* stmt;
+  std::string sql = "DELETE FROM PLAYER_TALENTS WHERE PrimaryKeyColumn > 4;";
+
+  if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return;
+
+  if (sqlite3_step(stmt) != SQLITE_DONE) {}
+
   sqlite3_finalize(stmt);
 }
 

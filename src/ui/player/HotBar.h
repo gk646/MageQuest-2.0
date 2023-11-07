@@ -1,7 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UI_HOTBAR_H_
 #define MAGE_QUEST_SRC_UI_HOTBAR_H_
 
-
 #include "XPBar.h"
 
 struct HotBar {
@@ -39,41 +38,19 @@ struct HotBar {
   RectangleR BASE_RECT = {0, 0, 480, 120};
   HotBar() noexcept = default;
   void Draw() noexcept {
-    const float scaleFactors[3] = {50, 46, 23};
-    float size = SCALE(scaleFactors[0]);
-    float offx = SCALE(scaleFactors[1]);
-    float offy = SCALE(scaleFactors[2]);
+    float offX = SCALE(52);
+    float offY = SCALE(23);
     float width = SCALE(BASE_RECT.width);
     float height = SCALE(BASE_RECT.height);
     float startX = (SCREEN_WIDTH - width) / 2.0F;
-    float startY = SCREEN_HEIGHT - height * 0.93;
-
-    xp_bar.Draw(startX, startY);
-    DrawTextureScaled(textures::ui::skillbar::skillbar, {startX, startY, width, height},
-                      0, false, 0, WHITE);
-
-    float currentX = startX;
-    for (uint_fast32_t i = 0; i < 6; i++) {
-      skills[i]->Draw(currentX + offx, startY + offy, size);
-      DrawTextureProFast(icons[i], currentX + offx + SCALE(50) / 2 - icons[i].width / 2,
-                         startY + height * 0.72, 0, WHITE);
-      currentX += SCALE(65);
-    }
-
-    currentX = startX;
-    for (uint_fast32_t i = 0; i < 6; i++) {
-      skills[i]->DrawTooltip(currentX + offx, startY + offy);
-      currentX += SCALE(65);
-    }
-
-    currentX += 450;
-    for (int i = 5; i > -1; i--) {
-      menuButtons[i].Draw(currentX, SCREEN_HEIGHT - menuButtons[i].bounds.height);
-      currentX -= 32;
-    }
+    float startY = SCREEN_HEIGHT - height * 0.93F;
+    xp_bar.Draw(startX+5, startY);
+    PLAYER_EFFECTS.DrawPlayer(startY - 44);
+    DrawSkillIcons(startX, startY, width, height, offX, offY);
+    DrawMenuButtons(startX + 650);
   }
   void Update() noexcept {
-    xp_bar.update();
+    xp_bar.Update();
     for (auto& mb : menuButtons) {
       mb.UpdateGlobalWindowState();
     }
@@ -101,6 +78,39 @@ struct HotBar {
           !WINDOW_FOCUSED) {
         skills[5]->Activate(false);
       }
+    }
+  }
+
+ private:
+  //Draws the skill icons and appropriate tooltip
+  inline void DrawSkillIcons(float startX, float startY, float width, float height,
+                             float offX, float offY) noexcept {
+
+    DrawTextureScaled(textures::ui::skillbar::skillbar, {startX, startY, width, height},
+                      0, false, 0, WHITE);
+
+    float currentX = startX;
+    Skill* toolTipSkill = nullptr;
+    int16_t j;
+    for (int16_t i = 0; i < 6; i++) {
+      if (skills[i]->Draw(currentX + offX, startY + offY, SCALE(50))) {
+        toolTipSkill = skills[i];
+        j = i;
+      }
+      DrawTextureProFast(
+          icons[i], currentX + offX + SCALE(50) / 2.0F - (float)icons[i].width / 2.0F,
+          startY + height * 0.72F, 0, WHITE);
+      currentX += SCALE(65);
+    }
+    if (toolTipSkill) {
+      toolTipSkill->DrawTooltip(startX + (float)j * 65.0F + offX, startY + offY);
+    }
+  }
+  //Draws semi transparent interface buttons on the lower right screen
+  inline void DrawMenuButtons(float x) noexcept {
+    for (int i = 5; i > -1; i--) {
+      menuButtons[i].Draw(x, SCREEN_HEIGHT - menuButtons[i].bounds.height);
+      x -= 32;
     }
   }
 };

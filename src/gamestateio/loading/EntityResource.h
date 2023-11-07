@@ -28,7 +28,7 @@ struct MonsterResource {
 
   std::vector<Texture> death{};
 
-  std::vector<Sound> attack_sound{};
+  std::vector<Sound> attackSounds{};
   void Load(const std::string& name) {
     load_textures(name);
     load_sound(name);
@@ -64,7 +64,7 @@ struct MonsterResource {
       if (std::filesystem::exists(path)) {
         auto sound = LoadSound(path.c_str());
         SetSoundVolume(sound, 0.5F);
-        attack_sound.emplace_back(sound);
+        attackSounds.emplace_back(sound);
       } else {
         break;
       }

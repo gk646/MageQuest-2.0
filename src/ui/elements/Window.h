@@ -36,7 +36,7 @@ struct Window {
     if (isWindowOpen) {                                             \
       PlaySoundR(closeSound);                                       \
     } else {                                                        \
-      OnOpen();                                                              \
+      OnOpen();                                                     \
       PlaySoundR(openSound);                                        \
     }                                                               \
     isWindowOpen = !isWindowOpen;                                   \
@@ -84,24 +84,26 @@ struct Window {
         ANT_PARTY, SCALE(fontSize), header_text, scaled_whole.x + scaled_whole.width / 2,
         scaled_whole.y + scaled_head.height / 4, Colors::darkBackground);
   }
-#define WINDOW_UPDATE()                                                             \
-  if (!isWindowOpen) {                                                              \
-    return;                                                                         \
-  }                                                                                 \
-  isHeaderHovered = false;                                                          \
-  if (!WINDOW_FOCUSED && CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && !DRAGGED_ITEM) { \
-    isHeaderHovered = true;                                                         \
-    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                     \
-      if (!isDragged) {                                                             \
-        isDragged = true;                                                           \
-        lastMousePos = MOUSE_POS;                                                   \
-      }                                                                             \
-    }                                                                               \
-  }                                                                                 \
-                                                                                    \
-  if (!WINDOW_FOCUSED) {                                                            \
-    WINDOW_FOCUSED =                                                                \
-        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));    \
+#define WINDOW_UPDATE()                                                               \
+  if (!isWindowOpen) {                                                                \
+    return;                                                                           \
+  }                                                                                   \
+  if (WINDOW_FOCUSED) return;                                                         \
+  isHeaderHovered = false;                                                            \
+  if (!WINDOW_FOCUSED && CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && \
+      !DRAGGED_ITEM) {                                                                \
+    isHeaderHovered = true;                                                           \
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                       \
+      if (!isDragged) {                                                               \
+        isDragged = true;                                                             \
+        lastMousePos = MOUSE_POS;                                                     \
+      }                                                                               \
+    }                                                                                 \
+  }                                                                                   \
+                                                                                      \
+  if (!WINDOW_FOCUSED) {                                                              \
+    WINDOW_FOCUSED =                                                                  \
+        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));      \
   }
   inline void ToggleWindow() noexcept {
     if (!isWindowOpen) {

@@ -27,7 +27,7 @@ struct Quest final {
     for (auto obj : objectives) {
       delete obj;
     }
-    if(reward){
+    if (reward) {
       delete reward;
     }
   }
@@ -61,6 +61,7 @@ struct Quest final {
   void CompleteQuest() noexcept {
     PlaySoundR(sound::completeQuest);
     state = QuestState::COMPLETED;
+    GAME_STATISTICS.QuestCompleted(this);
     stage--;
     if (reward) {
       //TODO reward
