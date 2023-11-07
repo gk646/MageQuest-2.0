@@ -17,7 +17,7 @@ struct NPC : public Entity {
   bool last = false;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
       float speed = 2, const PointT<int16_t>& size = {25, 35})
-      : Entity(pos, size, ShapeType::RECT, 0,false, zone),
+      : Entity(pos, size, ShapeType::RECT, 0, false, zone),
         resource(resource),
         id(id),
         speed(speed),
@@ -99,6 +99,7 @@ void Monster::MonsterDiedCallback() noexcept {
   ItemDropHandler::RollForItemDrop(pos.x_ + size.x / 2, pos.y_ + size.y / 2, stats.level);
   PLAYER_QUESTS.MonsterKilled(type);
   GAME_STATISTICS.MonsterKilled(type);
+  ApplyTalentsToMonsterDeath(this);
 }
 #include "npcs/Deckard.h"
 #include "npcs/Aria.h"

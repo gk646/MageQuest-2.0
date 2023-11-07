@@ -85,8 +85,7 @@ inline static void DropItem(float x, float y, Item* item) noexcept;
 //Returns a ptr to a new random scaled item
 inline static Item* GetRandomScaledItem(int level) noexcept {
   float luck = PLAYER_STATS.effects[LUCK] / (std::sqrt(level) * std::sqrt(level));
-  int quality = RANGE_ItemQuality(RNG_ENGINE) + luck;
-  quality = std::min(100, quality);
+  int quality = std::min(100, RANGE_ItemQuality(RNG_ENGINE) + (int)luck);
 
   auto rarity = RollRarity(luck);
 

@@ -86,6 +86,7 @@ struct EntityStats {
   float shield = 0;
   uint8_t level = 1;
   bool stunned = false;
+  DamageType lastHitType = DamageType::TRUE_DMG;
   EntityStats() {
     effects[CRIT_CHANCE] = 5;
     effects[CRIT_DAMAGE_P] = 0.5F;
@@ -99,19 +100,21 @@ struct EntityStats {
       : level(level), speed(scaler.speed) {
     effects[MAX_HEALTH] = scaler.GetMaxHealth(level);
     health = effects[MAX_HEALTH];
+    effects[CRIT_CHANCE] = 5;
+    effects[CRIT_DAMAGE_P] = 0.5F;
+    effects[HEALTH_REGEN] = effects[MAX_HEALTH] / 7200;
   }
-
   inline void Update() noexcept {
     float max_mana_value = GetMaxMana();
     if (mana < max_mana_value) {
-      mana = std::min(mana + effects[MANA_REGEN] / 60, max_mana_value);
+      mana = std::min(mana + GetManaRegen() / 60, max_mana_value);
     } else {
       mana = max_mana_value;
     }
 
     float max_health_value = GetMaxHealth();
     if (health < max_health_value) {
-      health = std::min(health + effects[HEALTH_REGEN] / 60, max_health_value);
+      health = std::min(health + GetHealthRegen() / 60, max_health_value);
     } else {
       health = max_health_value;
     }
@@ -174,6 +177,9 @@ struct EntityStats {
         total_damage -= shield;
         shield = 0;
       }
+    }
+    if (health > 0) {
+      lastHitType = stats.dmgType;
     }
     health -= total_damage;
     return total_damage;

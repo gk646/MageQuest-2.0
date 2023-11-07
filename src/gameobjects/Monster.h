@@ -30,6 +30,7 @@ struct Monster : public Entity {
   bool prevMoveState = false;
   bool isFlipped = false;
   int8_t hitFlashDuration = 0;
+  DamageType lastHit;
   MonsterType type;
   Monster(const Point& pos, const MonsterScaler& scaler, uint8_t level,
           const MonsterResource* resourceArg, MonsterType typeArg,
