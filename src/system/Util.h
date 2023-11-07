@@ -148,42 +148,115 @@ inline static PointI ParsePointI(const std::string& string) noexcept {
 inline static Point ParsePoint(const std::string& string) noexcept {
   return {std::stof(SplitString(string, ',')[0]), std::stof(SplitString(string, ',')[1])};
 }
+//Creates a new string for the skill tooltips formatted with numbers
 inline static std::string CreateToolTipString(const std::string& s, float damage,
-                                              float val1 = 0.0f, float val2 = 0.0f) {
+                                              float val1 = FLT_MAX,
+                                              float val2 = FLT_MAX) {
   std::string ret = s;
-  std::string minDmgStr = std::to_string((int)(damage * 0.9F));
-  std::string maxDmgStr = std::to_string((int)(damage * 1.1F));
-
-  std::string val1Str = std::to_string((int)val1);
-  std::string val2Str = std::to_string((int)val2);
-
   size_t pos;
 
   pos = s.find("MAX_DMG");
   if (pos != std::string::npos) {
-    ret.replace(pos, 7, maxDmgStr);
+    ret.replace(pos, 7, std::to_string((int)(damage * 1.1F)));
   }
 
   pos = s.find("MIN_DMG");
   if (pos != std::string::npos) {
-    ret.replace(pos, 7, minDmgStr);
+    ret.replace(pos, 7, std::to_string((int)(damage * 0.9F)));
   }
 
-  if (val1 != 0) {
+  if (val1 != FLT_MAX) {
     pos = s.find("VAL1");
     if (pos != std::string::npos) {
-      ret.replace(pos, 4, val1Str);
+      ret.replace(pos, 4, std::to_string((int)val1));
     }
   }
 
-  if (val2 != 0) {
+  if (val2 != FLT_MAX) {
     pos = s.find("VAL2");
     if (pos != std::string::npos) {
-      ret.replace(pos, 4, val2Str);
+      ret.replace(pos, 4, std::to_string((int)val2));
     }
   }
 
   return ret;
+}
+//Creates a new string for the effect tooltips formatted with numbers
+inline static std::string CreateEffectToolTipString(const std::string& s, float duration,
+                                                    float amount = FLT_MAX,
+                                                    float val3 = FLT_MAX,
+                                                    const char* stringVal = nullptr) {
+  std::string ret = s;
+  size_t pos;
+
+  if (duration != FLT_MAX) {
+    pos = s.find("DURATION");
+    if (pos != std::string::npos) {
+      ret.replace(pos, 8, std::to_string((int)duration / 60));
+    }
+  }
+
+  if (amount != FLT_MAX) {
+    pos = s.find("AMOUNT");
+    if (pos != std::string::npos) {
+      ret.replace(pos, 6, std::to_string((int)amount));
+    }
+  }
+
+  if (val3 != FLT_MAX) {
+    pos = s.find("VAL3");
+    if (pos != std::string::npos) {
+      ret.replace(pos, 4, std::to_string((int)val3));
+    }
+  }
+
+  if (stringVal) {
+    pos = s.find("STRING");
+    if (pos != std::string::npos) {
+      ret.replace(pos, 6, stringVal);
+    }
+  }
+
+  return ret;
+}
+
+inline static void DrawSwipeCooldownEffect(float x, float y, float size, int remainingTicks, int currentTicks)  noexcept {
+  if (currentTicks < remainingTicks) {
+    float side1, side2, side3, side4, side5;
+    float coolDownCoefficient;
+    coolDownCoefficient = currentTicks * (size * 4 / remainingTicks);
+    side1 = size / 2;
+    side2 = 0;
+    side3 = 0;
+    side4 = 0;
+    side5 = 0;
+    if (coolDownCoefficient > 0) side1 += coolDownCoefficient;
+    if (coolDownCoefficient > size / 2) side2 += coolDownCoefficient - size / 2;
+    if (coolDownCoefficient > size * 1.5F) side3 += coolDownCoefficient - size * 1.5F;
+    if (coolDownCoefficient > size * 2.5F) side4 += coolDownCoefficient - size * 2.5F;
+    if (coolDownCoefficient > size * 3.5F) side5 += coolDownCoefficient - size * 3.5F;
+
+    for (int i = side1; i <= size; i++) {
+      DrawLine(x + size / 2, y + size / 2, x + i, y,
+               Colors::mediumLightGreyTransparent);
+    }
+    for (int i = side2; i <= size; i++) {
+      DrawLine(x + size / 2, y + size / 2, x + size, y + i,
+               Colors::mediumLightGreyTransparent);
+    }
+    for (int i = side3; i <= size; i++) {
+      DrawLine(x + size / 2, y + size / 2, x + size - i, y + size,
+               Colors::mediumLightGreyTransparent);
+    }
+    for (int i = side4; i <= size; i++) {
+      DrawLine(x + size / 2, y + size / 2, x, y + size - i,
+               Colors::mediumLightGreyTransparent);
+    }
+    for (int i = side5; i <= size / 2; i++) {
+      DrawLine(x + size / 2, y + size / 2, x + i, y,
+               Colors::mediumLightGreyTransparent);
+    }
+  }
 }
 //Returns a correctly aligned rect inside the window bounds with the given measures
 inline static RectangleR GetToolTipRect(float width, float height) noexcept {

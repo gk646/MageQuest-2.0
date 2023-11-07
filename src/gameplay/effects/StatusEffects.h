@@ -41,6 +41,10 @@ struct Slow final : public StatusEffect {
     stats.effects[SPEED_MULT_P] += slow_percent;
   }
   void AddStack(StatusEffect* other) noexcept final {}
+  [[nodiscard]] std::string GetToolTip() const noexcept final {
+    return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
+                                           slow_percent*100.0F);
+  }
 };
 struct Burn final : public StatusEffect {
   DamageStats damage_stats;
@@ -57,6 +61,10 @@ struct Burn final : public StatusEffect {
   }
   void RemoveEffect(EntityStats& stats) noexcept final {}
   void AddStack(StatusEffect* other) noexcept final {}
+  [[nodiscard]] std::string GetToolTip() const noexcept final {
+    return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
+                                           damage_stats.damage, cadence);
+  }
 };
 struct SpellEchoCD final : public StatusEffect {
   inline static constexpr int SPELL_ECHO_CD = 60 * 7.5F;
@@ -82,12 +90,17 @@ struct ElementalEquilibriumBuff final : public StatusEffect {
   void TickEffect(EntityStats& stats) final { duration--; }
   void RemoveEffect(EntityStats& stats) noexcept final {}
   void AddStack(StatusEffect* other) noexcept final {}
+  [[nodiscard]] std::string GetToolTip() const noexcept final {
+    return Util::CreateEffectToolTipString(effectToInfo[type].description, FLT_MAX,
+                                           FLT_MAX, FLT_MAX,
+                                           damageTypeNames[excludedType].c_str());
+  }
 };
 struct ElementalEquilibriumCD final : public StatusEffect {
   inline static constexpr int ELEMENTAL_EQUILIBRIUM_CD = 60 * 15;
-   ElementalEquilibriumCD()
+  ElementalEquilibriumCD()
       : StatusEffect(true, 0, ELEMENTAL_EQUILIBRIUM_CD,
-                     EffectType::ELEMENTAL_EQUILIBRIUM_CD){}
+                     EffectType::ELEMENTAL_EQUILIBRIUM_CD) {}
   [[nodiscard]] ElementalEquilibriumCD* clone() const final {
     return new ElementalEquilibriumCD(*this);
   }

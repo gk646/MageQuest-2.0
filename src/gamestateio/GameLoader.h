@@ -71,6 +71,7 @@ struct GameLoader {
     for (uint_fast32_t i = 0; i < 1; i++) {
       PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
     }
+    PLAYER_EFFECTS.AddEffect(new Slow(30, 10 * 60));
     UI_MANAGER.playerUI.playerHotbar.skills[0] = SKILLS[ARCANE_BOLT];
     UI_MANAGER.playerUI.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
     UI_MANAGER.playerUI.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
