@@ -21,6 +21,7 @@ struct TalentPanel final : public Window {
     DrawToolTipNode();
   }
   void Update() noexcept {
+
     WINDOW_UPDATE();
     for (auto& node : talents) {
       node.Update();
@@ -57,7 +58,7 @@ struct TalentPanel final : public Window {
     toolTipID = -1;
   }
   //Draws the window background tiles
-  inline void DrawBackGround() const noexcept {
+  static inline void DrawBackGround() noexcept {
     auto id = textures::ui::talentpanel::TALENT_BACKGROUND_TILE.id;
     for (int i = 0; i < 42; i++) {
       for (int j = 0; j < 24; j++) {
@@ -114,7 +115,7 @@ struct TalentPanel final : public Window {
       if (node.sizeType == TalentSize::NORMAL) {
         if (node.isActivated) {
           node.Draw(textures::ui::talentpanel::NODE_GREEN, mid.x(), mid.y(), toolTipID);
-        } else if (IsUsableTalent(node.nodeID)) {
+        } else if (IsUsableTalent(node.talentID)) {
           node.Draw(textures::ui::talentpanel::NODE_PURPLE, mid.x(), mid.y(), toolTipID);
         } else {
           node.Draw(textures::ui::talentpanel::NODE_ORANGE, mid.x(), mid.y(), toolTipID);
@@ -123,7 +124,7 @@ struct TalentPanel final : public Window {
         if (node.isActivated) {
           node.Draw(textures::ui::talentpanel::TALENT_BIG_GREEN, mid.x() - 9, mid.y() - 9,
                     toolTipID);
-        } else if (IsUsableTalent(node.nodeID)) {
+        } else if (IsUsableTalent(node.talentID)) {
           node.Draw(textures::ui::talentpanel::TALENT_BIG_PURPLE, mid.x() - 9,
                     mid.y() - 9, toolTipID);
         } else {
@@ -134,7 +135,7 @@ struct TalentPanel final : public Window {
         if (node.isActivated) {
           node.Draw(textures::ui::talentpanel::TALENT_MID_GREEN, mid.x() - 7, mid.y() - 7,
                     toolTipID);
-        } else if (IsUsableTalent(node.nodeID)) {
+        } else if (IsUsableTalent(node.talentID)) {
           node.Draw(textures::ui::talentpanel::TALENT_MID_PURPLE, mid.x() - 7,
                     mid.y() - 7, toolTipID);
         } else {

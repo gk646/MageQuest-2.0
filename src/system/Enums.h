@@ -45,10 +45,44 @@ enum class MonsterType : uint8_t {
   SKEL_SHIELD,
   SNAKE
 };
+enum class EffectType : uint8_t {
+  STUN,
+  BURN,
+  SLOW,
+  ROOT,
+  SPELL_ECHO_CD,
+  ELEMENTAL_EQUILIBRIUM_BUFF,
+  ELEMENTAL_EQUILIBRIUM_CD
+};
+std::unordered_map<std::string, EffectType> effectMap = {
+    {"STUN", EffectType::STUN},
+    {"BURN", EffectType::BURN},
+    {"SLOW", EffectType::SLOW},
+    {"ROOT", EffectType::ROOT},
+    {"SPELL_ECHO_CD", EffectType::SPELL_ECHO_CD},
+    {"ELEMENTAL_EQUILIBRIUM_BUFF", EffectType::ELEMENTAL_EQUILIBRIUM_BUFF},
+    {"ELEMENTAL_EQUILIBRIUM_CD", EffectType::ELEMENTAL_EQUILIBRIUM_CD}};
 
-enum class EffectType : uint8_t { STUN, BURN, SLOW, ROOT , SPELL_ECHO_CD};
+struct EffectInfo {
+  std::string name;
+  std::string description;
+  Texture icon;
+};
+
+std::unordered_map<EffectType, EffectInfo> effectToInfo{};
+
 enum class ShapeType : uint8_t { CIRCLE, RECT };
-enum class DamageType : uint8_t { FIRE, POISON, ICE, ARCANE, DARK, PHYSICAL, TRUE_DMG };
+enum class DamageType : uint8_t {
+  ARCANE = 9,
+  POISON = 11,
+  FIRE = 12,
+  ICE = 13,
+  DARK,
+  PHYSICAL,
+  TRUE_DMG
+};
+inline static DamageType commonSchools[4] = {DamageType::FIRE, DamageType::ICE,
+                                             DamageType::ARCANE, DamageType::POISON};
 
 inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::FIRE, Colors::fire_red},
@@ -186,6 +220,7 @@ enum Stat : uint8_t {
   HEALTH_MULT_P,
   MANA_MULT_P,
   MANA_REGEN_MULT_P,
+  HEALTH_REGEN_MULT_P,
   ARCANE_DMG_WEAKNESS_P,
   DARK_DMG_WEAKNESS_P,
   POISON_DMG_WEAKNESS_P,

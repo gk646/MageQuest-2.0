@@ -4,11 +4,11 @@ struct Wolf final : public Monster {
   Wolf(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::WOLF, type,
                 {45, 30}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attack_sound[0], 1,
+    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[0], 1,
                                        40);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attack_sound[1], 1,
+    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[1], 1,
                                        40);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attack_sound[2], 1,
+    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[2], 1,
                                        40);
   }
   void Draw() final {
@@ -62,7 +62,7 @@ struct Snake final : public Monster {
   Snake(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SNAKE, type,
                 {29, 19}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 15, 30, resource->attack_sound[0], 1,
+    attackComponent.RegisterConeAttack(1, level, 90, 15, 30, resource->attackSounds[0], 1,
                                        35);
   }
   void Draw() final {
@@ -118,11 +118,11 @@ struct BloodHound final : public Monster {
   BloodHound(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::BLOOD_HOUND,
                 type, {45, 30}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attack_sound[0],
+    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[0],
                                        50);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attack_sound[1],
+    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[1],
                                        50);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attack_sound[2],
+    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[2],
                                        50);
   }
   void Draw() final {
@@ -176,7 +176,7 @@ struct FangShroom final : public Monster {
   FangShroom(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::MUSHROOM, type,
                 {32, 39}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 25, 35, resource->attack_sound[0], 1,
+    attackComponent.RegisterConeAttack(1, level, 90, 25, 35, resource->attackSounds[0], 1,
                                        35);
   }
   void Draw() final {
@@ -231,11 +231,11 @@ struct SkeletonWarrior final : public Monster {
       : Monster(pos, monsterIdToScaler[type], level,
                 &textures::monsters::SKELETON_WARRIOR, type, {30, 48}) {
     attackComponent.RegisterConeAttack(1, stats.level, 90, 40, 48,
-                                       resource->attack_sound[0], 32);
+                                       resource->attackSounds[0], 32);
     attackComponent.RegisterConeAttack(2, stats.level, 90, 40, 48,
-                                       resource->attack_sound[0], 16);
+                                       resource->attackSounds[0], 16);
     attackComponent.RegisterConeAttack(3, stats.level, 120, 40, 48,
-                                       resource->attack_sound[1], 16);
+                                       resource->attackSounds[1], 16);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -416,11 +416,11 @@ struct SkeletonSpear final : public Monster {
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_SPEAR,
                 type, {30, 50}) {
     attackComponent.RegisterConeAttack(1, stats.level, 120, 40, 48,
-                                       resource->attack_sound[0], 15);
+                                       resource->attackSounds[0], 15);
     attackComponent.RegisterConeAttack(2, stats.level, 120, 40, 48,
-                                       resource->attack_sound[0], 15);
+                                       resource->attackSounds[0], 15);
     attackComponent.RegisterConeAttack(3, stats.level, 120, 40, 48,
-                                       resource->attack_sound[0], 24);
+                                       resource->attackSounds[0], 24);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {

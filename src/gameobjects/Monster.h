@@ -3,19 +3,6 @@
 
 #include "../ui/game/HealthBar.h"
 
-#define GENERATE_DRAW_ATTACK(ATTACK_NAME, PICTURES_TOTAL, DELAY_TOTAL, OFFSET_X,   \
-                             OFFSET_Y)                                             \
-  constexpr int step_##ATTACK_NAME = DELAY_TOTAL / PICTURES_TOTAL;                 \
-  inline void draw_##ATTACK_NAME() noexcept {                                      \
-    int num = spriteCounter % DELAY_TOTAL / step_##ATTACK_NAME;                    \
-    if (num < PICTURES_TOTAL) {                                                    \
-      DrawTextureProFastEx(resource->ATTACK_NAME[num], pos.x_ + DRAW_X + OFFSET_X, \
-                           pos.y_ + DRAW_Y + OFFSET_Y, 0, 0, isFlipped, WHITE);    \
-    } else {                                                                       \
-      actionState = 0;                                                             \
-    }                                                                              \
-  }
-
 #define MONSTER_UPDATE()                                                              \
   ENTITY_UPDATE()                                                                     \
   spriteCounter++;                                                                    \
@@ -90,8 +77,7 @@ struct Monster : public Entity {
       effectHandler.AddEffects(p.statusEffects);
       float dmg = stats.TakeDamage(p.damageStats);
       threatManager.AddThreat(p.sender, dmg);
-      hitFlashDuration == -12 ? hitFlashDuration = 12
-                              : hitFlashDuration = hitFlashDuration;
+      hitFlashDuration = hitFlashDuration == -12 ? 12 : hitFlashDuration;
     }
   }
   inline void CheckForDeath() noexcept {
@@ -318,7 +304,7 @@ void ProjectileAttack::Execute(Monster* attacker) const {
 }
 void ConeAttack::Execute(Monster* attacker) const {
   PROJECTILES.emplace_back(new AttackCone(attacker->GetAttackConeBounds(width, height),
-                                          false, std::max(hitDelay*2,90), hitDelay, damage, {},
-                                          sound, attacker));
+                                          false, std::max(hitDelay * 2, 90), hitDelay,
+                                          damage, {}, sound, attacker));
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

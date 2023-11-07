@@ -1,6 +1,15 @@
 #ifndef MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 #define MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 namespace Util {
+template <typename T>
+inline static bool ArrayContains(const T* arr, const T& val, int size) noexcept {
+  for (int i = 0; i < size; i++) {
+    if (arr[i] == val) {
+      return true;
+    }
+  }
+  return false;
+}
 //creates a 2D array of the given type and size
 template <typename T>
 inline static T** Create2DArr(int x, int y) {

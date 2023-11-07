@@ -18,7 +18,6 @@ struct MonsterScaler {
   }
 };
 
-
 struct SkillStats {
   float manaCost = 0;
   float healthCost = 0;
@@ -43,24 +42,41 @@ struct DamageStats {
   }
 };
 
-struct SpentAttributePoints {
-  int16_t spentPoints[9] = {0};
-  uint16_t pointsToSpend = 0;
-  inline bool SpendPoint(uint8_t i) noexcept {
-    if (pointsToSpend >= 1) {
-      spentPoints[i]++;
-      pointsToSpend--;
+struct PlayerSpentSkillPoints {
+  int16_t spentAttributePoints[9] = {0};
+  int16_t attributePointsToSpend = 0;
+  int16_t spentTalentPoints = 0;
+  int16_t talentPointsToSpend = 25;
+  inline bool SpendAttributePoint(uint8_t i) noexcept {
+    if (attributePointsToSpend > 0) {
+      spentAttributePoints[i]++;
+      attributePointsToSpend--;
       return true;
     }
     return false;
   }
-  inline void AddLevelUPPoints() noexcept { pointsToSpend += 3; }
+  inline bool SpendTalentPoint() noexcept {
+    if (talentPointsToSpend > 0) {
+      spentTalentPoints++;
+      talentPointsToSpend--;
+      return true;
+    }
+    return false;
+  }
+  inline void AddLevelUPPoints() noexcept {
+    attributePointsToSpend += 3;
+    talentPointsToSpend++;
+  }
   [[nodiscard]] inline bool IsDefaultValue(Stat stat) const noexcept;
-  [[nodiscard]] inline bool HasPointsToSpend() const noexcept {
-    return pointsToSpend >= 1;
+  [[nodiscard]] inline bool HasAttributePointsToSpend() const noexcept {
+    return attributePointsToSpend > 0;
+  }
+  [[nodiscard]] inline bool HasTalentPointsToSpend() const noexcept {
+    return talentPointsToSpend > 0;
   }
 };
-inline static SpentAttributePoints PLAYER_SPENT_POINTS{};
+
+inline static PlayerSpentSkillPoints PLAYER_SPENT_POINTS{};
 
 struct EntityStats {
   float effects[STATS_ENDING] = {0};
@@ -145,13 +161,11 @@ struct EntityStats {
     }
   }
   inline float TakeDamage(const DamageStats& stats) {
-    float& armour = effects[ARMOUR];
-    float& armour_mult = effects[ARMOUR_MULT_P];
-
+    float armour = GetArmour();
     float total_damage = RollCriticalHit(stats);
 
     if (stats.dmgType == DamageType::PHYSICAL) {
-      total_damage *= 1 - (armour * (1 + armour_mult)) / (level * 50.0F);
+      total_damage *= 1 - armour / (level * 50.0F);
     } else if (stats.dmgType != DamageType::TRUE_DMG) {
       if (shield >= total_damage) {
         shield -= total_damage;
@@ -170,8 +184,7 @@ struct EntityStats {
     shield = effects[MAX_SHIELD];
   }
   inline void SpendAttributePoint(uint8_t i) noexcept {
-
-    if (PLAYER_SPENT_POINTS.SpendPoint(i)) {
+    if (PLAYER_SPENT_POINTS.SpendAttributePoint(i)) {
       effects[i]++;
       ReCalculatePlayerStats();
     }
@@ -184,6 +197,15 @@ struct EntityStats {
   }
   [[nodiscard]] inline float GetSpeed() const noexcept {
     return speed * (1 + effects[SPEED_MULT_P]);
+  }
+  [[nodiscard]] inline float GetManaRegen() const noexcept {
+    return effects[MANA_REGEN] * (1 + effects[MANA_REGEN_MULT_P]);
+  }
+  [[nodiscard]] inline float GetHealthRegen() const noexcept {
+    return effects[HEALTH_REGEN] * (1 + effects[HEALTH_REGEN_MULT_P]);
+  }
+  [[nodiscard]] inline float GetArmour() const noexcept {
+    return effects[ARMOUR] * (1 + effects[ARMOUR_MULT_P]);
   }
   [[nodiscard]] inline float GetBagSlots() const noexcept { return effects[BAG_SLOTS]; }
   inline void ReCalculatePlayerStats() noexcept {
@@ -211,7 +233,7 @@ struct EntityStats {
 inline EntityStats PLAYER_STATS;
 
 inline static std::unordered_map<MonsterType, MonsterScaler> monsterIdToScaler{};
-bool SpentAttributePoints::IsDefaultValue(Stat stat) const noexcept {
-  return spentPoints[stat] == (int)PLAYER_STATS.effects[stat];
+bool PlayerSpentSkillPoints::IsDefaultValue(Stat stat) const noexcept {
+  return spentAttributePoints[stat] == (int)PLAYER_STATS.effects[stat];
 }
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_

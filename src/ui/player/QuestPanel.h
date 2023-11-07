@@ -44,9 +44,9 @@ struct QuestPanel final : public Window {
     questMenu.Draw(wholeWindow.x, wholeWindow.y + 25);
   }
   void Update() {
+    WINDOW_UPDATE();
     PLAYER_QUESTS.Update();
     sidePanel.Update();
-    WINDOW_UPDATE();
     questMenu.Update();
   }
 };

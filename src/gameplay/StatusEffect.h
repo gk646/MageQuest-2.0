@@ -7,7 +7,6 @@ struct StatusEffect {
   int16_t stacks = 0;
   EffectType type;
   bool isDebuff;
-  //Texture2D texture;
   StatusEffect(bool isDebuff, int cadence, int duration, EffectType type)
       : isDebuff(isDebuff),
         cadence((int16_t)cadence),
@@ -25,11 +24,13 @@ struct StatusEffect {
     return *this;
   }
   [[nodiscard]] virtual StatusEffect* clone() const = 0;
-  static void draw(int x, int y) noexcept { DrawRectangle(x, y, 50, 50, BLUE); }
-  virtual void TickEffect(EntityStats& stats) = 0;
-  virtual void ApplyEffect(EntityStats& stats) noexcept = 0;
-  virtual void RemoveEffect(EntityStats& stats) noexcept = 0;
-  virtual void AddStack(StatusEffect* other) noexcept = 0;
+  inline void Draw(float x, float y, float size) const noexcept {
+    DrawTextureScaled(effectToInfo[type].icon, {x, y, size, size}, 0, false, 0, WHITE);
+  }
+  virtual inline void TickEffect(EntityStats& stats) = 0;
+  virtual inline void ApplyEffect(EntityStats& stats) noexcept = 0;
+  virtual inline void RemoveEffect(EntityStats& stats) noexcept = 0;
+  virtual inline void AddStack(StatusEffect* other) noexcept = 0;
   [[nodiscard]] inline bool IsDamageTick() const noexcept {
     return duration > 0 && duration % cadence == 0;
   }

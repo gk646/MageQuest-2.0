@@ -1,12 +1,8 @@
 #ifndef MAGEQUEST_SRC_WORLD_TRANSITIONPARSER_H_
 #define MAGEQUEST_SRC_WORLD_TRANSITIONPARSER_H_
-
-
 namespace TransitionParser {
-
 static void ParseTransitionFile() {
   auto table = Util::ReadMGI("mgi/TransitionMap.mgi");
-
   Zone zone;
   for (const auto& i : table) {
     zone = stringToZoneMap[i[0]];

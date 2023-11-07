@@ -6,7 +6,7 @@ struct Stun final : public StatusEffect {
   void ApplyEffect(EntityStats& stats) noexcept final { stats.stunned = true; }
   void TickEffect(EntityStats& stats) final { duration--; }
   void RemoveEffect(EntityStats& stats) noexcept final { stats.stunned = false; }
-  void AddStack(StatusEffect* other) noexcept final {}
+  void AddStack(StatusEffect* other) noexcept final { duration = other->duration; }
 };
 struct Root final : public StatusEffect {
   float preValue = -1;
@@ -59,11 +59,40 @@ struct Burn final : public StatusEffect {
   void AddStack(StatusEffect* other) noexcept final {}
 };
 struct SpellEchoCD final : public StatusEffect {
-  inline static constexpr int SPELL_ECHO_CD = 450;
+  inline static constexpr int SPELL_ECHO_CD = 60 * 7.5F;
   SpellEchoCD() : StatusEffect(true, 0, SPELL_ECHO_CD, EffectType::SPELL_ECHO_CD) {}
   [[nodiscard]] SpellEchoCD* clone() const final { return new SpellEchoCD(*this); }
   void ApplyEffect(EntityStats& stats) noexcept final {}
-  void TickEffect(EntityStats& stats) final {}
+  void TickEffect(EntityStats& stats) final { duration--; }
+  void RemoveEffect(EntityStats& stats) noexcept final {}
+  void AddStack(StatusEffect* other) noexcept final {}
+};
+
+struct ElementalEquilibriumBuff final : public StatusEffect {
+  inline static constexpr int ELEMENTAL_EQUILIBRIUM_BUFF = 60 * 10;
+  DamageType excludedType;
+  explicit ElementalEquilibriumBuff(DamageType excludedType)
+      : StatusEffect(false, 0, ELEMENTAL_EQUILIBRIUM_BUFF,
+                     EffectType::ELEMENTAL_EQUILIBRIUM_BUFF),
+        excludedType(excludedType) {}
+  [[nodiscard]] ElementalEquilibriumBuff* clone() const final {
+    return new ElementalEquilibriumBuff(*this);
+  }
+  void ApplyEffect(EntityStats& stats) noexcept final {}
+  void TickEffect(EntityStats& stats) final { duration--; }
+  void RemoveEffect(EntityStats& stats) noexcept final {}
+  void AddStack(StatusEffect* other) noexcept final {}
+};
+struct ElementalEquilibriumCD final : public StatusEffect {
+  inline static constexpr int ELEMENTAL_EQUILIBRIUM_CD = 60 * 15;
+   ElementalEquilibriumCD()
+      : StatusEffect(true, 0, ELEMENTAL_EQUILIBRIUM_CD,
+                     EffectType::ELEMENTAL_EQUILIBRIUM_CD){}
+  [[nodiscard]] ElementalEquilibriumCD* clone() const final {
+    return new ElementalEquilibriumCD(*this);
+  }
+  void ApplyEffect(EntityStats& stats) noexcept final {}
+  void TickEffect(EntityStats& stats) final { duration--; }
   void RemoveEffect(EntityStats& stats) noexcept final {}
   void AddStack(StatusEffect* other) noexcept final {}
 };

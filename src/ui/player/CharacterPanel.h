@@ -106,9 +106,9 @@ struct CharacterPanel : public Window {
         0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
-    if (PLAYER_SPENT_POINTS.HasPointsToSpend()) {
+    if (PLAYER_SPENT_POINTS.HasAttributePointsToSpend()) {
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Unspent Attribute Points!: %i",
-                PLAYER_SPENT_POINTS.pointsToSpend);
+               PLAYER_SPENT_POINTS.attributePointsToSpend);
       Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(15), TEXT_BUFFER, x + size / 2,
                              y + SCALE(40), Colors::darkBackground);
     }
@@ -119,26 +119,26 @@ struct CharacterPanel : public Window {
   void DrawStatCells(float x, float y) noexcept {
     x += baseStats[0].bounds.width + SCALE(22);
     int i = 9;
-    DrawSingleStatCell(MAX_HEALTH, x, y, i);
-    DrawSingleStatCell(MAX_MANA, x, y, i);
-    DrawSingleStatCell(HEALTH_REGEN, x, y, i);
-    DrawSingleStatCell(MANA_REGEN, x, y, i);
-    DrawSingleStatCell(ARMOUR, x, y, i);
-    DrawSingleStatCell(CRIT_CHANCE, x, y, i);
-    DrawSingleStatCell(DODGE_CHANCE, x, y, i);
-    DrawSingleStatCell(SPEED_MULT_P, x, y, i);
-    DrawSingleStatCell(WEAPON_DAMAGE, x, y, i);
+    DrawSingleStatCell(MAX_HEALTH, x, y, i, PLAYER_STATS.GetMaxHealth());
+    DrawSingleStatCell(MAX_MANA, x, y, i, PLAYER_STATS.GetMaxMana());
+    DrawSingleStatCell(HEALTH_REGEN, x, y, i, PLAYER_STATS.GetHealthRegen());
+    DrawSingleStatCell(MANA_REGEN, x, y, i, PLAYER_STATS.GetManaRegen());
+    DrawSingleStatCell(ARMOUR, x, y, i, PLAYER_STATS.GetArmour());
+    DrawSingleStatCell(CRIT_CHANCE, x, y, i, PLAYER_STATS.effects[CRIT_CHANCE]);
+    DrawSingleStatCell(DODGE_CHANCE, x, y, i, PLAYER_STATS.effects[DODGE_CHANCE]);
+    DrawSingleStatCell(SPEED_MULT_P, x, y, i, 1 + PLAYER_STATS.effects[SPEED_MULT_P]);
+    DrawSingleStatCell(WEAPON_DAMAGE, x, y, i, PLAYER_STATS.effects[WEAPON_DAMAGE]);
 
     y -= 9 * (baseStats[0].bounds.height + 1);
     x -= baseStats[0].bounds.width + SCALE(22);
     for (uint_fast32_t j = 0; j < 9; j++) {
       Stat stat = Stat(j);
-      if (PLAYER_SPENT_POINTS.HasPointsToSpend() &&
+      if (PLAYER_SPENT_POINTS.HasAttributePointsToSpend() &&
           spendPoint.Draw(x + WIDTH / 2.5F + SCALE(10), y)) {
         PLAYER_STATS.SpendAttributePoint(j);
       }
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
-      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)PLAYER_STATS.effects[j],
+      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, std::floor(PLAYER_STATS.effects[j]),
                                 PLAYER_SPENT_POINTS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
@@ -146,7 +146,7 @@ struct CharacterPanel : public Window {
       y += baseStats[j].bounds.height + 1;
     }
   }
-  void update() noexcept {
+  void Update() noexcept {
     WINDOW_UPDATE();
     for (auto& slot : equipSlots) {
       slot.UpdateCharacterSlots();
@@ -154,13 +154,10 @@ struct CharacterPanel : public Window {
   }
 
  private:
-  inline void DrawSingleStatCell(Stat stat, float x, float& y, int& i) noexcept {
+  inline void DrawSingleStatCell(Stat stat, float x, float& y, int& i,
+                                 float val) noexcept {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
-    if (i == 16) {
-      baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, 1 + PLAYER_STATS.effects[stat]);
-    } else {
-      baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, PLAYER_STATS.effects[stat]);
-    }
+    baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, val);
     y += baseStats[0].bounds.height + 1;
   }
 };
