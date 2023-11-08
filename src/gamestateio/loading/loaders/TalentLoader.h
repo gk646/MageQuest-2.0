@@ -37,6 +37,10 @@ static void Load() noexcept {
     auto x = (float)sqlite3_column_int(stmt, 4);
     auto y = (float)sqlite3_column_int(stmt, 5);
     auto id = (int16_t)sqlite3_column_int(stmt, 0);
+    if(id > 180){
+      x-=1350;
+      y-=1350;
+    }
     if (sqlite3_column_int(stmt, 7)) {
       size = TalentSize(sqlite3_column_int(stmt, 7));
     }
