@@ -41,6 +41,7 @@ inline ProjectileResources BLAST_HAMMER;
 inline ProjectileResources ENERGY_SPHERE;
 inline ProjectileResources ETHER_PORTAL;
 inline ProjectileResources FIRE_BURST;
+inline ProjectileResources FIRE_BALL;
 inline ProjectileResources ARCANE_BOLT;
 inline ProjectileResources FIRE_EXPLOSION;
 inline ProjectileResources FIRE_SWORD;
@@ -137,6 +138,7 @@ inline static Texture mouseright;
 inline static Texture skillbar;
 inline static Texture xpbar;
 inline static Texture skillRange;
+inline static Texture castbar;
 
 namespace icons {
 inline static Texture iceLance;

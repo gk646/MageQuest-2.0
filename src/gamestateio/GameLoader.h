@@ -75,6 +75,7 @@ struct GameLoader {
     UI_MANAGER.playerUI.playerHotbar.skills[0] = SKILLS[ARCANE_BOLT];
     UI_MANAGER.playerUI.playerHotbar.skills[1] = SKILLS[FIRE_STRIKE];
     UI_MANAGER.playerUI.playerHotbar.skills[2] = SKILLS[BLAST_HAMMER];
+    UI_MANAGER.playerUI.playerHotbar.skills[3] = SKILLS[FIRE_BALL];
     UI_MANAGER.playerUI.playerHotbar.skills[4] = SKILLS[ENERGY_SPHERE];
     UI_MANAGER.playerUI.playerHotbar.skills[5] = SKILLS[FROST_NOVA];
     //NPCS.push_back(NPC::GetNewNPC(NPC_ID::SATIRO, 4 * 48, 96 * 48, CURRENT_ZONE));

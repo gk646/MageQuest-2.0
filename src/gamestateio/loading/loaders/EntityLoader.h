@@ -41,6 +41,7 @@ static void Load() {
   textures::projectile::ENERGY_SPHERE.Load("EnergySphere/");
   textures::projectile::ETHER_PORTAL.Load("etherPortal/");
   textures::projectile::FIRE_BURST.Load("fireBurst/");
+  textures::projectile::FIRE_BALL.LoadSpriteSheet("fireBall/");
   textures::projectile::FIRE_EXPLOSION.Load("fireExplosion/");
   textures::projectile::FIRE_SWORD.Load("fireSword/");
   textures::projectile::FROST_NOVA.Load("frostNova/");

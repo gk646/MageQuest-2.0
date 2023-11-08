@@ -10,7 +10,7 @@ inline static ProjectileResources* GetProjectileRes(ProjectileType type) noexcep
     case FIRE_STRIKE_II:
       return &textures::projectile::FIRE_BURST;
     case FIRE_BALL:
-      return &textures::projectile::FIRE_BURST;
+      return &textures::projectile::FIRE_BALL;
     case ARROW_NORMAL:
       return &textures::projectile::ARROW_NORMAL;
     case BLAST_HAMMER:

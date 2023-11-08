@@ -23,6 +23,7 @@ static void Load() noexcept {
     stats.range = std::stoi(vec[Range_INDEX]);
     stats.manaCost = std::stof(vec[ManaCost_INDEX]);
     stats.type = type;
+    stats.castTime = std::stoi(vec[9]);
     auto skillPtr = Skill::GetNewSkill(type, stats);
     skillPtr->description = vec[Description_INDEX];
     skillPtr->name = vec[DisplayName_INDEX];
