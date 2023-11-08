@@ -44,10 +44,11 @@ struct HotBar {
     float height = SCALE(BASE_RECT.height);
     float startX = (SCREEN_WIDTH - width) / 2.0F;
     float startY = SCREEN_HEIGHT - height * 0.93F;
-    xp_bar.Draw(startX+5, startY);
+    xp_bar.Draw(startX + 5, startY);
     PLAYER_EFFECTS.DrawPlayer(startY - 44);
     DrawSkillIcons(startX, startY, width, height, offX, offY);
     DrawMenuButtons(startX + 650);
+    Skill::DrawCastBar();
   }
   void Update() noexcept {
     xp_bar.Update();
@@ -56,6 +57,15 @@ struct HotBar {
     }
     for (const auto& skill : skills) {
       skill->Update();
+    }
+    if (Skill::castProgress >= 0) {
+      std::cout << Skill::castProgress << std::endl;
+      Skill::castProgress++;
+      if (PLAYER.moving) Skill::castProgress = -1;
+      if (Skill::castProgress == Skill::lastCastedSkill->skillStats.castTime) {
+        std::cout << "castd" << std::endl;
+        Skill::lastCastedSkill->Activate(false);
+      }
     }
     if (GAME_STATE != GameState::GameMenu) {
       if (IsKeyDown(KEY_ONE) && skills[0]->IsUsable()) {
@@ -93,7 +103,7 @@ struct HotBar {
     Skill* toolTipSkill = nullptr;
     int16_t j;
     for (int16_t i = 0; i < 6; i++) {
-      if (skills[i]->Draw(currentX + offX, startY + offY, SCALE(50))) {
+      if (skills[i]->Draw(currentX + offX, startY + offY)) {
         toolTipSkill = skills[i];
         j = i;
       }
@@ -105,6 +115,7 @@ struct HotBar {
     if (toolTipSkill) {
       toolTipSkill->DrawTooltip(startX + (float)j * 65.0F + offX, startY + offY);
     }
+
   }
   //Draws semi transparent interface buttons on the lower right screen
   inline void DrawMenuButtons(float x) noexcept {

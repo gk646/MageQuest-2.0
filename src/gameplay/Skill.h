@@ -5,6 +5,8 @@ struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
   inline static constexpr float TOOL_TIP_BASE_HEIGHT = 93;
+  inline static int16_t castProgress = -1;
+  inline static Skill* lastCastedSkill = nullptr;
   std::string name;
   std::string description;
   UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
@@ -13,24 +15,24 @@ struct Skill {
   const Texture& icon;
   uint16_t coolDownUpCounter;
   uint8_t attackAnimation = 0;
-  bool from_player;
+  bool activated = false;
   Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,
-        bool from_player, int attack_animation, const Texture& icon) noexcept
+        int attack_animation, const Texture& icon) noexcept
       : damageStats(damage_stats),
         skillStats(ability_stats),
-        from_player(from_player),
         attackAnimation(attack_animation),
         icon(icon) {
     coolDownUpCounter = (int16_t)ability_stats.coolDownTicks;
   }
   //Activates the skill
   inline virtual void Activate(bool isFree) = 0;
-  inline void Update() noexcept { coolDownUpCounter++; };
-  bool Draw(float x, float y, float size) noexcept {
+  inline void Update() noexcept;
+  bool Draw(float x, float y) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
     Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
                                   PLAYER_STATS.GetRemainingCD(skillStats),
                                   coolDownUpCounter);
+    if (castProgress > 0) DrawCastBar();
     return hitbox.Update(x, y);
   }
   //TODO proper link to support bar
@@ -49,12 +51,19 @@ struct Skill {
   //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
   inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
   inline void DrawTooltip(float x, float y) noexcept { DrawToolTipImpl(x, y); }
+  inline static void DrawCastBar() noexcept {
+    if (!lastCastedSkill) return;
+    float x = (SCREEN_WIDTH - 85) / 2;
+    float y = SCREEN_HEIGHT * 0.75F;
 
- private:
-  [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {
-    return PLAYER_STATS.GetAbilityDmg(damageStats) /
-           (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+    DrawRectangleProFast(
+        x + 3, y + 3,
+        ((float)castProgress / (float)lastCastedSkill->skillStats.castTime) * 85.0F, 4,
+        Colors::castBarOrange);
+    DrawTextureProFast(textures::ui::skillbar::castbar, x, y, 0, WHITE);
   }
+  //Draw functions
+ private:
   void DrawToolTipImpl(float x, float y) noexcept {
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
@@ -125,6 +134,18 @@ struct Skill {
     }
   }
 
+ private:
+  [[nodiscard]] inline bool HandleCasting() const noexcept {
+    if (skillStats.castTime == 0 || skillStats.castTime == castProgress) return true;
+    castProgress = 0;
+    lastCastedSkill = const_cast<Skill*>(this);
+    return false;
+  }
+  [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {
+    return PLAYER_STATS.GetAbilityDmg(damageStats) /
+           (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+  }
+
  protected:
   inline void SkillAtMouse(ProjectileType type, bool isFree) noexcept;
   inline void SkillAtMouseRadial(ProjectileType type, int numProjectiles,
@@ -150,7 +171,8 @@ inline static Projectile* GetProjectileInstance(
     case FIRE_STRIKE_II:
       break;
     case FIRE_BALL:
-      break;
+      return new FireBall(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender,
+                          &sound == &sound::EMPTY_SOUND);
     case ARROW_NORMAL:
       return new ArrowNormal(pos, isFriendlyToPlayer, damage, effects, mvmt, sound,
                              sender);
@@ -184,10 +206,11 @@ inline static Projectile* GetProjectileInstance(
       return new ArcaneBolt(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
     case PROJECTILE_END:
       break;
+    case PSYCHIC_SCREAM:
+      break;
   }
 }
 #include "../gameobjects/components/AttackComponent.h"
-
 #include "skills/Skills.h"
 Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept {
   switch (type) {

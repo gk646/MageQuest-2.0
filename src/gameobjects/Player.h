@@ -94,6 +94,7 @@ struct Player final : public Entity {
     }
     DRAW_HITBOXES();
   }
+
  private:
   inline void draw_death() noexcept {
     int num = spriteCounter % 75 / 15;
@@ -168,18 +169,22 @@ bool SpawnTrigger::IsClose() const noexcept {
   return PLAYER.pos.dist(pos.x + size.x / 2, pos.y + size.y / 2) < UPDATE_DISTANCE * 48;
 }
 
+//Skill implementations using the global PLAYER instance
 void Skill::UseResources(bool isFree) noexcept {
   coolDownUpCounter = 0;
+  castProgress = -1;
+  lastCastedSkill = nullptr;
   PLAYER.flip = MOUSE_POS.x < CAMERA_X;
   PLAYER.spriteCounter = 0;
   PLAYER.actionState = attackAnimation;
   if (isFree) return;
   PLAYER_STATS.ApplySkillCosts(skillStats);
 }
+void Skill::Update() noexcept {
+  coolDownUpCounter++;
+}
 bool Skill::RangeLineOfSightCheck(const Point& targetPos) const noexcept {
-  if (Point(PLAYER_X + (float)PLAYER.size.x / 2.0F,
-            PLAYER_Y + (float)PLAYER.size.y / 2.0F)
-          .dist(targetPos) <= (float)skillStats.range) {
+  if (Point(PLAYER.GetMiddlePoint()).dist(targetPos) <= (float)skillStats.range) {
     if (PathFinding::LineOfSightCheck(PLAYER.tilePos, targetPos)) {
       return true;
       //TODO quick notifications
@@ -196,6 +201,7 @@ void Skill::SkillAtMouse(ProjectileType type, bool isFree) noexcept {
       PLAYER_X + MOUSE_POS.x - CAMERA_X - typeToInfo[skillStats.type].size.x / 2.0F,
       PLAYER_Y + MOUSE_POS.y - CAMERA_Y - typeToInfo[skillStats.type].size.y / 2.0F};
   if (!RangeLineOfSightCheck(targetPos)) return;
+  if (!HandleCasting()) return;
   UseResources(isFree);
   float damage = GetSkillDamage(type);
   auto prj = GetProjectileInstance(type, targetPos, true, damage, &PLAYER, {0, 0}, {});
@@ -210,6 +216,7 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles,
       PLAYER_X + MOUSE_POS.x - CAMERA_X - typeToInfo[skillStats.type].size.x / 2.0F,
       PLAYER_Y + MOUSE_POS.y - CAMERA_Y - typeToInfo[skillStats.type].size.y / 2.0F};
   if (!RangeLineOfSightCheck(targetPos)) return;
+  if (!HandleCasting()) return;
   UseResources(isFree);
   const float interval_angle = 360.0f / numProjectiles;
   float damage = GetSkillDamage(type);
@@ -229,6 +236,7 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles,
   ApplyTalentsToCast(this);
 }
 void Skill::SkillToMouse(ProjectileType type, bool isFree) noexcept {
+  if (!HandleCasting()) return;
   UseResources(isFree);
   Point targetPos = {
       PLAYER_X + (float)PLAYER.size.x / 2.0F,
@@ -245,6 +253,7 @@ void Skill::SkillToMouse(ProjectileType type, bool isFree) noexcept {
   ApplyTalentsToCast(this);
 }
 void Skill::SkillAtPlayer(ProjectileType type, bool isFree) noexcept {
+  if (!HandleCasting()) return;
   UseResources(isFree);
   Point targetPos = {
       PLAYER_X - typeToInfo[skillStats.type].size.x / 2.0F + PLAYER.size.x / 2,
@@ -254,7 +263,8 @@ void Skill::SkillAtPlayer(ProjectileType type, bool isFree) noexcept {
       MOUSE_POS.x - targetPos.y_ - DRAW_X - typeToInfo[skillStats.type].size.y / 2);
   float pov = angle * (180.0f / PI);
   Vector2 mvmt = {std::cos(angle), std::sin(angle)};
-  auto prj = GetProjectileInstance(type, targetPos, true, GetSkillDamage(type), &PLAYER, mvmt, pov, {});
+  auto prj = GetProjectileInstance(type, targetPos, true, GetSkillDamage(type), &PLAYER,
+                                   mvmt, pov, {});
   PROJECTILES.emplace_back(prj);
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

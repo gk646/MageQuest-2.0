@@ -47,13 +47,14 @@ struct FireBall final : Projectile {
                    pov, sound ? sound::EMPTY_SOUND : sound::fireBurst, sender,
                    FIRE_BALL) {}
   void Draw() final {
-    DrawTextureProFastRotOffset(resources->frames[spriteCounter % 60 / 15],
-                                pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -10, -3);
+    int frame = spriteCounter % 135 / 3;
+    DrawTexturePro(resources->frames[0], {(float)frame * 64, 0, 64, 64},
+                   {pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 64, 64}, {0, 0}, 0, WHITE);
     DRAW_HITBOXES();
   }
 };
 struct PsychicScream final : Projectile {
-  PsychicScream( const Point& pos,bool isFriendlyToPlayer, float damage)
+  PsychicScream(const Point& pos, bool isFriendlyToPlayer, float damage)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::DARK, damage}, {new Stun(120)},
                    {0, 0}, 0, sound::speak, nullptr, PSYCHIC_SCREAM) {
     isDoingDamage = false;
@@ -208,4 +209,5 @@ struct ArcaneBolt final : Projectile {
     }
   }
 };
+
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_

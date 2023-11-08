@@ -74,11 +74,12 @@ struct MonsterResource {
 
 struct ProjectileResources {
   std::vector<Texture> frames{};
-  std::vector<Sound> sounds{};
 
-  void Load(const std::string& name) {
-    load_textures(name);
-    load_sound(name);
+  void Load(const std::string& name) { load_textures(name); }
+  void LoadSpriteSheet(const std::string& name) {
+
+    std::string path = ASSET_PATH + "projectiles/" += name + std::to_string(0) + ".png";
+    frames.push_back( LoadTexture(path.c_str()));
   }
 
  private:
@@ -93,6 +94,5 @@ struct ProjectileResources {
       }
     }
   }
-  void load_sound(const std::string& name) {}
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_

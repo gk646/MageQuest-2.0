@@ -134,32 +134,32 @@ class Game {
     Multiplayer::BroadCastGameState();
   }
 
-#define DRAW_ENTITIES()                   \
-  for (auto object : WORLD_OBJECTS) {     \
-    if (object->isUpdated) {              \
-      object->Draw();                     \
-    }                                     \
-  }                                       \
-  for (auto projectile : PROJECTILES) {   \
-    projectile->Draw();                   \
-  }                                       \
-  for (auto monster : MONSTERS) {         \
-    if (monster->isUpdated) {             \
-      monster->Draw();                    \
-    }                                     \
-  }                                       \
-  for (auto npc : NPCS) {                 \
-    if (npc->isUpdated) {                 \
-      npc->Draw();                        \
-    }                                     \
-  }                                       \
-  for (auto net_player : OTHER_PLAYERS) { \
-    if (net_player) {                     \
-      net_player->Draw();                 \
-    }                                     \
-  }                                       \
-  PLAYER.Draw();
-
+  inline static void DrawEntities() {
+    for (auto object : WORLD_OBJECTS) {
+      if (object->isUpdated) {
+        object->Draw();
+      }
+    }
+    for (auto projectile : PROJECTILES) {
+      projectile->Draw();
+    }
+    for (auto monster : MONSTERS) {
+      if (monster->isUpdated) {
+        monster->Draw();
+      }
+    }
+    for (auto npc : NPCS) {
+      if (npc->isUpdated) {
+        npc->Draw();
+      }
+    }
+    for (auto net_player : OTHER_PLAYERS) {
+      if (net_player) {
+        net_player->Draw();
+      }
+    }
+    PLAYER.Draw();
+  }
   inline static void DrawGame() noexcept {
     WorldRender::PreRenderTasks();
     if (!DISABLE_DYNAMIC_LIGHTING) [[likely]] {
@@ -167,7 +167,7 @@ class Game {
       ClearBackground(BLANK);
       Lighting::Shaders::StartDynamicLights();
       WorldRender::DrawBackGround();
-      DRAW_ENTITIES();
+      DrawEntities();
       Lighting::AmbientOcclusion::DrawAmbientOcclusion();
       EndShaderMode();
       EndTextureMode();
@@ -192,7 +192,7 @@ class Game {
     } else {
       WorldRender::DrawBackGround();
       Lighting::AmbientOcclusion::DrawAmbientOcclusion();
-      DRAW_ENTITIES()
+      DrawEntities();
       WorldRender::DrawForeGround();
       UI_MANAGER.playerUI.Draw();
       Lighting::DrawScreenEffects();
