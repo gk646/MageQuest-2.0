@@ -1,8 +1,13 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_
 struct SoundLoader {
+  inline static void LoadSoundFolder() noexcept{
 
+  }
   static void Load() {
+    LoadSoundIntoVector("sound/effects/player/walkSounds/grass/", sound::player::grassWalk, 0.3F);
+
+    sound::player::abilityCast =  LoadSound((ASSET_PATH + "sound/effects/player/cast.wav").c_str());
     sound::talents::spendTalentPoint =
         LoadSound((ASSET_PATH + "sound/effects/levelup/getTalent.wav").c_str());
     sound::interactable::basicChest =

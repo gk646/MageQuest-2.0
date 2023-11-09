@@ -4,6 +4,7 @@
 struct Player final : public Entity {
   std::string name;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
+  float playerSpriteCount = 0;
   int actionState = 0;
   bool flip = false;
   bool moving = false;
@@ -28,6 +29,8 @@ struct Player final : public Entity {
     }
   }
   void Update() final {
+    //TODO optimize
+    playerSpriteCount += 1 * (1+ PLAYER_STATS.effects[SPEED_MULT_P]);
     spriteCounter++;
     if (PLAYER_STATS.health <= 0) {
       GAME_STATE = GameState::GameOver;
@@ -44,7 +47,6 @@ struct Player final : public Entity {
     if (verticalMove && horizontalMove) {
       speed /= SQRT_2;
     }
-
     moving = verticalMove || horizontalMove;
     if (IsKeyDown(KEY_W) && !tile_collision_up(speed)) {
       pos.y_ -= speed;
@@ -64,9 +66,14 @@ struct Player final : public Entity {
       GAME_STATISTICS.WalkPixels(speed);
       flip = false;
     }
-
-    tilePos.x = static_cast<int>(pos.x_ + size.x / 2) / TILE_SIZE;
-    tilePos.y = static_cast<int>(pos.y_ + size.y / 2) / TILE_SIZE;
+    if (moving) {
+      int num = (int)playerSpriteCount % 56;
+      if (num == 14 || num == 42) {
+        PlaySoundR(sound::player::grassWalk[RANGE_01(RNG_ENGINE) * 4]);
+      }
+    }
+    tilePos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
+    tilePos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
 
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
@@ -74,7 +81,7 @@ struct Player final : public Entity {
   }
   void Draw() final {
     if (moving) {
-      DrawTextureProFastEx(resource->walk[spriteCounter % 56 / 7],
+      DrawTextureProFastEx(resource->walk[(int)playerSpriteCount % 56 / 7],
                            std::floor(pos.x_ + DRAW_X - 25.0F),
                            std::floor(pos.y_ + DRAW_Y - 46), -20, 0, flip, WHITE);
       actionState = 0;

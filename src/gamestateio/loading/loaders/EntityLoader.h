@@ -68,12 +68,10 @@ static void Load() {
   textures::npc::MARLA.Load("npc/marla/");
   textures::npc::SATIRO.Load("npc/satiro/");
 
-  MonsterResource::LoadImagesIntoVector("Entities/container/basicChest/",
-                                        textures::container::basicChest);
-  MonsterResource::LoadImagesIntoVector("Entities/container/normalChest/",
-                                        textures::container::normalChest);
-  MonsterResource::LoadImagesIntoVector("Entities/container/epicChest/",
-                                        textures::container::epicChest);
+  LoadImagesIntoVector("Entities/container/basicChest/", textures::container::basicChest);
+  LoadImagesIntoVector("Entities/container/normalChest/",
+                       textures::container::normalChest);
+  LoadImagesIntoVector("Entities/container/epicChest/", textures::container::epicChest);
 
   LoadScaling();
 }

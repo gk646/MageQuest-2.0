@@ -1,20 +1,34 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_ENTITYRESOURCE_H_
 
-struct MonsterResource {
-  static constexpr int MAX_LOAD_NUM = 20;
-  inline static void LoadImagesIntoVector(const std::string& name,
-                                          std::vector<Texture>& vec) noexcept {
-    for (uint_fast32_t j = 0; j < MAX_LOAD_NUM; ++j) {
-      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s%s%d.png", ASSET_PATH.c_str(),
-               name.c_str(), j);
-      if (std::filesystem::exists(std::string(TEXT_BUFFER))) {
-        vec.push_back(LoadTexture(TEXT_BUFFER));
-      } else {
-        break;
-      }
+inline static void LoadImagesIntoVector(const std::string& name,
+                                        std::vector<Texture>& vec) noexcept {
+  for (uint_fast32_t j = 0; j < 50; ++j) {
+    std::string filePath = ASSET_PATH + name + std::to_string(j) + ".png";
+    if (std::filesystem::exists(filePath)) {
+      vec.push_back(LoadTexture(filePath.c_str()));
+    } else {
+      break;
     }
   }
+}
+
+inline static void LoadSoundIntoVector(const std::string& name, std::vector<Sound>& vec,
+                                       float volume = 1) noexcept {
+  for (uint_fast32_t j = 0; j < 50; ++j) {
+    std::string filePath = ASSET_PATH + name + std::to_string(j) + ".wav";
+    if (std::filesystem::exists(filePath)) {
+      auto sound = LoadSound(filePath.c_str());
+      SetSoundVolume(sound, volume);
+      vec.emplace_back(sound);
+    } else {
+      break;
+    }
+  }
+}
+
+struct MonsterResource {
+  static constexpr int MAX_LOAD_NUM = 20;
   std::vector<Texture> attack1{};
   std::vector<Texture> attack2{};
   std::vector<Texture> attack3{};
@@ -79,7 +93,7 @@ struct ProjectileResources {
   void LoadSpriteSheet(const std::string& name) {
 
     std::string path = ASSET_PATH + "projectiles/" += name + std::to_string(0) + ".png";
-    frames.push_back( LoadTexture(path.c_str()));
+    frames.push_back(LoadTexture(path.c_str()));
   }
 
  private:
