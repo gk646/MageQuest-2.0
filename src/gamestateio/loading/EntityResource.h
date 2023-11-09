@@ -26,7 +26,44 @@ inline static void LoadSoundIntoVector(const std::string& name, std::vector<Soun
     }
   }
 }
+// Helper function to load a single frame from a sprite sheet
+Texture LoadFrame(const Image& spriteSheet, int frameWidth, int frameHeight, int x,
+                  int y) {
+  RectangleR sourceRect = {
+      static_cast<float>(x * frameWidth), static_cast<float>(y * frameHeight),
+      static_cast<float>(frameWidth), static_cast<float>(frameHeight)};
 
+  RectangleR destRect = {0.0f, 0.0f, static_cast<float>(frameWidth),
+                         static_cast<float>(frameHeight)};
+
+  Image frame =
+      GenImageColor(frameWidth, frameHeight, BLANK);  // Use BLANK for transparency
+
+  ImageDraw(&frame, spriteSheet, sourceRect, destRect, WHITE);
+
+  Texture texture = LoadTextureFromImage(frame);
+
+  UnloadImage(frame);
+
+  return texture;
+}
+//Method to load all frames from a sprite sheet
+void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHeight,
+                           std::vector<Texture>& frames) {
+  std::string path = ASSET_PATH + "projectiles/" + name + ".png";
+  Image spriteSheet = LoadImageR(path.c_str());
+
+  int framesHorizontal = spriteSheet.width / frameWidth;
+  int framesVertical = spriteSheet.height / frameHeight;
+
+  for (int y = 0; y < framesVertical; ++y) {
+    for (int x = 0; x < framesHorizontal; ++x) {
+      Texture frame = LoadFrame(spriteSheet, frameWidth, frameHeight, x, y);
+      frames.push_back(frame);
+    }
+  }
+  UnloadImage(spriteSheet);
+}
 struct MonsterResource {
   static constexpr int MAX_LOAD_NUM = 20;
   std::vector<Texture> attack1{};
@@ -90,10 +127,9 @@ struct ProjectileResources {
   std::vector<Texture> frames{};
 
   void Load(const std::string& name) { load_textures(name); }
-  void LoadSpriteSheet(const std::string& name) {
+  void LoadSpriteSheet(const std::string& name, int frameWidth, int frameHeight) {
+    LoadSpriteSheetFrames(name, frameWidth, frameHeight, frames);
 
-    std::string path = ASSET_PATH + "projectiles/" += name + std::to_string(0) + ".png";
-    frames.push_back(LoadTexture(path.c_str()));
   }
 
  private:

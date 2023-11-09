@@ -47,9 +47,8 @@ struct FireBall final : Projectile {
                    pov, sound ? sound::EMPTY_SOUND : sound::fireBurst, sender,
                    FIRE_BALL) {}
   void Draw() final {
-    int frame = spriteCounter % 135 / 3;
-    DrawTexturePro(resources->frames[0], {(float)frame * 64, 0, 64, 64},
-                   {pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 64, 64}, {0, 0}, 0, WHITE);
+    DrawTextureProFastRotOffset(resources->frames[spriteCounter % 135 / 3],
+                                pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -21, -22);
     DRAW_HITBOXES();
   }
 };

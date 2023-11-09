@@ -27,7 +27,7 @@ struct Playlist {
 struct Track {
   static constexpr float kVolumeFadeStep = 0.005F;
   static constexpr float kEndTrackThreshold = 3.3F;
-  Music* music;
+  Music* music = nullptr;
   float volume;
   bool markedForRemoval = false;
   [[nodiscard]] inline bool Update() noexcept {

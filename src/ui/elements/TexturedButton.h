@@ -78,7 +78,7 @@ struct TexturedButton {
 
  private:
   [[nodiscard]] inline bool CheckForClick() const noexcept {
-    if (!isCovered && isHovered && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    if (!isCovered && isHovered && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
       if (onPressedFunc) {
         onPressedFunc();
       }

@@ -27,7 +27,7 @@ struct SkillStats {
   uint16_t castTime = 0;
   uint16_t coolDownTicks = 0;
   uint16_t range = 0;
-  ProjectileType type;
+  ProjectileType type = ProjectileType::LOCKED;
 };
 
 struct DamageStats {

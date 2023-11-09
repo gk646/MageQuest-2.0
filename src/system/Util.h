@@ -219,8 +219,10 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
 
   return ret;
 }
-
-inline static void DrawSwipeCooldownEffect(float x, float y, float size, int remainingTicks, int currentTicks)  noexcept {
+//Draws a swiping rectangular cooldown animation by drawing lines from the center to the bound points of the square
+inline static void DrawSwipeCooldownEffect(float x, float y, float size,
+                                           int remainingTicks,
+                                           int currentTicks) noexcept {
   if (currentTicks < remainingTicks) {
     float side1, side2, side3, side4, side5;
     float coolDownCoefficient;
@@ -237,8 +239,7 @@ inline static void DrawSwipeCooldownEffect(float x, float y, float size, int rem
     if (coolDownCoefficient > size * 3.5F) side5 += coolDownCoefficient - size * 3.5F;
 
     for (int i = side1; i <= size; i++) {
-      DrawLine(x + size / 2, y + size / 2, x + i, y,
-               Colors::mediumLightGreyTransparent);
+      DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumLightGreyTransparent);
     }
     for (int i = side2; i <= size; i++) {
       DrawLine(x + size / 2, y + size / 2, x + size, y + i,
@@ -253,8 +254,7 @@ inline static void DrawSwipeCooldownEffect(float x, float y, float size, int rem
                Colors::mediumLightGreyTransparent);
     }
     for (int i = side5; i <= size / 2; i++) {
-      DrawLine(x + size / 2, y + size / 2, x + i, y,
-               Colors::mediumLightGreyTransparent);
+      DrawLine(x + size / 2, y + size / 2, x + i, y, Colors::mediumLightGreyTransparent);
     }
   }
 }

@@ -67,6 +67,12 @@ inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
 inline static std::string PLAYER_NAME;
 inline static Item* DRAGGED_ITEM = nullptr;
 inline static Item* TOOL_TIP_ITEM = nullptr;
+struct InventorySlot;
+inline static InventorySlot* DRAGGED_SLOT;
+inline static InventorySlot* PLAYER_EQUIPPED;
+inline static InventorySlot* PLAYER_BAG;
+struct SkillSlot;
+inline static SkillSlot* DRAGGED_SKILL_SLOT;
 /* |-----------------------------------------------------|
  * |                          WORLD                      |
  * |-----------------------------------------------------|
@@ -78,6 +84,8 @@ struct Monster;
 struct Player;
 struct Skill;
 struct TalentEffect;
+inline static std::array<SkillSlot*, 6> HOT_BAR_SKILLS{};
+inline static std::vector<Skill*> PLAYER_SKILLS{};
 inline static std::vector<TalentEffect*> TALENT_EFFECTS;
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline static uint_fast32_t MONSTER_ID = 1;

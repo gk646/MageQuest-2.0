@@ -1,10 +1,7 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
 #define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
-class InventorySlot;
-inline static InventorySlot* DRAGGED_SLOT;
-inline static InventorySlot* PLAYER_EQUIPPED;
-inline static InventorySlot* PLAYER_BAG;
-//A wrapper
+
+//A wrapper for an item
 struct InventorySlot {
   RectangleR hitBox = {0};
   Item* item = nullptr;
@@ -21,6 +18,7 @@ struct InventorySlot {
         slotType(item_type),
         baseWidth(width),
         baseHeight(height) {}
+  //General update method for all bag slots
   void Draw(float x, float y) noexcept {
     hitBox.x = (x + (float)baseX) * UI_SCALE;
     hitBox.y = (y + (float)baseY) * UI_SCALE;
@@ -37,6 +35,7 @@ struct InventorySlot {
       }
     }
   }
+  //Method for the character slots
   void DrawCharacterSlot(float x, float y) {
     Draw(x, y);
     auto ptr = item;
@@ -54,60 +53,8 @@ struct InventorySlot {
     }
   }
 
-  static void RecoverDraggedItem() noexcept {
-    if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
-      DRAGGED_SLOT->item = DRAGGED_ITEM;
-      DRAGGED_SLOT = nullptr;
-      DRAGGED_ITEM = nullptr;
-    } else if (DRAGGED_SLOT->slotType == ItemType::BAG) {
-      DRAGGED_SLOT->item = DRAGGED_ITEM;
-      DRAGGED_SLOT = nullptr;
-      DRAGGED_ITEM = nullptr;
-    } else {
-      PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
-      DRAGGED_SLOT->item = DRAGGED_ITEM;
-      DRAGGED_SLOT = nullptr;
-      DRAGGED_ITEM = nullptr;
-    }
-  }
-  inline void DrawBackGroundIcons() const noexcept {
-    if (item) return;
-    switch (slotType) {
-      case ItemType::HEAD:
-        DrawTexturePro(textures::helm, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::CHEST:
-        DrawTexturePro(textures::chest, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::PANTS:
-        DrawTexturePro(textures::pants, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::BOOTS:
-        DrawTexturePro(textures::boots, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::AMULET:
-        DrawTexturePro(textures::amulet, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::RING:
-        DrawTexturePro(textures::ring, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::RELIC:
-        DrawTexturePro(textures::relic, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::ONE_HAND:
-      case ItemType::TWO_HAND:
-        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::OFF_HAND:
-        DrawTexturePro(textures::offhand, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      case ItemType::BAG:
-        DrawTexturePro(textures::bag, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
-        break;
-      default:
-        break;
-    }
-  }
+  //Logic for exchanging items
+ public:
   void UpdateCharacterSlots() {
     hitBox.height = baseWidth * UI_SCALE;
     hitBox.width = baseHeight * UI_SCALE;
@@ -189,6 +136,63 @@ struct InventorySlot {
       toolTipHoverTicks = std::max(toolTipHoverTicks - 1, -1);
     } else {
       toolTipHoverTicks = 12;
+    }
+  }
+
+ public:
+  inline static void RecoverDraggedItem() noexcept {
+    if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
+      DRAGGED_SLOT->item = DRAGGED_ITEM;
+      DRAGGED_SLOT = nullptr;
+      DRAGGED_ITEM = nullptr;
+    } else if (DRAGGED_SLOT->slotType == ItemType::BAG) {
+      DRAGGED_SLOT->item = DRAGGED_ITEM;
+      DRAGGED_SLOT = nullptr;
+      DRAGGED_ITEM = nullptr;
+    } else {
+      PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
+      DRAGGED_SLOT->item = DRAGGED_ITEM;
+      DRAGGED_SLOT = nullptr;
+      DRAGGED_ITEM = nullptr;
+    }
+  }
+  //Draws the item type indicators for the empty inventory slots
+  inline void DrawBackGroundIcons() const noexcept {
+    if (item) return;
+    switch (slotType) {
+      case ItemType::HEAD:
+        DrawTexturePro(textures::helm, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::CHEST:
+        DrawTexturePro(textures::chest, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::PANTS:
+        DrawTexturePro(textures::pants, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::BOOTS:
+        DrawTexturePro(textures::boots, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::AMULET:
+        DrawTexturePro(textures::amulet, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::RING:
+        DrawTexturePro(textures::ring, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::RELIC:
+        DrawTexturePro(textures::relic, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::ONE_HAND:
+      case ItemType::TWO_HAND:
+        DrawTexturePro(textures::weapon, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::OFF_HAND:
+        DrawTexturePro(textures::offhand, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      case ItemType::BAG:
+        DrawTexturePro(textures::bag, {0, 0, 40, 40}, hitBox, {0, 0}, 0, WHITE);
+        break;
+      default:
+        break;
     }
   }
 };

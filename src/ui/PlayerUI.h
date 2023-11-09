@@ -1,6 +1,7 @@
 #ifndef MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_
 #define MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_
 
+
 #include "game/MiniMap.h"
 #include "game/RegionMap.h"
 #include "player/CharacterPanel.h"
@@ -8,6 +9,7 @@
 #include "player/StatusBar.h"
 #include "player/QuestPanel.h"
 #include "player/TalentPanel.h"
+#include "player/SkillPanel.h"
 
 struct PlayerUI {
   TalentPanel talentPanel;
@@ -18,6 +20,7 @@ struct PlayerUI {
   StatusBar statusBar{};
   QuestPanel questPanel{};
   HotBar playerHotbar{};
+  SkillPanel skillPanel{};
 
   void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
@@ -25,6 +28,7 @@ struct PlayerUI {
     miniMap.Draw();
     statusBar.Draw();
     questPanel.Draw();
+    skillPanel.Draw();
     charBag.Draw();
     charPanel.Draw();
     regionMap.Draw();
@@ -39,6 +43,7 @@ struct PlayerUI {
     statusBar.Update();
     charPanel.Update();
     charBag.Update();
+    skillPanel.Update();
     questPanel.Update();
     playerHotbar.Update();
     Util::Update();
@@ -68,11 +73,13 @@ struct PlayerUI {
   }
   inline bool window_closeable() noexcept {
     if (charPanel.isWindowOpen || charBag.isWindowOpen || regionMap.isWindowOpen ||
-        questPanel.isWindowOpen) {
+        questPanel.isWindowOpen || talentPanel.isWindowOpen || skillPanel.isWindowOpen) {
+      talentPanel.isWindowOpen = false;
       charPanel.isWindowOpen = false;
       charBag.isWindowOpen = false;
       regionMap.isWindowOpen = false;
       questPanel.isWindowOpen = false;
+      skillPanel.isWindowOpen = false;
       return true;
     } else {
       return false;

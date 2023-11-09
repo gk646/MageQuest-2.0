@@ -139,6 +139,7 @@ inline static Texture skillbar;
 inline static Texture xpbar;
 inline static Texture skillRange;
 inline static Texture castbar;
+inline static Texture slot;
 
 namespace icons {
 inline static Texture iceLance;

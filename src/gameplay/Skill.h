@@ -5,35 +5,34 @@ struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
   inline static constexpr float TOOL_TIP_BASE_HEIGHT = 93;
+  //Only one cast can be active at a time
   inline static int16_t castProgress = -1;
   inline static Skill* lastCastedSkill = nullptr;
   std::string name;
   std::string description;
-  UIHitbox hitbox{SKILL_ICON_SIZE, SKILL_ICON_SIZE};
   SkillStats skillStats;
   DamageStats damageStats;
   const Texture& icon;
   uint16_t coolDownUpCounter;
   uint8_t attackAnimation = 0;
   bool activated = false;
-  Skill(const SkillStats& ability_stats, const DamageStats& damage_stats,
+  Skill(const SkillStats& skillStats, const DamageStats& damageStats,
         int attack_animation, const Texture& icon) noexcept
-      : damageStats(damage_stats),
-        skillStats(ability_stats),
+      : damageStats(damageStats),
+        skillStats(skillStats),
         attackAnimation(attack_animation),
-        icon(icon) {
-    coolDownUpCounter = (int16_t)ability_stats.coolDownTicks;
-  }
+        coolDownUpCounter((int16_t)skillStats.coolDownTicks),
+        icon(icon) {}
   //Activates the skill
   inline virtual void Activate(bool isFree) = 0;
-  inline void Update() noexcept;
-  bool Draw(float x, float y) noexcept {
+  //Updates the skill // only progresses cooldown
+  inline void Update() noexcept { coolDownUpCounter++; }
+  //Draws the icon and the cooldown effect if applicable
+  inline void Draw(float x, float y) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
     Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
                                   PLAYER_STATS.GetRemainingCD(skillStats),
                                   coolDownUpCounter);
-    if (castProgress > 0) DrawCastBar();
-    return hitbox.Update(x, y);
   }
   //TODO proper link to support bar
   static inline void DrawSupportBar(float x, float y, float percent) noexcept {
@@ -53,18 +52,20 @@ struct Skill {
   inline void DrawTooltip(float x, float y) noexcept { DrawToolTipImpl(x, y); }
   inline static void DrawCastBar() noexcept {
     if (!lastCastedSkill) return;
-    float x = (SCREEN_WIDTH - 85) / 2;
+    float x = (SCREEN_WIDTH - 92) / 2;
     float y = SCREEN_HEIGHT * 0.75F;
 
     DrawRectangleProFast(
         x + 3, y + 3,
-        ((float)castProgress / (float)lastCastedSkill->skillStats.castTime) * 85.0F, 4,
+        ((float)castProgress / (float)lastCastedSkill->skillStats.castTime) * 79.0F, 4,
         Colors::castBarOrange);
     DrawTextureProFast(textures::ui::skillbar::castbar, x, y, 0, WHITE);
   }
+  inline static void UpdateCastProgress() noexcept;
   //Draw functions
  private:
   void DrawToolTipImpl(float x, float y) noexcept {
+    if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();
@@ -99,7 +100,8 @@ struct Skill {
       DrawTextExR(MINECRAFT_REGULAR, "Instant", {startX + 5, startY + 53}, 15, 0.5F,
                   Colors::darkBackground);
     } else {
-      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%f sec cast", skillStats.castTime / 60.0F);
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f sec cast",
+               skillStats.castTime / 60.0F);
       DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {startX + 5, startY + 53}, 15, 0.5F,
                   Colors::darkBackground);
     }
@@ -135,12 +137,7 @@ struct Skill {
   }
 
  private:
-  [[nodiscard]] inline bool HandleCasting() const noexcept {
-    if (skillStats.castTime == 0 || skillStats.castTime == castProgress) return true;
-    castProgress = 0;
-    lastCastedSkill = const_cast<Skill*>(this);
-    return false;
-  }
+  [[nodiscard]] inline bool HandleCasting(bool isFree) noexcept;
   [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {
     return PLAYER_STATS.GetAbilityDmg(damageStats) /
            (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
@@ -253,7 +250,15 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
       break;
     case ARCANE_BOLT:
       return new ArcaneBolt_Skill(stats);
+    case PSYCHIC_SCREAM:
+      break;
+    case DUMMY:
+      return new Dummy_Skill();
+    case LOCKED:
+      return new LockedSlot_Skill();
   }
+  std::cout << "MISSING ENUM VAL:" << (int)type << std::endl;
+  return nullptr;
 }
 inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
                                                  const Entity* ptr) noexcept {

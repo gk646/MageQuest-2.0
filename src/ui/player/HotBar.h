@@ -28,92 +28,72 @@ struct HotBar {
                      textures::ui::skillbar::skilltree,
                      textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA,
                      "Opens skill tree (N)")};
-  std::array<Texture, 6> icons{
-      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
-      textures::EMPTY_TEXTURE,           textures::EMPTY_TEXTURE,
-      textures::ui::skillbar::mouseleft, textures::ui::skillbar::mouseright};
-  std::array<Skill*, 6> skills{new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill(),
-                               new Dummy_Skill(), new Dummy_Skill(), new Dummy_Skill()};
-  XPBar xp_bar;
-  RectangleR BASE_RECT = {0, 0, 480, 120};
-  HotBar() noexcept = default;
+  XPBar experienceBar;
+  RectangleR hotBarHitbox = {0, 0, 480, 120};
+  HotBar() = default;
   void Draw() noexcept {
-    float offX = SCALE(52);
-    float offY = SCALE(23);
-    float width = SCALE(BASE_RECT.width);
-    float height = SCALE(BASE_RECT.height);
-    float startX = (SCREEN_WIDTH - width) / 2.0F;
-    float startY = SCREEN_HEIGHT - height * 0.93F;
-    xp_bar.Draw(startX + 5, startY);
+    float startX = (SCREEN_WIDTH - hotBarHitbox.width) / 2.0F;
+    float startY = SCREEN_HEIGHT - hotBarHitbox.height * 0.93F;
+
+    experienceBar.Draw(startX + 5, startY);
     PLAYER_EFFECTS.DrawPlayer(startY - 44);
-    DrawSkillIcons(startX, startY, width, height, offX, offY);
     DrawMenuButtons(startX + 650);
+
+    DrawHotbar(startX, startY);
     Skill::DrawCastBar();
+    UpdatePlayerSkills();
   }
   void Update() noexcept {
-    xp_bar.Update();
+    experienceBar.Update();
+    Skill::UpdateCastProgress();
     for (auto& mb : menuButtons) {
       mb.UpdateGlobalWindowState();
     }
-    for (const auto& skill : skills) {
-      skill->Update();
-    }
-    if (Skill::castProgress >= 0) {
-      Skill::castProgress++;
-      if (PLAYER.moving) Skill::castProgress = -1;
-      if (Skill::castProgress == Skill::lastCastedSkill->skillStats.castTime) {
-        Skill::lastCastedSkill->Activate(false);
-      }
-    }
-    if (GAME_STATE != GameState::GameMenu) {
-      if (IsKeyDown(KEY_ONE) && skills[0]->IsUsable()) {
-        skills[0]->Activate(false);
-      }
-      if (IsKeyDown(KEY_TWO) && skills[1]->IsUsable()) {
-        skills[1]->Activate(false);
-      }
-      if (IsKeyDown(KEY_THREE) && skills[2]->IsUsable()) {
-        skills[2]->Activate(false);
-      }
-      if (IsKeyDown(KEY_FOUR) && skills[3]->IsUsable()) {
-        skills[3]->Activate(false);
-      }
-      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && skills[4]->IsUsable() &&
-          !WINDOW_FOCUSED && !DRAGGED_ITEM) {
-        skills[4]->Activate(false);
-      }
-      if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && skills[5]->IsUsable() &&
-          !WINDOW_FOCUSED) {
-        skills[5]->Activate(false);
-      }
+    for (auto& slot : HOT_BAR_SKILLS) {
+      slot->Update();
     }
   }
 
  private:
-  //Draws the skill icons and appropriate tooltip
-  inline void DrawSkillIcons(float startX, float startY, float width, float height,
-                             float offX, float offY) noexcept {
-
-    DrawTextureScaled(textures::ui::skillbar::skillbar, {startX, startY, width, height},
-                      0, false, 0, WHITE);
-
-    float currentX = startX;
-    Skill* toolTipSkill = nullptr;
-    int16_t j;
-    for (int16_t i = 0; i < 6; i++) {
-      if (skills[i]->Draw(currentX + offX, startY + offY)) {
-        toolTipSkill = skills[i];
-        j = i;
+  //Called on the main thread // if button is pressed activates the skill
+  inline static void UpdatePlayerSkills() noexcept {
+    if (GAME_STATE != GameState::GameMenu) {
+      if (IsKeyPressed(KEY_ONE) && HOT_BAR_SKILLS[0]->skill->IsUsable()) {
+        HOT_BAR_SKILLS[0]->skill->Activate(false);
       }
-      DrawTextureProFast(
-          icons[i], currentX + offX + SCALE(50) / 2.0F - (float)icons[i].width / 2.0F,
-          startY + height * 0.72F, 0, WHITE);
-      currentX += SCALE(65);
+      if (IsKeyPressed(KEY_TWO) && HOT_BAR_SKILLS[1]->skill->IsUsable()) {
+        HOT_BAR_SKILLS[1]->skill->Activate(false);
+      }
+      if (IsKeyPressed(KEY_THREE) && HOT_BAR_SKILLS[2]->skill->IsUsable()) {
+        HOT_BAR_SKILLS[2]->skill->Activate(false);
+      }
+      if (IsKeyPressed(KEY_FOUR) && HOT_BAR_SKILLS[3]->skill->IsUsable()) {
+        HOT_BAR_SKILLS[3]->skill->Activate(false);
+      }
+      if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
+          HOT_BAR_SKILLS[4]->skill->IsUsable() && !WINDOW_FOCUSED && !DRAGGED_ITEM) {
+        HOT_BAR_SKILLS[4]->skill->Activate(false);
+      }
+      if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
+          HOT_BAR_SKILLS[5]->skill->IsUsable() && !WINDOW_FOCUSED) {
+        HOT_BAR_SKILLS[5]->skill->Activate(false);
+      }
     }
-    if (toolTipSkill) {
-      toolTipSkill->DrawTooltip(startX + (float)j * 65.0F + offX, startY + offY);
+  }
+  //Draws the skill icons and appropriate tooltip
+  inline void DrawHotbar(float startX, float startY) noexcept {
+    DrawTextureScaled(textures::ui::skillbar::skillbar,
+                      {startX, startY, hotBarHitbox.width, hotBarHitbox.height}, 0, false,
+                      0, WHITE);
+    SkillSlot* toolTip = nullptr;
+    for (auto& slot : HOT_BAR_SKILLS) {
+      if (slot->Draw(startX, startY)) {
+        toolTip = slot;
+      }
     }
-
+    if (toolTip) {
+      toolTip->Draw(startX, startY);
+    }
   }
   //Draws semi transparent interface buttons on the lower right screen
   inline void DrawMenuButtons(float x) noexcept {
