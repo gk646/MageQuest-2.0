@@ -11,7 +11,7 @@ struct Button {
         DrawPressedButton(bounds);
       } else {
         DrawHoveredButton(bounds);
-        ret = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+        ret = IsMouseButtonReleased(MOUSE_BUTTON_LEFT);
       }
     } else {
       DrawNormalButton(bounds);

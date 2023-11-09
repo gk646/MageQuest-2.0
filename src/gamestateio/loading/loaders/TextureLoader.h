@@ -118,6 +118,7 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bossbar.png").c_str());
 
     textures::ui::skillbar::bag =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
+    textures::ui::skillbar::slot =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/slot.png").c_str());
     textures::ui::skillbar::castbar =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/castbar.png").c_str());
 
     textures::ui::skillbar::abilities =

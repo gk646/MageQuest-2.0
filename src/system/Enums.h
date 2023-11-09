@@ -428,6 +428,8 @@ enum ProjectileType : uint8_t {
   VOID_FIELD,
   ARCANE_BOLT,
   PSYCHIC_SCREAM,
+  DUMMY,
+  LOCKED,
   PROJECTILE_END
 };
 
@@ -449,6 +451,8 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
     {"THUNDER_STRIKE", ProjectileType::THUNDER_STRIKE},
     {"VOID_ERUPTION", ProjectileType::VOID_ERUPTION},
     {"PSYCHIC_SCREAM", ProjectileType::PSYCHIC_SCREAM},
+    {"LOCKED", ProjectileType::LOCKED},
+    {"DUMMY", ProjectileType::DUMMY},
     {"ARCANE_BOLT", ProjectileType::ARCANE_BOLT},
     {"VOID_FIELD", ProjectileType::VOID_FIELD}};
 

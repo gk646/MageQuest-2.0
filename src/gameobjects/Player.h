@@ -30,7 +30,7 @@ struct Player final : public Entity {
   }
   void Update() final {
     //TODO optimize
-    playerSpriteCount += 1 * (1+ PLAYER_STATS.effects[SPEED_MULT_P]);
+    playerSpriteCount += 1 * (1 + PLAYER_STATS.effects[SPEED_MULT_P]);
     spriteCounter++;
     if (PLAYER_STATS.health <= 0) {
       GAME_STATE = GameState::GameOver;
@@ -131,7 +131,13 @@ struct Player final : public Entity {
     }
   }
   inline void draw_attack3() noexcept {
-    int num = spriteCounter % 85 / 5;
+    if (!Skill::lastCastedSkill) {
+      actionState = 0;
+      Draw();
+      return;
+    }
+    int num = spriteCounter % Skill::lastCastedSkill->skillStats.castTime /
+              (Skill::lastCastedSkill->skillStats.castTime / 13.0F);
     if (num < 16) {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -15, 0, flip, WHITE);
@@ -139,7 +145,6 @@ struct Player final : public Entity {
       actionState = 0;
     }
   }
-
   inline void UncoverMapCover() noexcept {
     int sx = tilePos.x;
     int sy = tilePos.y;
@@ -161,6 +166,7 @@ struct Player final : public Entity {
 };
 inline static Player PLAYER({150, 150});
 
+#include "../ui/player/elements/SkillSlot.h"
 #include "../ui/player/HotBar.h"
 #include "WorldObject.h"
 
@@ -177,18 +183,42 @@ bool SpawnTrigger::IsClose() const noexcept {
 }
 
 //Skill implementations using the global PLAYER instance
+void Skill::UpdateCastProgress() noexcept {
+  if (Skill::castProgress >= 0) {
+    Skill::castProgress++;
+    PLAYER.flip = MOUSE_POS.x < CAMERA_X;
+    if (PLAYER.moving) {
+      Skill::lastCastedSkill = nullptr;
+      Skill::castProgress = -1;
+      StopSound(sound::player::abilityCast);
+      return;
+    }
+    if (Skill::castProgress == Skill::lastCastedSkill->skillStats.castTime) {
+      Skill::lastCastedSkill->Activate(false);
+    }
+  }
+}
 void Skill::UseResources(bool isFree) noexcept {
   coolDownUpCounter = 0;
   castProgress = -1;
   lastCastedSkill = nullptr;
+  StopSound(sound::player::abilityCast);
   PLAYER.flip = MOUSE_POS.x < CAMERA_X;
   PLAYER.spriteCounter = 0;
   PLAYER.actionState = attackAnimation;
   if (isFree) return;
   PLAYER_STATS.ApplySkillCosts(skillStats);
 }
-void Skill::Update() noexcept {
-  coolDownUpCounter++;
+bool Skill::HandleCasting(bool isFree) noexcept {
+  if (skillStats.castTime == 0 || skillStats.castTime == castProgress || isFree) {
+    return true;
+  }
+  castProgress = 0;
+  PLAYER.actionState = 3;
+  PLAYER.spriteCounter = 0;
+  PlaySoundR(sound::player::abilityCast);
+  lastCastedSkill = const_cast<Skill*>(this);
+  return false;
 }
 bool Skill::RangeLineOfSightCheck(const Point& targetPos) const noexcept {
   if (Point(PLAYER.GetMiddlePoint()).dist(targetPos) <= (float)skillStats.range) {
@@ -208,7 +238,7 @@ void Skill::SkillAtMouse(ProjectileType type, bool isFree) noexcept {
       PLAYER_X + MOUSE_POS.x - CAMERA_X - typeToInfo[skillStats.type].size.x / 2.0F,
       PLAYER_Y + MOUSE_POS.y - CAMERA_Y - typeToInfo[skillStats.type].size.y / 2.0F};
   if (!RangeLineOfSightCheck(targetPos)) return;
-  if (!HandleCasting()) return;
+  if (!HandleCasting(isFree)) return;
   UseResources(isFree);
   float damage = GetSkillDamage(type);
   auto prj = GetProjectileInstance(type, targetPos, true, damage, &PLAYER, {0, 0}, {});
@@ -223,7 +253,7 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles,
       PLAYER_X + MOUSE_POS.x - CAMERA_X - typeToInfo[skillStats.type].size.x / 2.0F,
       PLAYER_Y + MOUSE_POS.y - CAMERA_Y - typeToInfo[skillStats.type].size.y / 2.0F};
   if (!RangeLineOfSightCheck(targetPos)) return;
-  if (!HandleCasting()) return;
+  if (!HandleCasting(isFree)) return;
   UseResources(isFree);
   const float interval_angle = 360.0f / numProjectiles;
   float damage = GetSkillDamage(type);
@@ -243,7 +273,7 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles,
   ApplyTalentsToCast(this);
 }
 void Skill::SkillToMouse(ProjectileType type, bool isFree) noexcept {
-  if (!HandleCasting()) return;
+  if (!HandleCasting(isFree)) return;
   UseResources(isFree);
   Point targetPos = {
       PLAYER_X + (float)PLAYER.size.x / 2.0F,
@@ -260,7 +290,7 @@ void Skill::SkillToMouse(ProjectileType type, bool isFree) noexcept {
   ApplyTalentsToCast(this);
 }
 void Skill::SkillAtPlayer(ProjectileType type, bool isFree) noexcept {
-  if (!HandleCasting()) return;
+  if (!HandleCasting(isFree)) return;
   UseResources(isFree);
   Point targetPos = {
       PLAYER_X - typeToInfo[skillStats.type].size.x / 2.0F + PLAYER.size.x / 2,

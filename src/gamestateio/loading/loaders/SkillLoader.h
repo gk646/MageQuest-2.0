@@ -25,9 +25,14 @@ static void Load() noexcept {
     stats.type = type;
     stats.castTime = std::stoi(vec[9]);
     auto skillPtr = Skill::GetNewSkill(type, stats);
-    skillPtr->description = vec[Description_INDEX];
-    skillPtr->name = vec[DisplayName_INDEX];
+    if (skillPtr) {
+      skillPtr->description = vec[Description_INDEX];
+      skillPtr->name = vec[DisplayName_INDEX];
+    }
     SKILLS[type] = skillPtr;
+  }
+  for (uint_fast32_t i = 0; i < 6; i++) {
+    HOT_BAR_SKILLS[i] = new SkillSlot(49 + 65 * i,21,DamageType::TRUE_DMG);
   }
 }
 }  // namespace SkillLoader

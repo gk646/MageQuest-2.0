@@ -106,17 +106,18 @@ class Game {
   }
   static inline void GameTick() noexcept {
     GAME_STATISTICS.Update();
-    SoundManager::Update();
     Lighting::UpdateScreenEffects();
     SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
+        SoundManager::Update();
         break;
       }
       case GameState::Game:
       [[likely]] case GameState::GameMenu:
+        SoundManager::Update();
         TileEvents::Update();
         WorldManager::Update();
         PLAYER_STATS.Update();
@@ -128,6 +129,7 @@ class Game {
       case GameState::Loading: {
       } break;
       case GameState::GameOver: {
+        SoundManager::Update();
       } break;
     }
     lock.unlock();

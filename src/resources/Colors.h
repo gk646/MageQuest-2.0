@@ -35,7 +35,7 @@ inline const Color SUPPORT_BAR_ORANGE = {207, 152, 27, 255};
 inline const Color StatGreen = {24, 145, 21, 255};
 inline const Color LightGrey = {192, 203, 220, 255};
 inline const Color xpbarOrange = {254, 132, 23, 229};
-inline const Color castBarOrange = {187, 133, 25, 255};
+inline const Color castBarOrange = {254, 174, 52, 255};
 
 //TOOLTIPS
 inline const Color descriptionOrange = {220, 119, 29, 255};
