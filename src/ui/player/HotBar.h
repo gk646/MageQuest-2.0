@@ -59,11 +59,9 @@ struct HotBar {
       skill->Update();
     }
     if (Skill::castProgress >= 0) {
-      std::cout << Skill::castProgress << std::endl;
       Skill::castProgress++;
       if (PLAYER.moving) Skill::castProgress = -1;
       if (Skill::castProgress == Skill::lastCastedSkill->skillStats.castTime) {
-        std::cout << "castd" << std::endl;
         Skill::lastCastedSkill->Activate(false);
       }
     }

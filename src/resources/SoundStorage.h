@@ -31,6 +31,10 @@ inline static Music moonLightSonata;
 namespace talents {
 inline static Sound spendTalentPoint;
 }
+namespace player {
+inline static std::vector<Sound> grassWalk;
+inline static Sound abilityCast;
+}  // namespace player
 inline Sound intro;
 
 inline Sound menu_back;
