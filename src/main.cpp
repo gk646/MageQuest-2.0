@@ -1,8 +1,6 @@
 
 #include "Includes.h"
 
-
-
 int main() {
   if (!SteamAPI_Init()) {
     exit(1);

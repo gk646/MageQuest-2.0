@@ -40,10 +40,13 @@ struct HotBar {
 
     experienceBar.Draw(startX + 5, startY);
     PLAYER_EFFECTS.DrawPlayer(startY - 44);
-    DrawMenuButtons(startX + 750);
+    DrawMenuButtons(startX + 800);
 
     DrawHotbar(startX, startY);
     UpdatePlayerSkills();
+    if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) {
+      Lighting::Shaders::lightOn = !Lighting::Shaders::lightOn;
+    }
   }
   void Update() noexcept {
     Skill::UpdateCastProgress();

@@ -1,109 +1,101 @@
 #ifndef MAGEQUEST_SRC_SYSTEM_COLLISIONDETECTION_H_
 #define MAGEQUEST_SRC_SYSTEM_COLLISIONDETECTION_H_
 namespace SAT {
-Vector2 subtract(const Point& a, const Point& b) {
-  return {a.x_ - b.x_, a.y_ - b.y_};
+
+inline Vector2 Subtract(const Vector2& a, const Vector2& b) {
+  return {a.x - b.x, a.y - b.y};
 }
 
-Vector2 normal(const Vector2& v) {
+inline Vector2 Perpendicular(const Vector2& v) {
   return {-v.y, v.x};
 }
-inline static bool overlap(float minA, float maxA, float minB, float maxB) noexcept {
+
+inline bool Overlap(float minA, float maxA, float minB, float maxB) noexcept {
   return minB <= maxA && minA <= maxB;
 }
 
-std::array<Vector2, 4> getCorners(const Point& topLeft, float width, float height,
+std::array<Vector2, 4> GetCorners(const Point& center, float width, float height,
                                   float angle) {
-  float halfWidth = width * 0.5f;
-  float halfHeight = height * 0.5f;
+  if (angle == 0.0f) {
+    float halfWidth = width / 2.0f;
+    float halfHeight = height / 2.0f;
+    return {Vector2{center.x_ - halfWidth, center.y_ - halfHeight},
+            Vector2{center.x_ + halfWidth, center.y_ - halfHeight},
+            Vector2{center.x_ - halfWidth, center.y_ + halfHeight},
+            Vector2{center.x_ + halfWidth, center.y_ + halfHeight}};
+  }
 
-  float sinRotation = sinf(angle * DEG2RAD);
-  float cosRotation = cosf(angle * DEG2RAD);
+  std::array<Vector2, 4> corners{};
+  float sinAngle = std::sin(angle * DEG2RAD);
+  float cosAngle = std::cos(angle * DEG2RAD);
+  float halfWidth = width / 2.0f;
+  float halfHeight = height / 2.0f;
 
-  float topLeftX =
-      topLeft.x_ + halfWidth - halfWidth * cosRotation + halfHeight * sinRotation;
-  float topLeftY =
-      topLeft.y_ + halfHeight - halfWidth * sinRotation - halfHeight * cosRotation;
+  std::array<Vector2, 4> relativeCorners = {
+      Vector2{-halfWidth, -halfHeight}, Vector2{halfWidth, -halfHeight},
+      Vector2{-halfWidth, halfHeight}, Vector2{halfWidth, halfHeight}};
 
-  float topRightX =
-      topLeft.x_ + halfWidth + halfWidth * cosRotation + halfHeight * sinRotation;
-  float topRightY =
-      topLeft.y_ + halfHeight + halfWidth * sinRotation - halfHeight * cosRotation;
+  for (int i = 0; i < 4; ++i) {
+    corners[i] = {
+        center.x_ + (relativeCorners[i].x * cosAngle - relativeCorners[i].y * sinAngle),
+        center.y_ + (relativeCorners[i].x * sinAngle + relativeCorners[i].y * cosAngle)};
+  }
 
-  float bottomLeftX =
-      topLeft.x_ + halfWidth - halfWidth * cosRotation - halfHeight * sinRotation;
-  float bottomLeftY =
-      topLeft.y_ + halfHeight - halfWidth * sinRotation + halfHeight * cosRotation;
-
-  float bottomRightX =
-      topLeft.x_ + halfWidth + halfWidth * cosRotation - halfHeight * sinRotation;
-  float bottomRightY =
-      topLeft.y_ + halfHeight + halfWidth * sinRotation + halfHeight * cosRotation;
-
-  return {Vector2{topLeftX, topLeftY}, Vector2{topRightX, topRightY},
-          Vector2{bottomLeftX, bottomLeftY}, Vector2{bottomRightX, bottomRightY}};
+  return corners;
 }
 
-static bool rectanglesIntersect(const Point& topLeft1, float width1, float height1,
-                                float angle1, const Point& topLeft2, float width2,
+bool ProjectAndCheckOverlap(const std::array<Vector2, 4>& cornersA,
+                            const std::array<Vector2, 4>& cornersB, const Vector2& axis) {
+  float minA = FLT_MAX;
+  float maxA = FLT_MIN;
+  float minB = FLT_MAX;
+  float maxB = FLT_MIN;
+
+  for (const auto& corner : cornersA) {
+    float projection = corner.x * axis.x + corner.y * axis.y;
+    minA = std::min(minA, projection);
+    maxA = std::max(maxA, projection);
+  }
+
+  for (const auto& corner : cornersB) {
+    float projection = corner.x * axis.x + corner.y * axis.y;
+    minB = std::min(minB, projection);
+    maxB = std::max(maxB, projection);
+  }
+
+  return Overlap(minA, maxA, minB, maxB);
+}
+
+inline bool RectanglesIntersect(const Point& pos1, float width1, float height1,
+                                float angle1, const Point& pos2, float width2,
                                 float height2, float angle2) noexcept {
-  if (topLeft1.x_ + width1 < topLeft2.x_ || topLeft1.y_ + height1 < topLeft2.y_) {
+  if (pos1.x_ + width1 < pos2.x_ || pos1.y_ + height1 < pos2.y_ ||
+      pos2.x_ + width2 < pos1.x_ || pos2.y_ + height2 < pos1.y_) {
     return false;
   }
 
-  std::array<Vector2, 4> A = getCorners(topLeft1, width1, height1, angle1);
-  std::array<Vector2, 4> B = getCorners(topLeft2, width2, height2, angle2);
+  auto cornersA = GetCorners(pos1, width1, height1, angle1);
+  auto cornersB = GetCorners(pos2, width2, height2, angle2);
 
-  for (int a = 0; a < 4; a++) {
-    int b = (a + 1) % 4;
-    Point axisProj = {-A[b].y + A[a].y, A[b].x - A[a].x};
-
-    float minA = axisProj.x_ * A[0].x + axisProj.y_ * A[0].y;
-    float maxA = minA;
-    for (int p = 1; p < 4; p++) {
-      float t = axisProj.x_ * A[p].x + axisProj.y_ * A[p].y;
-      minA = std::min(minA, t);
-      maxA = std::max(maxA, t);
-    }
-
-    float minB = axisProj.x_ * B[0].x + axisProj.y_ * B[0].y;
-    float maxB = minB;
-    for (int p = 1; p < 4; p++) {
-      float t = axisProj.x_ * B[p].x + axisProj.y_ * B[p].y;
-      minB = std::min(minB, t);
-      maxB = std::max(maxB, t);
-    }
-
-    if (!overlap(minA, maxA, minB, maxB)) {
+  for (int i = 0; i < 4; i++) {
+    Vector2 edge = Subtract(cornersA[(i + 1) % 4], cornersA[i]);
+    Vector2 axis = Perpendicular(edge);
+    if (!ProjectAndCheckOverlap(cornersA, cornersB, axis)) {
       return false;
     }
   }
 
-  for (int a = 0; a < 4; a++) {
-    int b = (a + 1) % 4;
-    Point axisProj = {-B[b].y + B[a].y, B[b].x - B[a].x};
-
-    float minA = axisProj.x_ * A[0].x + axisProj.y_ * A[0].y;
-    float maxA = minA;
-    for (int p = 1; p < 4; p++) {
-      float t = axisProj.x_ * A[p].x + axisProj.y_ * A[p].y;
-      minA = std::min(minA, t);
-      maxA = std::max(maxA, t);
-    }
-
-    float minB = axisProj.x_ * B[0].x + axisProj.y_ * B[0].y;
-    float maxB = minB;
-    for (int p = 1; p < 4; p++) {
-      float t = axisProj.x_ * B[p].x + axisProj.y_ * B[p].y;
-      minB = std::min(minB, t);
-      maxB = std::max(maxB, t);
-    }
-
-    if (!overlap(minA, maxA, minB, maxB)) {
+  for (int i = 0; i < 4; i++) {
+    Vector2 edge = Subtract(cornersB[(i + 1) % 4], cornersB[i]);
+    Vector2 axis = Perpendicular(edge);
+    if (!ProjectAndCheckOverlap(cornersA, cornersB, axis)) {
       return false;
     }
   }
+
   return true;
 }
+
 }  // namespace SAT
+
 #endif  //MAGEQUEST_SRC_SYSTEM_COLLISIONDETECTION_H_

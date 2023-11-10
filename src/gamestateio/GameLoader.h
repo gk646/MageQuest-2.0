@@ -71,9 +71,11 @@ struct GameLoader {
     for (uint_fast32_t i = 0; i < 1; i++) {
       PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
     }
-    for (uint_fast32_t i = 0; i < 25; i++) {
-      AddSkill(SKILLS[BLAST_HAMMER]);
+    for (auto skill : SKILLS) {
+      if (!skill) continue;
+      AddSkill(skill);
     }
+    PLAYER_HOTBAR[0]->skill = SKILLS[ARCANE_BOLT];
     PLAYER_EFFECTS.AddEffect(new Slow(30, 10 * 60));
   }
 };

@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_UI_ELEMENTS_TOOLTIP_H_
 #define MAGEQUEST_SRC_UI_ELEMENTS_TOOLTIP_H_
 namespace ToolTip {
-inline void DrawToolTip(const std::string& txt, const Font& font,
+inline void DrawToolTipAtMouse(const std::string& txt, const Font& font,
                         float fontSize) noexcept {
   if (txt.empty()) return;
   Vector2 txtBounds = MeasureTextEx(font, txt.c_str(), SCALE(fontSize), 1);

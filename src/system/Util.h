@@ -1,6 +1,32 @@
 #ifndef MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 #define MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 namespace Util {
+//Returns a value between 0-1 based on their alphabetical distance // handles capitalization
+inline static float GetCharacterSimilarity(char base, char check) noexcept {
+  if (base == check) return 1.0F;
+  base -= base > 96 ? 97 : 65;
+  check -= check > 96 ? 97 : 65;
+  auto diff = (float)std::abs(base - check);
+  diff = std::max(0.0F, std::min(26.0F, diff));
+  return 1.0F - (1.0F / 26.0F) * diff;
+}
+//Returns a value between 0-1 on how similar the strings are based on their alphabetical distance
+//Only checks until either one ends and doesn't penalize unequal length -> bla and blabbbbbb = 1.0F
+inline static float GetStringSimilarityPrefix(const std::string& base,
+                                              const std::string& check) noexcept {
+  if (base.empty() || check.empty()) return 0.0F;
+  float sum = 0;
+  int i = 0;
+  while (i < base.size() && i < check.size()) {
+    sum += GetCharacterSimilarity(base[i], check[i]);
+    i++;
+  }
+  while (i < base.size()) {
+    i++;
+  }
+  return sum / i;
+}
+
 template <typename T>
 inline static bool ArrayContains(const T* arr, const T& val, int size) noexcept {
   for (int i = 0; i < size; i++) {
