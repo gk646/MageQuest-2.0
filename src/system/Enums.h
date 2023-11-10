@@ -100,6 +100,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::POISON, Colors::poison_green},
     {DamageType::ARCANE, Colors::arcaneBlue},
     {DamageType::DARK, Colors::darkMagicPurple},
+    { DamageType::TRUE_DMG, Colors::NormalGrey},
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };

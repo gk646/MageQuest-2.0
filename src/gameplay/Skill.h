@@ -23,33 +23,9 @@ struct Skill {
         attackAnimation(attack_animation),
         coolDownUpCounter((int16_t)skillStats.coolDownTicks),
         icon(icon) {}
-  //Activates the skill
-  inline virtual void Activate(bool isFree) = 0;
-  //Updates the skill // only progresses cooldown
-  inline void Update() noexcept { coolDownUpCounter++; }
-  //Draws the icon and the cooldown effect if applicable
-  inline void Draw(float x, float y) noexcept {
-    DrawTextureProFast(icon, x, y, 0, WHITE);
-    Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
-                                  PLAYER_STATS.GetRemainingCD(skillStats),
-                                  coolDownUpCounter);
-  }
-  //TODO proper link to support bar
-  static inline void DrawSupportBar(float x, float y, float percent) noexcept {
-    DrawRectangleProFast(x - SCALE(2), y - SCALE(12), SCALE(53) * percent, SCALE(7),
-                         Colors::SUPPORT_BAR_ORANGE);
-  }
-  //Returns true if skill is ready to use
-  [[nodiscard]] inline bool IsUsable() const noexcept {
-    return PLAYER_STATS.IsSkillUsable(skillStats, coolDownUpCounter);
-  }
-  //Handles logic for when the skill is used
-  inline void UseResources(bool isFree) noexcept;
-  //Does a ray-cast and range-check from soundPlayer to mouse position
-  [[nodiscard]] inline bool RangeLineOfSightCheck(const Point& target) const noexcept;
-  //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
-  inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
-  inline void DrawTooltip(float x, float y) noexcept { DrawToolTipImpl(x, y); }
+
+ public:
+  //Draws the cast bar
   inline static void DrawCastBar() noexcept {
     if (!lastCastedSkill) return;
     float x = (SCREEN_WIDTH - 92) / 2;
@@ -61,11 +37,36 @@ struct Skill {
         Colors::castBarOrange);
     DrawTextureProFast(textures::ui::skillbar::castbar, x, y, 0, WHITE);
   }
+  //Updates the cast bar // called on update tick
   inline static void UpdateCastProgress() noexcept;
-  //Draw functions
- private:
-  void DrawToolTipImpl(float x, float y) noexcept {
-    if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
+
+ public:
+  //Activates the skill
+  inline virtual void Activate(bool isFree) = 0;
+  //Draws the icon and the cooldown effect if applicable
+  inline void Draw(float x, float y) noexcept {
+    DrawTextureProFast(icon, x, y, 0, WHITE);
+    Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
+                                  PLAYER_STATS.GetRemainingCD(skillStats),
+                                  coolDownUpCounter);
+  }
+  //Updates the skill // only progresses cooldown
+  inline void Update() noexcept { coolDownUpCounter++; }
+  //TODO proper link to support bar
+  static inline void DrawSupportBar(float x, float y, float percent) noexcept {
+    DrawRectangleProFast(x - SCALE(2), y - SCALE(12), SCALE(53) * percent, SCALE(7),
+                         Colors::SUPPORT_BAR_ORANGE);
+  }
+
+ public:
+  //Returns true if skill is ready to use
+  [[nodiscard]] inline bool IsUsable() const noexcept {
+    return PLAYER_STATS.IsSkillUsable(skillStats, coolDownUpCounter);
+  }
+  //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
+  inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
+  //Draws the tooltip for the skill
+  inline void DrawTooltip(float x, float y) noexcept {
     DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();
@@ -82,6 +83,13 @@ struct Skill {
                          ROUND_SEGMENTS, Colors::mediumLightGrey);
     DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
                               ROUND_SEGMENTS, 2, damageTypeToColor[damageStats.dmgType]);
+
+    //-----------Description-----------//
+
+    DrawTextExR(MINECRAFT_REGULAR, descriptionText.c_str(), {startX + 5, startY + 75}, 15,
+                0.5F, Colors::descriptionOrange);
+
+    if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
 
     //-----------Name-----------//
     DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0.5F,
@@ -101,7 +109,7 @@ struct Skill {
                   Colors::darkBackground);
     } else {
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f sec cast",
-               skillStats.castTime / 60.0F);
+               (float)skillStats.castTime / 60.0F);
       DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {startX + 5, startY + 53}, 15, 0.5F,
                   Colors::darkBackground);
     }
@@ -109,7 +117,7 @@ struct Skill {
     //-----------CoolDown-----------//
 
     if (skillStats.coolDownTicks > 0) {
-      float cooldownInSeconds = skillStats.coolDownTicks / 60.0F;
+      float cooldownInSeconds =  (float) skillStats.coolDownTicks / 60.0F;
 
       if (cooldownInSeconds == floor(cooldownInSeconds)) {
         snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f sec cooldown", cooldownInSeconds);
@@ -121,11 +129,15 @@ struct Skill {
                                  startX + TOOL_TIP_WIDTH - 5, startY + 53,
                                  Colors::darkBackground);
     }
-    //-----------Description-----------//
 
-    DrawTextExR(MINECRAFT_REGULAR, descriptionText.c_str(), {startX + 5, startY + 75}, 15,
-                0.5F, Colors::descriptionOrange);
   }
+
+ private:
+  //Handles logic for when the skill is used
+  inline void UseResources(bool isFree) noexcept;
+  //Does a ray-cast and range-check from soundPlayer to mouse position
+  [[nodiscard]] inline bool RangeLineOfSightCheck(const Point& target) const noexcept;
+  //Draws the range indicator circle
   inline void DrawRangeCircle() const noexcept {
     if (skillStats.range > 0) {
       DrawTextureScaled(
@@ -135,12 +147,17 @@ struct Skill {
           0, false, 0, WHITE);
     }
   }
-
- private:
+  //Handles the casting logic and initiates the cast
   [[nodiscard]] inline bool HandleCasting(bool isFree) noexcept;
+  //Returns the scaled damage based on type and player stats
   [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {
     return PLAYER_STATS.GetAbilityDmg(damageStats) /
            (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+  }
+  inline static void ResetCast() noexcept {
+    lastCastedSkill = nullptr;
+    castProgress = -1;
+    StopSound(sound::player::abilityCast);
   }
 
  protected:
@@ -207,6 +224,7 @@ inline static Projectile* GetProjectileInstance(
       break;
   }
 }
+
 #include "../gameobjects/components/AttackComponent.h"
 #include "skills/Skills.h"
 Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept {

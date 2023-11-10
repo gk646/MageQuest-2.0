@@ -6,6 +6,7 @@ struct TalentEffect {
   virtual void OnSpellHit(Monster* monster) noexcept {}
   virtual void OnProjectileCreation(Projectile* prj) noexcept {}
   virtual void OnMonsterDeath(Monster* monster) noexcept {}
+  virtual void OnPlayerHit(Projectile* prj) noexcept {}
   static inline void AddStatusEffect(Projectile* prj, StatusEffect* effect) noexcept;
 };
 inline static void ApplyTalentsToProjectile(Projectile* prj) noexcept {
@@ -21,6 +22,11 @@ inline static void ApplyTalentsToCast(Skill* skill) noexcept {
 inline static void ApplyTalentsToMonsterDeath(Monster* monster) noexcept {
   for (const auto& te : TALENT_EFFECTS) {
     te->OnMonsterDeath(monster);
+  }
+}
+inline static void ApplyTalentsToPlayerHit(Projectile* prj) noexcept {
+  for (const auto& te : TALENT_EFFECTS) {
+    te->OnPlayerHit(prj);
   }
 }
 #endif  //MAGEQUEST_SRC_GAMEPLAY_TALENTEFFECT_H_

@@ -13,10 +13,9 @@ struct CharacterBag final : public Window {
   static constexpr int offset_x = 10;
   static constexpr int offset_y = 60;
   static constexpr int max_slots = per_row * 9;
-  static inline char HEADER[] = "Bags";
   BagPanel bagPanel;
   explicit CharacterBag() noexcept
-      : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, HEADER,
+      : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags",
                KEY_B, sound::openBags, sound::closeBags) {
     PLAYER_BAG = new InventorySlot[max_slots];
     CalculateSlots(max_slots);

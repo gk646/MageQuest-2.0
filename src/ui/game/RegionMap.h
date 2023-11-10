@@ -4,11 +4,10 @@
 struct RegionMap final : public Window {
   Vector2 last_mouse_pos{};
   PointT<int16_t> tile_offset{};
-  static inline char HEADER[] = "Map";
   float zoom = 5;
   bool dragged = false;
   RegionMap()
-      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, HEADER, KEY_M, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
+      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, "Map", KEY_M, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
   void Draw() noexcept {
     WINDOW_LOGIC();
     DragMap();

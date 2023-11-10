@@ -32,7 +32,7 @@ static void Load() noexcept {
     SKILLS[type] = skillPtr;
   }
   for (uint_fast32_t i = 0; i < 6; i++) {
-    HOT_BAR_SKILLS[i] = new SkillSlot(49 + 65 * i,21,DamageType::TRUE_DMG);
+    PLAYER_HOTBAR[i] = new SkillSlot(48 + 65 * i, 20, SKILLS[LOCKED], false);
   }
 }
 }  // namespace SkillLoader

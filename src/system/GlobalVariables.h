@@ -84,8 +84,8 @@ struct Monster;
 struct Player;
 struct Skill;
 struct TalentEffect;
-inline static std::array<SkillSlot*, 6> HOT_BAR_SKILLS{};
-inline static std::vector<Skill*> PLAYER_SKILLS{};
+inline static std::array<SkillSlot*, 6> PLAYER_HOTBAR{};
+inline static std::vector<SkillSlot*> PLAYER_SKILLS{};
 inline static std::vector<TalentEffect*> TALENT_EFFECTS;
 inline static MultiplayerType MP_TYPE = MultiplayerType::OFFLINE;
 inline static uint_fast32_t MONSTER_ID = 1;
@@ -116,5 +116,6 @@ inline static bool BoundCheckMap(int x, int y) noexcept {
 inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
+inline void AddSkill(Skill* skill) noexcept;
 
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

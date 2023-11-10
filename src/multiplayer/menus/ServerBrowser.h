@@ -9,9 +9,7 @@ struct ServerBrowser {
   const int WINDOW_WIDTH = 400;
   std::string ip_field;
 
-  ServerBrowser(){
-    ip_field = std::string(30, ' ');
-  };
+  ServerBrowser() { ip_field = std::string(30, ' '); };
 
   void draw() noexcept {
     const int windowHeight = 0 * (SERVER_ENTRY_HEIGHT + 15) + MANUAL_JOIN_HEIGHT * 2;
@@ -26,7 +24,6 @@ struct ServerBrowser {
 
     drawManualJoin(x, y, yOffset);
   }
-
   void drawServerEntry(int x, int y, int yOffset, const std::string& ip, int port) {
     GuiGroupBox(RectangleR{(float)x, (float)y + yOffset, (float)WINDOW_WIDTH,
                            SERVER_ENTRY_HEIGHT},

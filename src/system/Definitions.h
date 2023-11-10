@@ -73,7 +73,7 @@ inline std::string ASSET_PATH = "../res/";
 
 #ifdef DRAW_HITBOXES
 #undef DRAW_HITBOXES
-#define DRAW_HITBOXES() draw_hitbox()
+#define DRAW_HITBOXES() DrawHitbox()
 #else
 #undef DRAW_HITBOXES
 #define DRAW_HITBOXES()

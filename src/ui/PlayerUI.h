@@ -1,7 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_
 #define MAGE_QUEST_SRC_UI_PLAYER_PLAYERUI_H_
 
-
 #include "game/MiniMap.h"
 #include "game/RegionMap.h"
 #include "player/CharacterPanel.h"
@@ -47,31 +46,10 @@ struct PlayerUI {
     questPanel.Update();
     playerHotbar.Update();
     Util::Update();
-    update_special_items();
+    HandleDraggedItem();
   }
-  static inline void DrawDraggedAndToolTip() noexcept {
-    if (DRAGGED_ITEM) {
-      DRAGGED_ITEM->Draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
-    }
-    if (TOOL_TIP_ITEM) {
-      TOOL_TIP_ITEM->DrawToolTip();
-      TOOL_TIP_ITEM = nullptr;
-    }
-  }
-  static inline void update_special_items() noexcept {
-    if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-      if (WINDOW_FOCUSED) {
-        InventorySlot::RecoverDraggedItem();
-      } else {
-        WORLD_OBJECTS.push_back(new DroppedItem(
-            {PLAYER_X + PLAYER.size.x / 2 + 50, PLAYER_Y + PLAYER.size.y / 2},
-            DRAGGED_ITEM));
-        DRAGGED_ITEM = nullptr;
-        DRAGGED_SLOT = nullptr;
-      }
-    }
-  }
-  inline bool window_closeable() noexcept {
+  //When ESC is pressed with open windows they are closed and "consume the action"
+  inline bool CloseOpenWindows() noexcept {
     if (charPanel.isWindowOpen || charBag.isWindowOpen || regionMap.isWindowOpen ||
         questPanel.isWindowOpen || talentPanel.isWindowOpen || skillPanel.isWindowOpen) {
       talentPanel.isWindowOpen = false;
@@ -85,11 +63,36 @@ struct PlayerUI {
       return false;
     }
   }
+  //Resets the position of the ui elements
   inline void ResetPosition() noexcept {
     charPanel.ResetPosition();
     charBag.ResetPosition();
     questPanel.ResetPosition();
     regionMap.ResetPosition();
+  }
+
+ public:
+  static inline void DrawDraggedAndToolTip() noexcept {
+    if (DRAGGED_ITEM) {
+      DRAGGED_ITEM->Draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
+    }
+    if (TOOL_TIP_ITEM) {
+      TOOL_TIP_ITEM->DrawToolTip();
+      TOOL_TIP_ITEM = nullptr;
+    }
+  }
+  static inline void HandleDraggedItem() noexcept {
+    if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      if (WINDOW_FOCUSED) {
+        InventorySlot::RecoverDraggedItem();
+      } else {
+        WORLD_OBJECTS.push_back(new DroppedItem(
+            {PLAYER_X + PLAYER.size.x / 2 + 50, PLAYER_Y + PLAYER.size.y / 2},
+            DRAGGED_ITEM));
+        DRAGGED_ITEM = nullptr;
+        DRAGGED_SLOT = nullptr;
+      }
+    }
   }
 };
 

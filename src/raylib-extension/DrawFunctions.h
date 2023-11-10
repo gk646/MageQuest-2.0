@@ -140,8 +140,7 @@ void DrawTextureProFast(const Texture2D& texture, float drawX, float drawY,
   if (texture.id > 0) {
     auto width = (float)texture.width;
     auto height = (float)texture.height;
-    drawX = (int)drawX;
-    drawY = (int)drawY;
+
     float topLeftX, topLeftY, topRightX, topRightY, bottomLeftX, bottomLeftY,
         bottomRightX, bottomRightY;
 

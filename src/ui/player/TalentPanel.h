@@ -16,12 +16,14 @@ struct TalentPanel final : public Window {
   void Draw() noexcept {
     WINDOW_LOGIC()
     DrawBackGround();
+    //TODO debug
+    //cxstructs::now();
     DrawConnections();
+    //cxstructs::printTime<std::chrono::microseconds>();
     DrawTalentNodes(middlePoint);
     DrawToolTipNode();
   }
   void Update() noexcept {
-
     WINDOW_UPDATE();
     for (auto& node : talents) {
       node.Update();
@@ -109,6 +111,8 @@ struct TalentPanel final : public Window {
 
     return false;
   }
+
+ private:
   //Draws all talent-nodes with their correct texture, state and size and captures the hovered nodes ID
   inline void DrawTalentNodes(const Point& mid) noexcept {
     for (auto& node : talents) {
@@ -145,8 +149,6 @@ struct TalentPanel final : public Window {
       }
     }
   }
-
- private:
   //Draws a correctly colored line of images from on talent to the other
   static inline void DrawTalentConnection(const Point& middlePoint,
                                           const TalentNode& requirement,
@@ -164,26 +166,25 @@ struct TalentPanel final : public Window {
     int sy = y0 < y1 ? 1 : -1;
     int err = dx + dy;
     int counter = 0;
-    const Texture* connectionImage;
+    int e2 = 2 * err;
+    const Texture* connectionImage = &textures::ui::talentpanel::CONNECTION_ORANGE;
 
-    if (requirement.isActivated && nextOne.isActivated) {
-      connectionImage = &textures::ui::talentpanel::CONNECTION_GREEN;
-    } else if (requirement.isActivated) {
-      connectionImage = &textures::ui::talentpanel::CONNECTION_ORANGE;
-    } else if (!nextOne.isActivated) {
+    if (!nextOne.isActivated) {
       connectionImage = &textures::ui::talentpanel::CONNECTION_RED;
-    } else {
-      connectionImage = &textures::ui::talentpanel::CONNECTION_ORANGE;
+    } else if (requirement.isActivated && nextOne.isActivated) {
+      connectionImage = &textures::ui::talentpanel::CONNECTION_GREEN;
     }
+
     float drawX, drawY;
     while (true) {
-      if (counter % 8 == 0) {
+      if (counter == 8) {
         drawX = x0 + middlePoint.x() + 14;
         drawY = y0 + middlePoint.y() + 14;
         DrawTextureProFast(*connectionImage, drawX, drawY, 0, WHITE);
+        counter = 0;
       }
       if (x0 == x1 && y0 == y1) break;
-      int e2 = 2 * err;
+      e2 = 2 * err;
       if (e2 >= dy) {
         err += dy;
         x0 += sx;

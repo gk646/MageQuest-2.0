@@ -13,7 +13,7 @@ struct Window {
   RectangleR header_bar;
   Vector2 lastMousePos = {0};
   Vector2 basePosition;
-  char* header_text;
+  const char* header_text;
   const Sound& openSound;
   const Sound& closeSound;
   int windowOpenKey;
@@ -22,7 +22,7 @@ struct Window {
   bool isWindowOpen = false;
   bool isHeaderHovered = false;
   Window(float start_x, float start_y, float width, float height, float header_height,
-         char* header_text, int open_key, const Sound& openSound, const Sound& closeSound)
+         const char* header_text, int open_key, const Sound& openSound, const Sound& closeSound)
       : wholeWindow(start_x, start_y, width, height),
         header_bar(start_x, start_y + 2, width, header_height),
         header_text(header_text),
@@ -31,35 +31,42 @@ struct Window {
         openSound(openSound),
         closeSound(closeSound) {}
 
-#define WINDOW_LOGIC()                                              \
-  if (IsKeyPressed(windowOpenKey)) {                                \
-    if (isWindowOpen) {                                             \
-      PlaySoundR(closeSound);                                       \
-    } else {                                                        \
-      OnOpen();                                                     \
-      PlaySoundR(openSound);                                        \
-    }                                                               \
-    isWindowOpen = !isWindowOpen;                                   \
-    isDragged = false;                                              \
-  }                                                                 \
-                                                                    \
-  if (!isWindowOpen) {                                              \
-    return;                                                         \
-  }                                                                 \
-                                                                    \
-  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
-    auto mouse_pos = MOUSE_POS;                                     \
-    auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
-    auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
-    wholeWindow.x += delta_x;                                       \
-    wholeWindow.y += delta_y;                                       \
-    header_bar.x += delta_x;                                        \
-    header_bar.y += delta_y;                                        \
-    lastMousePos = mouse_pos;                                       \
-  } else {                                                          \
-    isDragged = false;                                              \
+ public:
+  //Opens the window
+  inline void OpenWindow() noexcept {
+    isWindowOpen = true;
+    PlaySoundR(openSound);
+    isDragged = false;
+    OnOpen();
   }
+  //Opens the window
+  inline void CloseWindow() noexcept {
+    isWindowOpen = false;
+    PlaySoundR(closeSound);
+    isDragged = false;
+    OnClose();
+  }
+  //Switches from open to close and reverse
+  inline void ToggleWindow() noexcept {
+    if (!isWindowOpen) {
+      OpenWindow();
+    } else {
+      CloseWindow();
+    }
+  }
+  //Resets position to base
+  inline void ResetPosition() noexcept {
+    wholeWindow.x = basePosition.x;
+    wholeWindow.y = basePosition.y;
 
+    header_bar.x = basePosition.x;
+    header_bar.y = basePosition.y + 2;
+  }
+  [[nodiscard]] inline bool IsInsideWindowBounds(float x, float y) const noexcept {
+    return x >= wholeWindow.x && x < wholeWindow.x + wholeWindow.width &&
+           y >= wholeWindow.y && y < wholeWindow.y + wholeWindow.height;
+  }
+  //Default way to draw the window
   void DrawWindow() const noexcept {
     RectangleR scaled_whole = SCALE_RECT(wholeWindow);
     RectangleR scaled_head = SCALE_RECT(header_bar);
@@ -84,6 +91,44 @@ struct Window {
         ANT_PARTY, SCALE(fontSize), header_text, scaled_whole.x + scaled_whole.width / 2,
         scaled_whole.y + scaled_head.height / 4, Colors::darkBackground);
   }
+
+  //Getters
+ public:
+  [[nodiscard]] inline Point GetWindowPos() const noexcept {
+    return {wholeWindow.x, wholeWindow.y};
+  }
+
+  //Events methods
+ public:
+  virtual inline void OnOpen(){};
+  virtual inline void OnClose(){};
+
+#define WINDOW_LOGIC()                                              \
+  if (IsKeyPressed(windowOpenKey)) {                                \
+    if (isWindowOpen) {                                             \
+      CloseWindow();                                                \
+    } else {                                                        \
+      OpenWindow();                                                 \
+    }                                                               \
+  }                                                                 \
+                                                                    \
+  if (!isWindowOpen) {                                              \
+    return;                                                         \
+  }                                                                 \
+                                                                    \
+  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
+    auto mouse_pos = MOUSE_POS;                                     \
+    auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
+    auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
+    wholeWindow.x += delta_x;                                       \
+    wholeWindow.y += delta_y;                                       \
+    header_bar.x += delta_x;                                        \
+    header_bar.y += delta_y;                                        \
+    lastMousePos = mouse_pos;                                       \
+  } else {                                                          \
+    isDragged = false;                                              \
+  }
+
 #define WINDOW_UPDATE()                                                               \
   if (!isWindowOpen) {                                                                \
     return;                                                                           \
@@ -105,24 +150,5 @@ struct Window {
     WINDOW_FOCUSED =                                                                  \
         isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));      \
   }
-  inline void ToggleWindow() noexcept {
-    if (!isWindowOpen) {
-      isWindowOpen = true;
-    } else {
-      isWindowOpen = false;
-    }
-  }
-  inline void ResetPosition() noexcept {
-    wholeWindow.x = basePosition.x;
-    wholeWindow.y = basePosition.y;
-
-    header_bar.x = basePosition.x;
-    header_bar.y = basePosition.y + 2;
-  }
-  [[nodiscard]] inline bool IsInsideWindowBounds(float x, float y) const noexcept {
-    return x >= wholeWindow.x && x < wholeWindow.x + wholeWindow.width &&
-           y >= wholeWindow.y && y < wholeWindow.y + wholeWindow.height;
-  }
-  virtual void OnOpen(){};
 };
 #endif  //MAGEQUEST_SRC_UI_WINDOW_H_

@@ -30,13 +30,12 @@ struct QuestPanel final : public Window {
   ScrollPane questMenu{
       {(SCREEN_WIDTH - WIDTH) / 2, (SCREEN_HEIGHT - HEIGHT) / 2, WIDTH / 2, HEIGHT - 23},
       new ExpandableQuestMenu(WIDTH / 2, HEIGHT,&sidePanel)};
-  static inline char HEADER[] = "Journal";
   inline constexpr static float WIDTH = 750;
   inline constexpr static float HEIGHT = 550;
 
   QuestPanel()
       : Window(SCREEN_WIDTH / 2 - WIDTH / 2, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 20,
-               HEADER, KEY_J, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
+               "Journal", KEY_J, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
   void Draw() {
     sidePanel.Draw(SCREEN_WIDTH - sidePanel.body.width, SCALE(300));
     WINDOW_LOGIC()

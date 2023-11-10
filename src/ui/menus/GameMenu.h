@@ -63,7 +63,7 @@ struct GameMenu {
     }
   }
   inline void Open() noexcept {
-    if (playerUI.window_closeable()) return;
+    if (playerUI.CloseOpenWindows()) return;
     PlaySoundR(sound::menu_switch);
     GAME_STATE = GameState::GameMenu;
     menuState = MenuState::Transition;
