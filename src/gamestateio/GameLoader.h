@@ -71,6 +71,9 @@ struct GameLoader {
     for (uint_fast32_t i = 0; i < 1; i++) {
       PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
     }
+    for (uint_fast32_t i = 0; i < 25; i++) {
+      AddSkill(SKILLS[BLAST_HAMMER]);
+    }
     PLAYER_EFFECTS.AddEffect(new Slow(30, 10 * 60));
   }
 };

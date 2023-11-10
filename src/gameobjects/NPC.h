@@ -75,7 +75,7 @@ struct NPC : public Entity {
 
 #include "../quest/QuestHandler.h"
 #define INTERACT_WITH_PLAYER()                                                       \
-  if (Util::EPressed() && currentZone == CURRENT_ZONE && this->intersects(PLAYER)) { \
+  if (Util::EPressed() && currentZone == CURRENT_ZONE && this->Intersects(PLAYER)) { \
     if (!dialogue) {                                                                 \
       PLAYER_QUESTS.InteractWithNPC(this);                                           \
       dialogueProgressCount = 0;                                                     \

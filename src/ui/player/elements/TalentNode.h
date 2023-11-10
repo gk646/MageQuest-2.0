@@ -64,7 +64,7 @@ struct TalentNode {
     if (sizeType == TalentSize::BIG) {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     } else if (sizeType == TalentSize::MID) {
-      DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
+      DrawTextureProFast(talent.icon, bounds.x + 7, bounds.y + 7, 0, WHITE);
     }else{
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     }

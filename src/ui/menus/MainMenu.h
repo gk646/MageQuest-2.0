@@ -4,7 +4,7 @@
 struct MainMenu {
   ServerBrowser server_browser{};
   HostMenu host_menu{};
-  SettingsMenu& settings_menu;
+  SettingsMenu& settingsMenu;
   MenuState menu_state = MenuState::Main;
   TexturedButton playGame{144, 46, "Play Game", 20, textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
   TexturedButton hostGame{144, 46, "Host Game", 20, textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
@@ -12,8 +12,8 @@ struct MainMenu {
   TexturedButton settings{144, 46, "Settings", 20,  textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
   TexturedButton exit{144, 46, "Quit", 20,  textures::ui::buttonNormal,textures::ui::buttonHovered, textures::ui::buttonPressed};
   explicit MainMenu(SettingsMenu& settings_menu) noexcept
-      : settings_menu(settings_menu) {}
-  void draw() noexcept {
+      : settingsMenu(settings_menu) {}
+  void Draw() noexcept {
     const float scaled_height = SCALE(46);
     const float vertical_gap = SCALE(8);
     const float baseYOffset = SCREEN_HEIGHT / 2.0F - 2 * scaled_height - 4 * vertical_gap;
@@ -41,7 +41,7 @@ struct MainMenu {
         SetWindowCloseFlagTrue(1);
       }
     } else if (menu_state == MenuState::Settings) {
-      settings_menu.Draw();
+      settingsMenu.Draw();
     } else if (menu_state == MenuState::ServerBrowser) {
       server_browser.draw();
     } else if (menu_state == MenuState::HostGame) {

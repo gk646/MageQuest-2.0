@@ -59,7 +59,7 @@ class Game {
             delete *m_it;
             m_it = MONSTERS.erase(m_it);
           } else {
-            if ((*m_it)->isUpdated && (*it)->intersects(**m_it)) [[unlikely]] {
+            if ((*m_it)->isUpdated && (*it)->Intersects(**m_it)) [[unlikely]] {
               (*m_it)->Hit(**it);
             }
             ++m_it;
@@ -67,12 +67,12 @@ class Game {
         }
         for (auto np : OTHER_PLAYERS) {
           if (np) {
-            if ((*it)->intersects(*np)) {
+            if ((*it)->Intersects(*np)) {
               np->Hit(**it);
             }
           }
         }
-        if ((*it)->intersects(PLAYER)) [[unlikely]] {
+        if ((*it)->Intersects(PLAYER)) [[unlikely]] {
           PLAYER.Hit(**it);
         }
         ++it;
@@ -205,7 +205,7 @@ class Game {
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
       case GameState::MainMenu: {
-        UI_MANAGER.mainMenu.draw();
+        UI_MANAGER.mainMenu.Draw();
         break;
       }
       case GameState::Game:

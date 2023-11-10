@@ -67,7 +67,7 @@ struct Burn final : public StatusEffect {
   }
 };
 struct SpellEchoCD final : public StatusEffect {
-  inline static constexpr int SPELL_ECHO_CD = 60 * 7.5F;
+  inline static constexpr int SPELL_ECHO_CD = 60 * 15.0F;
   SpellEchoCD() : StatusEffect(true, 0, SPELL_ECHO_CD, EffectType::SPELL_ECHO_CD) {}
   [[nodiscard]] SpellEchoCD* clone() const final { return new SpellEchoCD(*this); }
   void ApplyEffect(EntityStats& stats) noexcept final {}
@@ -97,7 +97,7 @@ struct ElementalEquilibriumBuff final : public StatusEffect {
   }
 };
 struct ElementalEquilibriumCD final : public StatusEffect {
-  inline static constexpr int ELEMENTAL_EQUILIBRIUM_CD = 60 * 15;
+  inline static constexpr int ELEMENTAL_EQUILIBRIUM_CD = 60 * 20;
   ElementalEquilibriumCD()
       : StatusEffect(true, 0, ELEMENTAL_EQUILIBRIUM_CD,
                      EffectType::ELEMENTAL_EQUILIBRIUM_CD) {}

@@ -2,6 +2,7 @@
 #define MAGE_QUEST_SRC_ENTITY_H_
 
 #include "../pathfinding/PathFinder.h"
+
 //Base class of objects in the game
 struct Entity {
   //Float
@@ -18,8 +19,13 @@ struct Entity {
   bool isUpdated = true;
   bool isIlluminated = false;
   Entity(const Point& pos, const PointT<int16_t>& size, ShapeType hitboxShape,
-         int16_t pov = 0,bool isIlluminated = false, Zone zone = CURRENT_ZONE)
-      : pos(pos), size(size), hitboxShape(hitboxShape), pov(pov), currentZone(zone), isIlluminated(isIlluminated) {}
+         int16_t pov = 0, bool isIlluminated = false, Zone zone = CURRENT_ZONE)
+      : pos(pos),
+        size(size),
+        hitboxShape(hitboxShape),
+        pov(pov),
+        currentZone(zone),
+        isIlluminated(isIlluminated) {}
   Entity(const Entity& o) noexcept
       : pos(o.pos),
         size(o.size),
@@ -48,14 +54,15 @@ struct Entity {
 #define ENTITY_UPDATE()                                                 \
   tilePos.x = static_cast<int16_t>(pos.x_ + size.x / 2.0F) / TILE_SIZE; \
   tilePos.y = static_cast<int16_t>(pos.y_ + size.y / 2.0F) / TILE_SIZE; \
-  isUpdated = currentZone == CURRENT_ZONE &&                             \
-              PLAYER.tilePos.dist(this->tilePos) < UPDATE_DISTANCE;    \
+  isUpdated = currentZone == CURRENT_ZONE &&                            \
+              PLAYER.tilePos.dist(this->tilePos) < UPDATE_DISTANCE;     \
   if (!isUpdated) return;
+
   //Called on the draw thread
-  virtual void Draw() = 0;
+  virtual inline void Draw() = 0;
   //Called on the update thread
-  virtual void Update() = 0;
-  [[nodiscard]] bool intersects(const Entity& o) const noexcept {
+  virtual inline void Update() = 0;
+  [[nodiscard]] inline bool Intersects(const Entity& o) const noexcept {
     if (pov == 0) {
       if (hitboxShape == ShapeType::RECT) {
         if (o.hitboxShape == ShapeType::RECT) {
@@ -95,7 +102,13 @@ struct Entity {
       }
     }
   }
-  void draw_hitbox() const {
+  //Returns the middle coordinates of the entity as "Point"
+  [[nodiscard]] inline Point GetMiddlePoint() const noexcept {
+    return {pos.x_ + (float)size.x / 2.0F, pos.y_ + (float)size.y / 2.0F};
+  }
+
+ protected:
+  inline void DrawHitbox() const {
     switch (hitboxShape) {
       case ShapeType::RECT:
         DrawRectOutlineMiddleRotation(
@@ -174,9 +187,7 @@ struct Entity {
            CheckTileCollision(entXLeft, entYDown) && tile_collision_left(speed) ||
            tile_collision_down(speed);
   }
-  [[nodiscard]] inline Point GetMiddlePoint() const noexcept {
-    return {pos.x_ + size.x / 2, pos.y_ + size.y / 2};
-  }
+
   void CalculateMovement(const PointT<int16_t>& next, float speed) noexcept {
     bool canMoveRight = tilePos.x < next.x && !tile_collision_right(speed);
     bool canMoveLeft = tilePos.x > next.x && !tile_collision_left(speed);

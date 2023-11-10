@@ -20,16 +20,42 @@ struct Player final : public Entity {
     Entity::operator=(other);
     return *this;
   }
+
+ public:
+  //Called on each hit
   inline void Hit(Projectile& p) const noexcept {
     //TODO dodge chance
     if (!p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
+      ApplyTalentsToPlayerHit(&p);
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
       PLAYER_STATS.TakeDamage(p.damageStats);
       p.isDead = p.hitType == HitType::ONE_HIT;
     }
   }
+  void Draw() final {
+    if (moving) {
+      DrawTextureProFastEx(resource->walk[(int)playerSpriteCount % 56 / 7],
+                           std::floor(pos.x_ + DRAW_X - 25.0F),
+                           std::floor(pos.y_ + DRAW_Y - 46), -20, 0, flip, WHITE);
+      actionState = 0;
+    } else if (actionState == 1) {
+      draw_attack1();
+    } else if (actionState == 2) {
+      draw_attack2();
+    } else if (actionState == 3) {
+      draw_attack3();
+    } else if (actionState == -100) {
+      draw_death();
+    }
+    if (!moving && actionState == 0) {
+      DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 10],
+                           pos.x_ + DRAW_X - 32.0F, pos.y_ + DRAW_Y - 46, -7, 0, flip,
+                           WHITE);
+    }
+    DRAW_HITBOXES();
+  }
   void Update() final {
-    //TODO optimize
+    //TODO cleanup breakdown into private methods
     playerSpriteCount += 1 * (1 + PLAYER_STATS.effects[SPEED_MULT_P]);
     spriteCounter++;
     if (PLAYER_STATS.health <= 0) {
@@ -78,28 +104,6 @@ struct Player final : public Entity {
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
                                    static_cast<int16_t>(pos.y_));
-  }
-  void Draw() final {
-    if (moving) {
-      DrawTextureProFastEx(resource->walk[(int)playerSpriteCount % 56 / 7],
-                           std::floor(pos.x_ + DRAW_X - 25.0F),
-                           std::floor(pos.y_ + DRAW_Y - 46), -20, 0, flip, WHITE);
-      actionState = 0;
-    } else if (actionState == 1) {
-      draw_attack1();
-    } else if (actionState == 2) {
-      draw_attack2();
-    } else if (actionState == 3) {
-      draw_attack3();
-    } else if (actionState == -100) {
-      draw_death();
-    }
-    if (!moving && actionState == 0) {
-      DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 10],
-                           pos.x_ + DRAW_X - 32.0F, pos.y_ + DRAW_Y - 46, -7, 0, flip,
-                           WHITE);
-    }
-    DRAW_HITBOXES();
   }
 
  private:
@@ -182,15 +186,13 @@ bool SpawnTrigger::IsClose() const noexcept {
   return PLAYER.pos.dist(pos.x + size.x / 2, pos.y + size.y / 2) < UPDATE_DISTANCE * 48;
 }
 
-//Skill implementations using the global PLAYER instance
+//Skill implementations using the global "PLAYER" instance
 void Skill::UpdateCastProgress() noexcept {
   if (Skill::castProgress >= 0) {
     Skill::castProgress++;
     PLAYER.flip = MOUSE_POS.x < CAMERA_X;
     if (PLAYER.moving) {
-      Skill::lastCastedSkill = nullptr;
-      Skill::castProgress = -1;
-      StopSound(sound::player::abilityCast);
+      ResetCast();
       return;
     }
     if (Skill::castProgress == Skill::lastCastedSkill->skillStats.castTime) {
@@ -200,9 +202,7 @@ void Skill::UpdateCastProgress() noexcept {
 }
 void Skill::UseResources(bool isFree) noexcept {
   coolDownUpCounter = 0;
-  castProgress = -1;
-  lastCastedSkill = nullptr;
-  StopSound(sound::player::abilityCast);
+  ResetCast();
   PLAYER.flip = MOUSE_POS.x < CAMERA_X;
   PLAYER.spriteCounter = 0;
   PLAYER.actionState = attackAnimation;

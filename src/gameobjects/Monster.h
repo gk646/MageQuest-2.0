@@ -97,7 +97,7 @@ struct Monster : public Entity {
       isMoving = true;
       return false;
     } else if (point == 0) {
-      if (!this->intersects(*ent)) {
+      if (!this->Intersects(*ent)) {
         isMoving = true;
         if (pos.x_ < ent->pos.x_) {
           pos.x_ += speed;
@@ -123,7 +123,7 @@ struct Monster : public Entity {
       isMoving = true;
       return false;
     } else if (point == 0) {
-      if (!this->intersects(*ent)) {
+      if (!this->Intersects(*ent)) {
         isMoving = true;
         if (pos.x_ < ent->pos.x_) {
           pos.x_ += speed;

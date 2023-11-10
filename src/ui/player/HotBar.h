@@ -31,25 +31,27 @@ struct HotBar {
   XPBar experienceBar;
   RectangleR hotBarHitbox = {0, 0, 480, 120};
   HotBar() = default;
+
+ public:
   void Draw() noexcept {
+    Skill::DrawCastBar();
     float startX = (SCREEN_WIDTH - hotBarHitbox.width) / 2.0F;
     float startY = SCREEN_HEIGHT - hotBarHitbox.height * 0.93F;
 
     experienceBar.Draw(startX + 5, startY);
     PLAYER_EFFECTS.DrawPlayer(startY - 44);
-    DrawMenuButtons(startX + 650);
+    DrawMenuButtons(startX + 750);
 
     DrawHotbar(startX, startY);
-    Skill::DrawCastBar();
     UpdatePlayerSkills();
   }
   void Update() noexcept {
-    experienceBar.Update();
     Skill::UpdateCastProgress();
+    experienceBar.Update();
     for (auto& mb : menuButtons) {
       mb.UpdateGlobalWindowState();
     }
-    for (auto& slot : HOT_BAR_SKILLS) {
+    for (auto& slot : PLAYER_HOTBAR) {
       slot->Update();
     }
   }
@@ -58,25 +60,25 @@ struct HotBar {
   //Called on the main thread // if button is pressed activates the skill
   inline static void UpdatePlayerSkills() noexcept {
     if (GAME_STATE != GameState::GameMenu) {
-      if (IsKeyPressed(KEY_ONE) && HOT_BAR_SKILLS[0]->skill->IsUsable()) {
-        HOT_BAR_SKILLS[0]->skill->Activate(false);
+      if (IsKeyPressed(KEY_ONE) && PLAYER_HOTBAR[0]->skill->IsUsable()) {
+        PLAYER_HOTBAR[0]->skill->Activate(false);
       }
-      if (IsKeyPressed(KEY_TWO) && HOT_BAR_SKILLS[1]->skill->IsUsable()) {
-        HOT_BAR_SKILLS[1]->skill->Activate(false);
+      if (IsKeyPressed(KEY_TWO) && PLAYER_HOTBAR[1]->skill->IsUsable()) {
+        PLAYER_HOTBAR[1]->skill->Activate(false);
       }
-      if (IsKeyPressed(KEY_THREE) && HOT_BAR_SKILLS[2]->skill->IsUsable()) {
-        HOT_BAR_SKILLS[2]->skill->Activate(false);
+      if (IsKeyPressed(KEY_THREE) && PLAYER_HOTBAR[2]->skill->IsUsable()) {
+        PLAYER_HOTBAR[2]->skill->Activate(false);
       }
-      if (IsKeyPressed(KEY_FOUR) && HOT_BAR_SKILLS[3]->skill->IsUsable()) {
-        HOT_BAR_SKILLS[3]->skill->Activate(false);
+      if (IsKeyPressed(KEY_FOUR) && PLAYER_HOTBAR[3]->skill->IsUsable()) {
+        PLAYER_HOTBAR[3]->skill->Activate(false);
       }
       if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
-          HOT_BAR_SKILLS[4]->skill->IsUsable() && !WINDOW_FOCUSED && !DRAGGED_ITEM) {
-        HOT_BAR_SKILLS[4]->skill->Activate(false);
+          PLAYER_HOTBAR[4]->skill->IsUsable() && !WINDOW_FOCUSED && !DRAGGED_ITEM) {
+        PLAYER_HOTBAR[4]->skill->Activate(false);
       }
       if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) &&
-          HOT_BAR_SKILLS[5]->skill->IsUsable() && !WINDOW_FOCUSED) {
-        HOT_BAR_SKILLS[5]->skill->Activate(false);
+          PLAYER_HOTBAR[5]->skill->IsUsable() && !WINDOW_FOCUSED) {
+        PLAYER_HOTBAR[5]->skill->Activate(false);
       }
     }
   }
@@ -86,13 +88,13 @@ struct HotBar {
                       {startX, startY, hotBarHitbox.width, hotBarHitbox.height}, 0, false,
                       0, WHITE);
     SkillSlot* toolTip = nullptr;
-    for (auto& slot : HOT_BAR_SKILLS) {
+    for (auto& slot : PLAYER_HOTBAR) {
       if (slot->Draw(startX, startY)) {
         toolTip = slot;
       }
     }
     if (toolTip) {
-      toolTip->Draw(startX, startY);
+      toolTip->DrawToolTip();
     }
   }
   //Draws semi transparent interface buttons on the lower right screen

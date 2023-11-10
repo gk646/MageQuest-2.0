@@ -43,7 +43,7 @@ struct InteractableObject : public WorldObject {
   };
   void Update() final {
     ENTITY_UPDATE()
-    if (!isUsed && Util::EPressed() && this->intersects(PLAYER)) {
+    if (!isUsed && Util::EPressed() && this->Intersects(PLAYER)) {
       isUsed = true;
       Interact();
       PlaySoundR(sound);

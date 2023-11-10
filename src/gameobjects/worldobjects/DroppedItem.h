@@ -9,7 +9,7 @@ struct DroppedItem final : public WorldObject {
 
   void Update() final {
     ENTITY_UPDATE()
-    if (this->intersects(PLAYER)) {
+    if (this->Intersects(PLAYER)) {
       isDead = CharacterBag::AddItem(item);
     }
   }
@@ -37,7 +37,7 @@ struct AnimatedDroppedItem final : public WorldObject {
 
   void Update() final {
     ENTITY_UPDATE();
-    if (arcPosition >= 1 && this->intersects(PLAYER)) {
+    if (arcPosition >= 1 && this->Intersects(PLAYER)) {
       isDead = CharacterBag::AddItem(item);
     }
   }

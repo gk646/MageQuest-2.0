@@ -35,7 +35,6 @@ struct ElementalEquilibrium final : public TalentEffect {
 std::unordered_map<int16_t, TalentEffect*> talentIDtoEffect{
     {15, new SpellEcho()},
     {96, new ElementalEquilibrium()},
-
 };
 
 #endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_TALENTEFFECTS_H_
