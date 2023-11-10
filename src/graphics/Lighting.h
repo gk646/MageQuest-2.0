@@ -106,7 +106,6 @@ inline static void UpdateDynamicLights() noexcept {
 }
 inline static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
-  if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) lightOn = !lightOn;
   if (lightOn) {
     cameraVec->x = CAMERA_X + 14;
     cameraVec->y = SCREEN_HEIGHT - CAMERA_Y - 24;

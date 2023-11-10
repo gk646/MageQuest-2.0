@@ -13,16 +13,17 @@
 struct PlayerUI {
   TalentPanel talentPanel;
   RegionMap regionMap{};
-  MiniMap miniMap{&regionMap.isWindowOpen};
+  MiniMap miniMap{regionMap.isWindowOpen};
   CharacterPanel charPanel{};
   CharacterBag charBag{};
   StatusBar statusBar{};
   QuestPanel questPanel{};
   HotBar playerHotbar{};
   SkillPanel skillPanel{};
-
-  void Draw() noexcept {
+  //Draws the ui elements from lowest to top level visibility
+  inline void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
+    skillPanel.searchField.UpdateLogic();
     playerHotbar.Draw();
     miniMap.Draw();
     statusBar.Draw();
@@ -30,11 +31,12 @@ struct PlayerUI {
     skillPanel.Draw();
     charBag.Draw();
     charPanel.Draw();
+    DrawDraggedSlots();
     regionMap.Draw();
     talentPanel.Draw();
-    DrawDraggedAndToolTip();
   }
-  void Update() noexcept {
+  //Order as top windows overlap lower ones //reverse order of drawing
+  inline void Update() noexcept {
     WINDOW_FOCUSED = false;
     talentPanel.Update();
     regionMap.Update();
@@ -46,18 +48,18 @@ struct PlayerUI {
     questPanel.Update();
     playerHotbar.Update();
     Util::Update();
-    HandleDraggedItem();
+    UpdateDraggedSlots();
   }
   //When ESC is pressed with open windows they are closed and "consume the action"
   inline bool CloseOpenWindows() noexcept {
     if (charPanel.isWindowOpen || charBag.isWindowOpen || regionMap.isWindowOpen ||
         questPanel.isWindowOpen || talentPanel.isWindowOpen || skillPanel.isWindowOpen) {
-      talentPanel.isWindowOpen = false;
-      charPanel.isWindowOpen = false;
-      charBag.isWindowOpen = false;
-      regionMap.isWindowOpen = false;
-      questPanel.isWindowOpen = false;
-      skillPanel.isWindowOpen = false;
+      talentPanel.CloseWindow();
+      charPanel.CloseWindow();
+      charBag.CloseWindow();
+      regionMap.CloseWindow();
+      questPanel.CloseWindow();
+      skillPanel.CloseWindow();
       return true;
     } else {
       return false;
@@ -72,26 +74,40 @@ struct PlayerUI {
   }
 
  public:
-  static inline void DrawDraggedAndToolTip() noexcept {
-    if (DRAGGED_ITEM) {
-      DRAGGED_ITEM->Draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
+  //Draws all instances of dragged slots or entities
+  static inline void DrawDraggedSlots() noexcept {
+    auto& ptr = DRAGGED_ITEM;  // thread safety
+    if (ptr) {
+      ptr->Draw({MOUSE_POS.x - 22, MOUSE_POS.y - 22, 45, 45});
     }
-    if (TOOL_TIP_ITEM) {
-      TOOL_TIP_ITEM->DrawToolTip();
-      TOOL_TIP_ITEM = nullptr;
+
+    auto& ptr1 = TOOL_TIP_ITEM;  // thread safety
+    if (ptr1) {
+      ptr1->DrawToolTip();
+      ptr1 = nullptr;
+    }
+
+    auto ptr2 = DRAGGED_SKILL_SLOT;  // thread safety
+    if (ptr2) {
+      ptr2->Draw(MOUSE_POS.x - 25, MOUSE_POS.y - 25);
     }
   }
-  static inline void HandleDraggedItem() noexcept {
+  //Updates and handles cleanup after unsuccessful drag
+  static inline void UpdateDraggedSlots() noexcept {
     if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       if (WINDOW_FOCUSED) {
         InventorySlot::RecoverDraggedItem();
       } else {
-        WORLD_OBJECTS.push_back(new DroppedItem(
-            {PLAYER_X + PLAYER.size.x / 2 + 50, PLAYER_Y + PLAYER.size.y / 2},
-            DRAGGED_ITEM));
+        WORLD_OBJECTS.push_back(
+            new DroppedItem({PLAYER_X + (float)PLAYER.size.x / 2.0F + 50,
+                             PLAYER_Y + (float)PLAYER.size.y / 2.0F},
+                            DRAGGED_ITEM));
         DRAGGED_ITEM = nullptr;
         DRAGGED_SLOT = nullptr;
       }
+    }
+    if (DRAGGED_SKILL_SLOT && IsMouseButtonUp(MOUSE_BUTTON_LEFT)) {
+      DRAGGED_SKILL_SLOT = nullptr;
     }
   }
 };

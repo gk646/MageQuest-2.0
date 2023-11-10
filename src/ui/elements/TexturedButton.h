@@ -61,7 +61,7 @@ struct TexturedButton {
       } else {
         DrawTextureScaled(hovered, bounds, 0, false, 0, {255, 255, 255, 255});
       }
-      ToolTip::DrawToolTip(toolTip, ANT_PARTY, fontSize);
+      ToolTip::DrawToolTipAtMouse(toolTip, ANT_PARTY, fontSize);
     } else {
       DrawTextureScaled(normal, bounds, 0, false, 0, {255, 255, 255, alpha});
     }

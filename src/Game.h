@@ -136,7 +136,7 @@ class Game {
     Multiplayer::BroadCastGameState();
   }
 
-  inline static void DrawEntities() {
+  inline static void DrawEntities() noexcept{
     for (auto object : WORLD_OBJECTS) {
       if (object->isUpdated) {
         object->Draw();

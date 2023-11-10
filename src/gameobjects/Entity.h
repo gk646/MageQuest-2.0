@@ -63,44 +63,40 @@ struct Entity {
   //Called on the update thread
   virtual inline void Update() = 0;
   [[nodiscard]] inline bool Intersects(const Entity& o) const noexcept {
-    if (pov == 0) {
-      if (hitboxShape == ShapeType::RECT) {
-        if (o.hitboxShape == ShapeType::RECT) {
-          return (pos.x_ < o.pos.x_ + o.size.x && pos.x_ + size.x > o.pos.x_ &&
-                  pos.y_ < o.pos.y_ + o.size.y && pos.y_ + size.y > o.pos.y_);
-        } else if (o.hitboxShape == ShapeType::CIRCLE) {
-          float other_radius_sq = o.size.x * o.size.x;
-          const float closestX = std::clamp(o.pos.x_, pos.x_, pos.x_ + size.x);
-          const float closestY = std::clamp(o.pos.y_, pos.y_, pos.y_ + size.y);
-
-          return ((closestX - o.pos.x_) * (closestX - o.pos.x_) +
-                  (closestY - o.pos.y_) * (closestY - o.pos.y_)) <= other_radius_sq;
-        }
-      } else if (hitboxShape == ShapeType::CIRCLE) {
-        float radius_sq = size.x * size.x;
-        if (o.hitboxShape == ShapeType::RECT) {
-          float newX = pos.x_ + size.x / 2.0F;
-          float newY = pos.y_ + size.x / 2.0F;
-          const float closestX = std::clamp(newX, o.pos.x_, o.pos.x_ + o.size.x);
-          const float closestY = std::clamp(newY, o.pos.y_, o.pos.y_ + o.size.y);
-
-          return ((closestX - newX) * (closestX - newX) +
-                  (closestY - newY) * (closestY - newY)) <= radius_sq;
-        } else if (o.hitboxShape == ShapeType::CIRCLE) {
-          float other_radius_sq = o.size.x * o.size.x;
-          return ((pos.x_ - o.pos.x_) * (pos.x_ - o.pos.x_) +
-                  (pos.y_ - o.pos.y_) * (pos.y_ - o.pos.y_)) <=
-                 (radius_sq + other_radius_sq);
-        }
+    if (hitboxShape == ShapeType::RECT) {
+      if (pov != 0) {
+        return SAT::RectanglesIntersect(GetMiddlePoint(), size.x, size.y, pov,
+                                        o.GetMiddlePoint(), o.size.x, o.size.y, o.pov);
       }
-    } else {
-      if (hitboxShape == ShapeType::RECT) {
-        if (o.hitboxShape == ShapeType::RECT) {
-          return SAT::rectanglesIntersect({pos.x_, pos.y_}, size.x, size.y, pov, o.pos,
-                                          o.size.x, o.size.y, o.pov);
-        }
+      if (o.hitboxShape == ShapeType::RECT) {
+        return (pos.x_ < o.pos.x_ + o.size.x && pos.x_ + size.x > o.pos.x_ &&
+                pos.y_ < o.pos.y_ + o.size.y && pos.y_ + size.y > o.pos.y_);
+      } else if (o.hitboxShape == ShapeType::CIRCLE) {
+        const float other_radius_sq = o.size.x * o.size.x;
+        const float closestX = std::clamp(o.pos.x_, pos.x_, pos.x_ + size.x);
+        const float closestY = std::clamp(o.pos.y_, pos.y_, pos.y_ + size.y);
+
+        return ((closestX - o.pos.x_) * (closestX - o.pos.x_) +
+                (closestY - o.pos.y_) * (closestY - o.pos.y_)) <= other_radius_sq;
+      }
+    } else if (hitboxShape == ShapeType::CIRCLE) {
+      float radius_sq = size.x * size.x;
+      if (o.hitboxShape == ShapeType::RECT) {
+        float newX = pos.x_ + size.x / 2.0F;
+        float newY = pos.y_ + size.x / 2.0F;
+        const float closestX = std::clamp(newX, o.pos.x_, o.pos.x_ + o.size.x);
+        const float closestY = std::clamp(newY, o.pos.y_, o.pos.y_ + o.size.y);
+
+        return ((closestX - newX) * (closestX - newX) +
+                (closestY - newY) * (closestY - newY)) <= radius_sq;
+      } else if (o.hitboxShape == ShapeType::CIRCLE) {
+        float other_radius_sq = o.size.x * o.size.x;
+        return ((pos.x_ - o.pos.x_) * (pos.x_ - o.pos.x_) +
+                (pos.y_ - o.pos.y_) * (pos.y_ - o.pos.y_)) <=
+               (radius_sq + other_radius_sq);
       }
     }
+    return false;
   }
   //Returns the middle coordinates of the entity as "Point"
   [[nodiscard]] inline Point GetMiddlePoint() const noexcept {

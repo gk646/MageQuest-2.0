@@ -32,10 +32,12 @@ struct SkillSlot {
   }
   inline void Update() noexcept {
     if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
+      SkillSlotsDrag();
       toolTipHoverTicks = (int8_t)std::max(toolTipHoverTicks - 1, -1);
     } else {
       toolTipHoverTicks = 12;
     }
+
     if (skill) {
       skill->Update();
     }
@@ -44,6 +46,18 @@ struct SkillSlot {
   inline void DrawToolTip() const noexcept {
     if (skill) {
       skill->DrawTooltip(hitBox.x + 3, hitBox.y + 2);
+    }
+  }
+
+ private:
+  inline void SkillSlotsDrag() noexcept {
+    if (!DRAGGED_SKILL_SLOT && IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
+        skill != SKILLS[LOCKED]) {
+      DRAGGED_SKILL_SLOT = this;
+    } else if (DRAGGED_SKILL_SLOT && IsMouseButtonUp(MOUSE_BUTTON_LEFT) &&
+               !withBackGround && skill != SKILLS[LOCKED]) {
+      this->skill = DRAGGED_SKILL_SLOT->skill;
+      DRAGGED_SKILL_SLOT = nullptr;
     }
   }
 };

@@ -9,6 +9,7 @@ inline void RestUIPosition();
 #include "elements/Content.h"
 #include "elements/ScrollPane.h"
 #include "elements/SoundComponent.h"
+#include "elements/TextField.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"
@@ -20,6 +21,7 @@ struct UIManager {
   SettingsMenu settings_menu;
   GameMenu gameMenu{settings_menu, playerUI};
   MainMenu mainMenu{settings_menu};
+  //Assigns functions to menu buttons
   UIManager() {
     playerUI.playerHotbar.menuButtons[0].onPressedFunc = [&]() {
       playerUI.charBag.ToggleWindow();
@@ -40,7 +42,7 @@ struct UIManager {
       playerUI.talentPanel.ToggleWindow();
     };
   }
-  void UIUpdate() noexcept {
+  inline void UIUpdate() noexcept {
     MOUSE_POS = GetMousePosition();
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH || GetScreenHeight() != SCREEN_HEIGHT) {

@@ -6,7 +6,7 @@ struct Button {
                    const std::string& toolTip) noexcept {
     bool ret = false;
     if (CheckCollisionPointRec(MOUSE_POS, bounds)) {
-      ToolTip::DrawToolTip(toolTip, ANT_PARTY, 15);
+      ToolTip::DrawToolTipAtMouse(toolTip, ANT_PARTY, 15);
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         DrawPressedButton(bounds);
       } else {

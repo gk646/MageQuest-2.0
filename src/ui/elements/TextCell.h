@@ -22,7 +22,7 @@ struct TextCell {
                            const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
     if (isHovered) {
-      ToolTip::DrawToolTip(toolTip, font, fontSize);
+      ToolTip::DrawToolTipAtMouse(toolTip, font, fontSize);
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1,
                   Colors::mediumLightGreyDarker);
     } else {
@@ -44,7 +44,7 @@ struct TextCell {
                            const Color& leftColor = Colors::darkBackground) noexcept {
     Update(x, y);
     if (isHovered) {
-      ToolTip::DrawToolTip(toolTip, font, fontSize);
+      ToolTip::DrawToolTipAtMouse(toolTip, font, fontSize);
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1,
                   Colors::mediumLightGreyDarker);
     } else {
@@ -66,7 +66,7 @@ struct TextCell {
     float numX = x + txtSize.x;
 
     if (isHovered) {
-      ToolTip::DrawToolTip(toolTip, font, fontSize);
+      ToolTip::DrawToolTipAtMouse(toolTip, font, fontSize);
       DrawTextExR(font, txt, {x, y}, SCALE(fontSize), 1, Colors::mediumLightGreyDarker);
       DrawTextExR(font, TEXT_BUFFER, {numX, y}, SCALE(fontSize), 1, numColor);
     } else {
