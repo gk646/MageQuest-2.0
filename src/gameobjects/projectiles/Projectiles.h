@@ -4,7 +4,8 @@
 struct BlastHammer final : Projectile {
   bool flip;
   BlastHammer(const Point& pos, bool isFriendlyToPlayer, float damage,
-              const std::array<StatusEffect*, 3>& effects, const Entity* sender)
+              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+              const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::FIRE, damage}, effects, {0, 0},
                    0, sound::blastHammer, sender, BLAST_HAMMER),
         flip(pos.x_ < MIRROR_POINT) {
@@ -80,7 +81,6 @@ struct Lightning final : Projectile {
       : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damage}, effects, mvmt,
                    0, sound::lightning, sender, LIGHTNING),
         flip(pos.x_ < MIRROR_POINT) {}
-
   void Draw() final {
     if (Projectile::spriteCounter < 70) {
       DrawTextureProFastEx(resources->frames[spriteCounter % 70 / 7],
@@ -102,8 +102,10 @@ struct FrostNova final : Projectile {
   FrostNova(const Point& pos, bool isFriendlyToPlayer, float damage,
             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
             const Vector2& mvmt, const Entity* sender)
-      : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, {new Root(180)},
-                   mvmt, 0, sound::frostNova, sender, FROST_NOVA) {}
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, effects, mvmt, 0,
+                   sound::frostNova, sender, FROST_NOVA) {
+    AddStatusEffect(this, new Root(120));
+  }
 
   void Draw() final {
     if (spriteCounter > 55) return;
@@ -148,7 +150,7 @@ struct ArrowNormal final : Projectile {
   ArrowNormal(const Point& pos, bool isFriendlyToPlayer, float damageValue,
               const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& statusEffects,
               const Vector2& mvmt, const Sound& sound, const Entity* sender)
-      : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damageValue},
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::PHYSICAL, damageValue},
                    statusEffects, mvmt, 0, sound, sender, ARROW_NORMAL) {
     if (!isFriendlyToPlayer) {
       this->mvmVector = GetMovementVectorToWorldPos({PLAYER_X + 15, PLAYER_Y + 24});

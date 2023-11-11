@@ -49,18 +49,18 @@ struct Map {
     std::string line;
     line.reserve(200);
 
-    char* endptr;
+    char* endPtr;
     for (int i = 0; i < mapSize; ++i) {
       if (std::getline(infile, line)) {
         const char* start = line.c_str();
         for (int b = 0; b < mapSize; ++b) {
-          auto value = static_cast<int16_t>(std::strtol(start, &endptr, 10));
+          auto value = static_cast<int16_t>(std::strtol(start, &endPtr, 10));
           if (worldObjectTable.contains(value)) {
             RegisterWorldObject(WorldObjectType(value), {b, i}, zone);
             value = -1;
           }
           arr[b][i] = value;
-          start = endptr + 1;
+          start = endPtr + 1;
         }
       }
     }
@@ -90,7 +90,7 @@ struct Map {
     int height = 0;
     int width = 0;
     int x = 0;
-    int y = 0;
+    int y;
     bool isSingular = true;
     int amount = 0;
     int level = 0;

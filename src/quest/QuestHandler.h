@@ -70,12 +70,6 @@ struct QuestHandler {
       }
     }
   }
-  [[nodiscard]] const std::string& GetObjectiveText() const noexcept {
-    if (activeQuest) {
-      return activeQuest->GetActiveObjective();
-    }
-    return "";
-  }
   inline void RemoveActiveQuest() noexcept { activeQuest = nullptr; }
   [[nodiscard]] inline bool HasActiveQuest() const noexcept {
     return activeQuest != nullptr;

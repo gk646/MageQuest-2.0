@@ -41,8 +41,12 @@ inline static ProjectileResources* GetProjectileRes(ProjectileType type) noexcep
       return &textures::projectile::VOID_FIELD;
     case ARCANE_BOLT:
       return &textures::projectile::ARCANE_BOLT;
+    case PSYCHIC_SCREAM:
+      return &textures::projectile::PSYCHIC_SCREAM;
     case PROJECTILE_END:
-      break;
+    case DUMMY:
+    case LOCKED:
+      return nullptr;
   }
   return nullptr;
 }

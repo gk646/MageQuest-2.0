@@ -9,7 +9,7 @@ struct RegionMap final : public Window {
   RegionMap()
       : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, "Map", KEY_M, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
   void Draw() noexcept {
-    WINDOW_LOGIC();
+    WINDOW_LOGIC()
     DragMap();
     DrawCustomWindow();
     DrawMap();

@@ -76,7 +76,6 @@ struct GameLoader {
       AddSkill(skill);
     }
     PLAYER_HOTBAR[0]->skill = SKILLS[ARCANE_BOLT];
-    PLAYER_EFFECTS.AddEffect(new Slow(30, 10 * 60));
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

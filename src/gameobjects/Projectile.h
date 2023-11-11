@@ -45,7 +45,7 @@ struct Projectile : public Entity {
         sound(p.sound),
         statusEffects() {
     for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
-      statusEffects[i] = p.statusEffects[i]->clone();
+      statusEffects[i] = p.statusEffects[i]->Clone();
     }
   }
   Projectile& operator=(const Projectile& other) noexcept {
@@ -60,7 +60,7 @@ struct Projectile : public Entity {
     }
 
     for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
-      statusEffects[i] = other.statusEffects[i]->clone();
+      statusEffects[i] = other.statusEffects[i]->Clone();
     }
 
     mvmVector = other.mvmVector;
@@ -73,10 +73,12 @@ struct Projectile : public Entity {
     return *this;
   }
   ~Projectile() noexcept override {
+
     StopSound(sound);
     UnloadSoundAlias(sound);
-    for (auto ptr : statusEffects) {
+    for (auto& ptr : statusEffects) {
       delete ptr;
+      ptr = nullptr;
     }
   }
   inline Vector2 GetMovementVectorToMouse() noexcept {
@@ -110,12 +112,17 @@ struct Projectile : public Entity {
   virtual void HitWallCallback() noexcept { isDead = true; }
 };
 
-void TalentEffect::AddStatusEffect(Projectile* prj, StatusEffect* effect) noexcept {
+inline static void AddStatusEffect(Projectile* prj, StatusEffect* effect) noexcept {
   for (auto& e : prj->statusEffects) {
     if (!e) {
       e = effect;
       return;
     }
   }
+}
+//Sets critChance and critDamage (as percent value e.g. 0.25) for the projectile
+inline static void SetDamageStats(Projectile* prj,float critChance, float critDamage_P) noexcept {
+ prj->damageStats.critDamage = critDamage_P;
+ prj->damageStats.critChance = critChance;
 }
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

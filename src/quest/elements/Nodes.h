@@ -21,11 +21,16 @@ struct QuestNode {
 };
 struct GOTO final : public QuestNode {
   PointI target;
-  explicit GOTO(std::string obj_txt, const PointI& target)
-      : QuestNode(std::move(obj_txt), NodeType::GOTO, target), target(target) {}
-  inline bool Progress() noexcept final { return PLAYER.tilePos.dist(target) < 3; }
+  Zone zone;
+  explicit GOTO(std::string obj_txt, const PointI& target, Zone zone)
+      : QuestNode(std::move(obj_txt), NodeType::GOTO, target),
+        target(target),
+        zone(zone) {}
+  inline bool Progress() noexcept final {
+    return CURRENT_ZONE == zone && PLAYER.tilePos.dist(target) < 3;
+  }
   static GOTO* ParseQuestNode(const std::vector<std::string>& parts) noexcept {
-    return new GOTO(parts[2], Util::ParsePointI(parts[1]));
+    return new GOTO(parts[2], Util::ParsePointI(parts[1]), stringToZoneMap[parts[3]]);
   }
 };
 struct NPC_MOVE final : public QuestNode {

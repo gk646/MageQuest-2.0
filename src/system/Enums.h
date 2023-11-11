@@ -49,6 +49,7 @@ enum class EffectType : uint8_t {
   STUN,
   BURN,
   SLOW,
+  POISON,
   ROOT,
   SPELL_ECHO_CD,
   ELEMENTAL_EQUILIBRIUM_BUFF,
@@ -59,6 +60,7 @@ std::unordered_map<std::string, EffectType> effectMap = {
     {"BURN", EffectType::BURN},
     {"SLOW", EffectType::SLOW},
     {"ROOT", EffectType::ROOT},
+    {"POISON", EffectType::POISON},
     {"SPELL_ECHO_CD", EffectType::SPELL_ECHO_CD},
     {"ELEMENTAL_EQUILIBRIUM_BUFF", EffectType::ELEMENTAL_EQUILIBRIUM_BUFF},
     {"ELEMENTAL_EQUILIBRIUM_CD", EffectType::ELEMENTAL_EQUILIBRIUM_CD}};
@@ -100,7 +102,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::POISON, Colors::poison_green},
     {DamageType::ARCANE, Colors::arcaneBlue},
     {DamageType::DARK, Colors::darkMagicPurple},
-    { DamageType::TRUE_DMG, Colors::NormalGrey},
+    { DamageType::TRUE_DMG, Colors::questMarkerYellow},
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };

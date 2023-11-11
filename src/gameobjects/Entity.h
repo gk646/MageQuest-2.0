@@ -98,9 +98,13 @@ struct Entity {
     }
     return false;
   }
-  //Returns the middle coordinates of the entity as "Point"
+  //Returns the middle coordinates of itself as "Point"
   [[nodiscard]] inline Point GetMiddlePoint() const noexcept {
     return {pos.x_ + (float)size.x / 2.0F, pos.y_ + (float)size.y / 2.0F};
+  }
+  //Returns the top middle coordinates of itself as "Point"
+  [[nodiscard]] inline Point GetUpperMiddle() const noexcept {
+    return {pos.x_ + (float)size.x / 2.0F, pos.y_};
   }
 
  protected:
@@ -119,7 +123,7 @@ struct Entity {
         break;
     }
   };
-  [[nodiscard]] inline bool tile_collision_left(float speed) const noexcept {
+  [[nodiscard]] inline bool TileCollisionLeft(float speed) const noexcept {
 #ifdef NO_CLIP
     return false;
 #endif
@@ -127,7 +131,7 @@ struct Entity {
     int entY = static_cast<int>(pos.y_ + size.y / 2.0F) / TILE_SIZE;
     return !BoundCheckMap(entX, entY) || CheckTileCollision(entX, entY);
   }
-  [[nodiscard]] inline bool tile_collision_right(float speed) const noexcept {
+  [[nodiscard]] inline bool TileCollisionRight(float speed) const noexcept {
 #ifdef NO_CLIP
     return false;
 #endif
@@ -156,7 +160,7 @@ struct Entity {
     int entYUp = static_cast<int>(pos.y_ + size.y / 2.0F - speed) / TILE_SIZE;
 
     return !BoundCheckMap(entXRight, entYUp) ||
-           CheckTileCollision(entXRight, entYUp) && tile_collision_right(speed) ||
+           CheckTileCollision(entXRight, entYUp) && TileCollisionRight(speed) ||
            tile_collision_up(speed);
   }
   [[nodiscard]] inline bool tile_collision_downright(float speed) const noexcept {
@@ -164,7 +168,7 @@ struct Entity {
     int entYDown = static_cast<int>(pos.y_ + size.y / 2.0F + speed) / TILE_SIZE;
 
     return !BoundCheckMap(entXRight, entYDown) ||
-           CheckTileCollision(entXRight, entYDown) && tile_collision_right(speed) ||
+           CheckTileCollision(entXRight, entYDown) && TileCollisionRight(speed) ||
            tile_collision_down(speed);
   }
   [[nodiscard]] inline bool tile_collision_upleft(float speed) const noexcept {
@@ -172,7 +176,7 @@ struct Entity {
     int entYUp = static_cast<int>(pos.y_ + size.y / 2.0F - speed) / TILE_SIZE;
 
     return !BoundCheckMap(entXLeft, entYUp) ||
-           CheckTileCollision(entXLeft, entYUp) && tile_collision_left(speed) ||
+           CheckTileCollision(entXLeft, entYUp) && TileCollisionLeft(speed) ||
            tile_collision_up(speed);
   }
   [[nodiscard]] inline bool tile_collision_downleft(float speed) const noexcept {
@@ -180,13 +184,13 @@ struct Entity {
     int entYDown = static_cast<int>(pos.y_ + size.y / 2.0F + speed) / TILE_SIZE;
 
     return !BoundCheckMap(entXLeft, entYDown) ||
-           CheckTileCollision(entXLeft, entYDown) && tile_collision_left(speed) ||
+           CheckTileCollision(entXLeft, entYDown) && TileCollisionLeft(speed) ||
            tile_collision_down(speed);
   }
 
   void CalculateMovement(const PointT<int16_t>& next, float speed) noexcept {
-    bool canMoveRight = tilePos.x < next.x && !tile_collision_right(speed);
-    bool canMoveLeft = tilePos.x > next.x && !tile_collision_left(speed);
+    bool canMoveRight = tilePos.x < next.x && !TileCollisionRight(speed);
+    bool canMoveLeft = tilePos.x > next.x && !TileCollisionLeft(speed);
     bool canMoveUp = tilePos.y > next.y && !tile_collision_up(speed);
     bool canMoveDown = tilePos.y < next.y && !tile_collision_down(speed);
 
@@ -223,4 +227,35 @@ struct Entity {
 };
 #include "components/ThreatManager.h"
 
+inline float EntityStats::TakeDamage(const DamageStats& stats, const Entity* ent) {
+  if (RANGE_100_FLOAT(RNG_ENGINE) < effects[DODGE_CHANCE]) {
+    DAMAGE_NUMBERS.emplace_back(FLT_MIN, DamageType::TRUE_DMG, ent->GetUpperMiddle());
+    return 0.0F;
+  }
+  bool crit = false;
+  float armour = GetArmour();
+  float damage = stats.damage;
+  if (RollCriticalHit(stats)) {
+    crit = true;
+    damage *= 1 + stats.critDamage;
+  }
+
+  if (stats.dmgType == DamageType::PHYSICAL) {
+    damage *= 1 - armour / (level * 50.0F);
+  } else if (stats.dmgType != DamageType::TRUE_DMG) {
+    if (shield >= damage) {
+      shield -= damage;
+      return damage;
+    } else {
+      damage -= shield;
+      shield = 0;
+    }
+  }
+  if (health > 0) {
+    lastHitType = stats.dmgType;
+  }
+  health -= damage;
+  DAMAGE_NUMBERS.emplace_back(damage, stats.dmgType, ent->GetUpperMiddle(), crit);
+  return damage;
+}
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

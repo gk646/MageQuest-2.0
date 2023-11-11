@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_GRAPHICS_LOGODRAWER_H_
 #define MAGEQUEST_SRC_GRAPHICS_LOGODRAWER_H_
 
-struct LogoDrawer {
+struct [[maybe_unused]] LogoDrawer {
   static constexpr float speed = 0.9;
   float transparency = 0;
   Texture texture;

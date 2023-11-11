@@ -21,7 +21,7 @@ struct Monster : public Entity {
   EntityStats stats;
   ThreatManager threatManager{this};
   AttackComponent attackComponent;
-  StatusEffectHandler effectHandler{stats};
+  StatusEffectHandler effectHandler{stats, this};
   const MonsterResource* resource;
   HealthBar healthBar;
   uint16_t u_id = MONSTER_ID++;
@@ -52,7 +52,7 @@ struct Monster : public Entity {
       : Entity(other),
         stats(other.stats),
         threatManager(this),
-        effectHandler(stats),
+        effectHandler(stats, this),
         resource(other.resource),
         healthBar(other.healthBar),
         attackComponent(other.attackComponent),
@@ -75,7 +75,7 @@ struct Monster : public Entity {
       p.HitTargetCallback();
       healthBar.Update();
       effectHandler.AddEffects(p.statusEffects);
-      float dmg = stats.TakeDamage(p.damageStats);
+      float dmg = stats.TakeDamage(p.damageStats, this);
       threatManager.AddThreat(p.sender, dmg);
       hitFlashDuration = hitFlashDuration == -12 ? 12 : hitFlashDuration;
     }
@@ -261,8 +261,8 @@ void Client::UpdateMonsters(const UDP_MonsterUpdate* data) noexcept {
 void ThreatManager::Update() noexcept {
   if (targetCount > 0) {
     for (auto& te : targets) {
-      if (te.entity &&
-          te.entity->tilePos.dist(self->tilePos) > self->attackComponent.chaseRange) {
+      if (te.entity && te.entity->tilePos.dist(self->tilePos) >
+                           self->attackComponent.chaseRangeTiles) {
         te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
         if (te.threat <= 0) {
           RemoveTarget(te.entity);
@@ -270,13 +270,13 @@ void ThreatManager::Update() noexcept {
       }
     }
   } else {
-    if (PLAYER.tilePos.dist(self->tilePos) <= self->attackComponent.attackRange) {
+    if (PLAYER.tilePos.dist(self->tilePos) <= self->attackComponent.attackRangeTiles) {
       AddTarget(&PLAYER, PLAYER_STATS.level);
     }
 
     for (const auto np : OTHER_PLAYERS) {
       if (np) {
-        if (np->tilePos.dist(self->tilePos) <= self->attackComponent.attackRange) {
+        if (np->tilePos.dist(self->tilePos) <= self->attackComponent.attackRangeTiles) {
           AddTarget(np, np->stats.level);
         }
       }
@@ -299,12 +299,25 @@ void AttackComponent::StartAnimation(int8_t actionState) const noexcept {
   self->actionState = actionState;
 }
 void ProjectileAttack::Execute(Monster* attacker) const {
+  std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};
+  for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
+    if (!effects[i]) break;
+    copy[i] = effects[i]->Clone();
+  }
   PROJECTILES.emplace_back(GetProjectileInstance(type, attacker->GetMiddlePoint(), false,
-                                                 damage, attacker, Vector2(), {}));
+                                                 damage, attacker, Vector2(), 0, copy));
 }
 void ConeAttack::Execute(Monster* attacker) const {
-  PROJECTILES.emplace_back(new AttackCone(attacker->GetAttackConeBounds(width, height),
-                                          false, std::max(hitDelay * 2, 90), hitDelay,
-                                          damage, {}, sound, attacker));
+  std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};
+  for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
+    if (!effects[i]) break;
+    copy[i] = effects[i]->Clone();
+  }
+  auto prj = new AttackCone(attacker->GetAttackConeBounds(width, height), false,
+                            (int16_t)std::max(hitDelay * 2, 90), hitDelay, damage, copy,
+                            sound, attacker);
+  SetDamageStats(prj, attacker->stats.effects[CRIT_CHANCE],
+                 attacker->stats.effects[CRIT_DAMAGE_P]);
+  PROJECTILES.emplace_back(prj);
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

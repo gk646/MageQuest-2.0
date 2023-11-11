@@ -13,7 +13,7 @@ struct AnimationList {
   std::vector<AnimatedTile> animatedTiles{};
   AnimationList(std::vector<uint16_t> tileNums, uint8_t len, uint8_t speed)
       : tileNums(std::move(tileNums)), speed(speed) {
-    animatedTiles.reserve(5);
+    animatedTiles.reserve(len);
   }
 
   inline void ProgressTiles() noexcept {
@@ -40,8 +40,8 @@ struct AnimationList {
     }
   }
   [[nodiscard]] inline bool Contains(uint16_t tileNum) const noexcept {
-    for(auto num : tileNums){
-      if(num == tileNum){
+    for (const auto num : tileNums) {
+      if (num == tileNum) {
         return true;
       }
     }

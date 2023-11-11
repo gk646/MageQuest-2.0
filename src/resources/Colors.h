@@ -38,7 +38,7 @@ inline const Color xpbarOrange = {254, 132, 23, 229};
 inline const Color castBarOrange = {254, 174, 52, 255};
 
 //TOOLTIPS
-inline const Color descriptionOrange = {220, 119, 29, 255};
+inline const Color descriptionOrange = {210, 115, 26, 255};
 
 // MAP
 inline const Color map_green = {99, 199, 77, 255};

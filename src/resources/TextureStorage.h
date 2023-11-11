@@ -132,6 +132,9 @@ inline static Texture setting_pressed;
 inline static Texture skilltree;
 inline static Texture skilltree_pressed;
 
+inline static Texture journal;
+inline static Texture journal_pressed;
+
 inline static Texture tooltip;
 inline static Texture mouseleft;
 inline static Texture mouseright;

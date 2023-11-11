@@ -6,7 +6,7 @@ struct SkillPanel final : public Window {
   inline static constexpr float WINDOW_HEIGHT = 500;
   inline static constexpr float SKILL_WIDTH = 60;
   inline static constexpr int SKILLS_PER_ROW = (WINDOW_WIDTH - 10) / SKILL_WIDTH;
-  TextField searchField{150, 18, 30};
+  TextField searchField{170, 18, 18, "Search:"};
   SkillPanel()
       : Window((SCREEN_WIDTH - WINDOW_WIDTH) / 2, (SCREEN_HEIGHT - WINDOW_HEIGHT) / 2,
                WINDOW_WIDTH, WINDOW_HEIGHT, 20, "Skills", KEY_P, sound::EMPTY_SOUND,
@@ -16,7 +16,7 @@ struct SkillPanel final : public Window {
   void Draw() noexcept {
     WINDOW_LOGIC()
     DrawWindow();
-    searchField.Draw(wholeWindow.x + wholeWindow.width - 170, wholeWindow.y + 35);
+    searchField.Draw(wholeWindow.x + wholeWindow.width - 180, wholeWindow.y + 35);
     DrawSkills();
   }
   void Update() noexcept {

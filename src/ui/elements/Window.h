@@ -22,7 +22,8 @@ struct Window {
   bool isWindowOpen = false;
   bool isHeaderHovered = false;
   Window(float start_x, float start_y, float width, float height, float header_height,
-         const char* header_text, int open_key, const Sound& openSound, const Sound& closeSound)
+         const char* header_text, int open_key, const Sound& openSound,
+         const Sound& closeSound)
       : wholeWindow(start_x, start_y, width, height),
         header_bar(start_x, start_y + 2, width, header_height),
         header_text(header_text),
@@ -34,6 +35,7 @@ struct Window {
  public:
   //Opens the window
   inline void OpenWindow() noexcept {
+    if (isWindowOpen) return;
     isWindowOpen = true;
     PlaySoundR(openSound);
     isDragged = false;
@@ -41,6 +43,7 @@ struct Window {
   }
   //Opens the window
   inline void CloseWindow() noexcept {
+    if (!isWindowOpen) return;
     isWindowOpen = false;
     PlaySoundR(closeSound);
     isDragged = false;

@@ -78,6 +78,13 @@ class Game {
         ++it;
       }
     }
+    for (auto it = DAMAGE_NUMBERS.begin(); it != DAMAGE_NUMBERS.end();) {
+      if (it->Update()) {
+        it = DAMAGE_NUMBERS.erase(it);
+      } else {
+        it++;
+      }
+    }
   }
 
   inline static void LogicLoop() noexcept {
@@ -136,7 +143,7 @@ class Game {
     Multiplayer::BroadCastGameState();
   }
 
-  inline static void DrawEntities() noexcept{
+  inline static void DrawEntities() noexcept {
     for (auto object : WORLD_OBJECTS) {
       if (object->isUpdated) {
         object->Draw();
@@ -161,6 +168,9 @@ class Game {
       }
     }
     PLAYER.Draw();
+    for (const auto& dn : DAMAGE_NUMBERS) {
+      dn.Draw();
+    }
   }
   inline static void DrawGame() noexcept {
     WorldRender::PreRenderTasks();

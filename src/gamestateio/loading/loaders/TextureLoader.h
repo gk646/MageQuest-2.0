@@ -118,17 +118,20 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bossbar.png").c_str());
 
     textures::ui::skillbar::bag =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
+    textures::ui::skillbar::bag_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag_pressed.png").c_str());
+    textures::ui::skillbar::journal =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/journal.png").c_str());
+    textures::ui::skillbar::journal_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/journal_pressed.png").c_str());
     textures::ui::skillbar::slot =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/slot.png").c_str());
     textures::ui::skillbar::castbar =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/castbar.png").c_str());
 
-    textures::ui::skillbar::abilities =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities.png").c_str());
+    textures::ui::skillbar::abilities =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities.png").c_str());
+    textures::ui::skillbar::abilities_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities_pressed.png").c_str());
 
-    textures::ui::skillbar::character =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character.png").c_str());
+    textures::ui::skillbar::character =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character.png").c_str());
+    textures::ui::skillbar::character_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character_pressed.png").c_str());
 
-    textures::ui::skillbar::map =
-        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map.png").c_str());
+    textures::ui::skillbar::map =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map.png").c_str());
+    textures::ui::skillbar::map_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_pressed.png").c_str());
 
     textures::ui::skillbar::map_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_pressed.png").c_str());

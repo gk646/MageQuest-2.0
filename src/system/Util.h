@@ -181,25 +181,25 @@ inline static std::string CreateToolTipString(const std::string& s, float damage
   std::string ret = s;
   size_t pos;
 
-  pos = s.find("MAX_DMG");
+  pos = ret.find("MAX_DMG");
   if (pos != std::string::npos) {
     ret.replace(pos, 7, std::to_string((int)(damage * 1.1F)));
   }
 
-  pos = s.find("MIN_DMG");
+  pos = ret.find("MIN_DMG");
   if (pos != std::string::npos) {
     ret.replace(pos, 7, std::to_string((int)(damage * 0.9F)));
   }
 
   if (val1 != FLT_MAX) {
-    pos = s.find("VAL1");
+    pos = ret.find("VAL1");
     if (pos != std::string::npos) {
       ret.replace(pos, 4, std::to_string((int)val1));
     }
   }
 
   if (val2 != FLT_MAX) {
-    pos = s.find("VAL2");
+    pos = ret.find("VAL2");
     if (pos != std::string::npos) {
       ret.replace(pos, 4, std::to_string((int)val2));
     }
@@ -216,28 +216,30 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
   size_t pos;
 
   if (duration != FLT_MAX) {
-    pos = s.find("DURATION");
+    pos = ret.find("DURATION");
     if (pos != std::string::npos) {
       ret.replace(pos, 8, std::to_string((int)duration / 60));
     }
   }
 
   if (amount != FLT_MAX) {
-    pos = s.find("AMOUNT");
+    pos = ret.find("AMOUNT");
     if (pos != std::string::npos) {
       ret.replace(pos, 6, std::to_string((int)amount));
     }
   }
 
   if (val3 != FLT_MAX) {
-    pos = s.find("VAL3");
+    pos = ret.find("VAL3");
     if (pos != std::string::npos) {
-      ret.replace(pos, 4, std::to_string((int)val3));
+      char buffer[6];
+      snprintf(buffer, sizeof(buffer), "%.1f", val3/60);
+      ret.replace(pos, 4, buffer);
     }
   }
 
   if (stringVal) {
-    pos = s.find("STRING");
+    pos = ret.find("STRING");
     if (pos != std::string::npos) {
       ret.replace(pos, 6, stringVal);
     }
@@ -247,12 +249,12 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
 }
 //Draws a swiping rectangular cooldown animation by drawing lines from the center to the bound points of the square
 inline static void DrawSwipeCooldownEffect(float x, float y, float size,
-                                           int remainingTicks,
+                                           int totalTicks,
                                            int currentTicks) noexcept {
-  if (currentTicks < remainingTicks) {
+  if (currentTicks < totalTicks) {
     float side1, side2, side3, side4, side5;
     float coolDownCoefficient;
-    coolDownCoefficient = currentTicks * (size * 4 / remainingTicks);
+    coolDownCoefficient = currentTicks * (size * 4 / totalTicks);
     side1 = size / 2;
     side2 = 0;
     side3 = 0;

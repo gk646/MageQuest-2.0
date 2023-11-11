@@ -6,14 +6,15 @@ struct TextField {
   // Textfield text
   std::string text;
   RectangleR hitBox;
-  size_t cursorPos = 0;
+  const char* preFix;
+  int8_t cursorPos = 0;
   int8_t maxCharacters;
   int blinkCounter = 0;
   bool isFocused = false;
   bool showCursor = true;
   bool wasUpdated = false;
-  TextField(float width, float height, int8_t maxCharacters)
-      : hitBox(0, 0, width, height), maxCharacters(maxCharacters) {}
+  TextField(float width, float height, int8_t maxCharacters, const char* preFix)
+      : hitBox(0, 0, width, height), maxCharacters(maxCharacters), preFix(preFix) {}
 
  public:
   inline void Draw(float x, float y) noexcept {
@@ -42,7 +43,10 @@ struct TextField {
   }
 
  private:
+  //Draws the main content
   inline void DrawTextField() noexcept {
+    Util::DrawRightAlignedText(MINECRAFT_REGULAR, 16, preFix, hitBox.x - 3, hitBox.y,
+                               Colors::darkBackground);
     DrawRectangleProFast(hitBox.x, hitBox.y, hitBox.width, hitBox.height,
                          isFocused ? Colors::darkBackground : Colors::mediumLightGrey);
     DrawRectangleLinesEx(hitBox, 1, Colors::black);
