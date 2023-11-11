@@ -5,7 +5,7 @@ struct NetPlayer final : public Entity {
   EntityStats stats;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
   std::string name;
-  StatusEffectHandler status_effects{stats};
+  StatusEffectHandler status_effects{stats, this};
   SteamNetworkingIdentity identity = SteamNetworkingIdentity();
   Zone zone = Zone::Tutorial;
   int sprite_counter = 0;
@@ -73,7 +73,7 @@ struct NetPlayer final : public Entity {
   void Hit(Projectile& p) noexcept {
     if (!p.isFriendlyToPlayer) {
       status_effects.AddEffects(p.statusEffects);
-      stats.TakeDamage(p.damageStats);
+      stats.TakeDamage(p.damageStats, this);
       p.isDead = action_state != -100 && p.hitType == HitType::ONE_HIT;
     }
   }

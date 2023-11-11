@@ -36,7 +36,7 @@ struct AnimatedDroppedItem final : public WorldObject {
   }
 
   void Update() final {
-    ENTITY_UPDATE();
+    ENTITY_UPDATE()
     if (arcPosition >= 1 && this->Intersects(PLAYER)) {
       isDead = CharacterBag::AddItem(item);
     }

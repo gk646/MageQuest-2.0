@@ -223,12 +223,12 @@ struct Item {
 
     //type
     DrawTextExR(MINECRAFT_ITALIC, type_to_string[type].c_str(),
-                {startX + width / 2 - GetTextWidth(type_to_string[type].c_str()) / 2.0F,
+                {startX + width / 2 - (float)GetTextWidth(type_to_string[type].c_str()) / 2.0F,
                  startY + height - 15 * UI_SCALE},
                 15 * UI_SCALE, 0.5F, Colors::darkBackground);
 
     //id
-    snprintf(textBuffer, 10, "id:%d%d", id, type);
+    snprintf(textBuffer, 10, "id:%d%d", id, (int)type);
     DrawTextExR(MINECRAFT_ITALIC, textBuffer,
                 {startX + width - 35 * UI_SCALE, startY + height - 15 * UI_SCALE},
                 15 * UI_SCALE, 0.5F, Colors::darkBackground);
@@ -242,7 +242,7 @@ struct Item {
       return Colors::mediumQuality;
     }
   }
-  //Returns a clone of the base item that matches the given values
+  //Returns a Clone of the base item that matches the given values
   inline static Item* FindBaseItem(int id, ItemType type, int quality, int level);
   //Parses the effects column of an entry in the form:"35:12.000000;" and adds it on top of existing values
   inline static void ParseEffectText(float* arr, const unsigned char* ptr) {

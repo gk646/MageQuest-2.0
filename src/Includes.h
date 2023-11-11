@@ -132,7 +132,6 @@ using namespace cxstructs;
 #include "ui/player/elements/InventorySlot.h"
 #include "ui/player/CharacterBag.h"
 #include "gameobjects/Entity.h"
-#include "gameplay/Stats.h"
 #include "gameobjects/Projectile.h"
 #include "multiplayer/Multiplayer.h"
 #include "graphics/Lighting.h"

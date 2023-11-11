@@ -5,7 +5,7 @@ struct StatusEffect {
   inline static constexpr float TOOL_TIP_WIDTH = 180;
   inline static constexpr float TOOL_TIP_BASE_HEIGHT = 35;
   int16_t cadence;
-  const int16_t fullDuration;
+  int16_t fullDuration;
   int16_t duration;
   int16_t stacks = 0;
   EffectType type;
@@ -18,19 +18,12 @@ struct StatusEffect {
         type(type) {}
   virtual ~StatusEffect() = default;
   StatusEffect(const StatusEffect& other) = default;
-  StatusEffect& operator=(const StatusEffect& other) {
-    if (this == &other) {
-      return *this;
-    }
-    isDebuff = other.isDebuff;
-    cadence = other.cadence;
-    duration = other.duration;
-    return *this;
-  }
-  [[nodiscard]] virtual StatusEffect* clone() const = 0;
+  StatusEffect& operator=(const StatusEffect& other) = delete;
+  [[nodiscard]] virtual StatusEffect* Clone() const = 0;
   inline void Draw(float x, float y, float size) const noexcept {
     DrawTextureScaled(effectToInfo[type].icon, {x, y, size, size}, 0, false, 0, WHITE);
-    Util::DrawSwipeCooldownEffect(x + (size == 32 ? 2 : 1), y + (size == 32 ?2 : 1), size == 32 ? 28: 14, fullDuration, duration);
+    Util::DrawSwipeCooldownEffect(x + (size == 32 ? 2 : 1), y + (size == 32 ? 2 : 1),
+                                  size == 32 ? 28 : 14, fullDuration, duration);
   }
   inline void DrawToolTip(float x, float y) const {
     int lineBreaks = 0;
@@ -59,13 +52,14 @@ struct StatusEffect {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration);
   };
   //Called each tick
-  virtual inline void TickEffect(EntityStats& stats) = 0;
+  virtual inline void TickEffect(EntityStats& stats, const Entity* self) = 0;
   //Called when effect should be applied
-  virtual inline void ApplyEffect(EntityStats& stats) noexcept = 0;
+  virtual inline void ApplyEffect(EntityStats& stats, const Entity* self) noexcept = 0;
   //Called when effect should be removed
-  virtual inline void RemoveEffect(EntityStats& stats) noexcept = 0;
+  virtual inline void RemoveEffect(EntityStats& stats, const Entity* self) noexcept = 0;
   //Called when an effect with the same type is added
-  virtual inline void AddStack(StatusEffect* other) noexcept = 0;
+  virtual inline void AddStack(const StatusEffect* other,
+                               const Entity* self) noexcept = 0;
 };
 
 #include "effects/StatusEffects.h"

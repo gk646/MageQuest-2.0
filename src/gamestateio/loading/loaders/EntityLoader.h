@@ -12,13 +12,13 @@ static void LoadScaling() noexcept {
     scaler.healthPerLevel = std::stof(vec[3]);
     scaler.speed = std::stof(vec[4]);
     scaler.attackCD = (int16_t)std::stoi(vec[5]);
-    scaler.attackRange = (uint8_t)std::stoi(vec[6]);
-    scaler.chaseRange = (uint8_t)std::stoi(vec[7]);
+    scaler.attackRangeTiles = (int8_t)std::stoi(vec[6]);
+    scaler.chaseRangeTiles = (int8_t)std::stoi(vec[7]);
     auto id = stringToMonsterID[vec[0]];
     monsterIdToScaler.insert({id, scaler});
   }
 }
-//Loads entity resources
+//Loads self resources
 static void Load() {
   textures::PLAYER_RESOURCE.Load("player/");
 

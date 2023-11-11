@@ -45,7 +45,7 @@ struct Quest final {
     }
   }
   inline void Update() noexcept {
-    if (objectives[stage]->Progress()) {
+    if ( objectives[stage]->Progress()) {
       FinishStage(objectives[stage]);
     }
   }

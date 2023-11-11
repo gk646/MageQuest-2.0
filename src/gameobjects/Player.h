@@ -10,6 +10,7 @@ struct Player final : public Entity {
   bool moving = false;
   uint8_t uncoverRadius = 8;
   explicit Player(const Point& pos) : Entity(pos, {28, 48}, ShapeType::RECT) {
+    PLAYER_EFFECTS.self = this;
     PLAYER_TILE = &tilePos;
   }
   Player(const Player& other) noexcept : Entity(other) {}
@@ -24,11 +25,10 @@ struct Player final : public Entity {
  public:
   //Called on each hit
   inline void Hit(Projectile& p) const noexcept {
-    //TODO dodge chance
     if (!p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
       ApplyTalentsToPlayerHit(&p);
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
-      PLAYER_STATS.TakeDamage(p.damageStats);
+      PLAYER_STATS.TakeDamage(p.damageStats, this);
       p.isDead = p.hitType == HitType::ONE_HIT;
     }
   }
@@ -82,12 +82,12 @@ struct Player final : public Entity {
       pos.y_ += speed;
       GAME_STATISTICS.WalkPixels(speed);
     }
-    if (IsKeyDown(KEY_A) && !tile_collision_left(speed)) {
+    if (IsKeyDown(KEY_A) && !TileCollisionLeft(speed)) {
       pos.x_ -= speed;
       GAME_STATISTICS.WalkPixels(speed);
       flip = true;
     }
-    if (IsKeyDown(KEY_D) && !tile_collision_right(speed)) {
+    if (IsKeyDown(KEY_D) && !TileCollisionRight(speed)) {
       pos.x_ += speed;
       GAME_STATISTICS.WalkPixels(speed);
       flip = false;
@@ -187,7 +187,10 @@ bool SpawnTrigger::IsClose() const noexcept {
 }
 
 //Skill implementations using the global "PLAYER" instance
-void Skill::UpdateCastProgress() noexcept {
+void Skill::UpdateStaticState() noexcept {
+  if (Skill::globalCooldown < GLOBAL_COOLDOWN_TICKS) {
+    globalCooldown++;
+  }
   if (Skill::castProgress >= 0) {
     Skill::castProgress++;
     PLAYER.flip = MOUSE_POS.x < CAMERA_X;
@@ -202,6 +205,7 @@ void Skill::UpdateCastProgress() noexcept {
 }
 void Skill::UseResources(bool isFree) noexcept {
   coolDownUpCounter = 0;
+  globalCooldown = 0;
   ResetCast();
   PLAYER.flip = MOUSE_POS.x < CAMERA_X;
   PLAYER.spriteCounter = 0;
@@ -242,6 +246,8 @@ void Skill::SkillAtMouse(ProjectileType type, bool isFree) noexcept {
   UseResources(isFree);
   float damage = GetSkillDamage(type);
   auto prj = GetProjectileInstance(type, targetPos, true, damage, &PLAYER, {0, 0}, {});
+  SetDamageStats(prj, PLAYER_STATS.effects[CRIT_CHANCE],
+                 PLAYER_STATS.effects[CRIT_DAMAGE_P]);
   PROJECTILES.emplace_back(prj);
   Multiplayer::UDP_SEND_PROJECTILE(type, (int16_t)targetPos.x_, (int16_t)targetPos.y_, 0,
                                    0, 0, damage);
@@ -266,6 +272,8 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles,
     auto prj = GetProjectileInstance(
         type, targetPos, true, damage, &PLAYER, {x_component, y_component}, pov, {},
         i == numProjectiles - 1 ? sound::fireBurst : sound::EMPTY_SOUND);
+    SetDamageStats(prj, PLAYER_STATS.effects[CRIT_CHANCE],
+                   PLAYER_STATS.effects[CRIT_DAMAGE_P]);
     PROJECTILES.emplace_back(prj);
     Multiplayer::UDP_SEND_PROJECTILE(type, (int16_t)targetPos.x_, (int16_t)targetPos.y_,
                                      0, 0, 0, damage);
@@ -286,6 +294,8 @@ void Skill::SkillToMouse(ProjectileType type, bool isFree) noexcept {
   Vector2 mvmt = {std::cos(angle), std::sin(angle)};
   auto prj = GetProjectileInstance(type, targetPos, true, GetSkillDamage(type), &PLAYER,
                                    mvmt, pov, {});
+  SetDamageStats(prj, PLAYER_STATS.effects[CRIT_CHANCE],
+                 PLAYER_STATS.effects[CRIT_DAMAGE_P]);
   PROJECTILES.emplace_back(prj);
   ApplyTalentsToCast(this);
 }
@@ -302,6 +312,8 @@ void Skill::SkillAtPlayer(ProjectileType type, bool isFree) noexcept {
   Vector2 mvmt = {std::cos(angle), std::sin(angle)};
   auto prj = GetProjectileInstance(type, targetPos, true, GetSkillDamage(type), &PLAYER,
                                    mvmt, pov, {});
+  SetDamageStats(prj, PLAYER_STATS.effects[CRIT_CHANCE],
+                 PLAYER_STATS.effects[CRIT_DAMAGE_P]);
   PROJECTILES.emplace_back(prj);
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

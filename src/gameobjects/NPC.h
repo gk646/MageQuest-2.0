@@ -28,7 +28,7 @@ struct NPC : public Entity {
   };
 
   void Update() override {
-    ENTITY_UPDATE();
+    ENTITY_UPDATE()
     spriteCounter++;
     if (dialogueProgressCount < 1000) {
       dialogueProgressCount += 0.4F;

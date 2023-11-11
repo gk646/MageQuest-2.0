@@ -6,7 +6,9 @@ struct StatusEffectHandler {
   inline static constexpr float EFFECT_WIDTH = 33;
   std::vector<StatusEffect*> currentEffects{};
   EntityStats& stats;
-  explicit StatusEffectHandler(EntityStats& stats) noexcept : stats(stats) {}
+  Entity* self;
+  explicit StatusEffectHandler(EntityStats& stats, const Entity* ent) noexcept
+      : stats(stats), self(const_cast<Entity*>(ent)) {}
   StatusEffectHandler& operator=(const StatusEffectHandler& other) {
     if (this == &other) {
       return *this;
@@ -18,7 +20,7 @@ struct StatusEffectHandler {
     currentEffects.clear();
 
     for (auto effect : other.currentEffects) {
-      currentEffects.push_back(effect->clone());
+      currentEffects.push_back(effect->Clone());
     }
 
     return *this;
@@ -32,23 +34,23 @@ struct StatusEffectHandler {
   inline void Update() noexcept {
     for (auto it = currentEffects.begin(); it != currentEffects.end();) {
       if ((*it)->duration <= 0) {
-        (*it)->RemoveEffect(stats);
+        (*it)->RemoveEffect(stats, self);
         delete *it;
         it = currentEffects.erase(it);
       } else {
-        (*it)->TickEffect(stats);
+        (*it)->TickEffect(stats, self);
         ++it;
       }
     }
   }
   inline void ApplyEffects() noexcept {
     for (auto effect : currentEffects) {
-      effect->ApplyEffect(stats);
+      effect->ApplyEffect(stats, self);
     }
   }
   inline void RemoveEffects() noexcept {
     for (auto effect : currentEffects) {
-      effect->RemoveEffect(stats);
+      effect->RemoveEffect(stats, self);
     }
   }
   //Iterates the current effects and returns the existence of the given one
@@ -63,7 +65,7 @@ struct StatusEffectHandler {
   inline void RemoveEffect(EffectType type) noexcept {
     for (auto it = currentEffects.begin(); it != currentEffects.end();) {
       if ((*it)->type == type) {
-        (*it)->RemoveEffect(stats);
+        (*it)->RemoveEffect(stats, self);
         delete *it;
         currentEffects.erase(it);
         return;
@@ -77,8 +79,8 @@ struct StatusEffectHandler {
     if (!newEffect) return;
     if (!TryAddOrStackEffect(newEffect)) {
 
-      auto new_copy = newEffect->clone();
-      new_copy->ApplyEffect(stats);
+      auto new_copy = newEffect->Clone();
+      new_copy->ApplyEffect(stats, self);
       currentEffects.push_back(new_copy);
     }
   }
@@ -87,15 +89,14 @@ struct StatusEffectHandler {
     for (const auto& newEffect : effectsArray) {
       if (!newEffect) continue;
       if (!TryAddOrStackEffect(newEffect)) {
-
-        auto new_copy = newEffect->clone();
-        new_copy->ApplyEffect(stats);
-        currentEffects.push_back(new_copy);
+        auto clonedEffect = newEffect->Clone();
+        clonedEffect->ApplyEffect(stats, self);
+        currentEffects.push_back(clonedEffect);
       }
     }
   }
 
-  //Icons and Tooltips
+  //Icons
  public:
   //Draws the buffs and debuffs in the correct format for the player
   void DrawPlayer(float startY) const noexcept {
@@ -141,13 +142,13 @@ struct StatusEffectHandler {
     }
   }
   //Draws the buffs and debuffs in the correct format for the entities
-  void DrawEntity(Entity* entity) const noexcept {};
+  void DrawEntity(const Entity* entity) const noexcept {};
 
  private:
-  inline bool TryAddOrStackEffect(StatusEffect* newEffect) {
+  inline bool TryAddOrStackEffect(const StatusEffect* newEffect) {
     for (auto& currentEffect : currentEffects) {
       if (currentEffect->type == newEffect->type) {
-        currentEffect->AddStack(newEffect);
+        currentEffect->AddStack(newEffect, self);
         return true;
       }
     }

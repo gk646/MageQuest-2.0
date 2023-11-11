@@ -5,9 +5,12 @@ struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
   inline static constexpr float TOOL_TIP_BASE_HEIGHT = 93;
+  inline static constexpr int GLOBAL_COOLDOWN_TICKS = 30;
   //Only one cast can be active at a time
   inline static int16_t castProgress = -1;
   inline static Skill* lastCastedSkill = nullptr;
+  //Global cooldown
+  inline static int16_t globalCooldown = 0;
   std::string name;
   std::string description;
   SkillStats skillStats;
@@ -23,7 +26,7 @@ struct Skill {
         attackAnimation(attack_animation),
         coolDownUpCounter((int16_t)skillStats.coolDownTicks),
         icon(icon) {}
-
+  //TODO add global cooldown 0.5 seconds
  public:
   //Draws the cast bar
   inline static void DrawCastBar() noexcept {
@@ -37,8 +40,8 @@ struct Skill {
         Colors::castBarOrange);
     DrawTextureProFast(textures::ui::skillbar::castbar, x, y, 0, WHITE);
   }
-  //Updates the cast bar // called on update tick
-  inline static void UpdateCastProgress() noexcept;
+  //Updates the cast bar and global cooldown // called on update tick
+  inline static void UpdateStaticState() noexcept;
 
  public:
   //Activates the skill
@@ -46,8 +49,10 @@ struct Skill {
   //Draws the icon and the cooldown effect if applicable
   inline void Draw(float x, float y) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
+    Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE, GLOBAL_COOLDOWN_TICKS,
+                                  globalCooldown);
     Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
-                                  PLAYER_STATS.GetRemainingCD(skillStats),
+                                  (int)PLAYER_STATS.GetTotalCD(skillStats),
                                   coolDownUpCounter);
   }
   //Updates the skill // only progresses cooldown
@@ -61,7 +66,8 @@ struct Skill {
  public:
   //Returns true if skill is ready to use
   [[nodiscard]] inline bool IsUsable() const noexcept {
-    return PLAYER_STATS.IsSkillUsable(skillStats, coolDownUpCounter);
+    return globalCooldown == GLOBAL_COOLDOWN_TICKS &&
+           PLAYER_STATS.IsSkillUsable(skillStats, coolDownUpCounter);
   }
   //Returns a ptr to a new skill with the given stats / Projectile type is used to identify skills
   inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
@@ -117,7 +123,7 @@ struct Skill {
     //-----------CoolDown-----------//
 
     if (skillStats.coolDownTicks > 0) {
-      float cooldownInSeconds =  (float) skillStats.coolDownTicks / 60.0F;
+      float cooldownInSeconds = (float)skillStats.coolDownTicks / 60.0F;
 
       if (cooldownInSeconds == floor(cooldownInSeconds)) {
         snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f sec cooldown", cooldownInSeconds);
@@ -129,7 +135,6 @@ struct Skill {
                                  startX + TOOL_TIP_WIDTH - 5, startY + 53,
                                  Colors::darkBackground);
     }
-
   }
 
  private:
@@ -173,8 +178,7 @@ struct Skill {
 inline static Projectile* GetProjectileInstance(
     ProjectileType type, const Point& pos, bool isFriendlyToPlayer, float damage,
     const Entity* sender, const Vector2& mvmt, int16_t pov,
-    const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects = {nullptr, nullptr,
-                                                                        nullptr},
+    const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects = {},
     const Sound& sound = sound::EMPTY_SOUND) noexcept {
   switch (type) {
     case POISON_BALL:
@@ -221,7 +225,11 @@ inline static Projectile* GetProjectileInstance(
     case PROJECTILE_END:
       break;
     case PSYCHIC_SCREAM:
-      break;
+      return new PsychicScream(pos, isFriendlyToPlayer, damage);
+    case DUMMY:
+      return nullptr;
+    case LOCKED:
+      return nullptr;
   }
 }
 

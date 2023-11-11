@@ -1,11 +1,6 @@
 #ifndef MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
 #define MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_
 namespace ScriptParser {
-
-#define ADD_TO_QUEST()                                        \
-  obj->isMajorObjective = parts[parts.size() - 1] == "MAJOR"; \
-  quest->objectives.push_back(obj);
-
 //Parses and returns a ptr to the next node found in the current line - "parts"
 inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
                                 std::ifstream& file) noexcept {
@@ -99,7 +94,6 @@ inline void AddToQuest(QuestNode* node, Quest* q,
 Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
   auto quest = new Quest(id, hidden);
   std::ifstream file(ASSET_PATH + path);
-  NodeType type;
   std::string line;
   if (!file.is_open()) {
     std::cerr << "Failed to open quest file." << std::endl;

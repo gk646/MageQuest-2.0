@@ -33,7 +33,7 @@ inline static long long GAME_TICK_TIME = 0;
 inline static long long FRAME_TIME = 0;
 inline static Vector2 MOUSE_POS = GetMousePosition();
 inline static bool FRIENDLY_FIRE = false;
-#include "../gameplay/GameStatistics.h"
+#include "GameStatistics.h"
 inline static GameStatistics GAME_STATISTICS{};
 inline static constexpr float UPDATE_DISTANCE = 32;
 inline static RenderTexture FIRST_LAYER_BUFFER;
@@ -51,19 +51,21 @@ inline static CSteamID PLAYER_ID;
  * |                    PLAYER                      |
  * |-----------------------------------------------------|
  */
-inline static constexpr int MAX_STATUS_EFFECTS_PRJ = 3;
-#include "../gameplay/Stats.h"
-#include "../gameplay/StatusEffect.h"
-#include "../gameplay/handlers/StatusEffectHandler.h"
+inline static constexpr int MAX_STATUS_EFFECTS_PRJ = 4;
 inline static float CAMERA_X = SCREEN_WIDTH / 2;
 inline static float CAMERA_Y = SCREEN_HEIGHT / 2;
 inline static float PLAYER_X = 0;
 inline static float PLAYER_Y = 0;
 inline static float DRAW_X = 0;
 inline static float DRAW_Y = 0;
+#include "../ui/player/elements/DamageNumber.h"
+inline static std::vector<DamageNumber> DAMAGE_NUMBERS;
+#include "../gameplay/Stats.h"
+#include "../gameplay/StatusEffect.h"
+#include "../gameplay/handlers/StatusEffectHandler.h"
 inline static float MIRROR_POINT = 0;
 inline static PointT<int16_t>* PLAYER_TILE = nullptr;
-inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS};
+inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS, nullptr};
 inline static std::string PLAYER_NAME;
 inline static Item* DRAGGED_ITEM = nullptr;
 inline static Item* TOOL_TIP_ITEM = nullptr;

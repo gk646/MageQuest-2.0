@@ -5,18 +5,26 @@
 
 struct HotBar {
   inline static constexpr uint8_t BUTTON_ALPHA = 70;
-  std::array<TexturedButton, 6> menuButtons{
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::bag,
-                     textures::ui::skillbar::bag, textures::ui::skillbar::bag_pressed,
-                     BUTTON_ALPHA, "Opens your bags (B)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::abilities,
-                     textures::ui::skillbar::abilities,
-                     textures::ui::skillbar::abilities_pressed, BUTTON_ALPHA,
-                     "Opens abilities (P)"),
+  std::array<TexturedButton, 7> menuButtons{
       TexturedButton(32, 32, "", 16, textures::ui::skillbar::character,
                      textures::ui::skillbar::character,
                      textures::ui::skillbar::character_pressed, BUTTON_ALPHA,
                      "Opens character (C)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::bag,
+                     textures::ui::skillbar::bag, textures::ui::skillbar::bag_pressed,
+                     BUTTON_ALPHA, "Opens your bags (B)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::journal,
+                     textures::ui::skillbar::journal,
+                     textures::ui::skillbar::journal_pressed, BUTTON_ALPHA,
+                     "Opens journal (J)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::abilities,
+                     textures::ui::skillbar::abilities,
+                     textures::ui::skillbar::abilities_pressed, BUTTON_ALPHA,
+                     "Opens abilities (P)"),
+      TexturedButton(32, 32, "", 16, textures::ui::skillbar::skilltree,
+                     textures::ui::skillbar::skilltree,
+                     textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA,
+                     "Opens skill tree (N)"),
       TexturedButton(32, 32, "", 16, textures::ui::skillbar::map,
                      textures::ui::skillbar::map, textures::ui::skillbar::map_pressed,
                      BUTTON_ALPHA, "Opens map (M)"),
@@ -24,10 +32,7 @@ struct HotBar {
                      textures::ui::skillbar::setting,
                      textures::ui::skillbar::setting_pressed, BUTTON_ALPHA,
                      "Opens settings (ESC)"),
-      TexturedButton(32, 32, "", 16, textures::ui::skillbar::skilltree,
-                     textures::ui::skillbar::skilltree,
-                     textures::ui::skillbar::skilltree_pressed, BUTTON_ALPHA,
-                     "Opens skill tree (N)")};
+  };
   XPBar experienceBar;
   RectangleR hotBarHitbox = {0, 0, 480, 120};
   HotBar() = default;
@@ -49,7 +54,7 @@ struct HotBar {
     }
   }
   void Update() noexcept {
-    Skill::UpdateCastProgress();
+    Skill::UpdateStaticState();
     experienceBar.Update();
     for (auto& mb : menuButtons) {
       mb.UpdateGlobalWindowState();
@@ -102,7 +107,7 @@ struct HotBar {
   }
   //Draws semi transparent interface buttons on the lower right screen
   inline void DrawMenuButtons(float x) noexcept {
-    for (int i = 5; i > -1; i--) {
+    for (int i = 6; i > -1; i--) {
       menuButtons[i].Draw(x, SCREEN_HEIGHT - menuButtons[i].bounds.height);
       x -= 32;
     }

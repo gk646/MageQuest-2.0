@@ -7,7 +7,6 @@ struct TalentEffect {
   virtual void OnProjectileCreation(Projectile* prj) noexcept {}
   virtual void OnMonsterDeath(Monster* monster) noexcept {}
   virtual void OnPlayerHit(Projectile* prj) noexcept {}
-  static inline void AddStatusEffect(Projectile* prj, StatusEffect* effect) noexcept;
 };
 inline static void ApplyTalentsToProjectile(Projectile* prj) noexcept {
   for (const auto& te : TALENT_EFFECTS) {

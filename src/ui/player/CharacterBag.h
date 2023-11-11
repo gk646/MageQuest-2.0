@@ -26,7 +26,7 @@ struct CharacterBag final : public Window {
       bagPanel.isOpen = false;
       bagPanel.slide.Reset();
     }
-    WINDOW_LOGIC();
+    WINDOW_LOGIC()
     DrawWindow();
     for (uint_fast32_t i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {
       PLAYER_BAG[i].Draw(wholeWindow.x, wholeWindow.y);
@@ -36,7 +36,7 @@ struct CharacterBag final : public Window {
   void Update() noexcept {
     float bagSlots = PLAYER_STATS.GetBagSlots();
     wholeWindow.height = 60 + std::ceil(bagSlots / per_row) * spacing_y;
-    WINDOW_UPDATE();
+    WINDOW_UPDATE()
     for (uint_fast32_t i = 0; i < (int)bagSlots; i++) {
       PLAYER_BAG[i].Update();
     }

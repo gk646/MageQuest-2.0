@@ -62,8 +62,9 @@ struct Snake final : public Monster {
   Snake(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SNAKE, type,
                 {29, 19}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 15, 30, resource->attackSounds[0], 1,
-                                       35);
+    attackComponent.RegisterConeAttack(
+        1, level, 90, 15, 30, resource->attackSounds[0], 1, 35,
+        {new Poison(level * 0.2F, 5 * 60, 60), nullptr, nullptr, nullptr});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -497,7 +498,7 @@ struct SkeletonArcher final : public Monster {
   SkeletonArcher(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_ARCHER,
                 type, {30, 48}) {
-    attackComponent.RegisterProjectileAttack(1, level, 80, ARROW_NORMAL);
+    attackComponent.RegisterProjectileAttack(1, (float)level, 80, ARROW_NORMAL);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -521,7 +522,7 @@ struct SkeletonArcher final : public Monster {
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && WalkCloseToEntity(target, attackComponent.attackRange)) {
+    if (target && WalkCloseToEntity(target, attackComponent.attackRangeTiles)) {
       attackComponent.Attack();
     }
   }
