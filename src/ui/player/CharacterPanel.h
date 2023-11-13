@@ -28,6 +28,7 @@ struct CharacterPanel : public Window {
                     ItemType::ONE_HAND),
       InventorySlot(WIDTH / 2 + SLOT_SIZE / 2, PADDING_TOP + GAP_TOP * 6.2F,
                     ItemType::OFF_HAND)};
+
   TexturedButton spendPoint{14,
                             14,
                             "",
@@ -41,7 +42,7 @@ struct CharacterPanel : public Window {
                PLAYER_NAME.data(), KEY_C, sound::openInventory, sound::closeInventory) {
     PLAYER_EQUIPPED = equipSlots.data();
   }
-  void Draw() {
+  void Draw() noexcept {
     WINDOW_LOGIC()
     DrawWindow();
     RectangleR scaleWhole = SCALE_RECT(wholeWindow);
@@ -49,60 +50,68 @@ struct CharacterPanel : public Window {
     float y = scaleWhole.y + SCALE(275);
     DrawStatCells(x, y);
     DrawHeaderText(scaleWhole.x, scaleWhole.y, scaleWhole.width);
-    DrawPlayer(scaleWhole);
+    DrawBigPlayer(scaleWhole);
     for (auto& slot : equipSlots) {
       slot.DrawCharacterSlot(wholeWindow.x, wholeWindow.y);
       slot.DrawBackGroundIcons();
     }
   }
-  static void DrawPlayer(const RectangleR& scaled_rect) noexcept {
+  void Update() noexcept {
+    WINDOW_UPDATE();
+    for (auto& slot : equipSlots) {
+      slot.UpdateCharacterSlots();
+    }
+  }
+
+ private:
+  static void DrawBigPlayer(const RectangleR& scaledRect) noexcept {
     int sprite_counter = PLAYER.spriteCounter;
-    Point pos{scaled_rect.x + SCALE(50), scaled_rect.y - SCALE(30)};
+    Point pos{scaledRect.x + SCALE(50), scaledRect.y - SCALE(30)};
     auto flip = PLAYER.flip;
     int action_state = PLAYER.actionState;
     auto resource = PLAYER.resource;
-    float height = scaled_rect.height / 1.4F;
+    float height = scaledRect.height / 1.4F;
     if (PLAYER.moving) {
       DrawTextureScaled(resource->walk[sprite_counter % 64 / 8],
-                        {pos.x_ - 80, pos.y_ - 45, scaled_rect.width, height}, 0, flip,
+                        {pos.x_ - 80, pos.y_ - 45, scaledRect.width, height}, 0, flip,
                         55, WHITE);
     } else if (action_state == 1) {
       int num = sprite_counter % 48 / 6;
       if (num < 7) {
         DrawTextureScaled(resource->attack1[num],
-                          {pos.x_ - 75, pos.y_ - 45, scaled_rect.width, height}, 0, flip,
+                          {pos.x_ - 75, pos.y_ - 45, scaledRect.width, height}, 0, flip,
                           50, WHITE);
       }
     } else if (action_state == 2) {
       int num = sprite_counter % 50 / 5;
       if (num < 9) {
         DrawTextureScaled(resource->attack2[num],
-                          {pos.x_ - 25, pos.y_ - 45, scaled_rect.width, height}, 0, flip,
+                          {pos.x_ - 25, pos.y_ - 45, scaledRect.width, height}, 0, flip,
                           -10, WHITE);
       }
     } else if (action_state == 3) {
       int num = sprite_counter % 85 / 5;
       if (num < 16) {
         DrawTextureScaled(resource->attack3[num],
-                          {pos.x_ - 25, pos.y_ - 45, scaled_rect.width, height}, 0, flip,
+                          {pos.x_ - 25, pos.y_ - 45, scaledRect.width, height}, 0, flip,
                           -15, WHITE);
       }
     } else if (action_state == -100) {
       int num = sprite_counter % 75 / 15;
       if (num < 4) {
         DrawTextureScaled(resource->death[num],
-                          {pos.x_ - 25, pos.y_ - 45, scaled_rect.width, height}, 0, flip,
+                          {pos.x_ - 25, pos.y_ - 45, scaledRect.width, height}, 0, flip,
                           -22, WHITE);
       }
     }
     if (!PLAYER.moving && action_state == 0) {
       DrawTextureScaled(resource->idle[sprite_counter % 80 / 10],
-                        {pos.x_ - 60, pos.y_ - 45, scaled_rect.width, height}, 0, flip,
+                        {pos.x_ - 60, pos.y_ - 45, scaledRect.width, height}, 0, flip,
                         20, WHITE);
     }
     DrawRectangleRoundedLines(
-        {scaled_rect.x + SCALE(PADDING_LEFT * 3.2F), scaled_rect.y + SCALE(PADDING_TOP),
-         scaled_rect.width - SCALE(PADDING_LEFT * 6.4F), scaled_rect.height - SCALE(240)},
+        {scaledRect.x + SCALE(PADDING_LEFT * 3.2F), scaledRect.y + SCALE(PADDING_TOP),
+         scaledRect.width - SCALE(PADDING_LEFT * 6.4F), scaledRect.height - SCALE(240)},
         0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
@@ -116,7 +125,7 @@ struct CharacterPanel : public Window {
     Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(16), TEXT_BUFFER, x + size / 2,
                            y + SCALE(25), Colors::darkBackground);
   }
-  void DrawStatCells(float x, float y) noexcept {
+  inline void DrawStatCells(float x, float y) noexcept {
     x += baseStats[0].bounds.width + SCALE(22);
     int i = 9;
     DrawSingleStatCell(MAX_HEALTH, x, y, i, PLAYER_STATS.GetMaxHealth());
@@ -146,14 +155,6 @@ struct CharacterPanel : public Window {
       y += baseStats[j].bounds.height + 1;
     }
   }
-  void Update() noexcept {
-    WINDOW_UPDATE();
-    for (auto& slot : equipSlots) {
-      slot.UpdateCharacterSlots();
-    }
-  }
-
- private:
   inline void DrawSingleStatCell(Stat stat, float x, float& y, int& i,
                                  float val) noexcept {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());

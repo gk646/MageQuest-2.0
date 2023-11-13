@@ -35,7 +35,7 @@ struct Track {
     if (markedForRemoval) {
       volume -= kVolumeFadeStep;
       SetMusicVolume(*music, volume);
-      if (volume <= 0) {
+      if (volume <= 0.15F) {
         StopMusicStream(*music);
       }
     } else if (volume < 1.0F) {
@@ -86,7 +86,7 @@ inline void AddTrack(Music* music, bool fadeIn = true) noexcept {
     if (track.music == music) return;
   }
   PlayMusicStream(*music);
-  currentTracks.emplace_back(Track{music, fadeIn ? 0.0F : 1.0F});
+  currentTracks.emplace_back(Track{music, fadeIn ? 0.15F : 1.0F});
 }
 //Adds the playlist to "playingPlaylists" and plays the next track / updates itself automatically
 inline void StartPlaylist(Playlist* playlist) noexcept {

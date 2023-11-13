@@ -77,5 +77,6 @@ inline static Sound pyroBlast;
 inline static Sound solarFlare;
 inline static Sound thunderSplash;
 inline static Sound thunderStrike;
+inline static Sound glacialBurst;
 }  // namespace sound
 #endif  //MAGEQUEST_SRC_SYSTEM_SOUNDSTORAGE_H_

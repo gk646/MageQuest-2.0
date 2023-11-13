@@ -70,7 +70,7 @@ struct Monster : public Entity {
     return *this;
   }
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
-  void Hit(Projectile& p) noexcept {
+  inline void Hit(Projectile& p) noexcept {
     if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
       p.HitTargetCallback();
       healthBar.Update();
