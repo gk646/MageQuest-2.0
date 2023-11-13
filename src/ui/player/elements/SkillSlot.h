@@ -32,7 +32,7 @@ struct SkillSlot {
   }
   inline void Update() noexcept {
     if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
-      SkillSlotsDrag();
+      SkillSlotsExchangeLogic();
       toolTipHoverTicks = (int8_t)std::max(toolTipHoverTicks - 1, -1);
     } else {
       toolTipHoverTicks = 12;
@@ -50,7 +50,7 @@ struct SkillSlot {
   }
 
  private:
-  inline void SkillSlotsDrag() noexcept {
+  inline void SkillSlotsExchangeLogic() noexcept {
     if (!DRAGGED_SKILL_SLOT && IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
         skill != SKILLS[LOCKED]) {
       DRAGGED_SKILL_SLOT = this;

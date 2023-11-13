@@ -70,7 +70,7 @@ struct NetPlayer final : public Entity {
     pos.x_ = x;
     pos.y_ = y;
   }
-  void Hit(Projectile& p) noexcept {
+  inline void Hit(Projectile& p) noexcept {
     if (!p.isFriendlyToPlayer) {
       status_effects.AddEffects(p.statusEffects);
       stats.TakeDamage(p.damageStats, this);

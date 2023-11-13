@@ -41,12 +41,13 @@ static void Load() {
   textures::projectile::ENERGY_SPHERE.Load("EnergySphere/");
   textures::projectile::ETHER_PORTAL.Load("etherPortal/");
   textures::projectile::FIRE_BURST.Load("fireBurst/");
-  textures::projectile::FIRE_BALL.LoadSpriteSheet("fireBall/0",90,64);
+  textures::projectile::FIRE_BALL.LoadSpriteSheet("fireBall/0", 64, 64, 48, 0);
   textures::projectile::FIRE_EXPLOSION.Load("fireExplosion/");
   textures::projectile::FIRE_SWORD.Load("fireSword/");
   textures::projectile::FROST_NOVA.Load("frostNova/");
   textures::projectile::GATE_1.Load("gate1/");
-  textures::projectile::ICE_LANCE.Load("iceLance/");
+  textures::projectile::ICE_LANCE.LoadSpriteSheet("iceLance/0", 48, 32);
+  textures::projectile::GLACIAL_BURST.LoadSpriteSheet("glacialBurst/0", 64, 64);
   textures::projectile::INFERNO_RAY.Load("infernoRay/");
   textures::projectile::LIGHTNING_STRIKE.Load("Lightning/");
   textures::projectile::POWER_SURGE.Load("powerSurge/");

@@ -26,7 +26,7 @@ struct Skill {
         attackAnimation(attack_animation),
         coolDownUpCounter((int16_t)skillStats.coolDownTicks),
         icon(icon) {}
-  //TODO add global cooldown 0.5 seconds
+
  public:
   //Draws the cast bar
   inline static void DrawCastBar() noexcept {
@@ -49,11 +49,12 @@ struct Skill {
   //Draws the icon and the cooldown effect if applicable
   inline void Draw(float x, float y) noexcept {
     DrawTextureProFast(icon, x, y, 0, WHITE);
-    Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE, GLOBAL_COOLDOWN_TICKS,
-                                  globalCooldown);
     Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE,
                                   (int)PLAYER_STATS.GetTotalCD(skillStats),
                                   coolDownUpCounter);
+    if (coolDownUpCounter < 60) return;
+    Util::DrawSwipeCooldownEffect(x, y, SKILL_ICON_SIZE, GLOBAL_COOLDOWN_TICKS,
+                                  globalCooldown);
   }
   //Updates the skill // only progresses cooldown
   inline void Update() noexcept { coolDownUpCounter++; }
@@ -73,7 +74,7 @@ struct Skill {
   inline static Skill* GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept;
   //Draws the tooltip for the skill
   inline void DrawTooltip(float x, float y) noexcept {
-    DrawRectangleProFast(x, y, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
+    DrawRectangleProFast(x + 1, y + 1, SKILL_ICON_SIZE, SKILL_ICON_SIZE,
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();
     int lineBreaks = 0;
@@ -95,11 +96,11 @@ struct Skill {
     DrawTextExR(MINECRAFT_REGULAR, descriptionText.c_str(), {startX + 5, startY + 75}, 15,
                 0.5F, Colors::descriptionOrange);
 
-    if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
-
     //-----------Name-----------//
     DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0.5F,
                 damageTypeToColor[damageStats.dmgType]);
+
+    if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
 
     //-------------ResourceCost---------------//
     if (skillStats.manaCost > 0) {
@@ -203,7 +204,7 @@ inline static Projectile* GetProjectileInstance(
     case FROST_NOVA:
       return new FrostNova(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case ICE_LANCE:
-      break;
+      return new IceLance(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
     case INFERNO_RAY:
       break;
     case LIGHTNING:
@@ -226,8 +227,9 @@ inline static Projectile* GetProjectileInstance(
       break;
     case PSYCHIC_SCREAM:
       return new PsychicScream(pos, isFriendlyToPlayer, damage);
+    case GLACIAL_BURST:
+      return new GlacialBurst(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case DUMMY:
-      return nullptr;
     case LOCKED:
       return nullptr;
   }
@@ -253,7 +255,7 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
     case FROST_NOVA:
       return new FrostNova_Skill(stats);
     case ICE_LANCE:
-      break;
+      return new IceLance_Skill(stats);
     case INFERNO_RAY:
       break;
     case LIGHTNING:
@@ -282,6 +284,8 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
       return new Dummy_Skill();
     case LOCKED:
       return new LockedSlot_Skill();
+    case GLACIAL_BURST:
+      return new GlacialBurst_Skill(stats);
   }
   std::cout << "MISSING ENUM VAL:" << (int)type << std::endl;
   return nullptr;

@@ -84,14 +84,10 @@ enum class DamageType : uint8_t {
   TRUE_DMG
 };
 std::unordered_map<DamageType, std::string> damageTypeNames = {
-    {DamageType::ARCANE, "arcane"},
-    {DamageType::POISON, "poison"},
-    {DamageType::FIRE, "fire"},
-    {DamageType::ICE, "ice"},
-    {DamageType::DARK, "dark"},
-    {DamageType::PHYSICAL, "physical"},
-    {DamageType::TRUE_DMG, "true damage"}
-};
+    {DamageType::ARCANE, "arcane"},       {DamageType::POISON, "poison"},
+    {DamageType::FIRE, "fire"},           {DamageType::ICE, "ice"},
+    {DamageType::DARK, "dark"},           {DamageType::PHYSICAL, "physical"},
+    {DamageType::TRUE_DMG, "true damage"}};
 
 inline static DamageType commonSchools[4] = {DamageType::FIRE, DamageType::ICE,
                                              DamageType::ARCANE, DamageType::POISON};
@@ -102,7 +98,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::POISON, Colors::poison_green},
     {DamageType::ARCANE, Colors::arcaneBlue},
     {DamageType::DARK, Colors::darkMagicPurple},
-    { DamageType::TRUE_DMG, Colors::questMarkerYellow},
+    {DamageType::TRUE_DMG, Colors::questMarkerYellow},
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
@@ -420,6 +416,7 @@ enum ProjectileType : uint8_t {
   ENERGY_SPHERE,
   FIRE_SWORD,
   FROST_NOVA,
+  GLACIAL_BURST,
   ICE_LANCE,
   INFERNO_RAY,
   LIGHTNING,
@@ -451,6 +448,7 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
     {"PYRO_BLAST", ProjectileType::PYRO_BLAST},
     {"SOLAR_FLARE", ProjectileType::SOLAR_FLARE},
     {"THUNDER_SPLASH", ProjectileType::THUNDER_SPLASH},
+    {"GLACIAL_BURST", ProjectileType::GLACIAL_BURST},
     {"THUNDER_STRIKE", ProjectileType::THUNDER_STRIKE},
     {"VOID_ERUPTION", ProjectileType::VOID_ERUPTION},
     {"PSYCHIC_SCREAM", ProjectileType::PSYCHIC_SCREAM},
@@ -470,6 +468,7 @@ struct ProjectileInfo {
   HitType hitType = HitType::ONE_HIT;
   bool illuminated = false;
 };
+
 inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {
     {ProjectileType::POISON_BALL, ProjectileInfo()},
     {ProjectileType::FIRE_STRIKE_II, ProjectileInfo()},
@@ -487,6 +486,7 @@ inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {
     {ProjectileType::THUNDER_SPLASH, ProjectileInfo()},
     {ProjectileType::THUNDER_STRIKE, ProjectileInfo()},
     {ProjectileType::VOID_ERUPTION, ProjectileInfo()},
+    {ProjectileType::GLACIAL_BURST, ProjectileInfo()},
     {ProjectileType::VOID_FIELD, ProjectileInfo()},
     {ProjectileType::ARCANE_BOLT, ProjectileInfo()},
     {ProjectileType::PSYCHIC_SCREAM, ProjectileInfo()},

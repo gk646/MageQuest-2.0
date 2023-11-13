@@ -49,7 +49,7 @@ struct FireBall final : Projectile {
                    FIRE_BALL) {}
   void Draw() final {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 135 / 3],
-                                pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -21, -22);
+                                pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -58, -22);
     DRAW_HITBOXES();
   }
 };
@@ -111,6 +111,30 @@ struct FrostNova final : Projectile {
     if (spriteCounter > 55) return;
     DrawTextureProFastEx(resources->frames[spriteCounter % 56 / 2], pos.x_ + DRAW_X - 50,
                          pos.y_ + DRAW_Y - 50, 0, 0, false, WHITE);
+
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    Projectile::Update();
+    if (spriteCounter == (int16_t)typeToInfo[projectileType].val1) {
+      isDoingDamage = true;
+    } else {
+      isDoingDamage = false;
+    }
+  }
+};
+struct GlacialBurst final : Projectile {
+  GlacialBurst(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, effects, mvmt, 0,
+                   sound::glacialBurst, sender, GLACIAL_BURST) {
+    AddStatusEffect(this, new Root(120));
+  }
+
+  void Draw() final {
+    DrawTextureProFastEx(resources->frames[spriteCounter % 266 / 7], pos.x_ + DRAW_X -10,
+                         pos.y_ + DRAW_Y-21, 0, 0, false, WHITE);
 
     DRAW_HITBOXES();
   }
@@ -207,6 +231,49 @@ struct ArcaneBolt final : Projectile {
       hitTarget = true;
       spriteCounter = 78;
       lifeSpanTicks = 40;
+    }
+  }
+};
+struct IceLance final : Projectile {
+  bool hitTarget = false;
+  IceLance(const Point& pos, bool isFriendlyToPlayer, float damage,
+           const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
+           const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, effects, mvmt,
+                   (int16_t)pov, sound::iceLance, sender, ICE_LANCE) {}
+
+  void Draw() final {
+    if (!hitTarget) {
+      DrawTextureProFastRotOffset(resources->frames[spriteCounter % 104 / 8],
+                                  pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -5, -7);
+    } else {
+      DrawTextureProFastRotOffset(resources->frames[spriteCounter % 160 / 8],
+                                  pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, -5, -7);
+    }
+    DRAW_HITBOXES();
+  }
+  void Update() noexcept final {
+    Projectile::Update();
+    if (hitTarget) {
+      isDoingDamage = false;
+    }
+  }
+  void HitTargetCallback() noexcept final {
+    if (!hitTarget) {
+      mvmVector.x = 0;
+      mvmVector.y = 0;
+      hitTarget = true;
+      spriteCounter = 104;
+      lifeSpanTicks = 56;
+    }
+  }
+  void HitWallCallback() noexcept final {
+    if (!hitTarget) {
+      mvmVector.x = 0;
+      mvmVector.y = 0;
+      hitTarget = true;
+      spriteCounter = 104;
+      lifeSpanTicks = 56;
     }
   }
 };

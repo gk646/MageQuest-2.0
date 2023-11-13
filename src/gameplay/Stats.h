@@ -99,7 +99,7 @@ struct EntityStats {
     effects[WEAPON_DAMAGE] = 0;
     effects[DODGE_CHANCE] = 0;
   };
-  EntityStats(const MonsterScaler& scaler, uint8_t level) noexcept
+  EntityStats(const MonsterScaler& scaler, uint8_t level)
       : level(level), speed(scaler.speed) {
     effects[MAX_HEALTH] = scaler.GetMaxHealth(level);
     health = effects[MAX_HEALTH];
@@ -130,14 +130,6 @@ struct EntityStats {
       shield = std::max(shield - effects[MANA_REGEN] / 60, max_shield);
     }
   }
-  [[nodiscard]] inline bool IsSkillUsable(const SkillStats& stats,
-                                          float ticks_done) const noexcept {
-    return !stunned && ticks_done >= GetTotalCD(stats) &&
-           mana >= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
-  }
-  [[nodiscard]] inline float GetTotalCD(const SkillStats& stats) const noexcept {
-    return stats.coolDownTicks * (1 - effects[CDR_P]);
-  }
   inline void ApplySkillCosts(const SkillStats& stats) noexcept {
     mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
@@ -148,7 +140,33 @@ struct EntityStats {
     ReCalculatePlayerStats();
   }
   inline void UnEquipItem(const float* effect_arr) noexcept;
-  inline float GetAbilityDmg(const DamageStats& stats) noexcept {
+  inline float TakeDamage(const DamageStats& stats, const Entity* ent);
+  inline void RefillStats() noexcept {
+    mana = GetMaxMana();
+    health = GetMaxHealth();
+    shield = effects[MAX_SHIELD];
+  }
+  inline void SpendAttributePoint(uint8_t i) noexcept {
+    if (PLAYER_SPENT_POINTS.SpendAttributePoint(i)) {
+      effects[i]++;
+      ReCalculatePlayerStats();
+    }
+  }
+  inline void ReCalculatePlayerStats() noexcept {
+    RemoveEffects();
+    effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
+    effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
+
+    effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
+    effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
+
+    effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
+    ApplyEffects();
+  }
+
+  //Getters
+ public:
+  [[nodiscard]] inline float GetAbilityDmg(const DamageStats& stats) const noexcept {
     switch (stats.dmgType) {
       case DamageType::FIRE:
         return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[FIRE_DMG_P]);
@@ -166,17 +184,8 @@ struct EntityStats {
         return stats.damage + effects[WEAPON_DAMAGE];
     }
   }
-  inline float TakeDamage(const DamageStats& stats, const Entity* ent);
-  inline void RefillStats() noexcept {
-    mana = GetMaxMana();
-    health = GetMaxHealth();
-    shield = effects[MAX_SHIELD];
-  }
-  inline void SpendAttributePoint(uint8_t i) noexcept {
-    if (PLAYER_SPENT_POINTS.SpendAttributePoint(i)) {
-      effects[i]++;
-      ReCalculatePlayerStats();
-    }
+  [[nodiscard]] inline float GetTotalCD(const SkillStats& stats) const noexcept {
+    return stats.coolDownTicks * (1 - effects[CDR_P]);
   }
   [[nodiscard]] inline float GetMaxHealth() const noexcept {
     return effects[MAX_HEALTH] * (1 + effects[HEALTH_MULT_P]);
@@ -197,19 +206,13 @@ struct EntityStats {
     return effects[ARMOUR] * (1 + effects[ARMOUR_MULT_P]);
   }
   [[nodiscard]] inline float GetBagSlots() const noexcept { return effects[BAG_SLOTS]; }
-  inline void ReCalculatePlayerStats() noexcept {
-    RemoveEffects();
-    effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
-    effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
-
-    effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
-    effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
-
-    effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
-    ApplyEffects();
-  }
-  [[nodiscard]] static inline bool RollCriticalHit(const DamageStats& stats) noexcept {
+  [[nodiscard]] inline static bool RollCriticalHit(const DamageStats& stats) noexcept {
     return RANGE_100_FLOAT(RNG_ENGINE) < stats.critChance;
+  }
+  [[nodiscard]] inline bool IsSkillUsable(const SkillStats& stats,
+                                          float ticks_done) const noexcept {
+    return !stunned && ticks_done >= GetTotalCD(stats) &&
+           mana >= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
 
  private:

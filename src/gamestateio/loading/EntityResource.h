@@ -26,18 +26,21 @@ inline static void LoadSoundIntoVector(const std::string& name, std::vector<Soun
     }
   }
 }
-// Helper function to load a single frame from a sprite sheet
-Texture LoadFrame(const Image& spriteSheet, int frameWidth, int frameHeight, int x,
-                  int y) {
+// Helper function to load a single frame from a sprite sheet with offset for centering
+Texture LoadFrame(const Image& spriteSheet, int frameWidth, int frameHeight, int x, int y,
+                  int xOffset = 0, int yOffset = 0) {
+  int finalWidth = frameWidth + 2 * xOffset;
+  int finalHeight = frameHeight + 2 * yOffset;
+
   RectangleR sourceRect = {
       static_cast<float>(x * frameWidth), static_cast<float>(y * frameHeight),
       static_cast<float>(frameWidth), static_cast<float>(frameHeight)};
 
-  RectangleR destRect = {0.0f, 0.0f, static_cast<float>(frameWidth),
-                         static_cast<float>(frameHeight)};
+  RectangleR destRect = {static_cast<float>(xOffset), static_cast<float>(yOffset),
+                         static_cast<float>(frameWidth), static_cast<float>(frameHeight)};
 
   Image frame =
-      GenImageColor(frameWidth, frameHeight, BLANK);  // Use BLANK for transparency
+      GenImageColor(finalWidth, finalHeight, BLANK);  // Use BLANK for transparency
 
   ImageDraw(&frame, spriteSheet, sourceRect, destRect, WHITE);
 
@@ -49,7 +52,7 @@ Texture LoadFrame(const Image& spriteSheet, int frameWidth, int frameHeight, int
 }
 //Method to load all frames from a sprite sheet
 void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHeight,
-                           std::vector<Texture>& frames) {
+                           std::vector<Texture>& frames, int xOffset, int yOffset) {
   std::string path = ASSET_PATH + "projectiles/" + name + ".png";
   Image spriteSheet = LoadImageR(path.c_str());
 
@@ -58,7 +61,8 @@ void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHei
 
   for (int y = 0; y < framesVertical; ++y) {
     for (int x = 0; x < framesHorizontal; ++x) {
-      Texture frame = LoadFrame(spriteSheet, frameWidth, frameHeight, x, y);
+      Texture frame =
+          LoadFrame(spriteSheet, frameWidth, frameHeight, x, y, xOffset, yOffset);
       frames.push_back(frame);
     }
   }
@@ -127,9 +131,9 @@ struct ProjectileResources {
   std::vector<Texture> frames{};
 
   void Load(const std::string& name) { load_textures(name); }
-  void LoadSpriteSheet(const std::string& name, int frameWidth, int frameHeight) {
-    LoadSpriteSheetFrames(name, frameWidth, frameHeight, frames);
-
+  void LoadSpriteSheet(const std::string& name, int frameWidth, int frameHeight,
+                       int offSetX = 0, int offSetY = 0) {
+    LoadSpriteSheetFrames(name, frameWidth, frameHeight, frames, offSetX, offSetY);
   }
 
  private:

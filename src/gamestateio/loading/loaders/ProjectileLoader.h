@@ -47,6 +47,8 @@ inline static ProjectileResources* GetProjectileRes(ProjectileType type) noexcep
     case DUMMY:
     case LOCKED:
       return nullptr;
+    case GLACIAL_BURST:
+      return &textures::projectile::GLACIAL_BURST;
   }
   return nullptr;
 }

@@ -6,8 +6,7 @@ struct BlastHammer_Skill final : public Skill {
       : Skill(stats, DamageStats{DamageType::FIRE, stats.baseDamage}, 1,
               textures::ui::skillbar::icons::blastHammer) {}
 
-  void Activate(bool isFree) final {
-    SkillAtMouse(skillStats.type, isFree); }
+  void Activate(bool isFree) final { SkillAtMouse(skillStats.type, isFree); }
 };
 struct FireStrike_Skill final : public Skill {
   explicit FireStrike_Skill(const SkillStats& stats)
@@ -30,17 +29,13 @@ struct FireBall_Skill final : public Skill {
   void Activate(bool isFree) final { SkillToMouse(FIRE_BALL, false); }
 };
 struct Dummy_Skill final : public Skill {
-  static constexpr float base_dmg = 0.5;
-  explicit Dummy_Skill(const SkillStats& stats = {})
-      : Skill(stats, DamageStats{DamageType::FIRE, base_dmg}, 1,
-              textures::EMPTY_TEXTURE) {}
-  void Activate(bool isFree) final {
-    //no skill triggered
-  }
+  explicit Dummy_Skill()
+      : Skill({}, DamageStats{DamageType::PHYSICAL, 0}, 1, textures::EMPTY_TEXTURE) {}
+  void Activate(bool isFree) final {}
 };
 struct LockedSlot_Skill final : public Skill {
   explicit LockedSlot_Skill()
-      : Skill({}, DamageStats{DamageType::TRUE_DMG, 0}, 1,
+      : Skill({}, DamageStats{DamageType::PHYSICAL, 0}, 1,
               textures::ui::skillbar::icons::locked) {}
   void Activate(bool isFree) final {}
 };
@@ -63,5 +58,16 @@ struct ArcaneBolt_Skill final : public Skill {
               textures::ui::skillbar::icons::arcaneBolt) {}
   void Activate(bool isFree) final { SkillToMouse(ARCANE_BOLT, isFree); }
 };
-
+struct IceLance_Skill final : public Skill {
+  explicit IceLance_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::ICE, stats.baseDamage}, 2,
+              textures::ui::skillbar::icons::iceLance) {}
+  void Activate(bool isFree) final { SkillToMouse(ICE_LANCE, isFree); }
+};
+struct GlacialBurst_Skill final : public Skill {
+  explicit GlacialBurst_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::ICE, stats.baseDamage}, 2,
+              textures::ui::skillbar::icons::glacialBurst) {}
+  void Activate(bool isFree) final { SkillAtMouse(GLACIAL_BURST, isFree); }
+};
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILLS_SKILLS_H_

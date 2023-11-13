@@ -48,6 +48,7 @@ inline ProjectileResources FIRE_SWORD;
 inline ProjectileResources FROST_NOVA;
 inline ProjectileResources GATE_1;
 inline ProjectileResources ICE_LANCE;
+inline ProjectileResources GLACIAL_BURST;
 inline ProjectileResources INFERNO_RAY;
 inline ProjectileResources LIGHTNING_STRIKE;
 inline ProjectileResources POWER_SURGE;
@@ -146,6 +147,7 @@ inline static Texture slot;
 
 namespace icons {
 inline static Texture iceLance;
+inline static Texture glacialBurst;
 inline static Texture infernoRay;
 inline static Texture inspiration;
 inline static Texture lightning;
