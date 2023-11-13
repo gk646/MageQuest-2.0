@@ -63,8 +63,8 @@ struct Snake final : public Monster {
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SNAKE, type,
                 {29, 19}) {
     attackComponent.RegisterConeAttack(
-        1, level, 90, 15, 30, resource->attackSounds[0], 1, 35,
-        {new Poison(level * 0.2F, 5 * 60, 60), nullptr, nullptr, nullptr});
+        1, level * 0.5F, 90, 15, 30, resource->attackSounds[0], 1, 35,
+        {new Poison(level * 0.5F, 5 * 60, 60), nullptr, nullptr, nullptr});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -207,7 +207,7 @@ struct FangShroom final : public Monster {
     }
   }
   inline void draw_death() noexcept {
-    int num = spriteCounter % 140 / 20;
+    int num = spriteCounter % 100 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 60,
                            pos.y_ + DRAW_Y - 62, 3, 0, isFlipped,

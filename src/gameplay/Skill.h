@@ -200,13 +200,13 @@ inline static Projectile* GetProjectileInstance(
     case ENERGY_SPHERE:
       return new EnergySphere(pos, isFriendlyToPlayer, damage, effects, mvmt, sender);
     case FIRE_SWORD:
-      break;
+      return new FireSword(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
     case FROST_NOVA:
       return new FrostNova(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case ICE_LANCE:
       return new IceLance(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
     case INFERNO_RAY:
-      break;
+      return new InfernoRay(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
     case LIGHTNING:
       return new Lightning(pos, isFriendlyToPlayer, damage, effects, mvmt, sender);
     case PYRO_BLAST:
@@ -251,13 +251,13 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
     case ENERGY_SPHERE:
       return new EnergySphere_Skill(stats);
     case FIRE_SWORD:
-      break;
+      return new FireSword_Skill(stats);
     case FROST_NOVA:
       return new FrostNova_Skill(stats);
     case ICE_LANCE:
       return new IceLance_Skill(stats);
     case INFERNO_RAY:
-      break;
+      return new InfernoRay_Skill(stats);
     case LIGHTNING:
       return new Lightning_Skill(stats);
     case PYRO_BLAST:

@@ -125,16 +125,16 @@ struct FrostNova final : Projectile {
 };
 struct GlacialBurst final : Projectile {
   GlacialBurst(const Point& pos, bool isFriendlyToPlayer, float damage,
-            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
-            const Vector2& mvmt, const Entity* sender)
+               const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+               const Vector2& mvmt, const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, effects, mvmt, 0,
                    sound::glacialBurst, sender, GLACIAL_BURST) {
     AddStatusEffect(this, new Root(120));
   }
 
   void Draw() final {
-    DrawTextureProFastEx(resources->frames[spriteCounter % 266 / 7], pos.x_ + DRAW_X -10,
-                         pos.y_ + DRAW_Y-21, 0, 0, false, WHITE);
+    DrawTextureProFastEx(resources->frames[spriteCounter % 266 / 7], pos.x_ + DRAW_X - 10,
+                         pos.y_ + DRAW_Y - 21, 0, 0, false, WHITE);
 
     DRAW_HITBOXES();
   }
@@ -277,5 +277,43 @@ struct IceLance final : Projectile {
     }
   }
 };
+struct FireSword final : Projectile {
+  bool hitTarget = false;
+  FireSword(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::FIRE, damage}, effects, mvmt,
+                   (int16_t)pov, sound::fireSword, sender, FIRE_SWORD) {}
 
+  void Draw() final {
+    DrawTextureProFast(resources->frames[spriteCounter % 75 / 5], pos.x_ + DRAW_X - 67,
+                       pos.y_ + DRAW_Y -45, 0, WHITE);
+    DRAW_HITBOXES();
+  }
+  void Update() noexcept final {
+    Projectile::Update();
+    pos.x_ = PLAYER_X;
+    pos.y_ = PLAYER_Y;
+    isDoingDamage = false;
+    if (Projectile::spriteCounter % 20 == 0 && Projectile::spriteCounter != 0) {
+      isDoingDamage = true;
+    }
+  }
+  void HitTargetCallback() noexcept final {}
+  void HitWallCallback() noexcept final {}
+};
+struct InfernoRay final : Projectile {
+  bool hitTarget = false;
+  InfernoRay(const Point& pos, bool isFriendlyToPlayer, float damage,
+             const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+             int16_t pov, const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::FIRE, damage}, effects, mvmt,
+                   (int16_t)pov, sound::infernoRay, sender, INFERNO_RAY) {}
+
+  void Draw() final {
+    DrawTextureProFastRotOffset(resources->frames[spriteCounter % 110 / 10],
+                                pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, 0, 0);
+    DRAW_HITBOXES();
+  }
+};
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_
