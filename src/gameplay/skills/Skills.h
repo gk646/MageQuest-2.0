@@ -70,4 +70,16 @@ struct GlacialBurst_Skill final : public Skill {
               textures::ui::skillbar::icons::glacialBurst) {}
   void Activate(bool isFree) final { SkillAtMouse(GLACIAL_BURST, isFree); }
 };
+struct InfernoRay_Skill final : public Skill {
+  explicit InfernoRay_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::FIRE, stats.baseDamage}, 1,
+              textures::ui::skillbar::icons::infernoRay) {}
+  void Activate(bool isFree) final { SkillToMouse(INFERNO_RAY, isFree); }
+};
+struct FireSword_Skill final : public Skill {
+  explicit FireSword_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::FIRE, stats.baseDamage}, 2,
+              textures::ui::skillbar::icons::fireSword) {}
+  void Activate(bool isFree) final { SkillAtPlayer(FIRE_SWORD, isFree); }
+};
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILLS_SKILLS_H_

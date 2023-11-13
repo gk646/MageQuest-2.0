@@ -303,6 +303,7 @@ void DrawTextureProFastRotOffset(const Texture2D& texture, float drawX, float dr
     rlSetTexture(0);
   }
 }
+
 void DrawTextureProFastEx(const Texture2D& texture, float x, float y, float flip_offset_x,
                           float rotation, bool flipped, Color tint) {
   if (texture.id > 0) {

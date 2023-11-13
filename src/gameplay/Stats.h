@@ -152,17 +152,7 @@ struct EntityStats {
       ReCalculatePlayerStats();
     }
   }
-  inline void ReCalculatePlayerStats() noexcept {
-    RemoveEffects();
-    effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
-    effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
-
-    effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
-    effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
-
-    effects[SPEED_MULT_P] = (effects[AGILITY] / 100) * std::sqrt(level);
-    ApplyEffects();
-  }
+  inline void ReCalculatePlayerStats() noexcept;
 
   //Getters
  public:
@@ -179,13 +169,12 @@ struct EntityStats {
       case DamageType::DARK:
         return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[DARK_DMG_P]);
       case DamageType::PHYSICAL:
-        return stats.damage + effects[WEAPON_DAMAGE];
       case DamageType::TRUE_DMG:
         return stats.damage + effects[WEAPON_DAMAGE];
     }
   }
   [[nodiscard]] inline float GetTotalCD(const SkillStats& stats) const noexcept {
-    return stats.coolDownTicks * (1 - effects[CDR_P]);
+    return (float)stats.coolDownTicks * (1 - effects[CDR_P]);
   }
   [[nodiscard]] inline float GetMaxHealth() const noexcept {
     return effects[MAX_HEALTH] * (1 + effects[HEALTH_MULT_P]);
@@ -214,10 +203,6 @@ struct EntityStats {
     return !stunned && ticks_done >= GetTotalCD(stats) &&
            mana >= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
-
- private:
-  static inline void RemoveEffects() noexcept;
-  static inline void ApplyEffects() noexcept;
 };
 inline EntityStats PLAYER_STATS;
 
