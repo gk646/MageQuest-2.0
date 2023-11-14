@@ -96,9 +96,9 @@ struct StatusEffectHandler {
     }
   }
 
-  //Icons
+  //Effect icons
  public:
-  //Draws the buffs and debuffs in the correct format for the player
+  //Draws the buffs and debuffs in the correct format for the player // left and right of the xp bar
   void DrawPlayer(float startY) const noexcept {
     float screenMiddle = SCREEN_WIDTH / 2;
     float buffX = screenMiddle - 230;
@@ -148,7 +148,7 @@ struct StatusEffectHandler {
   inline bool TryAddOrStackEffect(const StatusEffect* newEffect) {
     for (auto& currentEffect : currentEffects) {
       if (currentEffect->type == newEffect->type) {
-        currentEffect->AddStack(newEffect, self);
+        currentEffect->AddStack(stats, newEffect, self);
         return true;
       }
     }

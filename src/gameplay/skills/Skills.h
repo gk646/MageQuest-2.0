@@ -82,4 +82,16 @@ struct FireSword_Skill final : public Skill {
               textures::ui::skillbar::icons::fireSword) {}
   void Activate(bool isFree) final { SkillAtPlayer(FIRE_SWORD, isFree); }
 };
+struct VoidField_Skill final : public Skill {
+  explicit VoidField_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::DARK, stats.baseDamage}, 2,
+              textures::ui::skillbar::icons::voidField) {}
+  void Activate(bool isFree) final { SkillAtMouse(VOID_FIELD, isFree); }
+};
+struct VoidEruption_Skill final : public Skill {
+  explicit VoidEruption_Skill(const SkillStats& stats)
+      : Skill(stats, DamageStats{DamageType::DARK, stats.baseDamage}, 2,
+              textures::ui::skillbar::icons::voidEruption) {}
+  void Activate(bool isFree) final { SkillAtMouse(VOID_ERUPTION, isFree); }
+};
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILLS_SKILLS_H_

@@ -106,6 +106,7 @@ struct EntityStats {
     effects[CRIT_CHANCE] = 5;
     effects[CRIT_DAMAGE_P] = 0.5F;
     effects[HEALTH_REGEN] = effects[MAX_HEALTH] / 7200;
+    effects[WEAPON_DAMAGE] = scaler.damage * (float)level;
   }
   inline void Update() noexcept {
     float max_mana_value = GetMaxMana();

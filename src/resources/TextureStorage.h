@@ -34,6 +34,7 @@ inline MonsterResource SNAKE;
 inline MonsterResource WOLF;
 inline MonsterResource BLOOD_HOUND;
 inline MonsterResource GHOST;
+inline MonsterResource SKULL_WOLF;
 }  // namespace monsters
 
 namespace projectile {

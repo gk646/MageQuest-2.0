@@ -4,12 +4,12 @@
 //Basic attack model
 struct BaseAttack {
   const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects;
-  float damage;
+  const float& damage;
   int16_t cooldown = 0;
   int16_t animationDelay = 0;
   int16_t currentDelay = -1;
   int8_t actionState = 0;
-  BaseAttack(int8_t actionState, float damage, int16_t cooldown, int16_t delay,
+  BaseAttack(int8_t actionState, const float& damage, int16_t cooldown, int16_t delay,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects)
       : actionState(actionState),
         damage(damage),
@@ -42,7 +42,7 @@ struct ConeAttack final : public BaseAttack {
   int16_t hitDelay;
 
  public:
-  ConeAttack(int8_t actionState, float dmg, int16_t cd, int width, int height,
+  ConeAttack(int8_t actionState, const float& dmg, int16_t cd, int width, int height,
              const Sound& sound, int16_t hitDelay, int16_t animationDelay,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects)
       : BaseAttack(actionState, dmg, cd, animationDelay, effects),
@@ -54,7 +54,7 @@ struct ConeAttack final : public BaseAttack {
 };
 struct ProjectileAttack final : public BaseAttack {
   ProjectileType type;
-  ProjectileAttack(int8_t actionState, float damage, int16_t cd, ProjectileType t,
+  ProjectileAttack(int8_t actionState, const float& damage, int16_t cd, ProjectileType t,
                    int16_t delay,
                    const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects)
       : BaseAttack(actionState, damage, cd, delay, effects), type(t) {}
@@ -91,7 +91,7 @@ struct AttackComponent {
     }
   }
   void RegisterConeAttack(
-      int8_t actionState, float damage, int16_t cooldown, int width, int height,
+      int8_t actionState, const float& damage, int16_t cooldown, int width, int height,
       const Sound& sound, int hitDelay, int delay = 0,
       const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects = {}) {
     for (auto& attackSlot : attacks) {
@@ -104,7 +104,7 @@ struct AttackComponent {
     }
   }
   void RegisterProjectileAttack(
-      int8_t actionState, float damage, int16_t cooldown, ProjectileType type,
+      int8_t actionState, const float& damage, int16_t cooldown, ProjectileType type,
       int delay = 0,
       const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects = {}) {
     for (auto& attackSlot : attacks) {

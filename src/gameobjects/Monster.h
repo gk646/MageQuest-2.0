@@ -164,7 +164,7 @@ struct Monster : public Entity {
     pos.y_ = data->y;
   }
   inline void MonsterDiedCallback() noexcept;
-  inline static Monster* GetNewMonster(float x, float y, MonsterType type,
+  inline static Monster* GetNewMonster(const Point& pos, MonsterType type,
                                        uint8_t level) noexcept;
   inline RectangleR GetAttackConeBounds(int attackWidth, int attackHeight) noexcept {
     RectangleR ret = {0};
@@ -185,17 +185,17 @@ struct Monster : public Entity {
 
 #include "monsters/Monsters.h"
 
-Monster* Monster::GetNewMonster(float x, float y, MonsterType type,
+Monster* Monster::GetNewMonster(const Point& pos, MonsterType type,
                                 uint8_t level) noexcept {
   switch (type) {
     case MonsterType::SKEL_WAR:
-      return new SkeletonWarrior({x, y}, level, type);
+      return new SkeletonWarrior(pos, level, type);
     case MonsterType::ANY:
       break;
     case MonsterType::SKEL_SPEAR:
-      return new SkeletonSpear({x, y}, level, type);
+      return new SkeletonSpear(pos, level, type);
     case MonsterType::WOLF:
-      return new Wolf({x, y}, level, type);
+      return new Wolf(pos, level, type);
     case MonsterType::BOSS_DEATH_BRINGER:
       break;
     case MonsterType::BOSS_KNIGHT:
@@ -207,17 +207,19 @@ Monster* Monster::GetNewMonster(float x, float y, MonsterType type,
     case MonsterType::KNIGHT:
       break;
     case MonsterType::MUSHROOM:
-      return new FangShroom({x, y}, level, type);
+      return new FangShroom(pos, level, type);
     case MonsterType::SKEL_ARCHER:
-      return new SkeletonArcher({x, y}, level, type);
+      return new SkeletonArcher(pos, level, type);
     case MonsterType::SKEL_SHIELD:
       break;
     case MonsterType::SNAKE:
-      return new Snake({x, y}, level, type);
+      return new Snake(pos, level, type);
     case MonsterType::GHOST:
-      return new Ghost({x, y}, level, type);
+      return new Ghost(pos, level, type);
     case MonsterType::BLOOD_HOUND:
-      return new BloodHound({x, y}, level, type);
+      return new BloodHound(pos, level, type);
+    case MonsterType::SKULL_WOLF:
+      return new SkullWolf(pos, level, type);
   }
   std::cout << "MISSING MONSTER ID AT ENUM ID:" << (int)type << std::endl;
   return nullptr;
@@ -245,7 +247,8 @@ void Server::BroadCastMonsterUpdates() noexcept {
   }
 }
 void Multiplayer::HandleMonsterSpawn(UDP_MonsterSpawn* data) noexcept {
-  auto ptr = Monster::GetNewMonster(data->x, data->y, data->type, data->level);
+  auto ptr =
+      Monster::GetNewMonster({(float)data->x, (float)data->y}, data->type, data->level);
   ptr->u_id = data->monster_id;
   MONSTERS.push_back(ptr);
 }
@@ -289,8 +292,9 @@ void SpawnTrigger::Trigger() noexcept {
 
   if (level == 0) level = PLAYER_STATS.level;
   if (isSingular) {
-    MONSTERS.push_back(Monster::GetNewMonster(pos.x, pos.y, type, level));
+    MONSTERS.push_back(Monster::GetNewMonster({(float)pos.x, (float)pos.y}, type, level));
   } else {
+    //TODO area triggers
   }
 }
 

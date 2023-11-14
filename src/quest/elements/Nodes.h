@@ -192,7 +192,7 @@ struct SPAWN final : public QuestNode {
     if (npcID == NPC_ID::NPC_END) {
       for (const auto& p : positions) {
         MONSTERS.push_back(
-            Monster::GetNewMonster(p.x * 48.0F, p.y * 48.0F, mType, level));
+            Monster::GetNewMonster({p.x * 48.0F, p.y * 48.0F}, mType, level));
       }
       return true;
     } else if (mType == MonsterType::ANY) {

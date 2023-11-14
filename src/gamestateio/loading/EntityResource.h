@@ -53,7 +53,7 @@ Texture LoadFrame(const Image& spriteSheet, int frameWidth, int frameHeight, int
 //Method to load all frames from a sprite sheet
 void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHeight,
                            std::vector<Texture>& frames, int xOffset, int yOffset) {
-  std::string path = ASSET_PATH + "projectiles/" + name + ".png";
+  std::string path = ASSET_PATH + name;
   Image spriteSheet = LoadImageR(path.c_str());
 
   int framesHorizontal = spriteSheet.width / frameWidth;
@@ -85,12 +85,16 @@ struct MonsterResource {
 
   std::vector<Sound> attackSounds{};
   void Load(const std::string& name) {
-    load_textures(name);
-    load_sound(name);
+    LoadTextures(name);
+    LoadSoundFiles(name);
+  }
+  void LoadSpriteFromSheets(const std::string& name, int frameWidth, int frameHeight) {
+    LoadSoundFiles(name);
+    LoadSpriteSheets(name, frameWidth, frameHeight);
   }
 
  private:
-  void load_textures(const std::string& name) {
+  void LoadTextures(const std::string& name) {
     const std::array<std::string, 12> folder_names = {
         "attack1/", "attack2/", "attack3/", "attack4/", "attack5/",
         "special/", "idle/",    "idle2/",   "walk/",    "death/"};
@@ -104,7 +108,22 @@ struct MonsterResource {
       LoadImagesIntoVector("Entities/" + name + folder_names[i], *texture_arrays[i]);
     }
   }
-  void load_sound(const std::string& name) {
+  void LoadSpriteSheets(const std::string& name, int frameWidth, int frameHeight) {
+    const std::array<std::string, 12> folder_names = {
+        "attack1/", "attack2/", "attack3/", "attack4/", "attack5/",
+        "special/", "idle/",    "idle2/",   "walk/",    "death/"};
+
+    std::array<std::vector<Texture>*, 12> texture_arrays = {
+        &attack1, &attack2, &attack3, &attack4, &attack5,
+        &special, &idle,    &idle2,   &walk,    &death};
+
+    std::string path;
+    for (size_t i = 0; i < folder_names.size(); ++i) {
+      LoadSpriteSheetFrames("Entities/" + name + folder_names[i] + "0.png", frameWidth,
+                            frameHeight, *texture_arrays[i], 0, 0);
+    }
+  }
+  void LoadSoundFiles(const std::string& name) {
     std::string path;
     std::string soundPath = name;
     size_t pos = soundPath.find("enemies/");

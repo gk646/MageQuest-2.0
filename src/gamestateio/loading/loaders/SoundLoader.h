@@ -52,6 +52,8 @@ struct SoundLoader {
         LoadSound((ASSET_PATH + "sound/effects/projectiles/thunderSplash/0.wav").c_str());
     sound::thunderStrike =        LoadSound((ASSET_PATH + "sound/effects/projectiles/thunderStrike/0.wav").c_str());
     sound::glacialBurst =        LoadSound((ASSET_PATH + "sound/effects/projectiles/glacialBurst/0.wav").c_str());
+    sound::voidEruption =        LoadSound((ASSET_PATH + "sound/effects/projectiles/voidEruption/0.wav").c_str());
+    sound::voidField =        LoadSound((ASSET_PATH + "sound/effects/projectiles/voidField/0.wav").c_str());
 
     //UI SOUNDS
     sound::intro = LoadSound((ASSET_PATH + "sound/music/intro.wav").c_str());

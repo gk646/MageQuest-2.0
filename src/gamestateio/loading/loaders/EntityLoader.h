@@ -14,6 +14,7 @@ static void LoadScaling() noexcept {
     scaler.attackCD = (int16_t)std::stoi(vec[5]);
     scaler.attackRangeTiles = (int8_t)std::stoi(vec[6]);
     scaler.chaseRangeTiles = (int8_t)std::stoi(vec[7]);
+    scaler.damage = std::stof(vec[9]);
     auto id = stringToMonsterID[vec[0]];
     monsterIdToScaler.insert({id, scaler});
   }
@@ -36,18 +37,19 @@ static void Load() {
   textures::monsters::WOLF.Load("enemies/wolf/");
   textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
   textures::monsters::GHOST.Load("enemies/Ghost/");
+  textures::monsters::SKULL_WOLF.LoadSpriteFromSheets("enemies/skullWolf/", 64, 48);
 
   textures::projectile::BLAST_HAMMER.Load("blastHammer/");
   textures::projectile::ENERGY_SPHERE.Load("EnergySphere/");
   textures::projectile::ETHER_PORTAL.Load("etherPortal/");
   textures::projectile::FIRE_BURST.Load("fireBurst/");
-  textures::projectile::FIRE_BALL.LoadSpriteSheet("fireBall/0", 64, 64, 48, 0);
+  textures::projectile::FIRE_BALL.LoadSpriteSheet("projectiles/fireBall/0.png", 64, 64, 48, 0);
   textures::projectile::FIRE_EXPLOSION.Load("fireExplosion/");
   textures::projectile::FIRE_SWORD.Load("fireSword/");
   textures::projectile::FROST_NOVA.Load("frostNova/");
   textures::projectile::GATE_1.Load("gate1/");
-  textures::projectile::ICE_LANCE.LoadSpriteSheet("iceLance/0", 48, 32);
-  textures::projectile::GLACIAL_BURST.LoadSpriteSheet("glacialBurst/0", 64, 64);
+  textures::projectile::ICE_LANCE.LoadSpriteSheet("projectiles/iceLance/0.png", 48, 32);
+  textures::projectile::GLACIAL_BURST.LoadSpriteSheet("projectiles/glacialBurst/0.png", 64, 64);
   textures::projectile::INFERNO_RAY.Load("infernoRay/");
   textures::projectile::LIGHTNING_STRIKE.Load("Lightning/");
   textures::projectile::POWER_SURGE.Load("powerSurge/");
@@ -56,7 +58,7 @@ static void Load() {
   textures::projectile::THUNDER_SPLASH.Load("thunderSplash/");
   textures::projectile::THUNDER_STRIKE.Load("thunderStrike/");
   textures::projectile::VOID_ERUPTION.Load("voidEruption/");
-  textures::projectile::VOID_FIELD.Load("voidField/");
+  textures::projectile::VOID_FIELD.LoadSpriteSheet("projectiles/voidField/0.png", 124, 124);
   textures::projectile::DUMMY.Load("dummy/");
   textures::projectile::PSYCHIC_SCREAM.Load("PsychicScream/");
   textures::projectile::ARROW_NORMAL.Load("arrowNormal/");

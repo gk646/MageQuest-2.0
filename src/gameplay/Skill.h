@@ -218,9 +218,9 @@ inline static Projectile* GetProjectileInstance(
     case THUNDER_STRIKE:
       break;
     case VOID_ERUPTION:
-      break;
+      return new VoidEruption(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case VOID_FIELD:
-      break;
+      return new VoidField(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case ARCANE_BOLT:
       return new ArcaneBolt(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
     case PROJECTILE_END:
@@ -233,6 +233,8 @@ inline static Projectile* GetProjectileInstance(
     case LOCKED:
       return nullptr;
   }
+  std::cout << "MISSING PROJECTILE ENUM VAL:" << (int)type << std::endl;
+  return nullptr;
 }
 
 #include "../gameobjects/components/AttackComponent.h"
@@ -269,9 +271,9 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
     case THUNDER_STRIKE:
       break;
     case VOID_ERUPTION:
-      break;
+      return new VoidEruption_Skill(stats);
     case VOID_FIELD:
-      break;
+      return new VoidField_Skill(stats);
     case PROJECTILE_END:
       return nullptr;
     case ARROW_NORMAL:
@@ -287,7 +289,7 @@ Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept
     case GLACIAL_BURST:
       return new GlacialBurst_Skill(stats);
   }
-  std::cout << "MISSING ENUM VAL:" << (int)type << std::endl;
+  std::cout << "MISSING SKILL ENUM VAL:" << (int)type << std::endl;
   return nullptr;
 }
 inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
