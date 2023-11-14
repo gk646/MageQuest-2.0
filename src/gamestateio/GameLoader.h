@@ -75,7 +75,10 @@ struct GameLoader {
       if (!skill) continue;
       AddSkill(skill);
     }
-    PLAYER_HOTBAR[0]->skill = SKILLS[ARCANE_BOLT];
+    // MONSTERS.push_back(Monster::GetNewMonster({50*48, 50*48}, MonsterType::SKULL_WOLF, 5));
+    MONSTERS.push_back(
+        Monster::GetNewMonster({50 * 48, 50 * 48}, MonsterType::BLOOD_HOUND, 5));
+    PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }
 };
 std::atomic_bool GameLoader::finished_cpu_loading{false};

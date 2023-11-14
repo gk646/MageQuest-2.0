@@ -287,7 +287,7 @@ struct FireSword final : Projectile {
 
   void Draw() final {
     DrawTextureProFast(resources->frames[spriteCounter % 75 / 5], pos.x_ + DRAW_X - 67,
-                       pos.y_ + DRAW_Y -45, 0, WHITE);
+                       pos.y_ + DRAW_Y - 45, 0, WHITE);
     DRAW_HITBOXES();
   }
   void Update() noexcept final {
@@ -314,6 +314,65 @@ struct InfernoRay final : Projectile {
     DrawTextureProFastRotOffset(resources->frames[spriteCounter % 110 / 10],
                                 pos.x_ + DRAW_X, pos.y_ + DRAW_Y, pov, WHITE, 0, 0);
     DRAW_HITBOXES();
+  }
+};
+struct VoidField final : Projectile {
+  bool once = false;
+  VoidField(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::DARK, damage}, effects, mvmt, 0,
+                   sound::voidField, sender, VOID_FIELD) {
+    AddStatusEffect(this, new Slow(40, 120));
+  }
+
+  void Draw() final {
+    if (spriteCounter < 16 * 5) {
+      DrawTextureProFastEx(resources->frames[spriteCounter % 125 / 5],
+                           pos.x_ + DRAW_X - 32, pos.y_ + DRAW_Y - 32, 0, 0, false,
+                           WHITE);
+    } else if (lifeSpanTicks > 48) {
+      DrawTextureProFastEx(resources->frames[(spriteCounter % 90 / 10) + 16],
+                           pos.x_ + DRAW_X - 32, pos.y_ + DRAW_Y - 32, 0, 0, false,
+                           WHITE);
+    } else {
+      DrawTextureProFastEx(resources->frames[(spriteCounter % 48 / 12) + 25],
+                           pos.x_ + DRAW_X - 32, pos.y_ + DRAW_Y - 32, 0, 0, false,
+                           WHITE);
+    }
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    Projectile::Update();
+    if (lifeSpanTicks <= 48 && !once) {
+      once = true;
+      spriteCounter = 240;
+    }
+  }
+};
+struct VoidEruption final : Projectile {
+  VoidEruption(const Point& pos, bool isFriendlyToPlayer, float damage,
+               const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
+               const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::DARK, damage}, effects, mvmt, 0,
+                   sound::voidEruption, sender, VOID_ERUPTION) {
+    AddStatusEffect(this, new Root(120));
+  }
+
+  void Draw() final {
+    if (Projectile::spriteCounter > 95) return;
+    DrawTextureProFastEx(resources->frames[spriteCounter % 96 / 6], pos.x_ + DRAW_X - 18,
+                         pos.y_ + DRAW_Y - 18, 0, 0, false, WHITE);
+
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    Projectile::Update();
+    if (spriteCounter == 12) {
+      isDoingDamage = true;
+    } else {
+      isDoingDamage = false;
+    }
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_

@@ -1,18 +1,9 @@
 #ifndef MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 #define MAGE_QUEST_SRC_ENUMS_ENUMS_H_
 
-/* |-----------------------------------------------------|
- * |                          SYSTEM                      |
- * |-----------------------------------------------------|
- */
 enum class GameState : uint8_t { MainMenu, GameMenu, Game, Loading, GameOver };
 enum class MenuState : uint8_t { Main, Settings, ServerBrowser, HostGame, Transition };
 enum class MapLayer : uint8_t { BACK_GROUND, MIDDLE_GROUND, FRONT };
-
-/* |-----------------------------------------------------|
- * |                    GAMEPLAY                         |
- * |-----------------------------------------------------|
- */
 enum class Class : uint8_t {
   BARBARIAN,
   BARD,
@@ -27,7 +18,6 @@ enum class Class : uint8_t {
   WARLOCK,
   WIZARD
 };
-
 enum class MonsterType : uint8_t {
   ANY,
   BLOOD_HOUND,
@@ -39,6 +29,7 @@ enum class MonsterType : uint8_t {
   BOSS_KNIGHT,
   BOSS_SLIME,
   GOBLIN,
+  SKULL_WOLF,
   KNIGHT,
   MUSHROOM,
   SKEL_ARCHER,
@@ -48,30 +39,33 @@ enum class MonsterType : uint8_t {
 enum class EffectType : uint8_t {
   STUN,
   BURN,
+  BLEED,
   SLOW,
+  BERSERK,
+  SWIFTNESS,
   POISON,
   ROOT,
   SPELL_ECHO_CD,
   ELEMENTAL_EQUILIBRIUM_BUFF,
   ELEMENTAL_EQUILIBRIUM_CD
 };
-std::unordered_map<std::string, EffectType> effectMap = {
-    {"STUN", EffectType::STUN},
-    {"BURN", EffectType::BURN},
-    {"SLOW", EffectType::SLOW},
-    {"ROOT", EffectType::ROOT},
-    {"POISON", EffectType::POISON},
-    {"SPELL_ECHO_CD", EffectType::SPELL_ECHO_CD},
-    {"ELEMENTAL_EQUILIBRIUM_BUFF", EffectType::ELEMENTAL_EQUILIBRIUM_BUFF},
-    {"ELEMENTAL_EQUILIBRIUM_CD", EffectType::ELEMENTAL_EQUILIBRIUM_CD}};
-
 struct EffectInfo {
   std::string name;
   std::string description;
   Texture icon;
 };
-
-std::unordered_map<EffectType, EffectInfo> effectToInfo{};
+std::unordered_map<std::string, EffectType> effectMap = {
+    {"STUN", EffectType::STUN},
+    {"BURN", EffectType::BURN},
+    {"SLOW", EffectType::SLOW},
+    {"SWIFTNESS", EffectType::SWIFTNESS},
+    {"BERSERK", EffectType::BERSERK},
+    {"BLEED", EffectType::BLEED},
+    {"ROOT", EffectType::ROOT},
+    {"POISON", EffectType::POISON},
+    {"SPELL_ECHO_CD", EffectType::SPELL_ECHO_CD},
+    {"ELEMENTAL_EQUILIBRIUM_BUFF", EffectType::ELEMENTAL_EQUILIBRIUM_BUFF},
+    {"ELEMENTAL_EQUILIBRIUM_CD", EffectType::ELEMENTAL_EQUILIBRIUM_CD}};
 
 enum class ShapeType : uint8_t { CIRCLE, RECT };
 enum class DamageType : uint8_t {
@@ -83,6 +77,7 @@ enum class DamageType : uint8_t {
   PHYSICAL,
   TRUE_DMG
 };
+std::unordered_map<EffectType, EffectInfo> effectToInfo{};
 std::unordered_map<DamageType, std::string> damageTypeNames = {
     {DamageType::ARCANE, "arcane"},       {DamageType::POISON, "poison"},
     {DamageType::FIRE, "fire"},           {DamageType::ICE, "ice"},
@@ -388,6 +383,7 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"ANY", MonsterType::ANY},
     {"SKEL_WAR", MonsterType::SKEL_WAR},
     {"SKEL_SPEAR", MonsterType::SKEL_SPEAR},
+    {"SKULL_WOLF", MonsterType::SKULL_WOLF},
     {"WOLF", MonsterType::WOLF},
     {"GHOST", MonsterType::GHOST},
     {"BOSS_DEATH_BRINGER", MonsterType::BOSS_DEATH_BRINGER},

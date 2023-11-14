@@ -4,18 +4,18 @@ struct Wolf final : public Monster {
   Wolf(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::WOLF, type,
                 {45, 30}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[0], 1,
-                                       40);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[1], 1,
-                                       40);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[2], 1,
-                                       40);
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+                                       resource->attackSounds[0], 1, 40);
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+                                       resource->attackSounds[1], 1, 40);
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+                                       resource->attackSounds[2], 1, 40);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 10], pos.x_ + DRAW_X - 2,
@@ -37,7 +37,7 @@ struct Wolf final : public Monster {
       attackComponent.Attack();
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 5,
@@ -47,7 +47,7 @@ struct Wolf final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
@@ -63,14 +63,15 @@ struct Snake final : public Monster {
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SNAKE, type,
                 {29, 19}) {
     attackComponent.RegisterConeAttack(
-        1, level * 0.5F, 90, 15, 30, resource->attackSounds[0], 1, 35,
-        {new Poison(level * 0.5F, 5 * 60, 60), nullptr, nullptr, nullptr});
+        1, stats.effects[WEAPON_DAMAGE], 90, 15, 30, resource->attackSounds[0], 1, 35,
+        {new Poison(stats.effects[WEAPON_DAMAGE], 5 * 60, 60), nullptr, nullptr,
+         nullptr});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 15],
@@ -94,7 +95,7 @@ struct Snake final : public Monster {
       attackComponent.Attack();
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 80 / 20;
     if (num < 3) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 20,
@@ -104,7 +105,7 @@ struct Snake final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 90 / 15;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 20,
@@ -119,18 +120,19 @@ struct BloodHound final : public Monster {
   BloodHound(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::BLOOD_HOUND,
                 type, {45, 30}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[0],
-                                       50);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[1],
-                                       50);
-    attackComponent.RegisterConeAttack(1, level, 90, 20, 30, resource->attackSounds[2],
-                                       50);
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+                                       resource->attackSounds[0], 50);
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+                                       resource->attackSounds[1], 50);
+    attackComponent.RegisterConeAttack(
+        1, stats.effects[WEAPON_DAMAGE], 90, 20, 30, resource->attackSounds[2], 50, 0,
+        {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.2F, 300, 60)});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 60 / 10], pos.x_ + DRAW_X - 2,
@@ -152,7 +154,7 @@ struct BloodHound final : public Monster {
       attackComponent.Attack();
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 140 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 5,
@@ -162,7 +164,7 @@ struct BloodHound final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 105 / 15;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
@@ -177,14 +179,14 @@ struct FangShroom final : public Monster {
   FangShroom(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::MUSHROOM, type,
                 {32, 39}) {
-    attackComponent.RegisterConeAttack(1, level, 90, 25, 35, resource->attackSounds[0], 1,
-                                       35);
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 25, 35,
+                                       resource->attackSounds[0], 1, 35);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 80 / 10],
@@ -206,9 +208,9 @@ struct FangShroom final : public Monster {
       attackComponent.Attack();
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 100 / 20;
-    if (num < 5) {
+    if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 60,
                            pos.y_ + DRAW_Y - 62, 3, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
@@ -216,7 +218,7 @@ struct FangShroom final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 81 / 9;
     if (num < 8) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 56,
@@ -231,18 +233,19 @@ struct SkeletonWarrior final : public Monster {
   SkeletonWarrior(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level,
                 &textures::monsters::SKELETON_WARRIOR, type, {30, 48}) {
-    attackComponent.RegisterConeAttack(1, stats.level, 90, 40, 48,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 40, 48,
                                        resource->attackSounds[0], 32);
-    attackComponent.RegisterConeAttack(2, stats.level, 90, 40, 48,
+    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 90, 40, 48,
                                        resource->attackSounds[0], 16);
-    attackComponent.RegisterConeAttack(3, stats.level, 120, 40, 48,
-                                       resource->attackSounds[1], 16);
+    attackComponent.RegisterConeAttack(
+        3, stats.effects[WEAPON_DAMAGE] * 1.2F, 120, 40, 48, resource->attackSounds[1],
+        16, 0, {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.2F, 300, 60)});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else if (actionState == 2) {
       draw_attack2();
     } else if (actionState == 3) {
@@ -268,7 +271,7 @@ struct SkeletonWarrior final : public Monster {
       attackComponent.Attack();
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
@@ -278,7 +281,7 @@ struct SkeletonWarrior final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 96 / 16;
     if (num < 5) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 27,
@@ -319,7 +322,7 @@ struct Ghost final : public Monster {
                 {30, 40}) {}
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
       DrawAttack1();
     } else if (actionState == 2) {
@@ -367,7 +370,7 @@ struct Ghost final : public Monster {
       }
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 70 / 10;
     if (num < 6) {
       DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 17,
@@ -416,18 +419,18 @@ struct SkeletonSpear final : public Monster {
   SkeletonSpear(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_SPEAR,
                 type, {30, 50}) {
-    attackComponent.RegisterConeAttack(1, stats.level, 120, 40, 48,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 120, 40, 48,
                                        resource->attackSounds[0], 15);
-    attackComponent.RegisterConeAttack(2, stats.level, 120, 40, 48,
+    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 120, 40, 48,
                                        resource->attackSounds[0], 15);
-    attackComponent.RegisterConeAttack(3, stats.level, 120, 40, 48,
-                                       resource->attackSounds[0], 24);
+    attackComponent.RegisterConeAttack(3, stats.effects[WEAPON_DAMAGE] * 1.2F, 120, 40,
+                                       48, resource->attackSounds[0], 24);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else if (actionState == 2) {
       draw_attack2();
     } else if (actionState == 3) {
@@ -446,7 +449,7 @@ struct SkeletonSpear final : public Monster {
     healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 120 / 20;
     if (num < 5) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 22,
@@ -456,7 +459,7 @@ struct SkeletonSpear final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 18,
@@ -498,13 +501,14 @@ struct SkeletonArcher final : public Monster {
   SkeletonArcher(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_ARCHER,
                 type, {30, 48}) {
-    attackComponent.RegisterProjectileAttack(1, (float)level, 80, ARROW_NORMAL);
+    attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE], 80,
+                                             ARROW_NORMAL);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
-      draw_death();
+      DrawDeath();
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 160 / 20],
@@ -526,7 +530,7 @@ struct SkeletonArcher final : public Monster {
       attackComponent.Attack();
     }
   }
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 175 / 35;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 27,
@@ -536,13 +540,115 @@ struct SkeletonArcher final : public Monster {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 80 / 5;
     if (num < 15) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 30,
                            pos.y_ + DRAW_Y - 5, -16, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
+      actionState = 0;
+    }
+  }
+};
+struct SkullWolf final : public Monster {
+  unsigned char alpha = 255;
+  SkullWolf(const Point& pos, int level, MonsterType type) noexcept
+      : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKULL_WOLF,
+                type, {50, 27}) {
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 20, 30,
+                                       resource->attackSounds[0], 25);
+  }
+  void Draw() final {
+    if (actionState == -100) [[unlikely]] {
+      DrawDeath();
+    } else if (actionState == 1) {
+      DrawAttack1();
+    } else if (actionState == 2) {
+      DrawDisappear();
+    } else if (actionState == 3) {
+      DrawAppear();
+    } else {
+      if (isMoving) {
+        DrawTextureProFastEx(
+            resource->walk[spriteCounter % 35 / 7], pos.x_ + DRAW_X - 5,
+            pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped,
+            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
+      } else {
+        DrawTextureProFastEx(
+            resource->idle[spriteCounter % 60 / 10], pos.x_ + DRAW_X - 5,
+            pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped,
+            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
+      }
+    }
+    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    MONSTER_UPDATE()
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && WalkToEntity(target)) {
+      if (attackComponent.globalCooldown == 0) {
+        if (alpha == 255 && RANGE_100_FLOAT(RNG_ENGINE) < 25) {
+          actionState = 2;
+          spriteCounter = 0;
+          attackComponent.globalCooldown = 60;
+          effectHandler.AddEffect(new Swiftness(25, 700));
+          effectHandler.AddEffect(new Berserk(1.4F, 700));
+          PlaySoundR(resource->attackSounds[1]);
+        } else if (alpha == 50 && !effectHandler.IsEffectActive(EffectType::SWIFTNESS)) {
+          actionState = 3;
+          spriteCounter = 0;
+          attackComponent.globalCooldown = 60;
+        }
+      }
+      attackComponent.Attack();
+    }
+  }
+  inline void DrawDeath() noexcept {
+    int num = spriteCounter % 80 / 10;
+    if (num < 7) {
+      DrawTextureProFastEx(
+          resource->death[num], pos.x_ + DRAW_X - 5, pos.y_ + DRAW_Y - 20, -3, 0,
+          !isFlipped,
+          hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
+    } else {
+      isDead = true;
+    }
+  }
+  inline void DrawAttack1() noexcept {
+    int num = spriteCounter % 35 / 7;
+    if (spriteCounter < 35) {
+      DrawTextureProFastEx(
+          resource->walk[num], pos.x_ + DRAW_X - 5, pos.y_ + DRAW_Y - 20, -3, 0,
+          !isFlipped,
+          hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawDisappear() noexcept {
+    int num = spriteCounter % 60 / 15;
+    if (spriteCounter < 60) {
+      DrawTextureProFastEx(
+          resource->attack2[num], pos.x_ + DRAW_X - 5, pos.y_ + DRAW_Y - 20, -3, 0,
+          !isFlipped,
+          hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
+    } else {
+      alpha = 50;
+      actionState = 0;
+    }
+  }
+  inline void DrawAppear() noexcept {
+    int num = spriteCounter % 60 / 15;
+    if (spriteCounter < 60) {
+      DrawTextureProFastEx(
+          resource->special[num], pos.x_ + DRAW_X - 5, pos.y_ + DRAW_Y - 20, -3, 0,
+          !isFlipped,
+          hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
+    } else {
+      alpha = 255;
       actionState = 0;
     }
   }

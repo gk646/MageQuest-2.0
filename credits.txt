@@ -18,7 +18,6 @@ TEXTURES
 
 SOUNDS 
 [Fantasy Sound Effects Library] by LittleRobotSoundFactory from freesound.org licensed under CC BY 4.0. Source [https://freesound.org/people/LittleRobotSoundFactory/packs/16687/]
-
 [grab-item]" by [1bob] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/1bob/sounds/651515/]
 [unfa's Laser Weapon Sounds]" by [unfa] from freesound.org, licensed under CC0 1.0. [https://freesound.org/s/187119/]
 [UI Completed Status Alert Notification SFX001.wav ]" by [Headphaze] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/Headphaze/sounds/277033/#]
@@ -43,7 +42,8 @@ Boss Laughter: "Game boss or character laughter" by [lalazzylee1] from freesound
 Ice Impact: "Magic Ice Impact Skill Spell" by [EminYILDIRIM] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/EminYILDIRIM/sounds/550267/]
 Fire Ball: "Fireball - Pass By, Crackle" by [NoahBangs] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/NoahBangs/sounds/636082/]
 Boss Sword Swing: "Imperius - Spear Whoosh.wav" by [SoundFlakes] from freesound.org, licensed under CC BY 4.0. Source: [https://freesound.org/people/SoundFlakes/sounds/492252/]
-
+Cast Sound: "Magic Attacks Bundle" by brassbgeek@gmail.com [https://timothyadan.itch.io/magic-attacks-bundle]
+Skull Wolf Attack Sound "Werewolf" by gabemiller74 licensed under CC BY 4.0 Source: [https://freesound.org/people/gabemiller74/sounds/50881/]
 Sounds from [SilverIllusionist] from freesound.org, licensed under CC BY 4.0.:
  levelup sound: https://freesound.org/people/SilverIllusionist/sounds/669323/
  energy burst sound: https://freesound.org/people/SilverIllusionist/sounds/668645/

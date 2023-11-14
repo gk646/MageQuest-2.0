@@ -233,7 +233,7 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
     pos = ret.find("VAL3");
     if (pos != std::string::npos) {
       char buffer[6];
-      snprintf(buffer, sizeof(buffer), "%.1f", val3/60);
+      snprintf(buffer, sizeof(buffer), "%.1f", val3);
       ret.replace(pos, 4, buffer);
     }
   }
