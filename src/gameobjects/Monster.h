@@ -2,6 +2,7 @@
 #define MAGE_QUEST_SRC_ENTITIES_MONSTER_H_
 
 #include "../ui/game/HealthBar.h"
+#include "components/HealthDropComponent.h"
 
 #define MONSTER_UPDATE()                                                              \
   ENTITY_UPDATE()                                                                     \
@@ -12,7 +13,7 @@
   if (MP_TYPE == MultiplayerType::CLIENT) return;                                     \
   hitFlashDuration = std::max(-12, hitFlashDuration - 1);                             \
   isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT && threatManager.targetCount > 0; \
-  attackComponent.Update(actionState);                                                \
+  attackComponent.Update();                                                \
   if (actionState != 0) return;                                                       \
   threatManager.Update();                                                             \
   isMoving = false;
@@ -220,6 +221,8 @@ Monster* Monster::GetNewMonster(const Point& pos, MonsterType type,
       return new BloodHound(pos, level, type);
     case MonsterType::SKULL_WOLF:
       return new SkullWolf(pos, level, type);
+    case MonsterType::BOSS_STONE_GOLEM:
+      return new BossStoneGolem(pos, level, type);
   }
   std::cout << "MISSING MONSTER ID AT ENUM ID:" << (int)type << std::endl;
   return nullptr;
@@ -298,9 +301,16 @@ void SpawnTrigger::Trigger() noexcept {
   }
 }
 
+//Attack Component
 void AttackComponent::StartAnimation(int8_t actionState) const noexcept {
   self->spriteCounter = 0;
   self->actionState = actionState;
+}
+bool CustomAbility::IsReady(Monster* self) noexcept {
+  return currentCooldown == 0 && currentDelay == -1 && PLAYER.tilePos.dist(self->tilePos) > range;
+}
+bool ProjectileAttack::IsReady(Monster* self) noexcept {
+  return currentCooldown == 0 && currentDelay == -1 && PLAYER.tilePos.dist(self->tilePos) > range;
 }
 void ProjectileAttack::Execute(Monster* attacker) const {
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};

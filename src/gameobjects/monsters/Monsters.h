@@ -4,11 +4,14 @@ struct Wolf final : public Monster {
   Wolf(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::WOLF, type,
                 {45, 30}) {
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 20, 30,
                                        resource->attackSounds[0], 1, 40);
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 20, 30,
                                        resource->attackSounds[1], 1, 40);
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 20, 30,
                                        resource->attackSounds[2], 1, 40);
   }
   void Draw() final {
@@ -34,7 +37,7 @@ struct Wolf final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
   inline void DrawDeath() noexcept {
@@ -63,7 +66,8 @@ struct Snake final : public Monster {
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SNAKE, type,
                 {29, 19}) {
     attackComponent.RegisterConeAttack(
-        1, stats.effects[WEAPON_DAMAGE], 90, 15, 30, resource->attackSounds[0], 1, 35,
+        1, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD, 15, 30,
+        resource->attackSounds[0], 1, 35,
         {new Poison(stats.effects[WEAPON_DAMAGE], 5 * 60, 60), nullptr, nullptr,
          nullptr});
   }
@@ -92,7 +96,7 @@ struct Snake final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
   inline void DrawDeath() noexcept {
@@ -120,13 +124,15 @@ struct BloodHound final : public Monster {
   BloodHound(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::BLOOD_HOUND,
                 type, {45, 30}) {
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 20, 30,
                                        resource->attackSounds[0], 50);
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 20, 30,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 20, 30,
                                        resource->attackSounds[1], 50);
     attackComponent.RegisterConeAttack(
-        1, stats.effects[WEAPON_DAMAGE], 90, 20, 30, resource->attackSounds[2], 50, 0,
-        {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.2F, 300, 60)});
+        1, stats.effects[WEAPON_DAMAGE], 90 + 105, 20, 30, resource->attackSounds[2], 50,
+        0, {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.5F, 300, 60)});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -151,7 +157,7 @@ struct BloodHound final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
   inline void DrawDeath() noexcept {
@@ -179,7 +185,8 @@ struct FangShroom final : public Monster {
   FangShroom(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::MUSHROOM, type,
                 {32, 39}) {
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 25, 35,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 25, 35,
                                        resource->attackSounds[0], 1, 35);
   }
   void Draw() final {
@@ -205,7 +212,7 @@ struct FangShroom final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
   inline void DrawDeath() noexcept {
@@ -233,12 +240,14 @@ struct SkeletonWarrior final : public Monster {
   SkeletonWarrior(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level,
                 &textures::monsters::SKELETON_WARRIOR, type, {30, 48}) {
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 90, 40, 48,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 40, 48,
                                        resource->attackSounds[0], 32);
-    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 90, 40, 48,
+    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 40, 48,
                                        resource->attackSounds[0], 16);
     attackComponent.RegisterConeAttack(
-        3, stats.effects[WEAPON_DAMAGE] * 1.2F, 120, 40, 48, resource->attackSounds[1],
+        3, stats.effects[WEAPON_DAMAGE] * 1.2F, 350, 40, 48, resource->attackSounds[1],
         16, 0, {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.2F, 300, 60)});
   }
   void Draw() final {
@@ -268,7 +277,7 @@ struct SkeletonWarrior final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
   inline void DrawDeath() noexcept {
@@ -340,7 +349,7 @@ struct Ghost final : public Monster {
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && attackComponent.globalCooldown == 0) {
+    if (target && attackComponent.currentCooldown == 0) {
       if (!disappeared) {
         actionState = 3;
         spriteCounter = 0;
@@ -419,12 +428,15 @@ struct SkeletonSpear final : public Monster {
   SkeletonSpear(const Point& pos, uint8_t level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_SPEAR,
                 type, {30, 50}) {
-    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE], 120, 40, 48,
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 40, 48,
                                        resource->attackSounds[0], 15);
-    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 120, 40, 48,
+    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 40, 48,
                                        resource->attackSounds[0], 15);
-    attackComponent.RegisterConeAttack(3, stats.effects[WEAPON_DAMAGE] * 1.2F, 120, 40,
-                                       48, resource->attackSounds[0], 24);
+    attackComponent.RegisterConeAttack(
+        3, stats.effects[WEAPON_DAMAGE] * 1.2F, 370, 40, 48, resource->attackSounds[0],
+        24, 0, {new Bleed(stats.effects[WEAPON_DAMAGE], 300, 60)});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -493,7 +505,7 @@ struct SkeletonSpear final : public Monster {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
 };
@@ -501,8 +513,8 @@ struct SkeletonArcher final : public Monster {
   SkeletonArcher(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_ARCHER,
                 type, {30, 48}) {
-    attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE], 80,
-                                             ARROW_NORMAL);
+    attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD,
+                                             ARROW_NORMAL, 1, 50);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -526,8 +538,11 @@ struct SkeletonArcher final : public Monster {
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && WalkCloseToEntity(target, attackComponent.attackRangeTiles)) {
-      attackComponent.Attack();
+    if (target) {
+      attackComponent.AttackFar();
+      if (WalkCloseToEntity(target, attackComponent.attackRangeTiles)) {
+        attackComponent.AttackClose();
+      }
     }
   }
   inline void DrawDeath() noexcept {
@@ -589,21 +604,21 @@ struct SkullWolf final : public Monster {
     MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
-      if (attackComponent.globalCooldown == 0) {
+      if (attackComponent.currentCooldown == 0) {
         if (alpha == 255 && RANGE_100_FLOAT(RNG_ENGINE) < 25) {
           actionState = 2;
           spriteCounter = 0;
-          attackComponent.globalCooldown = 60;
+          attackComponent.currentCooldown = 60;
           effectHandler.AddEffect(new Swiftness(25, 700));
           effectHandler.AddEffect(new Berserk(1.4F, 700));
           PlaySoundR(resource->attackSounds[1]);
         } else if (alpha == 50 && !effectHandler.IsEffectActive(EffectType::SWIFTNESS)) {
           actionState = 3;
           spriteCounter = 0;
-          attackComponent.globalCooldown = 60;
+          attackComponent.currentCooldown = 60;
         }
       }
-      attackComponent.Attack();
+      attackComponent.AttackClose();
     }
   }
   inline void DrawDeath() noexcept {
@@ -649,6 +664,148 @@ struct SkullWolf final : public Monster {
           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
     } else {
       alpha = 255;
+      actionState = 0;
+    }
+  }
+};
+struct BossStoneGolem final : public Monster {
+  bool shouldUseLaserAttack = false;
+  HealthDropComponent healthDrop{0.75F, 0.5F, 0.25F, 0};
+  BossStoneGolem(const Point& pos, int level, MonsterType type) noexcept
+      : Monster(pos, monsterIdToScaler[type], level,
+                &textures::monsters::BOSS_STONE_GOLEM, type, {99, 91}) {
+    attackComponent.RegisterConeAttack(3, stats.effects[WEAPON_DAMAGE], 140, 40, 91,
+                                       sound::EMPTY_SOUND, 50, 0, {new Slow(20, 120)});
+    attackComponent.RegisterAbility(
+        2, 25 * 60,
+        [](Monster* attacker) {
+          attacker->effectHandler.AddEffect(new Resistance(100, 150));
+          attacker->attackComponent.currentCooldown = 150;
+        },
+        0);
+    attackComponent.RegisterAbility(
+        5, 15 * 60,
+        [](Monster* attacker) {
+          attacker->effectHandler.AddEffect(new Resistance(20, 600));
+        },
+        0, 0, 0.75F);
+    attackComponent.RegisterAbility(
+        6, 15 * 60,
+        [](Monster* attacker) {
+          attacker->effectHandler.AddEffect(new Berserk(1.2F, 600));
+        },
+        0, 0, 0.75F);
+    attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE], 150,
+                                             ARROW_NORMAL, 3, 1, {}, 0.75F);
+  }
+
+  void Draw() final {
+    if (actionState == -100) [[unlikely]] {
+      DrawDeath();
+    } else if (actionState == 1) {
+      DrawRangeAttack();
+    } else if (actionState == 2) {
+      DrawImmune();
+    } else if (actionState == 3) {
+      DrawMelee();
+    } else if (actionState == 4) {
+      DrawLaserAttack();
+    } else if (actionState == 5) {
+      DrawArmourBuff();
+    } else if (actionState == 6) {
+      DrawGlow();
+    } else {
+      DrawTextureProFastEx(resource->idle[spriteCounter % 60 / 15], pos.x_ + DRAW_X - 50,
+                           pos.y_ + DRAW_Y - 48, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    }
+    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    DRAW_HITBOXES();
+  }
+  inline void Update() final {
+    MONSTER_UPDATE()
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target) {
+      attackComponent.AttackFar();
+      healthDrop.Update(shouldUseLaserAttack, stats);
+      if (shouldUseLaserAttack) {
+        shouldUseLaserAttack = false;
+        actionState = 4;
+        attackComponent.currentCooldown = 600;
+      }
+      if (WalkToEntity(target)) {
+        if (attackComponent.currentCooldown == 0) {}
+        attackComponent.AttackClose();
+      }
+    }
+  }
+
+  inline void DrawDeath() noexcept {
+    int num = spriteCounter % 150 / 10;
+    if (num < 14) {
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X, pos.y_ + DRAW_Y, 0, 0,
+                           isFlipped, WHITE);
+    } else {
+      isDead = true;
+    }
+  }
+  inline void DrawGlow() noexcept {
+    int num = spriteCounter % 90 / 10;
+    if (num < 8) {
+      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 46,
+                           pos.y_ + DRAW_Y - 28, -10, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawMelee() noexcept {
+    int num = spriteCounter % 80 / 10;
+    if (num < 7) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 50,
+                           pos.y_ + DRAW_Y - 38, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawRangeAttack() noexcept {
+    int num = spriteCounter % 80 / 8;
+    if (num < 9) {
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 50,
+                           pos.y_ + DRAW_Y - 35, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawImmune() noexcept {
+    int num = spriteCounter % 80 / 10;
+    if (spriteCounter > 70) num = 7;
+    DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 47,
+                         pos.y_ + DRAW_Y - 43, 0, 0, isFlipped,
+                         hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    if (attackComponent.currentCooldown == 0) {
+      actionState = 0;
+    }
+  }
+  inline void DrawLaserAttack() noexcept {
+    int num = spriteCounter % 70 / 10;
+    if (spriteCounter > 60) num = 6;
+    DrawTextureProFastEx(resource->attack4[num], pos.x_ + DRAW_X - 50,
+                         pos.y_ + DRAW_Y - 55, 0, 0, isFlipped,
+                         hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    if (attackComponent.currentCooldown == 0) {
+      actionState = 0;
+    }
+  }
+  inline void DrawArmourBuff() noexcept {
+    int num = spriteCounter % 121 / 12;
+    if (num < 10) {
+      DrawTextureProFastEx(resource->attack5[num], pos.x_ + DRAW_X - 50,
+                           pos.y_ + DRAW_Y - 57, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
       actionState = 0;
     }
   }
