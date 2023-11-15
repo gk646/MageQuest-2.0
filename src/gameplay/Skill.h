@@ -5,7 +5,7 @@ struct Skill {
   inline static constexpr float SKILL_ICON_SIZE = 50;
   inline static constexpr float TOOL_TIP_WIDTH = 220;
   inline static constexpr float TOOL_TIP_BASE_HEIGHT = 93;
-  inline static constexpr int GLOBAL_COOLDOWN_TICKS = 30;
+  inline static constexpr int GLOBAL_COOLDOWN_TICKS = 30;  //Half a second
   //Only one cast can be active at a time
   inline static int16_t castProgress = -1;
   inline static Skill* lastCastedSkill = nullptr;
@@ -13,19 +13,18 @@ struct Skill {
   inline static int16_t globalCooldown = 0;
   std::string name;
   std::string description;
+  //Most skill stats like baseDamage and castTime
   SkillStats skillStats;
-  DamageStats damageStats;
   const Texture& icon;
   uint16_t coolDownUpCounter;
-  uint8_t attackAnimation = 0;
   bool activated = false;
-  Skill(const SkillStats& skillStats, const DamageStats& damageStats,
-        int attack_animation, const Texture& icon) noexcept
-      : damageStats(damageStats),
-        skillStats(skillStats),
-        attackAnimation(attack_animation),
+  Skill(const SkillStats& skillStats, int8_t attackAnimation,
+        const Texture& icon) noexcept
+      : skillStats(skillStats),
         coolDownUpCounter((int16_t)skillStats.coolDownTicks),
-        icon(icon) {}
+        icon(icon) {
+    this->skillStats.attackAnimation = attackAnimation;
+  }
 
  public:
   //Draws the cast bar
@@ -79,8 +78,10 @@ struct Skill {
     DrawRangeCircle();
     int lineBreaks = 0;
     auto descriptionText = Util::WrapText(
-        Util::CreateToolTipString(description, PLAYER_STATS.GetAbilityDmg(damageStats),
-                                  skillStats.specialVal1, skillStats.specialVal2),
+        Util::CreateToolTipString(
+            description,
+            PLAYER_STATS.GetAbilityDmg(skillStats.GetLeveledDMG(), skillStats.dmgType),
+            skillStats.specialVal1, skillStats.specialVal2),
         TOOL_TIP_WIDTH, MINECRAFT_REGULAR, 15, &lineBreaks);
 
     float toolTipHeight = TOOL_TIP_BASE_HEIGHT + (float)lineBreaks * 15.0F;
@@ -89,7 +90,7 @@ struct Skill {
     DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
                          ROUND_SEGMENTS, Colors::mediumLightGrey);
     DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
-                              ROUND_SEGMENTS, 2, damageTypeToColor[damageStats.dmgType]);
+                              ROUND_SEGMENTS, 2, damageTypeToColor[skillStats.dmgType]);
 
     //-----------Description-----------//
 
@@ -98,7 +99,7 @@ struct Skill {
 
     //-----------Name-----------//
     DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 5}, 20, 0.5F,
-                damageTypeToColor[damageStats.dmgType]);
+                damageTypeToColor[skillStats.dmgType]);
 
     if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
 
@@ -155,10 +156,14 @@ struct Skill {
   }
   //Handles the casting logic and initiates the cast
   [[nodiscard]] inline bool HandleCasting(bool isFree) noexcept;
-  //Returns the scaled damage based on type and player stats
+  //Returns the scaled damage based skillLevel, type and player stats
   [[nodiscard]] inline float GetSkillDamage(ProjectileType type) const noexcept {
-    return PLAYER_STATS.GetAbilityDmg(damageStats) /
-           (typeToInfo[type].hitType == HitType::CONTINUOUS ? 60.0F : 1.0F);
+    if (typeToInfo[type].hitType == HitType::CONTINUOUS) {
+      return PLAYER_STATS.GetAbilityDmg(skillStats.GetLeveledDMG(), skillStats.dmgType) /
+             6.0F;
+    }
+
+    return PLAYER_STATS.GetAbilityDmg(skillStats.GetLeveledDMG(), skillStats.dmgType);
   }
   inline static void ResetCast() noexcept {
     lastCastedSkill = nullptr;

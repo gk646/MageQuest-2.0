@@ -216,7 +216,7 @@ void Skill::UseResources(bool isFree) noexcept {
   PLAYER.flip = MOUSE_POS.x < CAMERA_X;
   PLAYER.spriteCounter = 0;
   if (skillStats.castTime == 0) {
-    PLAYER.actionState = attackAnimation;
+    PLAYER.actionState = skillStats.attackAnimation;
   }
   if (isFree) return;
   PLAYER_STATS.ApplySkillCosts(skillStats);

@@ -95,6 +95,9 @@ struct XPBar {
     UpdateRequirements(PLAYER_STATS.level);
     PLAYER_SPENT_POINTS.AddLevelUPPoints();
     PLAYER_STATS.ReCalculatePlayerStats();
+    for(auto& skill : PLAYER_SKILLS){
+      skill->skill->skillStats.skillLevel++;
+    }
     //TODO animation
   }
 };

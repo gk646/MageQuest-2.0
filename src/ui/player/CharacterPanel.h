@@ -73,8 +73,8 @@ struct CharacterPanel : public Window {
     float height = scaledRect.height / 1.4F;
     if (PLAYER.moving) {
       DrawTextureScaled(resource->walk[sprite_counter % 64 / 8],
-                        {pos.x_ - 80, pos.y_ - 45, scaledRect.width, height}, 0, flip,
-                        55, WHITE);
+                        {pos.x_ - 80, pos.y_ - 45, scaledRect.width, height}, 0, flip, 55,
+                        WHITE);
     } else if (action_state == 1) {
       int num = sprite_counter % 48 / 6;
       if (num < 7) {
@@ -106,8 +106,8 @@ struct CharacterPanel : public Window {
     }
     if (!PLAYER.moving && action_state == 0) {
       DrawTextureScaled(resource->idle[sprite_counter % 80 / 10],
-                        {pos.x_ - 60, pos.y_ - 45, scaledRect.width, height}, 0, flip,
-                        20, WHITE);
+                        {pos.x_ - 60, pos.y_ - 45, scaledRect.width, height}, 0, flip, 20,
+                        WHITE);
     }
     DrawRectangleRoundedLines(
         {scaledRect.x + SCALE(PADDING_LEFT * 3.2F), scaledRect.y + SCALE(PADDING_TOP),
@@ -151,14 +151,18 @@ struct CharacterPanel : public Window {
                                 PLAYER_SPENT_POINTS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
-
       y += baseStats[j].bounds.height + 1;
     }
   }
   inline void DrawSingleStatCell(Stat stat, float x, float& y, int& i,
                                  float val) noexcept {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
-    baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, val);
+    if (stat == WEAPON_DAMAGE) {
+      baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, val, Alignment::RIGHT,
+                                  Colors::darkBackground, Colors::darkBackground, "%f.2");
+    } else {
+      baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, val);
+    }
     y += baseStats[0].bounds.height + 1;
   }
 };

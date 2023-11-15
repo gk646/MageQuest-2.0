@@ -26,8 +26,14 @@ struct SkillStats {
   float specialVal2 = 0;
   uint16_t castTime = 0;
   uint16_t coolDownTicks = 0;
-  uint16_t range = 0;
+  int16_t range = 0;
+  int16_t skillLevel = 1;
+  int8_t attackAnimation = 1;
+  DamageType dmgType = DamageType::TRUE_DMG;
   ProjectileType type = ProjectileType::LOCKED;
+  [[nodiscard]] inline float GetLeveledDMG() const noexcept {
+    return ((float)std::sqrt(skillLevel) * baseDamage);
+  }
 };
 
 struct DamageStats {
@@ -96,7 +102,7 @@ struct EntityStats {
     effects[MANA_REGEN] = 1;
     effects[MAX_HEALTH] = 10;
     effects[MAX_MANA] = 20;
-    effects[WEAPON_DAMAGE] = 0;
+    effects[WEAPON_DAMAGE] = 1;
     effects[DODGE_CHANCE] = 0;
   };
   EntityStats(const MonsterScaler& scaler, uint8_t level)
@@ -157,21 +163,23 @@ struct EntityStats {
 
   //Getters
  public:
-  [[nodiscard]] inline float GetAbilityDmg(const DamageStats& stats) const noexcept {
-    switch (stats.dmgType) {
+  [[nodiscard]] inline float GetAbilityDmg(float damage,
+                                           DamageType dmgType) const noexcept {
+    damage *= effects[WEAPON_DAMAGE];
+    switch (dmgType) {
       case DamageType::FIRE:
-        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[FIRE_DMG_P]);
+        return damage * (1 + effects[FIRE_DMG_P]);
       case DamageType::POISON:
-        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[POISON_DMG_P]);
+        return damage * (1 + effects[POISON_DMG_P]);
       case DamageType::ICE:
-        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[ICE_DMG_P]);
+        return damage *(1 + effects[ICE_DMG_P]);
       case DamageType::ARCANE:
-        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[ARCANE_DMG_P]);
+        return damage * (1 + effects[ARCANE_DMG_P]);
       case DamageType::DARK:
-        return (stats.damage + effects[WEAPON_DAMAGE]) * (1 + effects[DARK_DMG_P]);
+        return damage * (1 + effects[DARK_DMG_P]);
       case DamageType::PHYSICAL:
       case DamageType::TRUE_DMG:
-        return stats.damage + effects[WEAPON_DAMAGE];
+        return damage;
     }
   }
   [[nodiscard]] inline float GetTotalCD(const SkillStats& stats) const noexcept {

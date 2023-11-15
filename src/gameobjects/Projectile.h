@@ -103,6 +103,9 @@ struct Projectile : public Entity {
         CheckTileCollision(tilePos.x, tilePos.y)) {
       HitWallCallback();
     }
+    if (hitType == HitType::CONTINUOUS) {
+      isDoingDamage = spriteCounter % 10 == 0;
+    }
     lifeSpanTicks--;
     if (lifeSpanTicks <= 0) {
       isDead = true;
