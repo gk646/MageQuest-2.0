@@ -857,10 +857,10 @@ struct SkeletonShield final : public Monster {
                 type, {37, 51}) {
     attackComponent.GLOBAL_COOLDOWN_TICKS = 80;
     attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
-                                       monsterIdToScaler[type].attackCD, 40, 48,
+                                       monsterIdToScaler[type].attackCD, 45, 51,
                                        sound::EMPTY_SOUND, 32);
     attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE],
-                                       monsterIdToScaler[type].attackCD, 40, 48,
+                                       monsterIdToScaler[type].attackCD, 45, 51,
                                        sound::EMPTY_SOUND, 32);
     attackComponent.RegisterAbility(
         3, 5 * 60,

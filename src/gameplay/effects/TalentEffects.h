@@ -16,8 +16,8 @@ struct ElementalEquilibrium final : public TalentEffect {
   inline void OnSpellCast(Skill* skill) noexcept final {
     if (!PLAYER_EFFECTS.IsEffectActive(EffectType::ELEMENTAL_EQUILIBRIUM_BUFF) &&
         !PLAYER_EFFECTS.IsEffectActive(EffectType::ELEMENTAL_EQUILIBRIUM_CD)) {
-      excludedType = skill->damageStats.dmgType;
-      PLAYER_EFFECTS.AddEffect(new ElementalEquilibriumBuff(skill->damageStats.dmgType));
+      excludedType = skill->skillStats.dmgType;
+      PLAYER_EFFECTS.AddEffect(new ElementalEquilibriumBuff(skill->skillStats.dmgType));
     }
   }
   inline void OnProjectileCreation(Projectile* prj) noexcept final {

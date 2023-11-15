@@ -19,7 +19,7 @@ struct TextCell {
   inline void DrawStatCell(float x, float y, const char* txt, float rightVal,
                            Alignment align = Alignment::RIGHT,
                            const Color& rightColor = Colors::darkBackground,
-                           const Color& leftColor = Colors::darkBackground) noexcept {
+                           const Color& leftColor = Colors::darkBackground, const char* format = nullptr) noexcept {
     Update(x, y);
     if (isHovered) {
       ToolTip::DrawToolTipAtMouse(toolTip, font, fontSize);
@@ -28,8 +28,11 @@ struct TextCell {
     } else {
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
     }
-
-    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f", rightVal);
+    if(format == nullptr){
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, format, rightVal);
+    }else{
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f", rightVal);
+    }
     if (align == Alignment::LEFT) {
       DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER,
                   {x + MeasureTextEx(MINECRAFT_BOLD, TEXT_BUFFER, 15, 0.5F).x + 5, y},
@@ -102,7 +105,6 @@ struct TextCell {
     };
     return cells;
   }
-
  private:
   inline void Update(float x, float y) noexcept {
     bounds.x = x;

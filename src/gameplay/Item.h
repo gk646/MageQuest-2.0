@@ -192,7 +192,7 @@ struct Item {
         off_sety += font_size;
       }
     }
-    for (uint_fast32_t i = WEAPON_DAMAGE; i < STATS_ENDING; i++) {
+    for (uint_fast32_t i = WEAPON_DAMAGE + 1; i < STATS_ENDING; i++) {
       if (effects[i] != 0) {
         if (std::round(effects[i]) == effects[i]) {
           snprintf(textBuffer, 10, "+%d", (int)effects[i]);
@@ -222,10 +222,11 @@ struct Item {
                 Colors::darkBackground);
 
     //type
-    DrawTextExR(MINECRAFT_ITALIC, type_to_string[type].c_str(),
-                {startX + width / 2 - (float)GetTextWidth(type_to_string[type].c_str()) / 2.0F,
-                 startY + height - 15 * UI_SCALE},
-                15 * UI_SCALE, 0.5F, Colors::darkBackground);
+    DrawTextExR(
+        MINECRAFT_ITALIC, type_to_string[type].c_str(),
+        {startX + width / 2 - (float)GetTextWidth(type_to_string[type].c_str()) / 2.0F,
+         startY + height - 15 * UI_SCALE},
+        15 * UI_SCALE, 0.5F, Colors::darkBackground);
 
     //id
     snprintf(textBuffer, 10, "id:%d%d", id, (int)type);
@@ -264,6 +265,16 @@ struct Item {
       if (attrToStat.count(attribute)) {
         arr[attrToStat[attribute]] += (float)std::stoi((*it)[2].str());
       }
+    }
+  }
+  //Sets the correct weapon damage
+  inline void SetWeaponDamage() noexcept {
+    if (type == ItemType::TWO_HAND) {
+      effects[WEAPON_DAMAGE] =
+          (float)level / 100.0F + std::min((float)rarity, 4.0F) / 100.0F;
+    } else if (type == ItemType::OFF_HAND || type == ItemType::ONE_HAND) {
+      effects[WEAPON_DAMAGE] =
+          ((float)level / 100.0F + std::min((float)rarity, 4.0F) / 100.0F) / 2.0F;
     }
   }
 };

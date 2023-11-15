@@ -86,6 +86,14 @@ std::unordered_map<DamageType, std::string> damageTypeNames = {
     {DamageType::FIRE, "fire"},           {DamageType::ICE, "ice"},
     {DamageType::DARK, "dark"},           {DamageType::PHYSICAL, "physical"},
     {DamageType::TRUE_DMG, "true damage"}};
+std::unordered_map<std::string, DamageType> damageNamesToType = {
+    {"arcane", DamageType::ARCANE},
+    {"poison", DamageType::POISON},
+    {"fire", DamageType::FIRE},
+    {"ice", DamageType::ICE},
+    {"dark", DamageType::DARK},
+    {"physical", DamageType::PHYSICAL},
+    {"true damage", DamageType::TRUE_DMG}};
 
 inline static DamageType commonSchools[4] = {DamageType::FIRE, DamageType::ICE,
                                              DamageType::ARCANE, DamageType::POISON};

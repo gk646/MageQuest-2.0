@@ -70,13 +70,14 @@ inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
 
   for (uint_fast32_t i = 0; i < BAG_SLOTS; i++) {
     auto& val = newItem->effects[i];
-    if (val == 0) continue;
+    if (val == 0.0F) continue;
     if (val < 0) {
       val = (val - rarityMult) * levelMult * qualityMult;
     } else {
       val = (val + rarityMult) * levelMult * qualityMult;
     }
   }
+  newItem->SetWeaponDamage();
 
   return newItem;
 }

@@ -24,6 +24,7 @@ static void Load() noexcept {
     stats.manaCost = std::stof(vec[ManaCost_INDEX]);
     stats.type = type;
     stats.castTime = std::stoi(vec[9]);
+    stats.dmgType = damageNamesToType[vec[10]];
     auto skillPtr = Skill::GetNewSkill(type, stats);
     if (skillPtr) {
       skillPtr->description = vec[Description_INDEX];
