@@ -57,8 +57,7 @@ void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHei
   Image spriteSheet = LoadImageR(path.c_str());
 
   int framesHorizontal = spriteSheet.width / frameWidth;
-  int framesVertical = spriteSheet.height / frameHeight;
-
+  int framesVertical = std::max(spriteSheet.height / frameHeight, 1);
   for (int y = 0; y < framesVertical; ++y) {
     for (int x = 0; x < framesHorizontal; ++x) {
       Texture frame =

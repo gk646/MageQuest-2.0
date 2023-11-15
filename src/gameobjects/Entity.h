@@ -240,6 +240,7 @@ inline float EntityStats::TakeDamage(const DamageStats& stats, const Entity* ent
     damage *= 1 + stats.critDamage;
   }
 
+  damage *= 1 - effects[DAMAGE_RESISTANCE_P];
   if (stats.dmgType == DamageType::PHYSICAL) {
     damage *= 1 - armour / (level * 50.0F);
   } else if (stats.dmgType != DamageType::TRUE_DMG) {

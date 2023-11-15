@@ -90,7 +90,7 @@ struct EntityStats {
   bool stunned = false;
   DamageType lastHitType = DamageType::TRUE_DMG;
   EntityStats() {
-    effects[CRIT_CHANCE] = 55;
+    effects[CRIT_CHANCE] = 0;
     effects[CRIT_DAMAGE_P] = 0.5F;
     effects[HEALTH_REGEN] = 0.2F;
     effects[MANA_REGEN] = 1;

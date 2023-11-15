@@ -38,6 +38,7 @@ static void Load() {
   textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
   textures::monsters::GHOST.Load("enemies/Ghost/");
   textures::monsters::SKULL_WOLF.LoadSpriteFromSheets("enemies/skullWolf/", 64, 48);
+  textures::monsters::BOSS_STONE_GOLEM.LoadSpriteFromSheets("enemies/BOSSStoneGolem/", 200, 164);
 
   textures::projectile::BLAST_HAMMER.Load("blastHammer/");
   textures::projectile::ENERGY_SPHERE.Load("EnergySphere/");

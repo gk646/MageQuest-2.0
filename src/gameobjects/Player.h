@@ -325,4 +325,7 @@ void Skill::SkillAtPlayer(ProjectileType type, bool isFree) noexcept {
                  PLAYER_STATS.effects[CRIT_DAMAGE_P]);
   PROJECTILES.emplace_back(prj);
 }
+
+
+
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

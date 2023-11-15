@@ -40,8 +40,8 @@ struct Root final : public StatusEffect {
 };
 struct Berserk final : public StatusEffect {
   float attackBoost;
-  Berserk(float value, int duration)
-      : StatusEffect(false, 0, duration, EffectType::BERSERK), attackBoost(value) {}
+  Berserk(float percentValue, int duration)
+      : StatusEffect(false, 0, duration, EffectType::BERSERK), attackBoost(percentValue) {}
   [[nodiscard]] Berserk* Clone() const final { return new Berserk(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[WEAPON_DAMAGE] *= attackBoost;
@@ -67,8 +67,8 @@ struct Berserk final : public StatusEffect {
 };
 struct Slow final : public StatusEffect {
   float slowPercent;
-  Slow(float value, int duration)
-      : StatusEffect(true, 0, duration, EffectType::SLOW), slowPercent(value / 100) {}
+  Slow(float slowPercent, int duration)
+      : StatusEffect(true, 0, duration, EffectType::SLOW), slowPercent(slowPercent / 100) {}
   [[nodiscard]] Slow* Clone() const final { return new Slow(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[SPEED_MULT_P] -= slowPercent;
@@ -112,7 +112,7 @@ struct Burn final : public StatusEffect {
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
-                                           damageStats.damage, cadence/60);
+                                           damageStats.damage, cadence / 60.0F);
   }
 };
 struct Poison final : public StatusEffect {
@@ -139,7 +139,7 @@ struct Poison final : public StatusEffect {
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
-                                           damageStats.damage, cadence);
+                                           damageStats.damage, cadence / 60.0F);
   }
 };
 struct Swiftness final : public StatusEffect {
@@ -237,8 +237,35 @@ struct Bleed final : public StatusEffect {
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
-                                           damageStats.damage,
-                                           cadence / 60.0F);
+                                           damageStats.damage, cadence / 60.0F);
+  }
+};
+struct Resistance final : public StatusEffect {
+  float resistanceAmount;
+  Resistance(float value, int duration)
+      : StatusEffect(false, 0, duration, EffectType::RESISTANCE),
+        resistanceAmount(value / 100) {}
+  [[nodiscard]] Resistance* Clone() const final { return new Resistance(*this); }
+  void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
+    stats.effects[DAMAGE_RESISTANCE_P] += resistanceAmount;
+  }
+  void TickEffect(EntityStats& stats, const Entity* self) final { duration--; }
+  void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
+    stats.effects[DAMAGE_RESISTANCE_P] -= resistanceAmount;
+  }
+  //Uses always the longest and strongest value
+  void AddStack(EntityStats& stats, const StatusEffect* other,
+                const Entity* self) noexcept final {
+    TakeLongestDuration(other);
+    if (((Resistance*)other)->resistanceAmount > resistanceAmount) {
+      RemoveEffect(stats, self);
+      resistanceAmount = ((Resistance*)other)->resistanceAmount;
+      ApplyEffect(stats, self);
+    }
+  }
+  [[nodiscard]] std::string GetToolTip() const noexcept final {
+    return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
+                                           resistanceAmount * 100.0F);
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_
