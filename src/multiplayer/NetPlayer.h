@@ -11,7 +11,6 @@ struct NetPlayer final : public Entity {
   int sprite_counter = 0;
   bool moving = false;
   bool prev_moving = false;
-  int action_state = 0;
   bool flip = false;
   explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id,
                      const PointT<int16_t>& size = {28, 50})
@@ -28,17 +27,17 @@ struct NetPlayer final : public Entity {
     if (moving) {
       DrawTextureProFastEx(resource->walk[sprite_counter % 64 / 8], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -23, 0, flip, WHITE);
-      action_state = 0;
-    } else if (action_state == 1) {
+      actionState = 0;
+    } else if (actionState == 1) {
       draw_attack1();
-    } else if (action_state == 2) {
+    } else if (actionState == 2) {
       draw_attack2();
-    } else if (action_state == 3) {
+    } else if (actionState == 3) {
       draw_attack3();
-    } else if (action_state == -100) {
+    } else if (actionState == -100) {
       draw_death();
     }
-    if (!moving && action_state == 0) {
+    if (!moving && actionState == 0) {
       DrawTextureProFastEx(resource->idle[sprite_counter % 80 / 10], pos.x_ + DRAW_X - 30,
                            pos.y_ + DRAW_Y - 45, -7, 0, flip, WHITE);
     }
@@ -72,9 +71,9 @@ struct NetPlayer final : public Entity {
   }
   inline void Hit(Projectile& p) noexcept {
     if (!p.isFriendlyToPlayer) {
+      p.HitTargetCallback();
       status_effects.AddEffects(p.statusEffects);
       stats.TakeDamage(p.damageStats, this);
-      p.isDead = action_state != -100 && p.hitType == HitType::ONE_HIT;
     }
   }
   inline void draw_direction_indicator() noexcept {
@@ -95,7 +94,7 @@ struct NetPlayer final : public Entity {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -22, 0, flip, WHITE);
     } else {
-      action_state = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack2() noexcept {
@@ -104,7 +103,7 @@ struct NetPlayer final : public Entity {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -20, 0, flip, WHITE);
     } else {
-      action_state = 0;
+      actionState = 0;
     }
   }
   inline void draw_attack3() noexcept {
@@ -113,7 +112,7 @@ struct NetPlayer final : public Entity {
       DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 25,
                            pos.y_ + DRAW_Y - 45, -15, 0, flip, WHITE);
     } else {
-      action_state = 0;
+      actionState = 0;
     }
   }
 };

@@ -110,6 +110,9 @@ struct Projectile : public Entity {
   }
   virtual void HitTargetCallback() noexcept { isDead = hitType == HitType::ONE_HIT; }
   virtual void HitWallCallback() noexcept { isDead = true; }
+  //Shoot create projectiles of the given type and send them off in regular intervals of 360/"num" degrees away from the center
+  inline static void ShootRadial(const Point& center, int num, ProjectileType type,
+                                 float damage, bool randomized = false) noexcept;
 };
 
 inline static void AddStatusEffect(Projectile* prj, StatusEffect* effect) noexcept {
@@ -121,8 +124,9 @@ inline static void AddStatusEffect(Projectile* prj, StatusEffect* effect) noexce
   }
 }
 //Sets critChance and critDamage (as percent value e.g. 0.25) for the projectile
-inline static void SetDamageStats(Projectile* prj,float critChance, float critDamage_P) noexcept {
- prj->damageStats.critDamage = critDamage_P;
- prj->damageStats.critChance = critChance;
+inline static void SetDamageStats(Projectile* prj, float critChance,
+                                  float critDamage_P) noexcept {
+  prj->damageStats.critDamage = critDamage_P;
+  prj->damageStats.critChance = critChance;
 }
 #endif  //MAGE_QUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_PROJECTILE_H_

@@ -49,6 +49,8 @@ inline static ProjectileResources* GetProjectileRes(ProjectileType type) noexcep
       return nullptr;
     case GLACIAL_BURST:
       return &textures::projectile::GLACIAL_BURST;
+    case SPORE_SHOT:
+      return &textures::projectile::SPORE_SHOT;
   }
   return nullptr;
 }

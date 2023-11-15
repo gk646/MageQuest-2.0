@@ -5,7 +5,6 @@ struct Player final : public Entity {
   std::string name;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
   float playerSpriteCount = 0;
-  int actionState = 0;
   bool flip = false;
   bool moving = false;
   uint8_t uncoverRadius = 8;
@@ -27,9 +26,9 @@ struct Player final : public Entity {
   inline void Hit(Projectile& p) const noexcept {
     if (!p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
       ApplyTalentsToPlayerHit(&p);
+      p.HitTargetCallback();
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
       PLAYER_STATS.TakeDamage(p.damageStats, this);
-      p.isDead = p.hitType == HitType::ONE_HIT;
     }
   }
   void Draw() final {
@@ -39,13 +38,13 @@ struct Player final : public Entity {
                            std::floor(pos.y_ + DRAW_Y - 46), -20, 0, flip, WHITE);
       actionState = 0;
     } else if (actionState == 1) {
-      draw_attack1();
+      DrawAttack1();
     } else if (actionState == 2) {
-      draw_attack2();
+      DrawAttack2();
     } else if (actionState == 3) {
-      draw_attack3();
+      DrawAttack3();
     } else if (actionState == -100) {
-      draw_death();
+      DrawDeath();
     }
     if (!moving && actionState == 0) {
       DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 10],
@@ -107,7 +106,7 @@ struct Player final : public Entity {
   }
 
  private:
-  inline void draw_death() noexcept {
+  inline void DrawDeath() noexcept {
     int num = spriteCounter % 75 / 15;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 25,
@@ -116,7 +115,7 @@ struct Player final : public Entity {
       isDead = true;
     }
   }
-  inline void draw_attack1() noexcept {
+  inline void DrawAttack1() noexcept {
     int num = spriteCounter % 48 / 6;
     if (num < 7) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 25,
@@ -125,7 +124,7 @@ struct Player final : public Entity {
       actionState = 0;
     }
   }
-  inline void draw_attack2() noexcept {
+  inline void DrawAttack2() noexcept {
     int num = spriteCounter % 50 / 5;
     if (num < 9) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 25,
@@ -134,7 +133,7 @@ struct Player final : public Entity {
       actionState = 0;
     }
   }
-  inline void draw_attack3() noexcept {
+  inline void DrawAttack3() noexcept {
     if (!Skill::lastCastedSkill) {
       actionState = 0;
       Draw();
@@ -270,16 +269,16 @@ void Skill::SkillAtMouseRadial(ProjectileType type, int numProjectiles,
   if (!RangeLineOfSightCheck(targetPos)) return;
   if (!HandleCasting(isFree)) return;
   UseResources(isFree);
-  const float interval_angle = 360.0f / numProjectiles;
+  const float intervalAngle = 360.0f / numProjectiles;
   float damage = GetSkillDamage(type);
   for (int_fast32_t i = 0; i < numProjectiles; i++) {
-    float angle_rad = interval_angle * i * DEG2RAD;
-    float x_component = std::cos(angle_rad);
-    float y_component = std::sin(angle_rad);
-    float pov = angle_rad * RAD2DEG;
+    float angleRad = intervalAngle * i * DEG2RAD;
+    float moveX = std::cos(angleRad);
+    float moveY = std::sin(angleRad);
+    float pov = angleRad * RAD2DEG;
 
     auto prj = GetProjectileInstance(
-        type, targetPos, true, damage, &PLAYER, {x_component, y_component}, pov, {},
+        type, targetPos, true, damage, &PLAYER, {moveX, moveY}, pov, {},
         i == numProjectiles - 1 ? sound::fireBurst : sound::EMPTY_SOUND);
     SetDamageStats(prj, PLAYER_STATS.effects[CRIT_CHANCE],
                    PLAYER_STATS.effects[CRIT_DAMAGE_P]);
@@ -326,6 +325,20 @@ void Skill::SkillAtPlayer(ProjectileType type, bool isFree) noexcept {
   PROJECTILES.emplace_back(prj);
 }
 
-
-
+void Projectile::ShootRadial(const cxstructs::Point& center, int num, ProjectileType type,
+                             float damage, bool randomized) noexcept {
+  const float intervalAngle = 360.0f / num;
+  for (int i = 0; i < num; i++) {
+    float angleRad = intervalAngle * i * DEG2RAD;
+    if (randomized) {
+      angleRad = RANGE_01(RNG_ENGINE) * 360;
+    }
+    float moveX = std::cos(angleRad);
+    float moveY = std::sin(angleRad);
+    float pov = angleRad * RAD2DEG;
+    auto prj = GetProjectileInstance(type, center, false, damage, &PLAYER, {moveX, moveY},
+                                     pov, {});
+    PROJECTILES.emplace_back(prj);
+  }
+}
 #endif  //MAGE_QUEST_SRC_ENTITIES_PLAYER_H_

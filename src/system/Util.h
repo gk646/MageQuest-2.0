@@ -214,25 +214,26 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
                                                     const char* stringVal = nullptr) {
   std::string ret = s;
   size_t pos;
+  char buffer[4];
 
   if (duration != FLT_MAX) {
     pos = ret.find("DURATION");
     if (pos != std::string::npos) {
-      ret.replace(pos, 8, std::to_string((int)duration / 60));
+      ret.replace(pos, 8, std::to_string(duration / 60));
     }
   }
 
   if (amount != FLT_MAX) {
     pos = ret.find("AMOUNT");
     if (pos != std::string::npos) {
-      ret.replace(pos, 6, std::to_string((int)amount));
+      snprintf(buffer, sizeof(buffer), "%.1f", amount);
+      ret.replace(pos, 6, buffer);
     }
   }
 
   if (val3 != FLT_MAX) {
     pos = ret.find("VAL3");
     if (pos != std::string::npos) {
-      char buffer[6];
       snprintf(buffer, sizeof(buffer), "%.1f", val3);
       ret.replace(pos, 4, buffer);
     }
@@ -248,8 +249,7 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
   return ret;
 }
 //Draws a swiping rectangular cooldown animation by drawing lines from the center to the bound points of the square
-inline static void DrawSwipeCooldownEffect(float x, float y, float size,
-                                           int totalTicks,
+inline static void DrawSwipeCooldownEffect(float x, float y, float size, int totalTicks,
                                            int currentTicks) noexcept {
   if (currentTicks < totalTicks) {
     float side1, side2, side3, side4, side5;

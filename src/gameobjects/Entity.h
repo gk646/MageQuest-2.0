@@ -14,6 +14,7 @@ struct Entity {
   uint16_t spriteCounter = 0;
   ShapeType hitboxShape;
   bool isDead = false;
+  int8_t actionState = 0;
   Zone currentZone;
   //Is in the same zone and closer than "UPDATE_RANGE"
   bool isUpdated = true;

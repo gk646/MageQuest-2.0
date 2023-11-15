@@ -10,7 +10,6 @@ struct NPC : public Entity {
   float speed;
   float dialogueProgressCount = 1000;
   int16_t dialogueShowDelayTicks = -1;
-  uint8_t actionState = 0;
   bool isFlipped = false;
   bool moving = false;
   NPC_ID id;

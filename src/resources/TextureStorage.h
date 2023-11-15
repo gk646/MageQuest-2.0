@@ -63,6 +63,7 @@ inline ProjectileResources VOID_FIELD;
 inline ProjectileResources DUMMY;
 inline ProjectileResources PSYCHIC_SCREAM;
 inline ProjectileResources ARROW_NORMAL;
+inline ProjectileResources SPORE_SHOT;
 
 }  // namespace projectile
 
