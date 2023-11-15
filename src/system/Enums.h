@@ -428,6 +428,7 @@ enum ProjectileType : uint8_t {
   VOID_FIELD,
   ARCANE_BOLT,
   PSYCHIC_SCREAM,
+  SPORE_SHOT,
   DUMMY,
   LOCKED,
   PROJECTILE_END
@@ -439,6 +440,7 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
     {"FIRE_STRIKE", ProjectileType::FIRE_STRIKE},
     {"FIRE_BALL", ProjectileType::FIRE_BALL},
     {"BLAST_HAMMER", ProjectileType::BLAST_HAMMER},
+    {"SPORE_SHOT", ProjectileType::SPORE_SHOT},
     {"ENERGY_SPHERE", ProjectileType::ENERGY_SPHERE},
     {"FIRE_SWORD", ProjectileType::FIRE_SWORD},
     {"FROST_NOVA", ProjectileType::FROST_NOVA},
@@ -483,6 +485,7 @@ inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {
     {ProjectileType::INFERNO_RAY, ProjectileInfo()},
     {ProjectileType::ARROW_NORMAL, ProjectileInfo()},
     {ProjectileType::LIGHTNING, ProjectileInfo()},
+    {ProjectileType::SPORE_SHOT, ProjectileInfo()},
     {ProjectileType::PYRO_BLAST, ProjectileInfo()},
     {ProjectileType::SOLAR_FLARE, ProjectileInfo()},
     {ProjectileType::THUNDER_SPLASH, ProjectileInfo()},

@@ -375,4 +375,34 @@ struct VoidEruption final : Projectile {
     }
   }
 };
+struct SporeShot final : Projectile {
+  bool hitTarget = false;
+  SporeShot(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::POISON, damage}, effects, mvmt,
+                   pov, sound::EMPTY_SOUND, sender, SPORE_SHOT) {
+    AddStatusEffect(this, new Root(120));
+    isDoingDamage = false;
+  }
+
+  void Draw() final {
+    DrawTextureProFastRotOffset(resources->frames[spriteCounter % 64 / 8],
+                                pos.x_ + DRAW_X - 19, pos.y_ + DRAW_Y - 19, pov, WHITE, 0,
+                                0);
+
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    Projectile::Update();
+    if (spriteCounter == 40 && ! hitTarget) {
+      isDoingDamage = true;
+    } else if(hitTarget) {
+      isDoingDamage = false;
+    }
+  }
+  void HitTargetCallback() noexcept final {
+    hitTarget = true;
+  }
+};
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_

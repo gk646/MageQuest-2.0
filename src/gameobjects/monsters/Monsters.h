@@ -186,22 +186,39 @@ struct FangShroom final : public Monster {
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::MUSHROOM, type,
                 {32, 39}) {
     attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
-                                       monsterIdToScaler[type].attackCD, 25, 35,
+                                       monsterIdToScaler[type].attackCD, 22, 33,
                                        resource->attackSounds[0], 1, 35);
+    attackComponent.RegisterConeAttack(
+        2, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD, 25, 35,
+        resource->attackSounds[0], 1, 50,
+        {new Poison(stats.effects[WEAPON_DAMAGE] * 0.4F, 300, 60)}, 0.4F);
+    attackComponent.RegisterAbility(
+        3, 10 * 60,
+        [](Monster* attacker) {
+          Projectile::ShootRadial(
+              attacker->GetMiddlePoint(), 4, SPORE_SHOT,
+              ((FangShroom*)attacker)->stats.effects[WEAPON_DAMAGE] * 0.6F, true);
+        },
+        3, 50, 0.5F);
   }
+
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
       DrawDeath();
     } else if (actionState == 1) {
       DrawAttack1();
+    } else if (actionState == 2) {
+      DrawBite();
+    } else if (actionState == 3) {
+      DrawRangedAttack();
     } else {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 80 / 10],
-                             pos.x_ + DRAW_X - 62, pos.y_ + DRAW_Y - 62, 3, 0, isFlipped,
+                             pos.x_ + DRAW_X - 64, pos.y_ + DRAW_Y - 64, 0, 0, isFlipped,
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 20],
-                             pos.x_ + DRAW_X - 60, pos.y_ + DRAW_Y - 62, 3, 0, isFlipped,
+                             pos.x_ + DRAW_X - 64, pos.y_ + DRAW_Y - 64, 0, 0, isFlipped,
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
@@ -211,25 +228,48 @@ struct FangShroom final : public Monster {
   void Update() final {
     MONSTER_UPDATE();
     auto target = threatManager.GetHighestThreatTarget();
-    if (target && WalkToEntity(target)) {
-      attackComponent.AttackClose();
+    if (target) {
+      attackComponent.AttackFar();
+      if (WalkToEntity(target)) {
+        attackComponent.AttackClose();
+      }
     }
   }
   inline void DrawDeath() noexcept {
     int num = spriteCounter % 100 / 20;
     if (num < 4) {
-      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 60,
-                           pos.y_ + DRAW_Y - 62, 3, 0, isFlipped,
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 64,
+                           pos.y_ + DRAW_Y - 64, 0, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       isDead = true;
     }
   }
   inline void DrawAttack1() noexcept {
-    int num = spriteCounter % 81 / 9;
+    int num = spriteCounter % 63 / 7;
     if (num < 8) {
-      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 56,
-                           pos.y_ + DRAW_Y - 62, 0, 0, isFlipped,
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 64,
+                           pos.y_ + DRAW_Y - 64, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawBite() noexcept {
+    int num = spriteCounter % 63 / 7;
+    if (num < 8) {
+      DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 64,
+                           pos.y_ + DRAW_Y - 64, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawRangedAttack() noexcept {
+    int num = spriteCounter % 78 / 7;
+    if (num < 11) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 64,
+                           pos.y_ + DRAW_Y - 64, 0, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;
@@ -513,7 +553,8 @@ struct SkeletonArcher final : public Monster {
   SkeletonArcher(const Point& pos, int level, MonsterType type) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SKELETON_ARCHER,
                 type, {30, 48}) {
-    attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD,
+    attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE],
+                                             monsterIdToScaler[type].attackCD,
                                              ARROW_NORMAL, 1, 50);
   }
   void Draw() final {

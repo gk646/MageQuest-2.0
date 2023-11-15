@@ -32,7 +32,7 @@ static void Load() {
   textures::monsters::BOSS_SLIME.Load("enemies/BossSlime/");
   textures::monsters::GOBLIN.Load("enemies/goblin/");
   textures::monsters::KNIGHT.Load("enemies/Knight/");
-  textures::monsters::MUSHROOM.Load("enemies/mushroom/");
+  textures::monsters::MUSHROOM.LoadSpriteFromSheets("enemies/mushroom/",150,150);
   textures::monsters::SNAKE.Load("enemies/snake/");
   textures::monsters::WOLF.Load("enemies/wolf/");
   textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
@@ -64,6 +64,7 @@ static void Load() {
   textures::projectile::PSYCHIC_SCREAM.Load("PsychicScream/");
   textures::projectile::ARROW_NORMAL.Load("arrowNormal/");
   textures::projectile::ARCANE_BOLT.Load("arcaneBolt/");
+  textures::projectile::SPORE_SHOT.LoadSpriteSheet("projectiles/sporeShot/0.png",50,50);
 
   textures::npc::ARIA.Load("npc/aria/");
   textures::npc::OLD_MAN.Load("npc/oldman/");

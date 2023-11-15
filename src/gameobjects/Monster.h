@@ -26,7 +26,6 @@ struct Monster : public Entity {
   const MonsterResource* resource;
   HealthBar healthBar;
   uint16_t u_id = MONSTER_ID++;
-  int8_t actionState = 0;
   bool isMoving = false;
   bool prevMoveState = false;
   bool isFlipped = false;

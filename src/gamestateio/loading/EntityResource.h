@@ -88,8 +88,8 @@ struct MonsterResource {
     LoadSoundFiles(name);
   }
   void LoadSpriteFromSheets(const std::string& name, int frameWidth, int frameHeight) {
-    LoadSoundFiles(name);
     LoadSpriteSheets(name, frameWidth, frameHeight);
+    LoadSoundFiles(name);
   }
 
  private:

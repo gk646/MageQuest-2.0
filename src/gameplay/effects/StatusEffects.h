@@ -108,6 +108,8 @@ struct Burn final : public StatusEffect {
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
+    TakeLongestDuration(other);
+    damageStats.damage += ((Burn*)other)->damageStats.damage;
     stacks++;
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
@@ -135,7 +137,9 @@ struct Poison final : public StatusEffect {
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
-    duration = other->duration;
+    TakeLongestDuration(other);
+    damageStats.damage += ((Poison*)other)->damageStats.damage;
+    stacks++;
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,

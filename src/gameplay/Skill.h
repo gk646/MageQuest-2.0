@@ -223,15 +223,16 @@ inline static Projectile* GetProjectileInstance(
       return new VoidField(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case ARCANE_BOLT:
       return new ArcaneBolt(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
-    case PROJECTILE_END:
-      break;
     case PSYCHIC_SCREAM:
       return new PsychicScream(pos, isFriendlyToPlayer, damage);
     case GLACIAL_BURST:
       return new GlacialBurst(pos, isFriendlyToPlayer, damage, effects, {0, 0}, sender);
     case DUMMY:
     case LOCKED:
+    case PROJECTILE_END:
       return nullptr;
+    case SPORE_SHOT:
+      return new SporeShot(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
   }
   std::cout << "MISSING PROJECTILE ENUM VAL:" << (int)type << std::endl;
   return nullptr;
