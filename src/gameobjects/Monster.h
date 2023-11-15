@@ -13,7 +13,7 @@
   if (MP_TYPE == MultiplayerType::CLIENT) return;                                     \
   hitFlashDuration = std::max(-12, hitFlashDuration - 1);                             \
   isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT && threatManager.targetCount > 0; \
-  attackComponent.Update();                                                \
+  attackComponent.Update();                                                           \
   if (actionState != 0) return;                                                       \
   threatManager.Update();                                                             \
   isMoving = false;
@@ -211,7 +211,7 @@ Monster* Monster::GetNewMonster(const Point& pos, MonsterType type,
     case MonsterType::SKEL_ARCHER:
       return new SkeletonArcher(pos, level, type);
     case MonsterType::SKEL_SHIELD:
-      break;
+      return new SkeletonShield(pos, level, type);
     case MonsterType::SNAKE:
       return new Snake(pos, level, type);
     case MonsterType::GHOST:
@@ -306,10 +306,14 @@ void AttackComponent::StartAnimation(int8_t actionState) const noexcept {
   self->actionState = actionState;
 }
 bool CustomAbility::IsReady(Monster* self) noexcept {
-  return currentCooldown == 0 && currentDelay == -1 && PLAYER.tilePos.dist(self->tilePos) > range;
+  return currentCooldown == 0 && currentDelay == -1 &&
+         ((range > 0 && PLAYER.tilePos.dist(self->tilePos) > range) ||
+          (range < 0 && PLAYER.tilePos.dist(self->tilePos) < std::abs(range)));
 }
 bool ProjectileAttack::IsReady(Monster* self) noexcept {
-  return currentCooldown == 0 && currentDelay == -1 && PLAYER.tilePos.dist(self->tilePos) > range;
+  return currentCooldown == 0 && currentDelay == -1 &&
+         ((range > 0 && PLAYER.tilePos.dist(self->tilePos) > range) ||
+          (range < 0 && PLAYER.tilePos.dist(self->tilePos) < std::abs(range)));
 }
 void ProjectileAttack::Execute(Monster* attacker) const {
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};

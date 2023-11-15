@@ -233,6 +233,8 @@ inline static Projectile* GetProjectileInstance(
       return nullptr;
     case SPORE_SHOT:
       return new SporeShot(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
+    case SWORD_SPIN:
+      return new SwordSpin(pos, isFriendlyToPlayer, damage, effects, pov, mvmt, sender);
   }
   std::cout << "MISSING PROJECTILE ENUM VAL:" << (int)type << std::endl;
   return nullptr;

@@ -101,7 +101,7 @@ struct AttackComponent {
   std::array<BaseAttack*, 5> attacks = {0};
   Monster* self;
   int16_t currentCooldown = 0;
-  const int16_t GLOBAL_COOLDOWN_TICKS = 0;
+   int16_t GLOBAL_COOLDOWN_TICKS = 0;
   int8_t attackRangeTiles;
   int8_t chaseRangeTiles;
   int8_t registeredAttacks;

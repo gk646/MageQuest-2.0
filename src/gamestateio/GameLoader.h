@@ -75,8 +75,7 @@ struct GameLoader {
       if (!skill) continue;
       AddSkill(skill);
     }
-    MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::BOSS_STONE_GOLEM, 1));
-    MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKEL_ARCHER, 1));
+    MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKEL_SHIELD, 1));
    // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }
