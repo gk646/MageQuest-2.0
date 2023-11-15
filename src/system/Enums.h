@@ -238,7 +238,7 @@ enum Stat : uint8_t {
   POISON_COST_REDUCTION_P,
   FIRE_COST_REDUCTION_P,
   ICE_COST_REDUCTION_P,
-  DAMAGE_RESISTANCE_P, //Percent reduction of total damage received
+  DAMAGE_RESISTANCE_P,  //Percent reduction of total damage received
   FILL7,
   FILL8,
   FILL9,
@@ -429,6 +429,7 @@ enum ProjectileType : uint8_t {
   ARCANE_BOLT,
   PSYCHIC_SCREAM,
   SPORE_SHOT,
+  SWORD_SPIN,
   DUMMY,
   LOCKED,
   PROJECTILE_END
@@ -441,6 +442,7 @@ inline static std::unordered_map<std::string, ProjectileType> stringToProjectile
     {"FIRE_BALL", ProjectileType::FIRE_BALL},
     {"BLAST_HAMMER", ProjectileType::BLAST_HAMMER},
     {"SPORE_SHOT", ProjectileType::SPORE_SHOT},
+    {"SWORD_SPIN", ProjectileType::SWORD_SPIN},
     {"ENERGY_SPHERE", ProjectileType::ENERGY_SPHERE},
     {"FIRE_SWORD", ProjectileType::FIRE_SWORD},
     {"FROST_NOVA", ProjectileType::FROST_NOVA},
@@ -472,30 +474,7 @@ struct ProjectileInfo {
   bool illuminated = false;
 };
 
-inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {
-    {ProjectileType::POISON_BALL, ProjectileInfo()},
-    {ProjectileType::FIRE_STRIKE_II, ProjectileInfo()},
-    {ProjectileType::FIRE_STRIKE, ProjectileInfo()},
-    {ProjectileType::FIRE_BALL, ProjectileInfo()},
-    {ProjectileType::BLAST_HAMMER, ProjectileInfo()},
-    {ProjectileType::ENERGY_SPHERE, ProjectileInfo()},
-    {ProjectileType::FIRE_SWORD, ProjectileInfo()},
-    {ProjectileType::FROST_NOVA, ProjectileInfo()},
-    {ProjectileType::ICE_LANCE, ProjectileInfo()},
-    {ProjectileType::INFERNO_RAY, ProjectileInfo()},
-    {ProjectileType::ARROW_NORMAL, ProjectileInfo()},
-    {ProjectileType::LIGHTNING, ProjectileInfo()},
-    {ProjectileType::SPORE_SHOT, ProjectileInfo()},
-    {ProjectileType::PYRO_BLAST, ProjectileInfo()},
-    {ProjectileType::SOLAR_FLARE, ProjectileInfo()},
-    {ProjectileType::THUNDER_SPLASH, ProjectileInfo()},
-    {ProjectileType::THUNDER_STRIKE, ProjectileInfo()},
-    {ProjectileType::VOID_ERUPTION, ProjectileInfo()},
-    {ProjectileType::GLACIAL_BURST, ProjectileInfo()},
-    {ProjectileType::VOID_FIELD, ProjectileInfo()},
-    {ProjectileType::ARCANE_BOLT, ProjectileInfo()},
-    {ProjectileType::PSYCHIC_SCREAM, ProjectileInfo()},
-};
+inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {};
 
 inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
     {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},

@@ -356,7 +356,6 @@ struct VoidEruption final : Projectile {
                const Vector2& mvmt, const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::DARK, damage}, effects, mvmt, 0,
                    sound::voidEruption, sender, VOID_ERUPTION) {
-    AddStatusEffect(this, new Root(120));
   }
 
   void Draw() final {
@@ -395,14 +394,35 @@ struct SporeShot final : Projectile {
   }
   void Update() final {
     Projectile::Update();
-    if (spriteCounter == 40 && ! hitTarget) {
+    if (spriteCounter == 40 && !hitTarget) {
       isDoingDamage = true;
-    } else if(hitTarget) {
+    } else if (hitTarget) {
       isDoingDamage = false;
     }
   }
-  void HitTargetCallback() noexcept final {
-    hitTarget = true;
+  void HitTargetCallback() noexcept final { hitTarget = true; }
+};
+
+struct SwordSpin final : Projectile {
+  SwordSpin(const Point& pos, bool isFriendlyToPlayer, float damage,
+            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
+            const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::PHYSICAL, damage}, effects, mvmt,
+                   pov, sound::EMPTY_SOUND, sender, SWORD_SPIN) {
+    isDoingDamage = false;
+  }
+  void Draw() final {
+    DrawTextureProFast(resources->frames[spriteCounter % 64 / 8], pos.x_ + DRAW_X - 38,
+                       pos.y_ + DRAW_Y - 42, 0, WHITE);
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    Projectile::Update();
+    if (spriteCounter % 10 == 0) {
+      isDoingDamage = true;
+    } else {
+      isDoingDamage = false;
+    }
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_

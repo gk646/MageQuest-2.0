@@ -64,6 +64,7 @@ inline ProjectileResources DUMMY;
 inline ProjectileResources PSYCHIC_SCREAM;
 inline ProjectileResources ARROW_NORMAL;
 inline ProjectileResources SPORE_SHOT;
+inline ProjectileResources SWORD_SPIN;
 
 }  // namespace projectile
 

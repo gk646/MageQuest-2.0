@@ -25,32 +25,36 @@ static void Load() {
 
   textures::monsters::SKELETON_WARRIOR.Load("enemies/skeletonWarrior/");
   textures::monsters::SKELETON_SPEAR.Load("enemies/skeletonSpear/");
-  textures::monsters::SKELETON_SHIELD.Load("enemies/skeletonShield/");
+  textures::monsters::SKELETON_SHIELD.LoadSpriteFromSheets("enemies/skeletonShield/", 150,
+                                                           150);
   textures::monsters::SKELETON_ARCHER.Load("enemies/skeletonArcher/");
   textures::monsters::BOSS_DEATH_BRINGER.Load("enemies/BOSSDeathBringer/");
   textures::monsters::BOSS_KNIGHT.Load("enemies/BOSSKnight/");
   textures::monsters::BOSS_SLIME.Load("enemies/BossSlime/");
   textures::monsters::GOBLIN.Load("enemies/goblin/");
   textures::monsters::KNIGHT.Load("enemies/Knight/");
-  textures::monsters::MUSHROOM.LoadSpriteFromSheets("enemies/mushroom/",150,150);
+  textures::monsters::MUSHROOM.LoadSpriteFromSheets("enemies/mushroom/", 150, 150);
   textures::monsters::SNAKE.Load("enemies/snake/");
   textures::monsters::WOLF.Load("enemies/wolf/");
   textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
   textures::monsters::GHOST.Load("enemies/Ghost/");
   textures::monsters::SKULL_WOLF.LoadSpriteFromSheets("enemies/skullWolf/", 64, 48);
-  textures::monsters::BOSS_STONE_GOLEM.LoadSpriteFromSheets("enemies/BOSSStoneGolem/", 200, 164);
+  textures::monsters::BOSS_STONE_GOLEM.LoadSpriteFromSheets("enemies/BOSSStoneGolem/",
+                                                            200, 164);
 
   textures::projectile::BLAST_HAMMER.Load("blastHammer/");
   textures::projectile::ENERGY_SPHERE.Load("EnergySphere/");
   textures::projectile::ETHER_PORTAL.Load("etherPortal/");
   textures::projectile::FIRE_BURST.Load("fireBurst/");
-  textures::projectile::FIRE_BALL.LoadSpriteSheet("projectiles/fireBall/0.png", 64, 64, 48, 0);
+  textures::projectile::FIRE_BALL.LoadSpriteSheet("projectiles/fireBall/0.png", 64, 64,
+                                                  48, 0);
   textures::projectile::FIRE_EXPLOSION.Load("fireExplosion/");
   textures::projectile::FIRE_SWORD.Load("fireSword/");
   textures::projectile::FROST_NOVA.Load("frostNova/");
   textures::projectile::GATE_1.Load("gate1/");
   textures::projectile::ICE_LANCE.LoadSpriteSheet("projectiles/iceLance/0.png", 48, 32);
-  textures::projectile::GLACIAL_BURST.LoadSpriteSheet("projectiles/glacialBurst/0.png", 64, 64);
+  textures::projectile::GLACIAL_BURST.LoadSpriteSheet("projectiles/glacialBurst/0.png",
+                                                      64, 64);
   textures::projectile::INFERNO_RAY.Load("infernoRay/");
   textures::projectile::LIGHTNING_STRIKE.Load("Lightning/");
   textures::projectile::POWER_SURGE.Load("powerSurge/");
@@ -59,12 +63,14 @@ static void Load() {
   textures::projectile::THUNDER_SPLASH.Load("thunderSplash/");
   textures::projectile::THUNDER_STRIKE.Load("thunderStrike/");
   textures::projectile::VOID_ERUPTION.Load("voidEruption/");
-  textures::projectile::VOID_FIELD.LoadSpriteSheet("projectiles/voidField/0.png", 124, 124);
+  textures::projectile::VOID_FIELD.LoadSpriteSheet("projectiles/voidField/0.png", 124,
+                                                   124);
   textures::projectile::DUMMY.Load("dummy/");
   textures::projectile::PSYCHIC_SCREAM.Load("PsychicScream/");
   textures::projectile::ARROW_NORMAL.Load("arrowNormal/");
   textures::projectile::ARCANE_BOLT.Load("arcaneBolt/");
-  textures::projectile::SPORE_SHOT.LoadSpriteSheet("projectiles/sporeShot/0.png",50,50);
+  textures::projectile::SPORE_SHOT.LoadSpriteSheet("projectiles/sporeShot/0.png", 50, 50);
+  textures::projectile::SWORD_SPIN.LoadSpriteSheet("projectiles/swordSpin/0.png", 92, 102);
 
   textures::npc::ARIA.Load("npc/aria/");
   textures::npc::OLD_MAN.Load("npc/oldman/");
