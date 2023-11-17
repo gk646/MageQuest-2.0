@@ -33,7 +33,7 @@ struct Monster : public Entity {
   MonsterType type;
   Monster(const Point& pos, const MonsterScaler& scaler, uint8_t level,
           const MonsterResource* resourceArg, MonsterType typeArg,
-          const PointT<int16_t>& size, ShapeType hitboxShape = ShapeType::RECT)
+          const PointT<int16_t>& size, Zone zone, ShapeType hitboxShape = ShapeType::RECT)
       : Entity(pos, size, hitboxShape),
         stats({scaler, level}),
         resource(resourceArg),
@@ -165,8 +165,8 @@ struct Monster : public Entity {
     pos.y_ = data->y;
   }
   inline void MonsterDiedCallback() noexcept;
-  inline static Monster* GetNewMonster(const Point& pos, MonsterType type,
-                                       uint8_t level) noexcept;
+  inline static Monster* GetNewMonster(const Point& pos, MonsterType type, uint8_t level,
+                                       Zone zone = CURRENT_ZONE) noexcept;
   inline RectangleR GetAttackConeBounds(int attackWidth, int attackHeight) noexcept {
     RectangleR ret = {0};
     auto playerPos = PLAYER.pos;
@@ -186,43 +186,40 @@ struct Monster : public Entity {
 
 #include "monsters/Monsters.h"
 
-Monster* Monster::GetNewMonster(const Point& pos, MonsterType type,
-                                uint8_t level) noexcept {
+Monster* Monster::GetNewMonster(const Point& pos, MonsterType type, uint8_t level,
+                                Zone zone) noexcept {
   switch (type) {
     case MonsterType::SKEL_WAR:
-      return new SkeletonWarrior(pos, level, type);
-    case MonsterType::ANY:
-      break;
+      return new SkeletonWarrior(pos, level, type, zone);
     case MonsterType::SKEL_SPEAR:
-      return new SkeletonSpear(pos, level, type);
+      return new SkeletonSpear(pos, level, type, zone);
     case MonsterType::WOLF:
-      return new Wolf(pos, level, type);
-    case MonsterType::BOSS_DEATH_BRINGER:
-      break;
-    case MonsterType::BOSS_KNIGHT:
-      break;
-    case MonsterType::BOSS_SLIME:
-      break;
-    case MonsterType::GOBLIN:
-      break;
-    case MonsterType::KNIGHT:
-      break;
+      return new Wolf(pos, level, type, zone);
     case MonsterType::MUSHROOM:
-      return new FangShroom(pos, level, type);
+      return new FangShroom(pos, level, type, zone);
     case MonsterType::SKEL_ARCHER:
-      return new SkeletonArcher(pos, level, type);
+      return new SkeletonArcher(pos, level, type, zone);
     case MonsterType::SKEL_SHIELD:
-      return new SkeletonShield(pos, level, type);
+      return new SkeletonShield(pos, level, type, zone);
     case MonsterType::SNAKE:
-      return new Snake(pos, level, type);
+      return new Snake(pos, level, type, zone);
     case MonsterType::GHOST:
-      return new Ghost(pos, level, type);
+      return new Ghost(pos, level, type, zone);
     case MonsterType::BLOOD_HOUND:
-      return new BloodHound(pos, level, type);
+      return new BloodHound(pos, level, type, zone);
     case MonsterType::SKULL_WOLF:
-      return new SkullWolf(pos, level, type);
-    case MonsterType::BOSS_STONE_GOLEM:
-      return new BossStoneGolem(pos, level, type);
+      return new SkullWolf(pos, level, type, zone);
+    case MonsterType::BOSS_ANCIENT_GOLEM:
+      return new BossStoneGolem(pos, level, type, zone);
+    case MonsterType::RAT:
+      return new Rat(pos, level, type, zone);
+    case MonsterType::BOSS_DEATH_BRINGER:
+    case MonsterType::BOSS_STONE_KNIGHT:
+    case MonsterType::BOSS_SLIME:
+    case MonsterType::GOBLIN:
+    case MonsterType::KNIGHT:
+    case MonsterType::ANY:
+      return nullptr;
   }
   std::cout << "MISSING MONSTER ID AT ENUM ID:" << (int)type << std::endl;
   return nullptr;

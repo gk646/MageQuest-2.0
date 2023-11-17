@@ -33,6 +33,7 @@ inline MonsterResource KNIGHT;
 inline MonsterResource MUSHROOM;
 inline MonsterResource SNAKE;
 inline MonsterResource WOLF;
+inline MonsterResource RAT;
 inline MonsterResource BLOOD_HOUND;
 inline MonsterResource GHOST;
 inline MonsterResource SKULL_WOLF;

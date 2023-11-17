@@ -8,14 +8,18 @@ struct StatusEffect {
   int16_t fullDuration;
   int16_t duration;
   int16_t stacks = 1;
+  int8_t maxStacks = 10;
   EffectType type;
   bool isDebuff;
-  StatusEffect(bool isDebuff, int cadence, int duration, EffectType type)
+  bool isPermanent;
+  StatusEffect(bool isDebuff, int cadence, int duration, EffectType type,
+               bool isPermanent = false)
       : isDebuff(isDebuff),
         cadence((int16_t)cadence),
         duration((int16_t)duration),
         fullDuration((int16_t)duration),
-        type(type) {}
+        type(type),
+        isPermanent(isPermanent) {}
   virtual ~StatusEffect() = default;
   StatusEffect(const StatusEffect& other) = default;
   StatusEffect& operator=(const StatusEffect& other) = delete;
@@ -28,7 +32,8 @@ struct StatusEffect {
                                   size == 32 ? 28 : 14, fullDuration, duration);
     if (stacks > 1) {
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%d", stacks);
-      DrawTextExR(EDIT_UNDO, TEXT_BUFFER, {x + size - 10,y+size-17}, 14, 0.5F, BLACK);
+      DrawTextExR(EDIT_UNDO, TEXT_BUFFER, {x + size - 10, y + size - 17}, 14, 0.5F,
+                  BLACK);
     }
   }
   //Draws the tooltip with dynamic text and height scaling to length
@@ -74,7 +79,11 @@ struct StatusEffect {
       duration = stackEffect->duration;
     }
   }
+  inline void UpdateDuration() noexcept { duration -= !isPermanent; }
 };
+
+#define MAX_STACKS_RETURN() \
+  if (stacks == maxStacks) return;
 
 #include "effects/StatusEffects.h"
 

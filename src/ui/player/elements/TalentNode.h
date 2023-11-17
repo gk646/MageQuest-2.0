@@ -5,7 +5,7 @@
 
 struct TalentNode {
   inline static constexpr float TOOLTIP_WIDTH = 230;
-  inline static constexpr float TOOLTIP_HEIGHT = 130;
+  inline static constexpr float TOOLTIP_HEIGHT = 50;
   Talent talent;
   SoundComponent soundPlayer;
   RectangleR bounds{};
@@ -41,7 +41,7 @@ struct TalentNode {
     int lineBreaks = 0;
     std::string wrappedText = Util::WrapText(talent.description, TOOLTIP_WIDTH,
                                              MINECRAFT_REGULAR, 15, &lineBreaks);
-    toolTipBounds.y += lineBreaks * 15.0F;
+    toolTipBounds.height += lineBreaks * 15.0F;
     DrawRectangleRounded(toolTipBounds, 0.1F, ROUND_SEGMENTS,
                          Colors::mediumLightGreyTransparent);
     DrawRectangleRoundedLines(toolTipBounds, 0.1F, ROUND_SEGMENTS, 2,
@@ -81,13 +81,15 @@ struct TalentNode {
         IsMouseButtonReleased(MOUSE_BUTTON_LEFT) &&
         PLAYER_SPENT_POINTS.SpendTalentPoint()) {
       DataBaseHandler::AddActivatedTalent(talentID);
-      PLAYER_STATS.EquipItem(talent.effects);
+      isActivated = true;
       if (talent.talentEffect) {
         TALENT_EFFECTS.push_back(talent.talentEffect);
       }
-      isActivated = true;
+      PLAYER_STATS.EquipItem(talent.effects);
       soundPlayer.PlaySound(&sound::talents::spendTalentPoint);
     }
   }
 };
+
+inline static std::vector<TalentNode> TALENTS;
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_TALENTNODE_H_

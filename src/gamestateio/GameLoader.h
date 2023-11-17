@@ -66,18 +66,18 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Hillcrest, {66, 37});
+    WorldManager::LoadMap(Zone::Hillcrest, {45, 35});
 #endif
-    for (uint_fast32_t i = 0; i < 1; i++) {
-      PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
-    }
+
+    PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
+    PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
     for (auto skill : SKILLS) {
       if (!skill) continue;
       AddSkill(skill);
     }
 
     MONSTERS.push_back(
-        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKEL_SHIELD, 1));
+        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::RAT, 1));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (uint_fast32_t i = 0; i < 15; i++) {
       WORLD_OBJECTS.push_back(

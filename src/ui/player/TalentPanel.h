@@ -6,7 +6,6 @@
 
 struct TalentPanel final : public Window {
   AdjacencyMatrix matrix;
-  std::vector<TalentNode> talents;
   Point middlePoint{SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
   int16_t toolTipID = -1;
   TalentPanel()
@@ -25,36 +24,40 @@ struct TalentPanel final : public Window {
   }
   void Update() noexcept {
     WINDOW_UPDATE();
-    for (auto& node : talents) {
+    for (auto& node : TALENTS) {
       node.Update();
     }
   }
-  //Removes the effects of all active talents
-  inline void RemoveEffects() noexcept {
+  //Removes the effects of all active TALENTS
+  inline static void RemoveEffects() noexcept {
     auto& stats = PLAYER_STATS;
-    for (const auto& t : talents) {
-      if (t.isActivated) {
-        stats.UnEquipItem(t.talent.effects);
+    for (const auto& t : TALENTS) {
+      if (t.isActivated && t.talent.hasModifiableStats) {
+        for (int i = 0; i < STATS_ENDING; i++) {
+          stats.effects[i] -= t.talent.effects[i];
+        }
       }
     }
   }
-  //Applies all effects from talents
-  inline void ApplyEffects() noexcept {
+  //Applies all effects from TALENTS
+  inline static void ApplyEffects() noexcept {
     auto& stats = PLAYER_STATS;
-    for (const auto& t : talents) {
-      if (t.isActivated) {
-        stats.EquipItem(t.talent.effects);
+    for (const auto& t : TALENTS) {
+      if (t.isActivated && t.talent.hasModifiableStats) {
+        for (int i = 0; i < STATS_ENDING; i++) {
+          stats.effects[i] += t.talent.effects[i];
+        }
       }
     }
   }
 
  private:
-  //If a nodes is hovered draws its tooltip // should be on top of other talents
+  //If a nodes is hovered draws its tooltip // should be on top of other TALENTS
   inline void DrawToolTipNode() noexcept {
     if (toolTipID == -1) {
       DragLogic();
     } else {
-      talents[toolTipID].DrawToolTip(
+      TALENTS[toolTipID].DrawToolTip(
           Util::GetToolTipRect(TalentNode::TOOLTIP_WIDTH, TalentNode::TOOLTIP_HEIGHT));
     }
     toolTipID = -1;
@@ -71,10 +74,10 @@ struct TalentPanel final : public Window {
   //Draw all connections between the nodes
   inline void DrawConnections() const noexcept {
     for (const auto& pair : matrix.connectionsTo) {
-      const auto& startNode = talents[pair.first];
+      const auto& startNode = TALENTS[pair.first];
       for (const auto& nodeID : pair.second) {
         if (nodeID == -1) break;
-        DrawTalentConnection(middlePoint, startNode, talents[nodeID]);
+        DrawTalentConnection(middlePoint, startNode, TALENTS[nodeID]);
       }
     }
   }
@@ -93,7 +96,7 @@ struct TalentPanel final : public Window {
     if (fromIt != matrix.connectionsFrom.end()) {
       for (int16_t id : fromIt->second) {
         if (id == -1) break;
-        if (talents[id].isActivated) {
+        if (TALENTS[id].isActivated) {
           return true;
         }
       }
@@ -103,7 +106,7 @@ struct TalentPanel final : public Window {
     if (toIt != matrix.connectionsTo.end()) {
       for (int16_t id : toIt->second) {
         if (id == -1) break;
-        if (talents[id].isActivated) {
+        if (TALENTS[id].isActivated) {
           return true;
         }
       }
@@ -115,7 +118,7 @@ struct TalentPanel final : public Window {
  private:
   //Draws all talent-nodes with their correct texture, state and size and captures the hovered nodes ID
   inline void DrawTalentNodes(const Point& mid) noexcept {
-    for (auto& node : talents) {
+    for (auto& node : TALENTS) {
       if (node.sizeType == TalentSize::NORMAL) {
         if (node.isActivated) {
           node.Draw(textures::ui::talentpanel::NODE_GREEN, mid.x(), mid.y(), toolTipID);
@@ -198,4 +201,21 @@ struct TalentPanel final : public Window {
   }
 };
 
+void EntityStats::ReCalculatePlayerStats() noexcept {
+  PLAYER_EFFECTS.RemoveEffects();
+  TalentPanel::RemoveEffects();
+
+  //Using "=" here means all these stats cant receive flat bonuses unless they are all removed and reapplied
+  effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
+  effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
+
+  effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
+  effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
+
+  effects[SPEED_MULT_P] = (effects[AGILITY] / (level * 2)) / 10;
+  effects[DODGE_CHANCE] = (effects[AGILITY] / level) * std::sqrt(level);
+
+  TalentPanel::ApplyEffects();
+  PLAYER_EFFECTS.ApplyEffects();
+}
 #endif  //MAGEQUEST_SRC_UI_PLAYER_TALENTPANEL_H_

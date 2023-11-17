@@ -31,15 +31,15 @@ static void Load() noexcept {
   sqlite3_stmt* stmt;
   std::string sql = "SELECT * FROM TALENTS ORDER BY id";
   if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::dataBase, &stmt)) return;
-  auto& talents = UI_MANAGER.playerUI.talentPanel.talents;
+  auto& talents = TALENTS;
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     TalentSize size = TalentSize::NORMAL;
     auto x = (float)sqlite3_column_int(stmt, 4);
     auto y = (float)sqlite3_column_int(stmt, 5);
     auto id = (int16_t)sqlite3_column_int(stmt, 0);
-    if(id > 180){
-      x-=1350;
-      y-=1350;
+    if (id > 180) {
+      x -= 1350;
+      y -= 1350;
     }
     if (sqlite3_column_int(stmt, 7)) {
       size = TalentSize(sqlite3_column_int(stmt, 7));
@@ -55,6 +55,12 @@ static void Load() noexcept {
       std::string effect = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
       Item::ParseAttributeStats(node.talent.effects, effect);
       Item::ParseEffectText(node.talent.effects, sqlite3_column_text(stmt, 6));
+      for (const auto num : CRITICAL_STATS) {
+        if (node.talent.effects[num] != 0.0F) {
+          node.talent.hasModifiableStats = true;
+          break;
+        }
+      }
     }
     if (talentIDtoEffect.contains(node.talentID)) {
       node.talent.talentEffect = talentIDtoEffect[node.talentID];

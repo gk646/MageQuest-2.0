@@ -87,6 +87,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
 //Adds the node to the given quest and setting the "isMajor" variable
 inline void AddToQuest(QuestNode* node, Quest* q,
                        const std::vector<std::string>& parts) noexcept {
+  node->quest = q;
   node->isMajorObjective = parts[parts.size() - 1] == "MAJOR";
   q->objectives.push_back(node);
 }

@@ -47,7 +47,7 @@ struct NPC : public Entity {
     }
     return false;
   }
-  void draw_dialogue() noexcept {
+  void DrawDialogue() noexcept {
     if (dialogueShowDelayTicks > 0) {
       if (dialogue) {
         TextRenderer::RenderDialogue(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y,
@@ -63,10 +63,10 @@ struct NPC : public Entity {
       }
     }
   }
-  void update_dialogue(std::string* text) {
+  void UpdateDialogue(std::string* text) {
     dialogueProgressCount = 0;
     dialogue = text;
-    dialogueShowDelayTicks = 400;
+    dialogueShowDelayTicks = text->size() * 3;
   }
   inline static NPC* GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
                                Zone npcZone) noexcept;
@@ -90,7 +90,7 @@ struct NPC : public Entity {
   }
 #define DRAW_NPC_DIALOGUE() \
   for (auto npc : NPCS) {   \
-    npc->draw_dialogue();   \
+    npc->DrawDialogue();    \
   }                         \
   TextRenderer::RenderPlayerThought();
 
