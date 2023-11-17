@@ -117,21 +117,33 @@ struct TextureLoader {
     textures::ui::bossbar =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/bossbar.png").c_str());
 
-    textures::ui::skillbar::bag =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
-    textures::ui::skillbar::bag_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag_pressed.png").c_str());
-    textures::ui::skillbar::journal =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/journal.png").c_str());
-    textures::ui::skillbar::journal_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/journal_pressed.png").c_str());
-    textures::ui::skillbar::slot =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/slot.png").c_str());
-    textures::ui::skillbar::castbar =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/castbar.png").c_str());
+    textures::ui::skillbar::bag =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag.png").c_str());
+    textures::ui::skillbar::bag_pressed =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/bag_pressed.png").c_str());
+    textures::ui::skillbar::journal =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/journal.png").c_str());
+    textures::ui::skillbar::journal_pressed =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/journal_pressed.png").c_str());
+    textures::ui::skillbar::slot =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/slot.png").c_str());
+    textures::ui::skillbar::castbar =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/castbar.png").c_str());
 
-    textures::ui::skillbar::abilities =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities.png").c_str());
-    textures::ui::skillbar::abilities_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities_pressed.png").c_str());
+    textures::ui::skillbar::abilities =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities.png").c_str());
+    textures::ui::skillbar::abilities_pressed =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/abilities_pressed.png").c_str());
 
-    textures::ui::skillbar::character =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character.png").c_str());
-    textures::ui::skillbar::character_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character_pressed.png").c_str());
+    textures::ui::skillbar::character =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character.png").c_str());
+    textures::ui::skillbar::character_pressed =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/character_pressed.png").c_str());
 
-    textures::ui::skillbar::map =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map.png").c_str());
-    textures::ui::skillbar::map_pressed =        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_pressed.png").c_str());
+    textures::ui::skillbar::map =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map.png").c_str());
+    textures::ui::skillbar::map_pressed =
+        LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_pressed.png").c_str());
 
     textures::ui::skillbar::map_pressed =
         LoadTexture((ASSET_PATH + "ui/skillbar/ui/map_pressed.png").c_str());
@@ -200,9 +212,12 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/energy_sphere.png").c_str());
     textures::ui::skillbar::icons::fireBurst =
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/fireBurst.png").c_str());
-    textures::ui::skillbar::icons::fireSword =       LoadTexture((ASSET_PATH + "ui/skillbar/icons/fireSword.png").c_str());
-    textures::ui::skillbar::icons::iceLance =       LoadTexture((ASSET_PATH + "ui/skillbar/icons/iceLance.png").c_str());
-    textures::ui::skillbar::icons::glacialBurst =       LoadTexture((ASSET_PATH + "ui/skillbar/icons/glacialBurst.png").c_str());
+    textures::ui::skillbar::icons::fireSword =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/fireSword.png").c_str());
+    textures::ui::skillbar::icons::iceLance =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/iceLance.png").c_str());
+    textures::ui::skillbar::icons::glacialBurst =
+        LoadTexture((ASSET_PATH + "ui/skillbar/icons/glacialBurst.png").c_str());
 
     textures::ui::toolTip = LoadTexture((ASSET_PATH + "ui/toolTip.png").c_str());
     textures::ui::buttonNormal =
@@ -212,18 +227,29 @@ struct TextureLoader {
     textures::ui::buttonPressed =
         LoadTexture((ASSET_PATH + "ui/button_pressed.png").c_str());
 
-    textures::ui::buttonExpand =        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand.png").c_str());
-    textures::ui::buttonExpandHovered =        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand_hovered.png").c_str());
-    textures::ui::buttonCollapse =        LoadTexture((ASSET_PATH + "ui/questpanel/button_collapse.png").c_str());
+    textures::ui::buttonExpand =
+        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand.png").c_str());
+    textures::ui::buttonExpandHovered =
+        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand_hovered.png").c_str());
+    textures::ui::buttonCollapse =
+        LoadTexture((ASSET_PATH + "ui/questpanel/button_collapse.png").c_str());
 
-    textures::ui::bagSlots =        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot.png").c_str());
-    textures::ui::bagSlotsHovered =        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot_hovered.png").c_str());
-    textures::ui::bagSlotsPressed =        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot_pressed.png").c_str());
+    textures::ui::bagSlots =
+        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot.png").c_str());
+    textures::ui::bagSlotsHovered =
+        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot_hovered.png").c_str());
+    textures::ui::bagSlotsPressed =
+        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot_pressed.png").c_str());
 
-    textures::ui::sort =        LoadTexture((ASSET_PATH + "ui/inventory/sort.png").c_str());
-    textures::ui::sortHovered =        LoadTexture((ASSET_PATH + "ui/inventory/sort_hovered.png").c_str());
-    textures::ui::sortPressed =        LoadTexture((ASSET_PATH + "ui/inventory/sort_pressed.png").c_str());
+    textures::ui::sort = LoadTexture((ASSET_PATH + "ui/inventory/sort.png").c_str());
+    textures::ui::sortHovered =
+        LoadTexture((ASSET_PATH + "ui/inventory/sort_hovered.png").c_str());
+    textures::ui::sortPressed =
+        LoadTexture((ASSET_PATH + "ui/inventory/sort_pressed.png").c_str());
 
+    textures::ui::info = LoadTexture((ASSET_PATH + "ui/info.png").c_str());
+    textures::ui::infoHovered = LoadTexture((ASSET_PATH + "ui/info_hovered.png").c_str());
+    textures::ui::infoPressed = LoadTexture((ASSET_PATH + "ui/info_pressed.png").c_str());
 
     textures::ui::buttonCollapseHovered =
         LoadTexture((ASSET_PATH + "ui/questpanel/button_collapse_hovered.png").c_str());
