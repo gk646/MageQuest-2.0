@@ -14,11 +14,16 @@ struct CharacterBag final : public Window {
   static constexpr int offset_y = 60;
   static constexpr int max_slots = per_row * 9;
   BagPanel bagPanel;
-  std::array<TexturedButton, 1> buttons{
+  std::array<TexturedButton, 2> buttons{
       TexturedButton{25, 25, "", 15, textures::ui::sort, textures::ui::sortHovered,
-                     textures::ui::sortPressed, 255, "Sorts after rarity", []() {
+                     textures::ui::sortPressed, 255, "Sorts after rarity",
+                     []() {
                        Util::SelectionSortInventorySlot(
                            PLAYER_BAG, (int)PLAYER_STATS.GetBagSlots(), false);
+                     }},
+      TexturedButton{25, 25, "", 15, textures::ui::info, textures::ui::infoHovered,
+                     textures::ui::infoPressed, 255, "Displays bag controls", []() {
+
                      }}};
   explicit CharacterBag() noexcept
       : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags",
@@ -37,7 +42,7 @@ struct CharacterBag final : public Window {
     float x = wholeWindow.x;
     float y = wholeWindow.y + 28;
     if (bagPanel.IsOpened()) x += 120;
-    x += 55.0F * buttons.size();
+    x += 40.0F * buttons.size();
     for (int i = buttons.size() - 1; i > -1; i--) {
       buttons[i].Draw(x, y);
       x -= 55;

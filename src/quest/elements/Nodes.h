@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
 #define MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
 struct Quest;
-
 struct QuestNode {
   std::string objectiveText;
   PointT<int16_t> wayPoint;
@@ -192,13 +191,14 @@ struct SPAWN final : public QuestNode {
   bool Progress() noexcept final {
     if (npcID == NPC_ID::NPC_END) {
       for (const auto& p : positions) {
-        MONSTERS.push_back(
-            Monster::GetNewMonster({p.x * 48.0F, p.y * 48.0F}, mType, level, zone));
+        MONSTERS.push_back(Monster::GetNewMonster(
+            {(float)p.x * 48.0F, (float)p.y * 48.0F}, mType, level, zone));
       }
       return true;
     } else if (mType == MonsterType::ANY) {
       for (const auto& p : positions) {
-        NPCS.push_back(NPC::GetNewNPC(npcID, p.x * 48.0F, p.y * 48.0F, zone));
+        NPCS.push_back(
+            NPC::GetNewNPC(npcID, (float)p.x * 48.0F, (float)p.y * 48.0F, zone));
       }
       return true;
     } else {
@@ -297,7 +297,6 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
       if (npc->id == target) {
         if (npc->currentZone != CURRENT_ZONE) return false;
         auto distance = (int)PLAYER.tilePos.dist(npc->tilePos);
-        ;
         if (distance == 0) return true;
         if (distance <= activationDistance) {
           currentTicks += npc->dialogueProgressCount == 1000;

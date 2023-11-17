@@ -831,7 +831,7 @@ struct Rat final : public Monster {
                 {22, 13}, zone) {
     attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
                                        monsterIdToScaler[type].attackCD, 20, 15,
-                                       sound::EMPTY_SOUND, 1, 40,{new Poison(stats.effects[WEAPON_DAMAGE]*3,300,60)});
+                                       sound::EMPTY_SOUND, 1, 40,{new Poison(stats.effects[WEAPON_DAMAGE]*2,300,60)});
 
   }
   void Draw() final {
