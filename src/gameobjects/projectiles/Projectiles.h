@@ -240,7 +240,9 @@ struct IceLance final : Projectile {
            const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
            const Vector2& mvmt, const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::ICE, damage}, effects, mvmt,
-                   (int16_t)pov, sound::iceLance, sender, ICE_LANCE) {}
+                   (int16_t)pov, sound::iceLance, sender, ICE_LANCE) {
+    AddStatusEffect(this, new Slow(15, 120));
+  }
 
   void Draw() final {
     if (!hitTarget) {
@@ -355,8 +357,7 @@ struct VoidEruption final : Projectile {
                const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
                const Vector2& mvmt, const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::DARK, damage}, effects, mvmt, 0,
-                   sound::voidEruption, sender, VOID_ERUPTION) {
-  }
+                   sound::voidEruption, sender, VOID_ERUPTION) {}
 
   void Draw() final {
     if (Projectile::spriteCounter > 95) return;

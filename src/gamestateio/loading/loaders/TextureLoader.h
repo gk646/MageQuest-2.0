@@ -212,12 +212,19 @@ struct TextureLoader {
     textures::ui::buttonPressed =
         LoadTexture((ASSET_PATH + "ui/button_pressed.png").c_str());
 
-    textures::ui::buttonExpand =
-        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand.png").c_str());
-    textures::ui::buttonExpandHovered =
-        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand_hovered.png").c_str());
-    textures::ui::buttonCollapse =
-        LoadTexture((ASSET_PATH + "ui/questpanel/button_collapse.png").c_str());
+    textures::ui::buttonExpand =        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand.png").c_str());
+    textures::ui::buttonExpandHovered =        LoadTexture((ASSET_PATH + "ui/questpanel/button_expand_hovered.png").c_str());
+    textures::ui::buttonCollapse =        LoadTexture((ASSET_PATH + "ui/questpanel/button_collapse.png").c_str());
+
+    textures::ui::bagSlots =        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot.png").c_str());
+    textures::ui::bagSlotsHovered =        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot_hovered.png").c_str());
+    textures::ui::bagSlotsPressed =        LoadTexture((ASSET_PATH + "ui/inventory/bag_slot_pressed.png").c_str());
+
+    textures::ui::sort =        LoadTexture((ASSET_PATH + "ui/inventory/sort.png").c_str());
+    textures::ui::sortHovered =        LoadTexture((ASSET_PATH + "ui/inventory/sort_hovered.png").c_str());
+    textures::ui::sortPressed =        LoadTexture((ASSET_PATH + "ui/inventory/sort_pressed.png").c_str());
+
+
     textures::ui::buttonCollapseHovered =
         LoadTexture((ASSET_PATH + "ui/questpanel/button_collapse_hovered.png").c_str());
 

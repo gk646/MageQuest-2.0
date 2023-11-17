@@ -12,25 +12,23 @@ struct BagPanel {
                                    25,
                                    "",
                                    15,
-                                   textures::ui::questpanel::questBox,
-                                   textures::ui::questpanel::questBox,
-                                   textures::ui::questpanel::questBox,
+                                   textures::ui::bagSlots,
+                                   textures::ui::bagSlotsHovered,
+                                   textures::ui::bagSlotsPressed,
                                    255,
                                    "Opens the bag slots"};
   bool isOpen = false;
-  SlideComponent slide{isOpen, 3 * 29, 3.5F};
+  SlideComponent slide{isOpen, 3 * 31, 3.5F};
 
   void Draw(float x, float y) noexcept {
-    y += 25;
     DrawBagPanelButton(x, y);
     if (IsOpened()) {
-      DrawBagSlots(x + 45, y);
+      DrawBagSlots(x + 43, y - 2);
     }
   }
   void Update() noexcept {
     slide.UpdateAnimation();
     for (auto& slot : bagSlots) {
-      if (slot.item) {}
       slot.UpdateCharacterSlots();
     }
   }
@@ -50,10 +48,10 @@ struct BagPanel {
     for (auto& slot : bagSlots) {
       slot.Draw(x, y);
       i++;
-      if (slide.GetCurrentOffset() > i * 28) {
-        x += 28;
+      if (slide.GetCurrentOffset() > i * 30) {
+        x += 30;
       } else if (!once) {
-        x += static_cast<int>(slide.GetCurrentOffset()) % 28;
+        x += static_cast<int>(slide.GetCurrentOffset()) % 30;
         once = true;
       }
     }

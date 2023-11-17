@@ -3,12 +3,12 @@
 
 struct Item {
   static constexpr int tooltip_x = 260;
-  static constexpr int tooltip_y = 350;
-  static char textBuffer[10];
+  static constexpr int tooltip_y = 275;
+  inline static char textBuffer[10];
+  float effects[STATS_ENDING] = {0};
   std::string name;
   std::string description;
   Texture texture;
-  float effects[STATS_ENDING] = {0};
   uint8_t quality = 70;
   uint8_t durability = 100;
   uint8_t level = 1;
@@ -80,6 +80,8 @@ struct Item {
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
+  inline bool operator<(const Item& other) const { return rarity < other.rarity; }
+  inline bool operator>(const Item& other) const { return rarity > other.rarity; }
   void Draw(const RectangleR& rect) const noexcept {
     DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
@@ -88,7 +90,11 @@ struct Item {
     auto mouse = GetMousePosition();
     float startX, startY;
     float width = tooltip_x * UI_SCALE;
-    float height = tooltip_y * UI_SCALE;
+
+    int lineBreaks = 0;
+    std::string wrappedText =
+        Util::WrapText(description, width - 5, MINECRAFT_ITALIC, SCALE(15), &lineBreaks);
+    float height = tooltip_y * UI_SCALE + 15.0F * (float)lineBreaks;
     if (mouse.x - width < 0) {
       startX = mouse.x + 10;
     } else {
@@ -209,8 +215,7 @@ struct Item {
 
     //description
     off_sety = 240 * UI_SCALE;
-    std::string wrappedText =
-        Util::WrapText(description, width - 5, MINECRAFT_ITALIC, SCALE(15));
+
     DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(),
                 {startX + off_setX, startY + off_sety}, SCALE(15), 0.5F,
                 Colors::darkBackground);
@@ -278,5 +283,4 @@ struct Item {
     }
   }
 };
-char Item::textBuffer[10];
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_

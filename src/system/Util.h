@@ -1,5 +1,6 @@
 #ifndef MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 #define MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
+struct InventorySlot;
 namespace Util {
 //Returns a value between 0-1 based on their alphabetical distance // handles capitalization
 inline static float GetCharacterSimilarity(char base, char check) noexcept {
@@ -219,7 +220,7 @@ inline static std::string CreateEffectToolTipString(const std::string& s, float 
   if (duration != FLT_MAX) {
     pos = ret.find("DURATION");
     if (pos != std::string::npos) {
-      ret.replace(pos, 8, std::to_string(duration / 60));
+      ret.replace(pos, 8, std::to_string((int)(duration / 60.0F)));
     }
   }
 
@@ -302,6 +303,7 @@ inline static RectangleR GetToolTipRect(float width, float height) noexcept {
   }
   return ret;
 }
+inline static void SelectionSortInventorySlot(InventorySlot* arr, uint_32_cx len, bool ascending = true);
 //Key press module / used for detecting key press on update tick rate(60)
 inline static bool e_previous[2] = {false, false};
 inline static void Update() noexcept {

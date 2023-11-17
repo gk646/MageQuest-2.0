@@ -79,6 +79,10 @@ struct GameLoader {
     MONSTERS.push_back(
         Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKEL_SHIELD, 1));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
+    for (uint_fast32_t i = 0; i < 15; i++) {
+      WORLD_OBJECTS.push_back(
+          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
+    }
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }
 };
