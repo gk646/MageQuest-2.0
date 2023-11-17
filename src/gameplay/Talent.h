@@ -7,5 +7,6 @@ struct Talent {
   std::string name;
   Texture icon;
   TalentEffect* talentEffect = nullptr;
+  bool hasModifiableStats = false;
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_TALENTS_TALENT_H_

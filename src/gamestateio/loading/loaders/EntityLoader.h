@@ -35,6 +35,7 @@ static void Load() {
   textures::monsters::KNIGHT.Load("enemies/Knight/");
   textures::monsters::MUSHROOM.LoadSpriteFromSheets("enemies/mushroom/", 150, 150);
   textures::monsters::SNAKE.Load("enemies/snake/");
+  textures::monsters::RAT.LoadSpriteFromSheets("enemies/rat/",32,32);
   textures::monsters::WOLF.Load("enemies/wolf/");
   textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
   textures::monsters::GHOST.Load("enemies/Ghost/");

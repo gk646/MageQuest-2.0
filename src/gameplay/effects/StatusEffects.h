@@ -6,7 +6,7 @@ struct Stun final : public StatusEffect {
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.stunned = true;
   }
-  void TickEffect(EntityStats& stats, const Entity* self) final { duration--; }
+  void TickEffect(EntityStats& stats, const Entity* self) final { UpdateDuration(); }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.stunned = false;
   }
@@ -24,7 +24,7 @@ struct Root final : public StatusEffect {
     stats.effects[SPEED_MULT_P] = -1;
   }
   void TickEffect(EntityStats& stats, const Entity* self) final {
-    duration--;
+    UpdateDuration();
     if (stats.effects[SPEED_MULT_P] != -1) {
       preValue = stats.effects[SPEED_MULT_P];
       stats.effects[SPEED_MULT_P] = -1;
@@ -41,12 +41,13 @@ struct Root final : public StatusEffect {
 struct Berserk final : public StatusEffect {
   float attackBoost;
   Berserk(float percentValue, int duration)
-      : StatusEffect(false, 0, duration, EffectType::BERSERK), attackBoost(percentValue) {}
+      : StatusEffect(false, 0, duration, EffectType::BERSERK),
+        attackBoost(percentValue) {}
   [[nodiscard]] Berserk* Clone() const final { return new Berserk(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[WEAPON_DAMAGE] *= attackBoost;
   }
-  void TickEffect(EntityStats& stats, const Entity* self) final { duration--; }
+  void TickEffect(EntityStats& stats, const Entity* self) final { UpdateDuration(); }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[WEAPON_DAMAGE] /= attackBoost;
   }
@@ -54,6 +55,7 @@ struct Berserk final : public StatusEffect {
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     if (((Berserk*)other)->attackBoost > attackBoost) {
       RemoveEffect(stats, self);
       attackBoost = ((Berserk*)other)->attackBoost;
@@ -68,12 +70,13 @@ struct Berserk final : public StatusEffect {
 struct Slow final : public StatusEffect {
   float slowPercent;
   Slow(float slowPercent, int duration)
-      : StatusEffect(true, 0, duration, EffectType::SLOW), slowPercent(slowPercent / 100) {}
+      : StatusEffect(true, 0, duration, EffectType::SLOW),
+        slowPercent(slowPercent / 100) {}
   [[nodiscard]] Slow* Clone() const final { return new Slow(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[SPEED_MULT_P] -= slowPercent;
   }
-  void TickEffect(EntityStats& stats, const Entity* self) final { duration--; }
+  void TickEffect(EntityStats& stats, const Entity* self) final { UpdateDuration(); }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[SPEED_MULT_P] += slowPercent;
   }
@@ -81,6 +84,7 @@ struct Slow final : public StatusEffect {
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     if (((Slow*)other)->slowPercent > slowPercent) {
       RemoveEffect(stats, self);
       slowPercent = ((Slow*)other)->slowPercent;
@@ -103,18 +107,19 @@ struct Burn final : public StatusEffect {
     if (IsDamageTick()) {
       stats.TakeDamage(damageStats, self);
     }
-    duration--;
+    UpdateDuration();
   }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     damageStats.damage += ((Burn*)other)->damageStats.damage;
     stacks++;
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
-                                           damageStats.damage, cadence / 60.0F);
+                                           damageStats.damage, (float)cadence / 60.0F);
   }
 };
 struct Poison final : public StatusEffect {
@@ -132,12 +137,13 @@ struct Poison final : public StatusEffect {
     if (IsDamageTick()) {
       stats.TakeDamage(damageStats, self);
     }
-    duration--;
+    UpdateDuration();
   }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     damageStats.damage += ((Poison*)other)->damageStats.damage;
     stacks++;
   }
@@ -155,7 +161,10 @@ struct Swiftness final : public StatusEffect {
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[SPEED_MULT_P] += speedPercent;
   }
-  void TickEffect(EntityStats& stats, const Entity* self) final { duration--; }
+  void TickEffect(EntityStats& stats, const Entity* self) final {
+    UpdateDuration();
+    ;
+  }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[SPEED_MULT_P] -= speedPercent;
   }
@@ -163,6 +172,7 @@ struct Swiftness final : public StatusEffect {
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     if (((Swiftness*)other)->speedPercent > speedPercent) {
       RemoveEffect(stats, self);
       speedPercent = ((Swiftness*)other)->speedPercent;
@@ -230,30 +240,33 @@ struct Bleed final : public StatusEffect {
     if (IsDamageTick()) {
       stats.TakeDamage(damageStats, self);
     }
-    duration--;
+    UpdateDuration();
   }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     damageStats.damage += ((Bleed*)other)->damageStats.damage;
     stacks++;
   }
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
-                                           damageStats.damage, cadence / 60.0F);
+                                           damageStats.damage, (float)cadence / 60.0F);
   }
 };
 struct Resistance final : public StatusEffect {
   float resistanceAmount;
   Resistance(float value, int duration)
       : StatusEffect(false, 0, duration, EffectType::RESISTANCE),
-        resistanceAmount(value / 100) {}
+        resistanceAmount(value / 100) {
+    maxStacks = 15;
+  }
   [[nodiscard]] Resistance* Clone() const final { return new Resistance(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[DAMAGE_RESISTANCE_P] += resistanceAmount;
   }
-  void TickEffect(EntityStats& stats, const Entity* self) final { duration--; }
+  void TickEffect(EntityStats& stats, const Entity* self) final { UpdateDuration(); }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
     stats.effects[DAMAGE_RESISTANCE_P] -= resistanceAmount;
   }
@@ -261,6 +274,7 @@ struct Resistance final : public StatusEffect {
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {
     TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
     if (((Resistance*)other)->resistanceAmount > resistanceAmount) {
       RemoveEffect(stats, self);
       resistanceAmount = ((Resistance*)other)->resistanceAmount;

@@ -174,20 +174,6 @@ inline static Player PLAYER({150, 150});
 #include "../ui/player/HotBar.h"
 #include "WorldObject.h"
 
-void EntityStats::ReCalculatePlayerStats() noexcept {
-  //TODO remove all item and talent effect before
-  PLAYER_EFFECTS.RemoveEffects();
-  //Using "=" here means all these stats cant receive flat bonuses unless they are all removed and reapplied
-  effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
-  effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
-
-  effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
-  effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
-
-  effects[SPEED_MULT_P] = (effects[AGILITY] / (level * 2)) / 10;
-  effects[DODGE_CHANCE] = (effects[AGILITY] / level) * std::sqrt(level);
-  PLAYER_EFFECTS.ApplyEffects();
-}
 //Returns true if the player is close to the spawn trigger
 bool SpawnTrigger::IsClose() const noexcept {
   return PLAYER.pos.dist(pos.x + size.x / 2, pos.y + size.y / 2) < UPDATE_DISTANCE * 48;
@@ -239,9 +225,11 @@ bool Skill::RangeLineOfSightCheck(const Point& targetPos) const noexcept {
       return true;
       //TODO quick notifications
     } else {
+      ResetCast();
       // No line of sight to target
     }
   } else {
+    ResetCast();
     // Target is out of range
   }
   return false;

@@ -7,6 +7,7 @@ static void load() noexcept {
       ScriptParser::load("Quests/Marla.mgqs", Quest_ID::MARLA, true);
   Quests::START_SOMETHING_NEW =
       ScriptParser::load("Quests/StartSomethingNew.mgqs", Quest_ID::START_SOMETHING_NEW);
+
 }
 }  // namespace QuestLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_QUESTLOADER_H_

@@ -15,9 +15,8 @@ struct CharacterBag final : public Window {
   static constexpr int max_slots = per_row * 9;
   BagPanel bagPanel;
   std::array<TexturedButton, 1> buttons{
-      TexturedButton{25, 25, "", 15, textures::ui::questpanel::questBox,
-                     textures::ui::questpanel::questBox,
-                     textures::ui::questpanel::questBox, 255, "Sorts after rarity", []() {
+      TexturedButton{25, 25, "", 15, textures::ui::sort, textures::ui::sortHovered,
+                     textures::ui::sortPressed, 255, "Sorts after rarity", []() {
                        Util::SelectionSortInventorySlot(
                            PLAYER_BAG, (int)PLAYER_STATS.GetBagSlots(), false);
                      }}};
@@ -91,7 +90,7 @@ struct CharacterBag final : public Window {
 };
 
 void EntityStats::UnEquipItem(const float* effect_arr) noexcept {
-  for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
+  for (int i = 0; i < STATS_ENDING; i++) {
     effects[i] -= effect_arr[i];
   }
   CharacterBag::RemoveSlots((int)effect_arr[BAG_SLOTS]);

@@ -25,9 +25,10 @@ enum class MonsterType : uint8_t {
   SKEL_WAR,
   SKEL_SPEAR,
   WOLF,
+  RAT,
   BOSS_DEATH_BRINGER,
-  BOSS_STONE_GOLEM,
-  BOSS_KNIGHT,
+  BOSS_ANCIENT_GOLEM,
+  BOSS_STONE_KNIGHT,
   BOSS_SLIME,
   GOBLIN,
   SKULL_WOLF,
@@ -139,6 +140,7 @@ std::unordered_map<ShadowType, Texture> shadowToTexture{
 
 };
 enum class TalentSize : uint8_t { NORMAL, MID, BIG };
+
 enum class Keybind : uint8_t {
   PLAYER_LIGHT,
   ABILITY_1,
@@ -269,6 +271,8 @@ enum Stat : uint8_t {
   STATS_ENDING
 };
 
+inline static std::array<uint8_t, 6> CRITICAL_STATS{
+    MAX_HEALTH, MAX_MANA, HEALTH_REGEN, MANA_REGEN, SPEED_MULT_P, DODGE_CHANCE};
 /* |-----------------------------------------------------|
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
@@ -342,8 +346,8 @@ enum class NPC_ID : uint8_t {
 enum class WorldObjectType : int16_t {
   BASIC_CHEST = 7176,
   NORMAL_CHEST = 137,
-  EPIC_CHEST = 2191
-
+  EPIC_CHEST = 2191,
+  RARE_FLOWER
 };
 inline static std::unordered_set<int16_t> worldObjectTable{
     (int16_t)WorldObjectType::BASIC_CHEST, (int16_t)WorldObjectType::NORMAL_CHEST,
@@ -395,12 +399,13 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"WOLF", MonsterType::WOLF},
     {"GHOST", MonsterType::GHOST},
     {"BOSS_DEATH_BRINGER", MonsterType::BOSS_DEATH_BRINGER},
-    {"BOSS_KNIGHT", MonsterType::BOSS_KNIGHT},
-    {"BOSS_STONE_GOLEM", MonsterType::BOSS_STONE_GOLEM},
+    {"BOSS_KNIGHT", MonsterType::BOSS_STONE_KNIGHT},
+    {"BOSS_STONE_GOLEM", MonsterType::BOSS_ANCIENT_GOLEM},
     {"BOSS_SLIME", MonsterType::BOSS_SLIME},
     {"GOBLIN", MonsterType::GOBLIN},
     {"KNIGHT", MonsterType::KNIGHT},
     {"MUSHROOM", MonsterType::MUSHROOM},
+    {"RAT", MonsterType::RAT},
     {"SKEL_ARCHER", MonsterType::SKEL_ARCHER},
     {"SKEL_SHIELD", MonsterType::SKEL_SHIELD},
     {"BLOOD_HOUND", MonsterType::BLOOD_HOUND},

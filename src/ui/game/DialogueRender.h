@@ -62,9 +62,7 @@ static void RenderDialogue(int x, int y, const std::string* text, float count,
     }
   }
 
-  auto wrappedText =
-      Util::WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, SCALE(17));
-
+  auto wrappedText =    Util::WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, SCALE(17));
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);
 }

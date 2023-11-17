@@ -73,7 +73,7 @@ struct SPEAK final : public QuestNode {
   bool Progress(NPC* npc) noexcept {
     if (npc->id == target) {
       if (stage < lines.size()) {
-        npc->update_dialogue(&lines[stage]);
+        npc->UpdateDialogue(&lines[stage]);
         TrackText(lines[stage], TextSource::NPC, (int16_t)target);
         if (stage == 0) {
           npc->last = false;
@@ -179,6 +179,7 @@ struct SPAWN final : public QuestNode {
   std::vector<PointT<int16_t>> positions;
   MonsterType mType = MonsterType::ANY;
   NPC_ID npcID = NPC_ID::NPC_END;
+  Zone zone = CURRENT_ZONE;
   int level;
   explicit SPAWN(MonsterType type, int level)
       : QuestNode("", NodeType::SPAWN),
@@ -192,12 +193,12 @@ struct SPAWN final : public QuestNode {
     if (npcID == NPC_ID::NPC_END) {
       for (const auto& p : positions) {
         MONSTERS.push_back(
-            Monster::GetNewMonster({p.x * 48.0F, p.y * 48.0F}, mType, level));
+            Monster::GetNewMonster({p.x * 48.0F, p.y * 48.0F}, mType, level, zone));
       }
       return true;
     } else if (mType == MonsterType::ANY) {
       for (const auto& p : positions) {
-        NPCS.push_back(NPC::GetNewNPC(npcID, p.x * 48.0F, p.y * 48.0F, CURRENT_ZONE));
+        NPCS.push_back(NPC::GetNewNPC(npcID, p.x * 48.0F, p.y * 48.0F, zone));
       }
       return true;
     } else {
@@ -213,6 +214,12 @@ struct SPAWN final : public QuestNode {
     }
     for (uint_fast32_t i = 3; i < parts.size(); i++) {
       obj->positions.emplace_back(Util::ParsePointI(parts[i]));
+    }
+    auto zoneString = Util::SplitString(parts[2], ',');
+    if (zoneString.size() > 1) {
+      if (stringToZoneMap.contains(zoneString[1])) {
+        obj->zone = stringToZoneMap[zoneString[1]];
+      }
     }
     return obj;
   }
@@ -252,7 +259,7 @@ struct NPC_SAY final : public QuestNode {
     for (auto npc : NPCS) {
       if (npc->id == target) {
         if (!startedTalking) {
-          npc->update_dialogue(&txt);
+          npc->UpdateDialogue(&txt);
           TrackText(txt, TextSource::NPC, (int16_t)target);
           startedTalking = true;
         } else if (npc->dialogueProgressCount == 1000 || skipWait) {
@@ -289,12 +296,13 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
     for (auto npc : NPCS) {
       if (npc->id == target) {
         if (npc->currentZone != CURRENT_ZONE) return false;
-        auto distance = PLAYER.tilePos.dist(npc->tilePos);
+        auto distance = (int)PLAYER.tilePos.dist(npc->tilePos);
+        ;
         if (distance == 0) return true;
         if (distance <= activationDistance) {
           currentTicks += npc->dialogueProgressCount == 1000;
           if (currentTicks >= DELAY_TICKS) {
-            npc->update_dialogue(&lines[currentLine]);
+            npc->UpdateDialogue(&lines[currentLine]);
             npc->last = true;
             if (currentLine == lines.size() - 1) currentTicks = -1000;
             currentLine++;
@@ -321,6 +329,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   NPC_ID target;
   bool assignedChoices = false;
   uint8_t correctAnswer;
+  NPC* npcPtr = nullptr;
   explicit CHOICE_DIALOGUE_SIMPLE(NPC_ID target, std::string text, int correctAnswer)
       : QuestNode("", NodeType::CHOICE_DIALOGUE_SIMPLE),
         target(target),
@@ -334,7 +343,8 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
     if (!assignedChoices) {
       for (const auto npc : NPCS) {
         if (npc->id == target) {
-          npc->update_dialogue(&text);
+          npcPtr = npc;
+          npc->UpdateDialogue(&text);
           npc->choices = &choices;
           assignedChoices = true;
           break;
@@ -343,12 +353,16 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
     }
 
     if (answerIndex != -1) {
-      for (const auto npc : NPCS) {
-        if (npc->id == target) {
-          npc->update_dialogue(&answers[answerIndex]);
-          npc->choices = nullptr;
-          return answerIndex == correctAnswer;
-        }
+      npcPtr->UpdateDialogue(&answers[answerIndex]);
+      npcPtr->choices = nullptr;
+      bool rightAnswer = answerIndex == correctAnswer;
+      npcPtr->last = rightAnswer;
+      answerIndex = -1;
+      return rightAnswer;
+    } else if (npcPtr->dialogueProgressCount == 1000) {
+      if (npcPtr->dialogue != &text) {
+        npcPtr->UpdateDialogue(&text);
+        npcPtr->choices = &choices;
       }
     }
     return false;

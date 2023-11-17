@@ -147,7 +147,7 @@ struct CharacterPanel : public Window {
         PLAYER_STATS.SpendAttributePoint(j);
       }
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
-      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)PLAYER_STATS.effects[j],
+      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)std::round(PLAYER_STATS.effects[j]),
                                 PLAYER_SPENT_POINTS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
