@@ -18,6 +18,17 @@ struct InventorySlot {
         slotType(item_type),
         baseWidth(width),
         baseHeight(height) {}
+  inline bool operator<(const InventorySlot& other) const {
+    if (!item) return other.item != nullptr;
+    if (!other.item) return false;
+    return *item < *other.item;
+  }
+
+  inline bool operator>(const InventorySlot& other) const {
+    if (!item) return false;
+    if (!other.item) return item != nullptr;
+    return *item > *other.item;
+  }
   //General update method for all bag slots
   void Draw(float x, float y) noexcept {
     hitBox.x = (x + (float)baseX) * UI_SCALE;
@@ -61,7 +72,7 @@ struct InventorySlot {
     if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
-          for (uint_fast32_t i = 0; i < PLAYER_STATS.effects[BAG_SLOTS]; i++) {
+          for (int i = 0; i < (int)PLAYER_STATS.GetBagSlots(); i++) {
             if (!PLAYER_BAG[i].item) {
               PLAYER_BAG[i].item = item;
               PLAYER_STATS.UnEquipItem(item->effects);
@@ -76,14 +87,14 @@ struct InventorySlot {
           item = nullptr;
         }
       } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 slotType == DRAGGED_ITEM->type) {
+                 CharacterSlotDropRules()) {
         item = DRAGGED_ITEM;
         PlaySoundR(sound::equip);
         PLAYER_STATS.EquipItem(item->effects);
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
       } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 DRAGGED_ITEM->type == slotType) {
+                 CharacterSlotDropRules()) {
         if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
           PLAYER_STATS.UnEquipItem(item->effects);
         }
@@ -105,8 +116,8 @@ struct InventorySlot {
     if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
       if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (IsKeyDown(KEY_LEFT_SHIFT)) {
-          for (uint_fast32_t i = 0; i < 10; i++) {
-            if (!PLAYER_EQUIPPED[i].item && PLAYER_EQUIPPED[i].slotType == item->type) {
+          for (int i = 0; i < 10; i++) {
+            if (NoSwitchDragRules(PLAYER_EQUIPPED[i])) {
               PLAYER_EQUIPPED[i].item = item;
               PLAYER_STATS.EquipItem(item->effects);
               item = nullptr;
@@ -122,9 +133,7 @@ struct InventorySlot {
         item = DRAGGED_ITEM;
         DRAGGED_SLOT = nullptr;
         DRAGGED_ITEM = nullptr;
-      } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 (DRAGGED_SLOT->slotType == ItemType::EMPTY ||
-                  DRAGGED_SLOT->slotType == item->type)) {
+      } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && BagSlotDropRuleSwitch()) {
         if (DRAGGED_SLOT->slotType != ItemType::EMPTY) {
           PLAYER_STATS.EquipItem(item->effects);
         }
@@ -195,6 +204,71 @@ struct InventorySlot {
         break;
     }
   }
+
+ private:
+  [[nodiscard]] inline bool NoSwitchDragRules(const InventorySlot& ptr) const noexcept {
+    if (ptr.item) return false;
+    if (item->type == ItemType::OFF_HAND) {
+      return ptr.slotType == ItemType::OFF_HAND &&
+             (PLAYER_EQUIPPED[8].item == nullptr ||
+              PLAYER_EQUIPPED[8].item->type == ItemType::ONE_HAND);
+
+    } else if (item->type == ItemType::TWO_HAND) {
+      return ptr.slotType == ItemType::ONE_HAND && PLAYER_EQUIPPED[9].item == nullptr;
+    } else {
+      return ptr.slotType == item->type;
+    }
+  }
+  [[nodiscard]] inline bool CharacterSlotDropRules() const noexcept {
+    if (DRAGGED_ITEM->type == ItemType::OFF_HAND) {
+      return slotType == ItemType::OFF_HAND &&
+             (PLAYER_EQUIPPED[8].item == nullptr ||
+              PLAYER_EQUIPPED[8].item->type == ItemType::ONE_HAND);
+    } else if (DRAGGED_ITEM->type == ItemType::TWO_HAND) {
+      return slotType == ItemType::ONE_HAND && PLAYER_EQUIPPED[9].item == nullptr;
+    } else {
+      return slotType == DRAGGED_ITEM->type;
+    }
+  }
+
+  [[nodiscard]] inline bool BagSlotDropRuleSwitch() const noexcept {
+    if (DRAGGED_SLOT->slotType == ItemType::EMPTY) return true;
+    if (item->type == ItemType::TWO_HAND) {
+      return DRAGGED_ITEM->type == ItemType::ONE_HAND &&
+             PLAYER_EQUIPPED[9].item == nullptr;
+    } else{
+      return item->type == DRAGGED_SLOT->slotType;
+    }
+  }
 };
 
+void Util::SelectionSortInventorySlot(InventorySlot* arr, uint_32_cx len,
+                                      bool ascending) {
+  uint_32_cx index;
+  if (ascending) {
+    for (uint_32_cx i = 0; i < len; i++) {
+      InventorySlot low = arr[i];
+      index = i;
+      for (uint_32_cx j = i + 1; j < len; j++) {
+        if (arr[j] < low) {
+          low = arr[j];
+          index = j;
+        }
+      }
+      std::swap(arr[i].item, arr[index].item);
+    }
+  } else {
+    for (uint_32_cx i = 0; i < len; i++) {
+      InventorySlot high = arr[i];
+      index = i;
+      for (uint_32_cx j = i + 1; j < len; j++) {
+        if (arr[j] > high) {
+          high = arr[j];
+          index = j;
+        }
+      }
+      std::swap(arr[i].item, arr[index].item);
+    }
+  }
+}
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_

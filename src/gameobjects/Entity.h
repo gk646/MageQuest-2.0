@@ -109,6 +109,13 @@ struct Entity {
   }
 
  protected:
+  inline bool IsHitDodged(EntityStats& stats) const noexcept {
+    if (RANGE_100_FLOAT(RNG_ENGINE) < stats.effects[DODGE_CHANCE]) {
+      DAMAGE_NUMBERS.emplace_back(FLT_MIN, DamageType::TRUE_DMG, GetUpperMiddle());
+      return true;
+    }
+    return false;
+  }
   inline void DrawHitbox() const {
     switch (hitboxShape) {
       case ShapeType::RECT:
@@ -228,23 +235,20 @@ struct Entity {
 };
 #include "components/ThreatManager.h"
 
-inline float EntityStats::TakeDamage(const DamageStats& stats, const Entity* ent) {
-  if (RANGE_100_FLOAT(RNG_ENGINE) < effects[DODGE_CHANCE]) {
-    DAMAGE_NUMBERS.emplace_back(FLT_MIN, DamageType::TRUE_DMG, ent->GetUpperMiddle());
-    return 0.0F;
-  }
+inline float EntityStats::TakeDamage(const DamageStats& dmgStats, const Entity* ent) {
+  lastHitType = dmgStats.dmgType;
   bool crit = false;
   float armour = GetArmour();
-  float damage = stats.damage;
-  if (RollCriticalHit(stats)) {
+  float damage = dmgStats.damage;
+  if (RollCriticalHit(dmgStats)) {
     crit = true;
-    damage *= 1 + stats.critDamage;
+    damage *= 1 + dmgStats.critDamage;
   }
 
   damage *= 1 - effects[DAMAGE_RESISTANCE_P];
-  if (stats.dmgType == DamageType::PHYSICAL) {
+  if (dmgStats.dmgType == DamageType::PHYSICAL) {
     damage *= 1 - armour / (level * 50.0F);
-  } else if (stats.dmgType != DamageType::TRUE_DMG) {
+  } else if (dmgStats.dmgType != DamageType::TRUE_DMG) {
     if (shield >= damage) {
       shield -= damage;
       return damage;
@@ -254,10 +258,10 @@ inline float EntityStats::TakeDamage(const DamageStats& stats, const Entity* ent
     }
   }
   if (health > 0) {
-    lastHitType = stats.dmgType;
+    lastHitType = dmgStats.dmgType;
   }
   health -= damage;
-  DAMAGE_NUMBERS.emplace_back(damage, stats.dmgType, ent->GetUpperMiddle(), crit);
+  DAMAGE_NUMBERS.emplace_back(damage, dmgStats.dmgType, ent->GetUpperMiddle(), crit);
   return damage;
 }
 #endif  //MAGE_QUEST_SRC_ENTITY_H_

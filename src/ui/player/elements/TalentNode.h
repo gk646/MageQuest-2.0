@@ -37,7 +37,11 @@ struct TalentNode {
   }
   inline void Update() noexcept { isHovered = CheckCollisionPointRec(MOUSE_POS, bounds); }
   //Draws the tooltip with the given bounds
-  inline void DrawToolTip(const RectangleR& toolTipBounds) const noexcept {
+  inline void DrawToolTip(RectangleR toolTipBounds) const noexcept {
+    int lineBreaks = 0;
+    std::string wrappedText = Util::WrapText(talent.description, TOOLTIP_WIDTH,
+                                             MINECRAFT_REGULAR, 15, &lineBreaks);
+    toolTipBounds.y += lineBreaks * 15.0F;
     DrawRectangleRounded(toolTipBounds, 0.1F, ROUND_SEGMENTS,
                          Colors::mediumLightGreyTransparent);
     DrawRectangleRoundedLines(toolTipBounds, 0.1F, ROUND_SEGMENTS, 2,
@@ -46,8 +50,10 @@ struct TalentNode {
     DrawTextExR(MINECRAFT_BOLD, talent.name.c_str(),
                 {toolTipBounds.x + 5, toolTipBounds.y + 5}, 18, 0.5F,
                 Colors::darkBackground);
-    Util::DrawWrappedText({toolTipBounds.x + 5, toolTipBounds.y + 25}, talent.description,
-                          TOOLTIP_WIDTH, MINECRAFT_REGULAR, 15, Colors::darkBackground);
+
+    DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(),
+                {toolTipBounds.x + 5, toolTipBounds.y + 25}, 15, 0.5F,
+                Colors::darkBackground);
   }
 
  private:
@@ -65,7 +71,7 @@ struct TalentNode {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     } else if (sizeType == TalentSize::MID) {
       DrawTextureProFast(talent.icon, bounds.x + 7, bounds.y + 7, 0, WHITE);
-    }else{
+    } else {
       DrawTextureProFast(talent.icon, bounds.x + 8, bounds.y + 8, 0, WHITE);
     }
   }

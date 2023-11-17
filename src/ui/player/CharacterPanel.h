@@ -147,7 +147,7 @@ struct CharacterPanel : public Window {
         PLAYER_STATS.SpendAttributePoint(j);
       }
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
-      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, std::floor(PLAYER_STATS.effects[j]),
+      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)PLAYER_STATS.effects[j],
                                 PLAYER_SPENT_POINTS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
@@ -159,7 +159,7 @@ struct CharacterPanel : public Window {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
     if (stat == WEAPON_DAMAGE) {
       baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, val, Alignment::RIGHT,
-                                  Colors::darkBackground, Colors::darkBackground, "%f.2");
+                                  Colors::darkBackground, Colors::darkBackground, "%.2f");
     } else {
       baseStats[i++].DrawStatCell(x, y, TEXT_BUFFER, val);
     }

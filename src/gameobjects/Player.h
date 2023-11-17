@@ -24,11 +24,12 @@ struct Player final : public Entity {
  public:
   //Called on each hit
   inline void Hit(Projectile& p) const noexcept {
-    if (!p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
+    if (!p.isFriendlyToPlayer && p.IsActive() && actionState != -100 &&
+        !IsHitDodged(PLAYER_STATS)) {
       ApplyTalentsToPlayerHit(&p);
       p.HitTargetCallback();
-      PLAYER_EFFECTS.AddEffects(p.statusEffects);
       PLAYER_STATS.TakeDamage(p.damageStats, this);
+      PLAYER_EFFECTS.AddEffects(p.statusEffects);
     }
   }
   void Draw() final {

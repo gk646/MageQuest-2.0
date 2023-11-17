@@ -10,11 +10,14 @@ struct MonsterScaler {
   int8_t attackRangeTiles;
   int8_t chaseRangeTiles;
   [[nodiscard]] inline float GetMaxHealth(uint8_t level) const noexcept {
-    float maxHealth =
-        baseHealth + ((level - 1) * healthPerLevel) * cxstructs::fast_sqrt(level);
-    maxHealth *= cxstructs::fast_sqrt(level);
-    maxHealth *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY];
+    float maxHealth = baseHealth + ((level - 1) * healthPerLevel);
+    maxHealth *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY].healthMult;
     return maxHealth;
+  }
+  [[nodiscard]] inline float GetDamage(uint8_t level) const noexcept {
+    float maxDamage = damage * level;
+    maxDamage *= DIFFICULTY_HEALTH_MULT[GAME_DIFFICULTY].damageMult;
+    return maxDamage;
   }
 };
 
@@ -33,6 +36,9 @@ struct SkillStats {
   ProjectileType type = ProjectileType::LOCKED;
   [[nodiscard]] inline float GetLeveledDMG() const noexcept {
     return ((float)std::sqrt(skillLevel) * baseDamage);
+  }
+  [[nodiscard]] inline float GetManaCost() const noexcept {
+    return manaCost * (float)skillLevel;
   }
 };
 
@@ -95,6 +101,7 @@ struct EntityStats {
   uint8_t level = 1;
   bool stunned = false;
   DamageType lastHitType = DamageType::TRUE_DMG;
+  //Player stats
   EntityStats() {
     effects[CRIT_CHANCE] = 0;
     effects[CRIT_DAMAGE_P] = 0.5F;
@@ -105,14 +112,16 @@ struct EntityStats {
     effects[WEAPON_DAMAGE] = 1;
     effects[DODGE_CHANCE] = 0;
   };
+  //Monster stats
   EntityStats(const MonsterScaler& scaler, uint8_t level)
       : level(level), speed(scaler.speed) {
     effects[MAX_HEALTH] = scaler.GetMaxHealth(level);
     health = effects[MAX_HEALTH];
+    effects[WEAPON_DAMAGE] = scaler.GetDamage(level);
     effects[CRIT_CHANCE] = 5;
     effects[CRIT_DAMAGE_P] = 0.5F;
     effects[HEALTH_REGEN] = effects[MAX_HEALTH] / 7200;
-    effects[WEAPON_DAMAGE] = scaler.damage * (float)level;
+    effects[DODGE_CHANCE] = 1;
   }
   inline void Update() noexcept {
     float max_mana_value = GetMaxMana();
@@ -140,14 +149,14 @@ struct EntityStats {
   inline void ApplySkillCosts(const SkillStats& stats) noexcept {
     mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
-  inline void EquipItem(const float* effect_arr) noexcept {
+  inline void EquipItem(const float* effectArr) noexcept {
     for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
-      effects[i] += effect_arr[i];
+      effects[i] += effectArr[i];
     }
     ReCalculatePlayerStats();
   }
   inline void UnEquipItem(const float* effect_arr) noexcept;
-  inline float TakeDamage(const DamageStats& stats, const Entity* ent);
+  inline float TakeDamage(const DamageStats& dmgStats, const Entity* ent);
   inline void RefillStats() noexcept {
     mana = GetMaxMana();
     health = GetMaxHealth();
@@ -172,7 +181,7 @@ struct EntityStats {
       case DamageType::POISON:
         return damage * (1 + effects[POISON_DMG_P]);
       case DamageType::ICE:
-        return damage *(1 + effects[ICE_DMG_P]);
+        return damage * (1 + effects[ICE_DMG_P]);
       case DamageType::ARCANE:
         return damage * (1 + effects[ARCANE_DMG_P]);
       case DamageType::DARK:
@@ -210,7 +219,7 @@ struct EntityStats {
   [[nodiscard]] inline bool IsSkillUsable(const SkillStats& stats,
                                           float ticks_done) const noexcept {
     return !stunned && ticks_done >= GetTotalCD(stats) &&
-           mana >= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
+           mana >= stats.GetManaCost() * (1 - effects[MANA_COST_REDUCTION_P]);
   }
 };
 inline EntityStats PLAYER_STATS;

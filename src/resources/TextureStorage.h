@@ -94,6 +94,14 @@ inline static Texture spendButtonNormal;
 inline static Texture spendButtonHovered;
 inline static Texture spendButtonPressed;
 
+inline static Texture bagSlots;
+inline static Texture bagSlotsHovered;
+inline static Texture bagSlotsPressed;
+
+inline static Texture sort;
+inline static Texture sortHovered;
+inline static Texture sortPressed;
+
 namespace questpanel {
 inline static Texture questBox;
 inline static Texture questBoxHovered;

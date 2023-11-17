@@ -28,7 +28,7 @@ struct TextCell {
     } else {
       DrawTextExR(MINECRAFT_BOLD, txt, {x, y}, SCALE(fontSize), 1, leftColor);
     }
-    if(format == nullptr){
+    if(format != nullptr){
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, format, rightVal);
     }else{
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.1f", rightVal);

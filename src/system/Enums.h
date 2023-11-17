@@ -87,12 +87,9 @@ std::unordered_map<DamageType, std::string> damageTypeNames = {
     {DamageType::DARK, "dark"},           {DamageType::PHYSICAL, "physical"},
     {DamageType::TRUE_DMG, "true damage"}};
 std::unordered_map<std::string, DamageType> damageNamesToType = {
-    {"arcane", DamageType::ARCANE},
-    {"poison", DamageType::POISON},
-    {"fire", DamageType::FIRE},
-    {"ice", DamageType::ICE},
-    {"dark", DamageType::DARK},
-    {"physical", DamageType::PHYSICAL},
+    {"arcane", DamageType::ARCANE},       {"poison", DamageType::POISON},
+    {"fire", DamageType::FIRE},           {"ice", DamageType::ICE},
+    {"dark", DamageType::DARK},           {"physical", DamageType::PHYSICAL},
     {"true damage", DamageType::TRUE_DMG}};
 
 inline static DamageType commonSchools[4] = {DamageType::FIRE, DamageType::ICE,
@@ -108,7 +105,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
     {DamageType::PHYSICAL, Colors::physical_grey},
 };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
-enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT, TORMENT_2, TORMENT_3 };
+enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT };
 enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
 enum class Alignment : uint8_t { LEFT, RIGHT, MIDDLE };
 
@@ -484,9 +481,15 @@ struct ProjectileInfo {
 
 inline static std::unordered_map<ProjectileType, ProjectileInfo> typeToInfo = {};
 
-inline static std::unordered_map<Difficulty, float> DIFFICULTY_HEALTH_MULT = {
-    {Difficulty::EASY, 0.5F}, {Difficulty::NORMAL, 1},    {Difficulty::HARD, 1.5F},
-    {Difficulty::TORMENT, 3}, {Difficulty::TORMENT_2, 5}, {Difficulty::TORMENT_3, 10}};
+struct DifficultyMultipliers {
+  float healthMult;
+  float damageMult;
+};
+inline static std::unordered_map<Difficulty, DifficultyMultipliers>
+    DIFFICULTY_HEALTH_MULT = {{Difficulty::EASY, {0.75F, 0.8F}},
+                              {Difficulty::NORMAL, {1.0F, 1.0F}},
+                              {Difficulty::HARD, {1.25F, 1.5F}},
+                              {Difficulty::TORMENT, {1.75F, 2.0F}}};
 
 inline std::unordered_map<Stat, std::string> statToName = {
     {ARCANE_DMG_P, "Arcane Damage (%)"},

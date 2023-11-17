@@ -14,6 +14,13 @@ struct CharacterBag final : public Window {
   static constexpr int offset_y = 60;
   static constexpr int max_slots = per_row * 9;
   BagPanel bagPanel;
+  std::array<TexturedButton, 1> buttons{
+      TexturedButton{25, 25, "", 15, textures::ui::questpanel::questBox,
+                     textures::ui::questpanel::questBox,
+                     textures::ui::questpanel::questBox, 255, "Sorts after rarity", []() {
+                       Util::SelectionSortInventorySlot(
+                           PLAYER_BAG, (int)PLAYER_STATS.GetBagSlots(), false);
+                     }}};
   explicit CharacterBag() noexcept
       : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags",
                KEY_B, sound::openBags, sound::closeBags) {
@@ -28,10 +35,18 @@ struct CharacterBag final : public Window {
     }
     WINDOW_LOGIC()
     DrawWindow();
+    float x = wholeWindow.x;
+    float y = wholeWindow.y + 28;
+    if (bagPanel.IsOpened()) x += 120;
+    x += 55.0F * buttons.size();
+    for (int i = buttons.size() - 1; i > -1; i--) {
+      buttons[i].Draw(x, y);
+      x -= 55;
+    }
+    bagPanel.Draw(wholeWindow.x, y);
     for (uint_fast32_t i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {
       PLAYER_BAG[i].Draw(wholeWindow.x, wholeWindow.y);
     }
-    bagPanel.Draw(wholeWindow.x, wholeWindow.y);
   }
   void Update() noexcept {
     float bagSlots = PLAYER_STATS.GetBagSlots();
@@ -44,6 +59,20 @@ struct CharacterBag final : public Window {
       bagPanel.Update();
     }
   }
+  inline static void RemoveSlots(int n) noexcept;
+  inline static bool AddItem(Item* new_item) noexcept {
+    for (int i = 0; i < (int)PLAYER_STATS.GetBagSlots(); i++) {
+      if (!PLAYER_BAG[i].item && &PLAYER_BAG[i] != DRAGGED_SLOT) {
+        PLAYER_BAG[i].item = new_item;
+        GAME_STATISTICS.PickedUpItem(new_item->rarity);
+        return true;
+      }
+    }
+    return false;
+  }
+
+ private:
+  //Assigns the right coordinates to all the slots
   inline static void CalculateSlots(int n) noexcept {
     int var = 0;
     int exist_x = var % per_row;
@@ -58,17 +87,6 @@ struct CharacterBag final : public Window {
       exist_x = var % per_row;
       exist_y = var / per_row;
     }
-  }
-  inline static void RemoveSlots(int n) noexcept;
-  static bool AddItem(Item* new_item) noexcept {
-    for (uint_fast32_t i = 0; i < PLAYER_STATS.GetBagSlots(); i++) {
-      if (!PLAYER_BAG[i].item && &PLAYER_BAG[i] != DRAGGED_SLOT) {
-        PLAYER_BAG[i].item = new_item;
-        GAME_STATISTICS.PickedUpItem(new_item->rarity);
-        return true;
-      }
-    }
-    return false;
   }
 };
 

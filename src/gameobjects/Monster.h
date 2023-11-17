@@ -71,12 +71,13 @@ struct Monster : public Entity {
   }
   ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
   inline void Hit(Projectile& p) noexcept {
-    if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100) {
-      p.HitTargetCallback();
+    if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100 &&
+        !IsHitDodged(stats)) {
       healthBar.Update();
-      effectHandler.AddEffects(p.statusEffects);
-      float dmg = stats.TakeDamage(p.damageStats, this);
+      p.HitTargetCallback();
+      const float dmg = stats.TakeDamage(p.damageStats, this);
       threatManager.AddThreat(p.sender, dmg);
+      effectHandler.AddEffects(p.statusEffects);
       hitFlashDuration = hitFlashDuration == -12 ? 12 : hitFlashDuration;
     }
   }
