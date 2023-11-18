@@ -52,7 +52,8 @@ struct TexturedButton {
         onPressedFunc(func) {}
   //Draws the button and returns true if it was clicked // execute  "onPressedFunc" automatically
   bool Draw(const float x, const float y, const Alignment textAlign = Alignment::MIDDLE,
-            Alignment buttonAlign = Alignment::MIDDLE) noexcept {
+            Alignment buttonAlign = Alignment::MIDDLE, const Font& font = MINECRAFT_BOLD,
+            Color tint = WHITE) noexcept {
     UpdateImpl(x, y, buttonAlign);
     //Render the button based on its state
     if (!isCovered && isHovered) {
@@ -65,7 +66,7 @@ struct TexturedButton {
     } else {
       DrawTextureScaled(normal, bounds, 0, false, 0, {255, 255, 255, alpha});
     }
-    DrawButtonText(textAlign);
+    DrawButtonText(textAlign, tint, font);
     return CheckForClick();
   }
   //Updates the global window state when the button is hovered
@@ -88,36 +89,40 @@ struct TexturedButton {
     return false;
   }
   //Draws the button's text based on the specified alignment
-  inline void DrawButtonText(const Alignment align) noexcept {
+  inline void DrawButtonText(const Alignment align, Color tint,
+                             const Font& font) noexcept {
+    auto bound = MeasureTextEx(font, txt.c_str(), fontSize, 0.5F);
     switch (align) {
       case Alignment::LEFT: {
-        auto bound = MeasureTextEx(MINECRAFT_BOLD, txt.c_str(), fontSize, 0.5);
-        DrawTextExR(MINECRAFT_BOLD, txt.c_str(),
-                    {fontSize + bounds.x, bounds.y + bounds.height / 2 - bound.y / 2},
-                    fontSize, 0.5F, GetTextColor());
+
+        DrawTextExR(font, txt.c_str(),
+                    {fontSize + bounds.x, bounds.y + (bounds.height - bound.y) / 2.0F},
+                    fontSize, 0.5F, GetTextColor(tint));
       }
 
       break;
       case Alignment::RIGHT:
-        Util::DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
+        Util::DrawRightAlignedText(font, fontSize, txt.c_str(),
                                    bounds.x + bounds.width - fontSize,
-                                   bounds.y + bounds.height / 3.4F, GetTextColor());
+                                   bounds.y + (bounds.height - bound.y) / 2.0F, GetTextColor(tint));
 
         break;
       case Alignment::MIDDLE:
-        Util::DrawCenteredText(VARNISHED, fontSize, txt.c_str(),
+        Util::DrawCenteredText(font, fontSize, txt.c_str(),
                                bounds.x + bounds.width / 2.0F,
-                               bounds.y + bounds.height / 3.4F, GetTextColor());
+                               bounds.y + (bounds.height - bound.y) / 2.0F, GetTextColor(tint));
         break;
     }
   }
-  [[nodiscard]] inline const Color& GetTextColor() const noexcept {
+  [[nodiscard]] inline const Color& GetTextColor(Color& tint) const noexcept {
+    if (tint.r != 255 && tint.b != 255 && tint.g != 255) return tint;
     if (isHovered && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       return Colors::LightGrey;
     }
     return Colors::darkBackground;
   }
-  inline void UpdateImpl(const float x, const float y, const Alignment buttonAlign) noexcept {
+  inline void UpdateImpl(const float x, const float y,
+                         const Alignment buttonAlign) noexcept {
     bounds.x = x;
     bounds.y = y;
     //bounds.width = SCALE(base_width);

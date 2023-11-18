@@ -15,7 +15,7 @@ struct NPC : public Entity {
   NPC_ID id;
   bool last = false;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
-      float speed = 2, const PointT<int16_t>& size = {25, 35})
+      float speed = 2, const PointT<int16_t>& size = {25, 45})
       : Entity(pos, size, ShapeType::RECT, 0, false, zone),
         resource(resource),
         id(id),
@@ -56,9 +56,9 @@ struct NPC : public Entity {
       if (choices) {
         float offSet = 0;
         for (auto& b : *choices) {
-          b.Draw(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y + size.x * 1.2F + offSet,
-                 Alignment::LEFT);
-          offSet += 21;
+          b.Draw(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y + size.y * 1.1F + offSet,
+                 Alignment::MIDDLE, Alignment::MIDDLE, MINECRAFT_BOLD, Colors::LightGrey);
+          offSet += 20;
         }
       }
     }

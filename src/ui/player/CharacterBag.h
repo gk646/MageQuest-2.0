@@ -1,8 +1,8 @@
-
 #ifndef MAGEQUEST_SRC_UI_PLAYER_CHARACTERBAG_H_
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERBAG_H_
 
 #include "../elements/SlideComponent.h"
+#include "../elements/TextPanel.h"
 #include "BagPanel.h"
 
 struct CharacterBag final : public Window {
@@ -14,6 +14,7 @@ struct CharacterBag final : public Window {
   static constexpr int offset_y = 60;
   static constexpr int max_slots = per_row * 9;
   BagPanel bagPanel;
+  TextPanel infoPanel{300, "H", 15};
   std::array<TexturedButton, 2> buttons{
       TexturedButton{25, 25, "", 15, textures::ui::sort, textures::ui::sortHovered,
                      textures::ui::sortPressed, 255, "Sorts after rarity",
@@ -22,8 +23,8 @@ struct CharacterBag final : public Window {
                            PLAYER_BAG, (int)PLAYER_STATS.GetBagSlots(), false);
                      }},
       TexturedButton{25, 25, "", 15, textures::ui::info, textures::ui::infoHovered,
-                     textures::ui::infoPressed, 255, "Displays bag controls", []() {
-
+                     textures::ui::infoPressed, 255, "Displays bag controls", [&]() {
+                       infoPanel.isOpen = !infoPanel.isOpen;
                      }}};
   explicit CharacterBag() noexcept
       : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags",
@@ -35,17 +36,19 @@ struct CharacterBag final : public Window {
   void Draw() noexcept {
     if (!isWindowOpen) {
       bagPanel.isOpen = false;
+      infoPanel.isOpen = false;
       bagPanel.slide.Reset();
     }
     WINDOW_LOGIC()
     DrawWindow();
     float x = wholeWindow.x;
     float y = wholeWindow.y + 28;
+    infoPanel.Draw(x + 50, y - (infoPanel.bounds.height + 25));
     if (bagPanel.IsOpened()) x += 120;
-    x += 40.0F * buttons.size();
+    x += 45.0F * buttons.size();
     for (int i = buttons.size() - 1; i > -1; i--) {
       buttons[i].Draw(x, y);
-      x -= 55;
+      x -= 32;
     }
     bagPanel.Draw(wholeWindow.x, y);
     for (uint_fast32_t i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {

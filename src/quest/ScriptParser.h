@@ -65,12 +65,12 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       int i = 0;
       while (std::getline(file, line) && line != "*") {
         auto choice = Util::SplitString(line, ':');
-        auto textBound = MeasureTextEx(MINECRAFT_REGULAR, choice[0].c_str(), 16, 0.5F);
+        auto textBound = MeasureTextEx(MINECRAFT_BOLD, choice[0].c_str(), 16, 0.5F);
         auto boundFunction = [obj, i] {
           obj->SetAnswerIndex(i);
         };
         obj->choices.emplace_back(
-            textBound.x + 20, 20, choice[0], 16, textures::ui::questpanel::choiceBox,
+            textBound.x + 5, 17, choice[0], 16, textures::ui::questpanel::choiceBox,
             textures::ui::questpanel::choiceBoxHovered,
             textures::ui::questpanel::choiceBoxHovered, 255, "", boundFunction);
         obj->answers.emplace_back(choice[1]);
