@@ -10,6 +10,7 @@ inline void RestUIPosition();
 #include "elements/ScrollPane.h"
 #include "elements/SoundComponent.h"
 #include "elements/TextField.h"
+#include "elements/TextPanel.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"
