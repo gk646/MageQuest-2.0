@@ -213,13 +213,14 @@ Monster* Monster::GetNewMonster(const Point& pos, MonsterType type, uint8_t leve
       return new BossStoneGolem(pos, level, type, zone);
     case MonsterType::RAT:
       return new Rat(pos, level, type, zone);
+    case MonsterType::GOBLIN:
+      return new Goblin(pos, level, type, zone);
     case MonsterType::BOSS_DEATH_BRINGER:
     case MonsterType::BOSS_STONE_KNIGHT:
     case MonsterType::BOSS_SLIME:
-    case MonsterType::GOBLIN:
     case MonsterType::KNIGHT:
     case MonsterType::ANY:
-      return nullptr;
+      break;
   }
   std::cout << "MISSING MONSTER ID AT ENUM ID:" << (int)type << std::endl;
   return nullptr;
@@ -320,7 +321,7 @@ void ProjectileAttack::Execute(Monster* attacker) const {
     copy[i] = effects[i]->Clone();
   }
   PROJECTILES.emplace_back(GetProjectileInstance(type, attacker->GetMiddlePoint(), false,
-                                                 damage, attacker, Vector2(), 0, copy));
+                                                 damage * modifier, attacker, Vector2(), 0, copy));
 }
 void ConeAttack::Execute(Monster* attacker) const {
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};
@@ -329,7 +330,7 @@ void ConeAttack::Execute(Monster* attacker) const {
     copy[i] = effects[i]->Clone();
   }
   auto prj = new AttackCone(attacker->GetAttackConeBounds(width, height), false,
-                            (int16_t)std::max(hitDelay * 2, 90), hitDelay, damage, copy,
+                            (int16_t)std::max(hitDelay * 2, 90), hitDelay, damage * modifier, copy,
                             sound, attacker);
   SetDamageStats(prj, attacker->stats.effects[CRIT_CHANCE],
                  attacker->stats.effects[CRIT_DAMAGE_P]);

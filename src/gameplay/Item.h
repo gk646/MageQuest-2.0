@@ -249,7 +249,7 @@ struct Item {
     }
   }
   //Returns a Clone of the base item that matches the given values
-  inline static Item* FindBaseItem(int id, ItemType type, int quality, int level);
+  inline static Item* FindBaseItemClone(int id, ItemType type, int quality, int level);
   //Parses the effects column of an entry in the form:"35:12.000000;" and adds it on top of existing values
   inline static void ParseEffectText(float* arr, const unsigned char* ptr) {
     if (!ptr) return;

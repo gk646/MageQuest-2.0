@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_
 #define MAGEQUEST_SRC_GAMEPLAY_HANDLERS_ITEMDROPHANDLER_H_
 
-Item* Item::FindBaseItem(int id, ItemType type, int quality, int level) {
+Item* Item::FindBaseItemClone(int id, ItemType type, int quality, int level) {
   for (const auto& item : ITEMS) {
     if (item.id == id && item.type == type) {
       auto clone = new Item(item);

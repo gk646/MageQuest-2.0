@@ -178,6 +178,8 @@ struct SPAWN final : public QuestNode {
   std::vector<PointT<int16_t>> positions;
   MonsterType mType = MonsterType::ANY;
   NPC_ID npcID = NPC_ID::NPC_END;
+  ItemType type;
+  int id;
   Zone zone = CURRENT_ZONE;
   int level;
   explicit SPAWN(MonsterType type, int level)
@@ -189,18 +191,22 @@ struct SPAWN final : public QuestNode {
         level(level == 0 ? PLAYER_STATS.level : level),
         npcID(npcID) {}
   bool Progress() noexcept final {
-    if (npcID == NPC_ID::NPC_END) {
+    if (mType != MonsterType::ANY) {
       for (const auto& p : positions) {
         MONSTERS.push_back(Monster::GetNewMonster(
             {(float)p.x * 48.0F, (float)p.y * 48.0F}, mType, level, zone));
       }
       return true;
-    } else if (mType == MonsterType::ANY) {
+    } else if (npcID != NPC_ID::NPC_END) {
       for (const auto& p : positions) {
         NPCS.push_back(
             NPC::GetNewNPC(npcID, (float)p.x * 48.0F, (float)p.y * 48.0F, zone));
       }
       return true;
+    } else if (type != ItemType::EMPTY) {
+      WORLD_OBJECTS.emplace_back(
+          new DroppedItem({positions[0].x * 48.0F, positions[0].y * 48.0F},
+                          Item::FindBaseItemClone(id, type, 85, PLAYER_STATS.level)));
     } else {
       return false;
     }
@@ -209,8 +215,13 @@ struct SPAWN final : public QuestNode {
     SPAWN* obj;
     if (stringToMonsterID.contains(parts[1])) {
       obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
-    } else {
+    } else if (npcIdMap.contains(parts[1])) {
       obj = new SPAWN(npcIdMap[parts[1]], std::stoi(parts[2]));
+    } else {
+      obj = new SPAWN(NPC_ID::NPC_END, std::stoi(parts[2]));
+      auto idVec = Util::SplitString(parts[1], ',');
+      obj->type = ItemType((uint8_t)std::stoi(idVec[0]));
+      obj->id = std::stoi(idVec[1]);
     }
     for (uint_fast32_t i = 3; i < parts.size(); i++) {
       obj->positions.emplace_back(Util::ParsePointI(parts[i]));
