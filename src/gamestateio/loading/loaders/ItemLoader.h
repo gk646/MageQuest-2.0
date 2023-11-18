@@ -40,7 +40,7 @@ static void LoadItemsFromTable(InventorySlot* slots, const std::string& table, i
   for (int i = 0; i < length + offsetY && sqlite3_step(stmt) == SQLITE_ROW; ++i) {
     if (i < offsetY) continue;
 
-    slots[i - offsetY].item = Item::FindBaseItem(
+    slots[i - offsetY].item = Item::FindBaseItemClone(
         sqlite3_column_int(stmt, 0), ItemType(sqlite3_column_int(stmt, 1)),
         sqlite3_column_int(stmt, 2), sqlite3_column_int(stmt, 3));
 

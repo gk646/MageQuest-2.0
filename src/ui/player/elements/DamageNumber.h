@@ -13,7 +13,7 @@ struct DamageNumber {
     if (val == FLT_MIN) {
       snprintf(buffer, 10, "Dodged");
     } else {
-      snprintf(buffer, 10, "%d", (int)val);
+      snprintf(buffer, 10, "%d", (int) std::round(val));
     }
     DrawTextExR(EDIT_UNDO, buffer, {pos.x + DRAW_X, pos.y + DRAW_Y}, crit ? 25 : 15, 0.5F,
                 damageTypeToColor[dType]);

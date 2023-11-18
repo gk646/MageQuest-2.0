@@ -426,4 +426,61 @@ struct SwordSpin final : Projectile {
     }
   }
 };
+
+struct Bomb final : Projectile {
+  Point targetPos;
+  Point startPos;
+  Point controlPoint;
+  float t = 0.0f;
+  //TODO extract curve into component
+  Bomb(const Point& pos, bool isFriendlyToPlayer, float damage,
+       const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
+       const Vector2& mvmt, const Entity* sender)
+      : Projectile(isFriendlyToPlayer, pos, {DamageType::PHYSICAL, damage}, effects, mvmt,
+                   pov, sound::EMPTY_SOUND, sender, BOMB) {
+    targetPos = {mvmt.x, mvmt.y};
+    startPos = pos;
+    speed = 0;
+    controlPoint = CalculateControlPoint();
+    isDoingDamage = false;
+  }
+
+  Point CalculateControlPoint() {
+    return {(startPos.x() + targetPos.x()) / 2, (startPos.y() + targetPos.y()) / 2 - 100};
+  }
+  void Draw() final {
+    DrawTextureProFast(resources->frames[spriteCounter % 152 / 8], pos.x_ + DRAW_X - 43,
+                       pos.y_ + DRAW_Y - 40, 0, WHITE);
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    if (t < 1.0f) {
+      t += 0.01f;
+      pos = CalculateBezierPoint(t, startPos, controlPoint, targetPos);
+    }
+    Projectile::Update();
+    if (spriteCounter < 72) {
+      targetPos = {PLAYER_X, PLAYER_Y};
+      controlPoint = CalculateControlPoint();
+    }
+    if (spriteCounter == 120) {
+      isDoingDamage = true;
+    } else {
+      isDoingDamage = false;
+    }
+  }
+
+  static Point CalculateBezierPoint(float t, Point& start, Point& control, Point& end) {
+    float u = 1 - t;
+    float tt = t * t;
+    float uu = u * u;
+
+    Point p = start * uu;
+    p += control * t * u * 2;
+    p += end * tt;
+
+    return p;
+  }
+};
+
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_PROJECTILES_PROJECTILES_H_

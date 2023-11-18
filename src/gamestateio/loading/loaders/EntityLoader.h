@@ -31,7 +31,7 @@ static void Load() {
   textures::monsters::BOSS_DEATH_BRINGER.Load("enemies/BOSSDeathBringer/");
   textures::monsters::BOSS_KNIGHT.Load("enemies/BOSSKnight/");
   textures::monsters::BOSS_SLIME.Load("enemies/BossSlime/");
-  textures::monsters::GOBLIN.Load("enemies/goblin/");
+  textures::monsters::GOBLIN.LoadSpriteFromSheets("enemies/goblin/",150,150);
   textures::monsters::KNIGHT.Load("enemies/Knight/");
   textures::monsters::MUSHROOM.LoadSpriteFromSheets("enemies/mushroom/", 150, 150);
   textures::monsters::SNAKE.Load("enemies/snake/");
@@ -64,6 +64,7 @@ static void Load() {
   textures::projectile::THUNDER_SPLASH.Load("thunderSplash/");
   textures::projectile::THUNDER_STRIKE.Load("thunderStrike/");
   textures::projectile::VOID_ERUPTION.Load("voidEruption/");
+  textures::projectile::BOMB.LoadSpriteSheet("projectiles/bomb/0.png",100,100);
   textures::projectile::VOID_FIELD.LoadSpriteSheet("projectiles/voidField/0.png", 124,
                                                    124);
   textures::projectile::DUMMY.Load("dummy/");

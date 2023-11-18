@@ -3,10 +3,7 @@
 namespace ProjectileLoader {
 inline static ProjectileResources* GetProjectileRes(ProjectileType type) noexcept {
   switch (type) {
-    case POISON_BALL:
-      break;
     case FIRE_STRIKE:
-      return &textures::projectile::FIRE_BURST;
     case FIRE_STRIKE_II:
       return &textures::projectile::FIRE_BURST;
     case FIRE_BALL:
@@ -43,16 +40,19 @@ inline static ProjectileResources* GetProjectileRes(ProjectileType type) noexcep
       return &textures::projectile::ARCANE_BOLT;
     case PSYCHIC_SCREAM:
       return &textures::projectile::PSYCHIC_SCREAM;
-    case PROJECTILE_END:
-    case DUMMY:
-    case LOCKED:
-      return nullptr;
     case GLACIAL_BURST:
       return &textures::projectile::GLACIAL_BURST;
     case SPORE_SHOT:
       return &textures::projectile::SPORE_SHOT;
     case SWORD_SPIN:
       return &textures::projectile::SWORD_SPIN;
+    case BOMB:
+      return &textures::projectile::BOMB;
+    case PROJECTILE_END:
+    case POISON_BALL:
+    case DUMMY:
+    case LOCKED:
+      return nullptr;
   }
   return nullptr;
 }

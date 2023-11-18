@@ -5,6 +5,7 @@
 struct BaseAttack {
   const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects;
   const float& damage;
+  float modifier;
   float activationChance;
   const int16_t COOLDOWN_TICKS;
   int16_t currentCooldown = 0;
@@ -14,14 +15,15 @@ struct BaseAttack {
   bool isFar;
   BaseAttack(int8_t actionState, const float& damage, int16_t cooldown, int16_t delay,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects,
-             float activationChance, bool isFar = false)
+             float activationChance, bool isFar = false, float modifier = 1)
       : actionState(actionState),
         damage(damage),
         COOLDOWN_TICKS(cooldown),
         animationDelay(delay),
         effects(effects),
         activationChance(activationChance),
-        isFar(isFar) {}
+        isFar(isFar),
+        modifier(modifier) {}
 
  public:
   inline void Update(Monster* self) noexcept {
@@ -57,8 +59,9 @@ struct ConeAttack final : public BaseAttack {
   ConeAttack(int8_t actionState, const float& dmg, int16_t cd, int width, int height,
              const Sound& sound, int16_t hitDelay, int16_t animationDelay,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects,
-             float activationChance)
-      : BaseAttack(actionState, dmg, cd, animationDelay, effects, activationChance),
+             float activationChance, float modifier)
+      : BaseAttack(actionState, dmg, cd, animationDelay, effects, activationChance, false,
+                   modifier),
         width((int16_t)width),
         height((int16_t)height),
         sound(sound),
@@ -72,8 +75,9 @@ struct ProjectileAttack final : public BaseAttack {
   ProjectileAttack(int8_t actionState, const float& damage, int16_t cd, ProjectileType t,
                    int16_t delay,
                    const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects,
-                   float activationChance, int range)
-      : BaseAttack(actionState, damage, cd, delay, effects, activationChance, true),
+                   float activationChance, int range, float modifier)
+      : BaseAttack(actionState, damage, cd, delay, effects, activationChance, true,
+                   modifier),
         type(t),
         range(range) {}
 
@@ -95,13 +99,13 @@ struct CustomAbility final : public BaseAttack {
 
  public:
   void Execute(Monster* attacker) const final { func(attacker); };
-  [[nodiscard]] virtual inline bool IsReady(Monster* self) noexcept final;
+  [[nodiscard]] inline bool IsReady(Monster* self) noexcept final;
 };
 struct AttackComponent {
   std::array<BaseAttack*, 5> attacks = {0};
   Monster* self;
   int16_t currentCooldown = 0;
-   int16_t GLOBAL_COOLDOWN_TICKS = 0;
+  int16_t GLOBAL_COOLDOWN_TICKS = 0;
   int8_t attackRangeTiles;
   int8_t chaseRangeTiles;
   int8_t registeredAttacks;
@@ -133,11 +137,12 @@ struct AttackComponent {
       int8_t actionState, const float& damage, int16_t cooldown, int width, int height,
       const Sound& sound, int hitDelay, int delay = 0,
       const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects = {},
-      float chance = 1.0F) {
+      float chance = 1.0F, float modifier = 1) {
     for (auto& attackSlot : attacks) {
       if (!attackSlot) {
-        attackSlot = new ConeAttack(actionState, damage, cooldown, width, height, sound,
-                                    (int16_t)hitDelay, (int16_t)delay, effects, chance);
+        attackSlot =
+            new ConeAttack(actionState, damage, cooldown, width, height, sound,
+                           (int16_t)hitDelay, (int16_t)delay, effects, chance, modifier);
         registeredAttacks++;
         return;
       }
@@ -155,15 +160,17 @@ struct AttackComponent {
       }
     }
   }
+  //A range less than 0 means min range, above 0 max range
   void RegisterProjectileAttack(
       int8_t actionState, const float& damage, int16_t cooldown, ProjectileType type,
       int range, int delay = 0,
       const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> effects = {},
-      float chance = 1.0F) {
+      float chance = 1.0F, float modifier = 1) {
     for (auto& attackSlot : attacks) {
       if (!attackSlot) {
-        attackSlot = new ProjectileAttack(actionState, damage, cooldown, type,
-                                          (int16_t)delay, effects, chance, range);
+        attackSlot =
+            new ProjectileAttack(actionState, damage, cooldown, type, (int16_t)delay,
+                                 effects, chance, range, modifier);
         registeredAttacks++;
         return;
       }
