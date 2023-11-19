@@ -29,7 +29,7 @@ struct ScrollPane {
   inline void Update() noexcept {
     if (content) {
       content->Update();
-      lastContentHeight = content ? content->GetHeight() : 0.0F;
+      lastContentHeight = content->GetHeight();
     }
 
     isScrollShown = lastContentHeight > bounds.height;

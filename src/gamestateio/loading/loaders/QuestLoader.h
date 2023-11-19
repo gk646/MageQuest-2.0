@@ -12,7 +12,7 @@ static void LoadProgress() noexcept {
       quest->state = QuestState(sqlite3_column_int(stmt, 1));
       quest->stage = (int16_t)sqlite3_column_int(stmt, 2);
       if (sqlite3_column_type(stmt, 3) != SQLITE_NULL) {
-        quest->pastDialogue = QuestText::LoadQuestText(
+        quest->pastDialogue = Quest::LoadQuestText(
             reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
       }
       PLAYER_QUESTS.AddQuest(quest);

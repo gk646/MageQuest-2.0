@@ -4,22 +4,6 @@
 #include "elements/Nodes.h"
 #include "elements/QuestReward.h"
 
-struct QuestText {
-
-  inline static std::vector<std::string> LoadQuestText(const std::string& fullText) {
-    return Util::SplitString(fullText, '|');
-  }
-
-  inline static std::string SaveQuestText(const std::vector<std::string>& vec) {
-    std::string ret;
-    for (const auto& qt : vec) {
-      ret += qt;
-      ret += "|";
-    }
-    return ret;
-  }
-};
-
 struct Quest final {
   std::string name;
   std::string description;
@@ -63,6 +47,19 @@ struct Quest final {
   [[nodiscard]] inline PointT<int16_t> GetActiveWaypoint() const noexcept {
     return CURRENT_ZONE == questZone ? objectives[stage]->wayPoint
                                      : PointT<int16_t>{0, 0};
+  }
+  //Serialization methods
+ public:
+  inline static std::vector<std::string> LoadQuestText(const std::string& fullText) {
+    return Util::SplitString(fullText, '|');
+  }
+  inline static std::string SaveQuestText(const std::vector<std::string>& vec) {
+    std::string ret;
+    for (const auto& qt : vec) {
+      ret += qt;
+      ret += "|";
+    }
+    return ret;
   }
 
  private:
