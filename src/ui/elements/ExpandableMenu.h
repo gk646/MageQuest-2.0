@@ -3,19 +3,19 @@
 
 struct QuestBox {
   TexturedButton button;
-  const Quest& quest;
+  Quest& quest;
   bool clicked;
 };
 
 struct ExpandableQuestMenu final : public Content {
-  static inline float ELEMENT_HEIGHT = 50;
-  static constexpr inline float INFO_BOX_OFFSET = 50;
-  static constexpr inline float INFO_BOX_HEIGHT = 150;
+  static inline constexpr float ELEMENT_HEIGHT = 50;
+  static inline constexpr float INFO_BOX_OFFSET = 50;
+  static inline constexpr float INFO_BOX_HEIGHT = 150;
   static inline float INFO_BOX_WIDTH;
-  float lowerLimit = 0, upperLimit = 0;
-  std::vector<QuestBox> items;
-  QuestSidePanel* panel;
+  std::vector<QuestBox> items{};
   RectangleR bounds;
+  QuestSidePanel* panel;
+  float lowerLimit = 0, upperLimit = 0;
   uint32_t prevSize = 0;
   ExpandableQuestMenu(float width, float height, QuestSidePanel* panel)
       : bounds(0, 0, width, height), panel(panel) {
@@ -90,7 +90,7 @@ struct ExpandableQuestMenu final : public Content {
   }
   //Returns true if within the content bounds
   [[nodiscard]] inline bool IsInBounds(float y, float height) const noexcept {
-    return y >= lowerLimit - 150 && y + height <= upperLimit;
+    return y >= lowerLimit && y + height <= upperLimit;
   }
   inline void UpdateImpl(float x, float y) noexcept {
     bounds.x = x;
@@ -126,19 +126,6 @@ struct ExpandableQuestMenu final : public Content {
         PLAYER_QUESTS.SetAsActiveQuest((Quest*)&quest);
         panel->expanded = true;
       }
-    }
-  }
-
-  //TODO fix
-  inline void DrawQuestText(const Quest& q, float x, float y) noexcept {
-    for (const auto& text : q.pastDialogue) {
-      int lineBreak = 0;
-      auto wrappedText =
-          Util::WrapText(text, bounds.width / 2 - 5, MINECRAFT_REGULAR, 15, &lineBreak);
-      if (IsInBounds(y, lineBreak * 15))
-        DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {x, y}, 15, 0.5F,
-                    Colors::darkBackground);
-      y+= lineBreak * 15;
     }
   }
 };

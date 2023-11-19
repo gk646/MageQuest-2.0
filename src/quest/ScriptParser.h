@@ -3,7 +3,7 @@
 namespace ScriptParser {
 //Parses and returns a ptr to the next node found in the current line - "parts"
 inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
-                                std::ifstream& file) noexcept {
+                                std::ifstream& file, Quest* quest) noexcept {
   auto type = node_to_type[parts[0]];
   switch (type) {
     case NodeType::SKIP:
@@ -13,7 +13,9 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       std::string line;
       int i = 0;
       while (std::getline(file, line) && line != "*" && i < obj->limit) {
-        obj->choices[i].node = ParseNextNode(Util::SplitString(line, ':'), file);
+        auto node = ParseNextNode(Util::SplitString(line, ':'), file, quest);
+        node->quest = quest;
+        obj->choices[i].node = node;
         i++;
       }
       return obj;
@@ -117,7 +119,7 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
     if (line.empty() || line.starts_with('#')) continue;
     parts.clear();
     parts = Util::SplitString(line, ':');
-    auto node = ParseNextNode(parts, file);
+    auto node = ParseNextNode(parts, file,quest);
     AddToQuest(node, quest, parts);
   }
   return quest;

@@ -10,7 +10,7 @@ static void Save() noexcept {
   for (const auto& quest : PLAYER_QUESTS.quests) {
     sqlite3_bind_int(stmt, 1, (int)quest->state);
     sqlite3_bind_int(stmt, 2, (int)quest->stage);
-    sqlite3_bind_text(stmt, 3, QuestText::SaveQuestText(quest->pastDialogue).c_str(), -1,
+    sqlite3_bind_text(stmt, 3, Quest::SaveQuestText(quest->pastDialogue).c_str(), -1,
                       SQLITE_TRANSIENT);
     sqlite3_bind_int(stmt, 4, (int)quest->id);
     if (sqlite3_step(stmt) != SQLITE_DONE) {}
