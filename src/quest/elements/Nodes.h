@@ -345,7 +345,6 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
         target(target),
         text(std::move(text)),
         correctAnswer(correctAnswer){};
-
   bool Progress() noexcept final {
     for (auto& b : choices) {
       b.UpdateGlobalWindowState();
@@ -355,6 +354,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
         if (npc->id == target) {
           npcPtr = npc;
           npc->UpdateDialogue(&text);
+          TrackText(text, TextSource::NPC, (int16_t)target);
           npc->choices = &choices;
           assignedChoices = true;
           break;
@@ -364,6 +364,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
 
     if (answerIndex != -1) {
       npcPtr->UpdateDialogue(&answers[answerIndex]);
+      TrackText(text, TextSource::NPC, (int16_t)target);
       npcPtr->choices = nullptr;
       bool rightAnswer = answerIndex == correctAnswer;
       npcPtr->last = rightAnswer;
@@ -372,6 +373,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
     } else if (npcPtr->dialogueProgressCount == 1000) {
       if (npcPtr->dialogue != &text) {
         npcPtr->UpdateDialogue(&text);
+        npcPtr->dialogueProgressCount = 1000;
         npcPtr->choices = &choices;
       }
     }
@@ -399,10 +401,10 @@ struct PLAYER_THOUGHT final : public QuestNode {
   bool Progress() noexcept final {
     if (!assigned) {
       TextRenderer::playerText = &thought;
+      TrackText(thought, TextSource::PLAYER, 0);
       TextRenderer::playerDialogueCount = &count;
       assigned = true;
     }
-    //TODO make quest decisions prettier / center them below soundPlayer (live)
     return count > 100;
   }
   inline static PLAYER_THOUGHT* ParseQuestNode(const std::vector<std::string>& parts) {

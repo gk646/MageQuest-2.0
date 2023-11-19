@@ -59,9 +59,9 @@ static void LoadItemsFromTable(InventorySlot* slots, const std::string& table, i
 }
 static void Load() noexcept {
   ITEMS.reserve(80);
-  std::array<std::string, 11> table_names = {
+  std::array<std::string, 12> table_names = {
       "ARM_AMULET",  "ARM_BAG",   "ARM_BOOTS",  "ARM_CHEST", "ARM_HEAD",    "ARM_OFFHAND",
-      "ARM_ONEHAND", "ARM_PANTS", "ARM_RELICS", "ARM_RINGS", "ARM_TWOHANDS"};
+      "ARM_ONEHAND", "ARM_PANTS", "ARM_RELICS", "ARM_RINGS", "ARM_TWOHANDS", "MISC_ITEMS"};
   for (const auto& name : table_names) {
     CreateItemsFromTable(name);
   }
@@ -71,6 +71,8 @@ static void Load() noexcept {
   LoadItemsFromTable(UI_MANAGER.playerUI.charBag.bagPanel.bagSlots.data(), "PLAYER_INV",
                      4, true, 12);
   LoadItemsFromTable(PLAYER_BAG, "PLAYER_BAG", (int)PLAYER_STATS.GetBagSlots());
+
+
 }
 }  // namespace ItemLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_

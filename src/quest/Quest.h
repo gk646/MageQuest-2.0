@@ -5,15 +5,25 @@
 #include "elements/QuestReward.h"
 
 struct QuestText {
-  std::string text;
-  int16_t enumVal;
-  TextSource source;
+
+  inline static std::vector<std::string> LoadQuestText(const std::string& fullText) {
+    return Util::SplitString(fullText, '|');
+  }
+
+  inline static std::string SaveQuestText(const std::vector<std::string>& vec) {
+    std::string ret;
+    for (const auto& qt : vec) {
+      ret += qt;
+      ret += "|";
+    }
+    return ret;
+  }
 };
 
 struct Quest final {
   std::string name;
   std::string description;
-  std::vector<QuestText> pastDialogue;
+  std::vector<std::string> pastDialogue;
   std::vector<QuestNode*> objectives;
   QuestReward* reward = nullptr;
   int16_t stage = 0;
@@ -27,9 +37,7 @@ struct Quest final {
     for (auto obj : objectives) {
       delete obj;
     }
-    if (reward) {
-      delete reward;
-    }
+    delete reward;
   }
   [[nodiscard]] inline bool Progressable(NodeType type) const noexcept {
     return state == QuestState::ACTIVE && objectives[stage]->IsNodeTypeCompatible(type);
@@ -45,7 +53,7 @@ struct Quest final {
     }
   }
   inline void Update() noexcept {
-    if ( objectives[stage]->Progress()) {
+    if (objectives[stage]->Progress()) {
       FinishStage(objectives[stage]);
     }
   }
@@ -58,15 +66,7 @@ struct Quest final {
   }
 
  private:
-  void CompleteQuest() noexcept {
-    PlaySoundR(sound::completeQuest);
-    state = QuestState::COMPLETED;
-    GAME_STATISTICS.QuestCompleted(this);
-    stage--;
-    if (reward) {
-      //TODO reward
-    }
-  }
+  void CompleteQuest() noexcept;
   void SaveProgress() noexcept {
     //TODO save quest state
   }
@@ -83,9 +83,40 @@ struct Quest final {
 };
 void QuestNode::TrackText(const std::string& s, TextSource source,
                           int16_t enumVal) const noexcept {
-  quest->pastDialogue.emplace_back(s, enumVal, source);
+  std::string prefix;
+  switch (source) {
+    case TextSource::NPC:
+      prefix = npcIdToStringMap[NPC_ID(enumVal)];
+      prefix.append(": ");
+      break;
+    case TextSource::PLAYER:
+      prefix = "You: ";
+      break;
+    default:
+      prefix = "Unknown: ";
+      break;
+  }
+
+  std::string name;
+  name.reserve(prefix.size() + s.size());
+  name.assign(prefix).append(s);
+
+  quest->pastDialogue.emplace_back(std::move(name));
 }
 
 #include "QuestStorage.h"
 #include "ScriptParser.h"
+
+inline static Quest* GetQuest(Quest_ID id) {
+  switch (id) {
+    case Quest_ID::TUTORIAL:
+      return Quests::TUTORIAL;
+    case Quest_ID::MARLA:
+      return Quests::MARLA_LOST_NECKLACE;
+    case Quest_ID::START_SOMETHING_NEW:
+      return Quests::START_SOMETHING_NEW;
+    case Quest_ID::END:
+      return nullptr;
+  }
+}
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

@@ -47,7 +47,7 @@ struct GameLoader {
     LoadStep(GameInfoLoader::Load);
     LoadStep(TransitionParser::ParseTransitionFile);
     LoadStep(NPCLoader::LoadNamedNPCs);
-    LoadStep(QuestLoader::load);
+    LoadStep(QuestLoader::Load);
     LoadStep(SoundLoader::Load);
     LoadStep(TileLoader::Load);
     LoadStep(MapLoader::Load);
@@ -66,11 +66,9 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Hillcrest, {45, 35});
+    WorldManager::LoadMap(Zone::Oasis, {4, 96});
 #endif
 
-    PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
-    PLAYER_QUESTS.AddQuest(Quests::MARLA_LOST_NECKLACE);
     for (auto skill : SKILLS) {
       if (!skill) continue;
       AddSkill(skill);

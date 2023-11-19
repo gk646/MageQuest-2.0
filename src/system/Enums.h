@@ -321,7 +321,8 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
 
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class TextSource : uint8_t { NPC, MONSTER, PLAYER };
-enum class Quest_ID : uint8_t { TUTORIAL, MARLA, START_SOMETHING_NEW, END };
+
+enum class Quest_ID : uint8_t { START_SOMETHING_NEW = 1, TUTORIAL, MARLA, END };
 
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
     {"TUTORIAL", Quest_ID::TUTORIAL},

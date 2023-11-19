@@ -26,18 +26,19 @@ struct ExpandableQuestMenu final : public Content {
     UpdateLimits(cBounds, scrollOffset);
     //BeginTextureMode(FIRST_LAYER_BUFFER);
     //ClearBackground(BLANK);
-    //DrawRectangleRounded({cBounds.x, cBounds.y, bounds.width, GetHeight()}, 0.1F, 30,                         RED);
+    //DrawRectangleRounded({cBounds.x, cBounds.y, bounds.width, GetHeight()}, 0.1F, 30, RED);
     for (auto& box : items) {
       box.button.bounds.width = cBounds.width;
       if (box.clicked &&
-          isInBounds(cBounds.y + (ELEMENT_HEIGHT - 5), INFO_BOX_HEIGHT - 5)) {
+          IsInBounds(cBounds.y + (ELEMENT_HEIGHT - 5), INFO_BOX_HEIGHT - 5)) {
         DrawInfoPanel(cBounds.x, cBounds.y + ELEMENT_HEIGHT - 5, box.quest);
+        //DrawQuestText(box.quest, bounds.x + bounds.width / 2.0F, bounds.y);
       }
-      if (isInBounds(cBounds.y, ELEMENT_HEIGHT) &&
+      if (IsInBounds(cBounds.y, ELEMENT_HEIGHT) &&
           box.button.Draw(cBounds.x, cBounds.y, Alignment::LEFT, Alignment::LEFT)) {
         box.clicked = !box.clicked;
       }
-      if (isInBounds(cBounds.y, ELEMENT_HEIGHT)) {
+      if (IsInBounds(cBounds.y, ELEMENT_HEIGHT)) {
         Util::DrawRightAlignedText(
             MINECRAFT_BOLD, 17, std::to_string(box.quest.questLevel).c_str(),
             cBounds.x + box.button.bounds.width * 0.8F, cBounds.y + 16,
@@ -66,13 +67,13 @@ struct ExpandableQuestMenu final : public Content {
     if (prevSize != PLAYER_QUESTS.quests.size() || PLAYER_QUESTS.updateHappened) {
       items.clear();
       for (const auto q : PLAYER_QUESTS.quests) {
-        if (q->hidden) continue;
-        items.emplace_back(
-            TexturedButton{bounds.width, ELEMENT_HEIGHT, q->name, 15,
-                           textures::ui::questpanel::questBox,
-                           textures::ui::questpanel::questBoxHovered,
-                           textures::ui::questpanel::questBoxPressed, 255, "Expand Quest"},
-            *q);
+        if (q->hidden || q->state == QuestState::COMPLETED) continue;
+        items.emplace_back(TexturedButton{bounds.width, ELEMENT_HEIGHT, q->name, 15,
+                                          textures::ui::questpanel::questBox,
+                                          textures::ui::questpanel::questBoxHovered,
+                                          textures::ui::questpanel::questBoxPressed, 255,
+                                          "Expand Quest"},
+                           *q);
       }
       PLAYER_QUESTS.updateHappened = false;
       prevSize = PLAYER_QUESTS.quests.size();
@@ -88,7 +89,7 @@ struct ExpandableQuestMenu final : public Content {
     cBounds.y += 5;
   }
   //Returns true if within the content bounds
-  [[nodiscard]] inline bool isInBounds(float y, float height) const noexcept {
+  [[nodiscard]] inline bool IsInBounds(float y, float height) const noexcept {
     return y >= lowerLimit - 150 && y + height <= upperLimit;
   }
   inline void UpdateImpl(float x, float y) noexcept {
@@ -118,14 +119,26 @@ struct ExpandableQuestMenu final : public Content {
       if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Untrack", "")) {
         PLAYER_QUESTS.RemoveActiveQuest();
-
       }
     } else {
       if (Button::Draw({x + INFO_BOX_WIDTH - 60, y + INFO_BOX_HEIGHT - 40, 40, 30},
                        "Track", "")) {
-        PLAYER_QUESTS.SetAsActiveQuest(quest.id);
+        PLAYER_QUESTS.SetAsActiveQuest((Quest*)&quest);
         panel->expanded = true;
       }
+    }
+  }
+
+  //TODO fix
+  inline void DrawQuestText(const Quest& q, float x, float y) noexcept {
+    for (const auto& text : q.pastDialogue) {
+      int lineBreak = 0;
+      auto wrappedText =
+          Util::WrapText(text, bounds.width / 2 - 5, MINECRAFT_REGULAR, 15, &lineBreak);
+      if (IsInBounds(y, lineBreak * 15))
+        DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {x, y}, 15, 0.5F,
+                    Colors::darkBackground);
+      y+= lineBreak * 15;
     }
   }
 };

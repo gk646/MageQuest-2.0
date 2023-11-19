@@ -463,7 +463,7 @@ struct Bomb final : Projectile {
       targetPos = {PLAYER_X, PLAYER_Y};
       controlPoint = CalculateControlPoint();
     }
-    if (spriteCounter == 120) {
+    if (spriteCounter == 110) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;
