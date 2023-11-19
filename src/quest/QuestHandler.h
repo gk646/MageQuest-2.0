@@ -9,7 +9,7 @@ struct QuestHandler {
   bool updateHappened = false;
   ~QuestHandler() {
     for (auto& q : quests) {
-      if(q) {
+      if (q) {
         delete q;
         q = nullptr;
       }
@@ -20,10 +20,6 @@ struct QuestHandler {
     for (auto it = quests.begin(); it != quests.end();) {
       if ((*it)->state == QuestState::ACTIVE) {
         (*it)->Update();
-      } else if ((*it)->state == QuestState::COMPLETED) {
-        RemoveQuest((*it));
-        it = quests.erase(it);
-        continue;
       }
       ++it;
     }
@@ -46,22 +42,19 @@ struct QuestHandler {
     }
   }
   //Called when a monster dies
-  void MonsterKilled(MonsterType type) {
+  inline void MonsterKilled(MonsterType type) {
     for (auto quest : quests) {
       if (quest->Progressable(NodeType::KILL)) {
         quest->Progress(type);
       }
     }
   }
-  void SetAsActiveQuest(Quest_ID id) noexcept {
-    for (auto& quest : quests) {
-      if (quest->id == id && !quest->hidden) {
-        activeQuest = quest;
-        return;
-      }
+  inline void SetAsActiveQuest(Quest* quest) noexcept {
+    if (!quest->hidden && quest->state == QuestState::ACTIVE) {
+      activeQuest = quest;
     }
   }
-  void SetQuestShown(Quest_ID id) noexcept {
+  inline void SetQuestShown(Quest_ID id) noexcept {
     for (auto& quest : quests) {
       if (quest->id == id) {
         quest->hidden = false;
@@ -75,8 +68,17 @@ struct QuestHandler {
     return activeQuest != nullptr;
   }
   inline void AddQuest(Quest* q) noexcept { quests.push_back(q); }
+  inline bool IsQuestCompleted(Quest_ID id) noexcept {
+    for (const auto& q : quests) {
+      if (q->state == QuestState::COMPLETED && q->id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
 
  private:
+  //DEPRECATED | finished quests are still kept in the vector
   inline void RemoveQuest(Quest* q) noexcept {
     if (activeQuest == q) {
       activeQuest = nullptr;
@@ -90,6 +92,19 @@ inline static QuestHandler PLAYER_QUESTS;
 bool SET_QUEST_SHOWN::Progress() noexcept {
   PLAYER_QUESTS.SetQuestShown(id);
   return true;
+}
+void Quest::CompleteQuest() noexcept {
+  PlaySoundR(sound::completeQuest);
+  state = QuestState::COMPLETED;
+  GAME_STATISTICS.QuestCompleted(this);
+  stage--;
+  if (reward) {
+    //TODO reward
+  }
+  PLAYER_QUESTS.updateHappened = true;
+  if (PLAYER_QUESTS.activeQuest == this) {
+    PLAYER_QUESTS.RemoveActiveQuest();
+  }
 }
 
 #endif  //MAGEQUEST_SRC_QUEST_QUESTHANDLER_H_
