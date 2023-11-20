@@ -23,9 +23,9 @@ static void LoadProgress() noexcept {
 static void Load() noexcept {
   Quests::TUTORIAL = ScriptParser::load("Quests/FirstSteps.mgqs", Quest_ID::TUTORIAL);
   Quests::MARLA_LOST_NECKLACE =
-      ScriptParser::load("Quests/Marla.mgqs", Quest_ID::MARLA, true);
+      ScriptParser::load("Quests/Marla.txt", Quest_ID::MARLA, true);
   Quests::START_SOMETHING_NEW =
-      ScriptParser::load("Quests/StartSomethingNew.mgqs", Quest_ID::START_SOMETHING_NEW);
+      ScriptParser::load("Quests/StartSomethingNew.txt", Quest_ID::START_SOMETHING_NEW);
 
   LoadProgress();
   if (PLAYER_QUESTS.quests.empty()) {

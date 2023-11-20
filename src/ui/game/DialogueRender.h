@@ -73,7 +73,7 @@ static void RenderPlayerThought() noexcept {
   float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
 
   float startX = CAMERA_X - width / 2;
-  float startY = CAMERA_Y - height / 2;
+  float startY = CAMERA_Y - height;
 
   if (*playerDialogueCount < (float)playerText->size()) {
     if (!IsSoundPlaying(sound::speak)) {

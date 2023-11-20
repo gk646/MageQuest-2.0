@@ -12,23 +12,23 @@ struct StatusBar {
     const auto& stats = PLAYER_STATS;
 
     float health = stats.health;
-    float max_health = stats.GetMaxHealth();
+    float maxHealth = stats.GetMaxHealth();
     float mana = stats.mana;
-    float max_mana = stats.GetMaxMana();
+    float maxMana = stats.GetMaxMana();
     float shield = stats.shield;
     bool hasShield = (shield > 0);
 
     // Prepare text buffers
     if (hasShield) {
-      snprintf(health_buffer, 30, "%d/%d +%d", (int)health, (int)max_health, (int)shield);
+      snprintf(health_buffer, 30, "%d/%d +%d", (int)std::round(health),  (int)std::round(maxHealth), (int)std::round(shield));
     } else {
-      snprintf(health_buffer, sizeof(health_buffer), "%d/%d", (int)health, (int)max_health);
+      snprintf(health_buffer, sizeof(health_buffer), "%d/%d",  (int)std::round(health),  (int)std::round(maxHealth));
     }
-    snprintf(TEXT_BUFFER, sizeof(TEXT_BUFFER), "%d/%d", (int)mana, (int)max_mana);
+    snprintf(TEXT_BUFFER, sizeof(TEXT_BUFFER), "%d/%d", (int)std::round(mana), (int)std::round(maxMana));
 
     // Draw health and mana bars
-    DrawRectangleRounded({BEGIN_X + 82, BEGIN_Y + 27, (health / max_health) * HEALTH_WIDTH, 10}, 0.3F, 20, Colors::Red);
-    DrawRectangleRounded({BEGIN_X + 82, BEGIN_Y + 57, (mana / max_mana) * MANA_WIDTH, 10}, 0.3F, 20, Colors::Blue);
+    DrawRectangleRounded({BEGIN_X + 82, BEGIN_Y + 27, (health / maxHealth) * HEALTH_WIDTH, 10}, 0.3F, 20, Colors::Red);
+    DrawRectangleRounded({BEGIN_X + 82, BEGIN_Y + 57, (mana / maxMana) * MANA_WIDTH, 10}, 0.3F, 20, Colors::Blue);
 
     // Draw status bar texture
     DrawTextureProFast(textures::ui::STATUS_BAR, BEGIN_X, BEGIN_Y, 0, WHITE);
