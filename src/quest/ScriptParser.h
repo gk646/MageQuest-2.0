@@ -20,6 +20,8 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       }
       return obj;
     }
+    case NodeType::REMOVE_ITEM:
+      return REMOVE_ITEM::ParseQuestNode(parts);
     case NodeType::PLAYER_THOUGHT:
       return PLAYER_THOUGHT::ParseQuestNode(parts);
     case NodeType::GOTO:
@@ -35,6 +37,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       return obj;
     }
     case NodeType::COLLECT:
+      return COLLECT::ParseQuestNode(parts);
     case NodeType::REQUIRE:
     case NodeType::PROTECT:
     case NodeType::ESCORT:
@@ -119,11 +122,10 @@ Quest* load(const std::string& path, Quest_ID id, bool hidden = false) {
     if (line.empty() || line.starts_with('#')) continue;
     parts.clear();
     parts = Util::SplitString(line, ':');
-    auto node = ParseNextNode(parts, file,quest);
+    auto node = ParseNextNode(parts, file, quest);
     AddToQuest(node, quest, parts);
   }
   return quest;
 }
-
 }  // namespace ScriptParser
 #endif  //MAGEQUEST_SRC_QUEST_SCRIPTPARSER_H_

@@ -27,7 +27,7 @@ inline static float GetStringSimilarityPrefix(const std::string& base,
   }
   return sum / i;
 }
-
+//Returns true if the given array contains the given value
 template <typename T>
 inline static bool ArrayContains(const T* arr, const T& val, int size) noexcept {
   for (int i = 0; i < size; i++) {

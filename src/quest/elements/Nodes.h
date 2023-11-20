@@ -7,8 +7,8 @@ struct QuestNode {
   Quest* quest = nullptr;
   NodeType type;
   bool isMajorObjective = false;
-  QuestNode(std::string objective_text, NodeType type, const PointI& wayPoint = {0, 0})
-      : objectiveText(std::move(objective_text)), type(type), wayPoint(wayPoint) {}
+  QuestNode(std::string objectiveText, NodeType type, const PointI& wayPoint = {0, 0})
+      : objectiveText(std::move(objectiveText)), type(type), wayPoint(wayPoint) {}
   [[nodiscard]] inline bool IsNodeTypeCompatible(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
@@ -204,9 +204,11 @@ struct SPAWN final : public QuestNode {
       }
       return true;
     } else if (type != ItemType::EMPTY) {
-      WORLD_OBJECTS.emplace_back(
+      auto item =
           new DroppedItem({positions[0].x * 48.0F, positions[0].y * 48.0F},
-                          Item::FindBaseItemClone(id, type, 85, PLAYER_STATS.level)));
+                          Item::FindBaseItemClone(id, type, 85, PLAYER_STATS.level));
+      item->currentZone = zone;
+      WORLD_OBJECTS.emplace_back(item);
     } else {
       return false;
     }
@@ -341,7 +343,8 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   uint8_t correctAnswer;
   NPC* npcPtr = nullptr;
   explicit CHOICE_DIALOGUE_SIMPLE(NPC_ID target, std::string text, int correctAnswer)
-      : QuestNode("", NodeType::CHOICE_DIALOGUE_SIMPLE),
+      : QuestNode("Speak with " + npcIdToStringMap[target],
+                  NodeType::CHOICE_DIALOGUE_SIMPLE),
         target(target),
         text(std::move(text)),
         correctAnswer(correctAnswer){};
@@ -450,5 +453,56 @@ struct OPTIONAL_POSITION final : public QuestNode {
 struct SKIP final : public QuestNode {
   SKIP() : QuestNode("", NodeType::SKIP) {}
   bool Progress() noexcept final { return true; }
+};
+struct COLLECT final : public QuestNode {
+  int id;
+  ItemType type;
+  COLLECT(const std::string& itemID, const std::string& objective)
+      : QuestNode(objective, NodeType::COLLECT) {
+    auto idVec = Util::SplitString(itemID, ',');
+    type = ItemType(std::stoi(idVec[0]));
+    id = std::stoi(idVec[1]);
+  }
+  bool Progress() noexcept final {
+    int bagSlots = (int)PLAYER_STATS.GetBagSlots();
+    for (int i = 0; i < bagSlots; i++) {
+      auto item = PLAYER_BAG[i].item;
+      if (item && item->id == id && item->type == type) {
+        return true;
+      }
+    }
+    return false;
+  }
+  inline static COLLECT* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new COLLECT(parts[1], parts[2]);
+  }
+};
+struct REMOVE_ITEM final : public QuestNode {
+  int id;
+  ItemType type;
+  int quantity = 0;
+  REMOVE_ITEM(const std::string& itemID,
+              const std::string& quantityString)
+      : QuestNode("", NodeType::REMOVE_ITEM) {
+    auto idVec = Util::SplitString(itemID, ',');
+    type = ItemType(std::stoi(idVec[0]));
+    id = std::stoi(idVec[1]);
+    quantity = std::stoi(quantityString);
+  }
+  bool Progress() noexcept final {
+    int bagSlots = (int)PLAYER_STATS.GetBagSlots();
+    for (int i = 0; i < bagSlots; i++) {
+      auto item = PLAYER_BAG[i].item;
+      if (item && item->id == id && item->type == type && quantity > 0) {
+        delete PLAYER_BAG[i].item;
+        PLAYER_BAG[i].item = nullptr;
+        quantity--;
+      }
+    }
+    return quantity == 0;
+  }
+  inline static REMOVE_ITEM* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new REMOVE_ITEM(parts[1], parts[2]);
+  }
 };
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_
