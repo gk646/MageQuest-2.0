@@ -188,7 +188,7 @@ struct Item {
     DrawTextExR(MINECRAFT_BOLD, "Effects:", {startX + off_setX, startY + off_sety},
                 font_size, 1, Colors::darkBackground);
     off_sety += 20;
-    for (uint_fast32_t i = 9; i < WEAPON_DAMAGE; i++) {
+    for (int i = 9; i < WEAPON_DAMAGE; i++) {
       if (effects[i] != 0) {
         snprintf(textBuffer, 10, "%+0.2f", effects[i] * 100);
         std::string displayText = std::string(textBuffer) + " " + statToName[Stat(i)];
@@ -198,7 +198,7 @@ struct Item {
         off_sety += font_size;
       }
     }
-    for (uint_fast32_t i = WEAPON_DAMAGE + 1; i < STATS_ENDING; i++) {
+    for (int i = WEAPON_DAMAGE + 1; i < STATS_ENDING; i++) {
       if (effects[i] != 0) {
         if (std::round(effects[i]) == effects[i]) {
           snprintf(textBuffer, 10, "+%d", (int)effects[i]);

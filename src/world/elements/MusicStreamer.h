@@ -11,7 +11,7 @@ struct Playlist {
   void Load(const std::string& folderName) {
     std::string path;
     //To prevent indefinite loop
-    for (uint_fast32_t i = 0; i < 50; i++) {
+    for (int i = 0; i < 50; i++) {
       path = ASSET_PATH + "sound/music/" += folderName + std::to_string(i) + ".mp3";
       if (std::filesystem::exists(path)) {
         tracks.push_back(LoadMusicStream(path.c_str()));

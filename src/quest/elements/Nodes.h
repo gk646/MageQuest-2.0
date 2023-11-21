@@ -56,7 +56,7 @@ struct NPC_MOVE final : public QuestNode {
     auto obj = new NPC_MOVE(npcIdMap[parts[1]], parts[2]);
     obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
                      std::stoi(Util::SplitString(parts[3], ',')[2])};
-    for (uint_fast32_t i = 4; i < parts.size(); i++) {
+    for (int i = 4; i < parts.size(); i++) {
       auto vec = Util::SplitString(parts[i], ',');
       obj->waypoints.emplace_back(std::stoi(vec[0]), std::stoi(vec[1]));
     }
@@ -225,7 +225,7 @@ struct SPAWN final : public QuestNode {
       obj->type = ItemType((uint8_t)std::stoi(idVec[0]));
       obj->id = std::stoi(idVec[1]);
     }
-    for (uint_fast32_t i = 3; i < parts.size(); i++) {
+    for (int i = 3; i < parts.size(); i++) {
       obj->positions.emplace_back(Util::ParsePointI(parts[i]));
     }
     auto zoneString = Util::SplitString(parts[2], ',');
@@ -425,7 +425,7 @@ struct OPTIONAL_POSITION final : public QuestNode {
   int limit;
   explicit OPTIONAL_POSITION(const std::vector<std::string>& parts)
       : QuestNode(parts[1], NodeType::OPTIONAL_POSITION), limit((int)parts.size() - 2) {
-    for (uint_fast32_t i = 2; i < parts.size(); i++) {
+    for (int i = 2; i < parts.size(); i++) {
       PointOptional opt;
       opt.point = Util::ParsePointI(parts[i]);
       opt.isEssential = std::stoi(Util::SplitString(parts[i], ',')[2]) == 1;

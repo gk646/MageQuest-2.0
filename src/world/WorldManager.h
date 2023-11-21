@@ -14,15 +14,15 @@ namespace WorldManager {
 static void LoadMap(Zone zone, const PointT<int16_t>& pos) {
   for (const auto& map : MAPS) {
     if (map.zone == zone) {
-      PROJECTILES.clear();
       CURRENT_BACK_GROUND = map.mapBackGround;
       CURRENT_MIDDLE_GROUND = map.mapMiddleGround;
       CURRENT_FORE_GROUND = map.mapForeGround;
-      PLAYER.pos = PointT<int16_t>::GetPoint(pos * 48);
       CURRENT_MAP_COVER = map.mapCover;
       CURRENT_MAP_SIZE = map.mapSize;
       CURRENT_SPAWN_TRIGGERS = map.spawnTriggers;
       CURRENT_ZONE = zone;
+      PROJECTILES.clear();
+      PLAYER.pos = PointT<int16_t>::GetPoint(pos * 48);
       Lighting::fadeAlpha = 253;
       WorldAnimations::CacheAnimationTiles();
       Lighting::AmbientOcclusion::GenerateShadowMap();

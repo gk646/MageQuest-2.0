@@ -38,7 +38,7 @@ struct HostMenu {
     float startX = (GetScreenWidth() - totalWidth) / 2;
     float startY = (GetScreenHeight() - PLAYER_HEIGHT) / 2;
 
-    for (uint_fast32_t i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
       drawPlayerBox(startX, startY);
 
       if (i == 0) {

@@ -196,7 +196,6 @@ struct ArcaneBolt final : Projectile {
       : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damage}, effects, mvmt,
                    (int16_t)pov, sound::fireBurst, sender, ARCANE_BOLT) {
     projectileType = ProjectileType::ARCANE_BOLT;
-    isIlluminated = true;
     isDoingDamage = true;
   }
   void Draw() final {

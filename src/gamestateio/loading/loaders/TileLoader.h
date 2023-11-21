@@ -5,7 +5,7 @@ namespace TileLoader {
 inline static std::vector<Image> images;
 //loads the textures from the images into the GPU (no IO)
 static void LoadToGPU() {
-  for (uint_fast32_t i = 0; i < TEXTURE_COUNT; i++) {
+  for (int i = 0; i < TEXTURE_COUNT; i++) {
     TILES[i] = LoadTextureFromImage(images[i]).id;
     UnloadImage(images[i]);
   }
@@ -16,7 +16,7 @@ static void LoadToGPU() {
 //Load the Textures as images on the cpu
 static void LoadTextureSpan(int start, int end) {
   images.reserve((end - start) + 10);
-  for (uint_fast32_t i = start; i < end; ++i) {
+  for (int i = start; i < end; ++i) {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%stextures/Tiles/%d.png", ASSET_PATH.c_str(), i);
     images.emplace_back(LoadImageR(TEXT_BUFFER));
   }
@@ -31,7 +31,7 @@ static void LoadTileCollisionFromFile(const std::string& path) {
   }
 
   std::string line;
-  for (uint_fast32_t i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++) {
     std::getline(file, line);
   }
 

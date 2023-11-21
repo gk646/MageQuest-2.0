@@ -44,7 +44,7 @@ struct Projectile : public Entity {
         hitType(p.hitType),
         sound(p.sound),
         statusEffects() {
-    for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
+    for (int i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
       statusEffects[i] = p.statusEffects[i]->Clone();
     }
   }
@@ -59,7 +59,7 @@ struct Projectile : public Entity {
       delete ptr;
     }
 
-    for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
+    for (int i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
       statusEffects[i] = other.statusEffects[i]->Clone();
     }
 

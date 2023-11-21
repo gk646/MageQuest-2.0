@@ -3,7 +3,7 @@
 
 inline static void LoadImagesIntoVector(const std::string& name,
                                         std::vector<Texture>& vec) noexcept {
-  for (uint_fast32_t j = 0; j < 50; ++j) {
+  for (int j = 0; j < 50; ++j) {
     std::string filePath = ASSET_PATH + name + std::to_string(j) + ".png";
     if (std::filesystem::exists(filePath)) {
       vec.push_back(LoadTexture(filePath.c_str()));
@@ -15,7 +15,7 @@ inline static void LoadImagesIntoVector(const std::string& name,
 
 inline static void LoadSoundIntoVector(const std::string& name, std::vector<Sound>& vec,
                                        float volume = 1) noexcept {
-  for (uint_fast32_t j = 0; j < 50; ++j) {
+  for (int j = 0; j < 50; ++j) {
     std::string filePath = ASSET_PATH + name + std::to_string(j) + ".wav";
     if (std::filesystem::exists(filePath)) {
       auto sound = LoadSound(filePath.c_str());
@@ -131,7 +131,7 @@ struct MonsterResource {
       soundPath.erase(pos, std::string("enemies/").length());
     }
 
-    for (uint_fast32_t i = 0; i < MAX_LOAD_NUM; i++) {
+    for (int i = 0; i < MAX_LOAD_NUM; i++) {
       path = ASSET_PATH + "sound/effects/entities/" +=
           soundPath + std::to_string(i) + ".wav";
       if (std::filesystem::exists(path)) {
@@ -157,7 +157,7 @@ struct ProjectileResources {
  private:
   void load_textures(const std::string& name) {
     std::string path;
-    for (uint_fast32_t j = 0; j < 30; ++j) {
+    for (int j = 0; j < 30; ++j) {
       path = ASSET_PATH + "projectiles/" += name + std::to_string(j) + ".png";
       if (std::filesystem::exists(path)) {
         frames.push_back(LoadTexture(path.c_str()));

@@ -8,7 +8,7 @@ struct AnimatedTile {
 };
 
 struct AnimationList {
-  const std::vector<uint16_t> tileNums;
+  const std::vector<uint16_t> tileNums{};
   uint8_t speed;
   std::vector<AnimatedTile> animatedTiles{};
   AnimationList(std::vector<uint16_t> tileNums, uint8_t len, uint8_t speed)

@@ -41,7 +41,7 @@ inline static bool ArrayContains(const T* arr, const T& val, int size) noexcept 
 template <typename T>
 inline static T** Create2DArr(int x, int y) {
   auto ptr = new T*[x];
-  for (uint_fast32_t i = 0; i < y; i++) {
+  for (int i = 0; i < y; i++) {
     ptr[i] = new T[y];
   }
   return ptr;
@@ -49,7 +49,7 @@ inline static T** Create2DArr(int x, int y) {
 //frees a 2D array of the given type and size
 template <typename T>
 inline static void Delete2DArr(T** arr, int rows) {
-  for (uint_fast32_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     delete[] arr[i];
   }
   delete[] arr;

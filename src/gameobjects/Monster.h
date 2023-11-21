@@ -69,7 +69,7 @@ struct Monster : public Entity {
     }
     return *this;
   }
-  ~Monster() override { XPBar::AddPlayerExperience(stats.level); }
+  ~Monster() override { PLAYER_SECOND_STATS.AddPlayerExperience(stats.level); }
   inline void Hit(Projectile& p) noexcept {
     if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100 &&
         !IsHitDodged(stats)) {
@@ -316,7 +316,7 @@ bool ProjectileAttack::IsReady(Monster* self) noexcept {
 }
 void ProjectileAttack::Execute(Monster* attacker) const {
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};
-  for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
+  for (int i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
     if (!effects[i]) break;
     copy[i] = effects[i]->Clone();
   }
@@ -325,7 +325,7 @@ void ProjectileAttack::Execute(Monster* attacker) const {
 }
 void ConeAttack::Execute(Monster* attacker) const {
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};
-  for (uint_fast32_t i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
+  for (int i = 0; i < MAX_STATUS_EFFECTS_PRJ; i++) {
     if (!effects[i]) break;
     copy[i] = effects[i]->Clone();
   }

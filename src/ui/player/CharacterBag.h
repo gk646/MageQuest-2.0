@@ -51,7 +51,7 @@ struct CharacterBag final : public Window {
       x -= 32;
     }
     bagPanel.Draw(wholeWindow.x, y);
-    for (uint_fast32_t i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {
+    for (int i = 0; i < (int)PLAYER_STATS.effects[BAG_SLOTS]; i++) {
       PLAYER_BAG[i].Draw(wholeWindow.x, wholeWindow.y);
     }
   }
@@ -59,7 +59,7 @@ struct CharacterBag final : public Window {
     float bagSlots = PLAYER_STATS.GetBagSlots();
     wholeWindow.height = 60 + std::ceil(bagSlots / per_row) * spacing_y;
     WINDOW_UPDATE()
-    for (uint_fast32_t i = 0; i < (int)bagSlots; i++) {
+    for (int i = 0; i < (int)bagSlots; i++) {
       PLAYER_BAG[i].Update();
     }
     if (bagPanel.IsOpened()) {
@@ -84,7 +84,7 @@ struct CharacterBag final : public Window {
     int var = 0;
     int exist_x = var % per_row;
     int exist_y = var / per_row;
-    for (uint_fast32_t i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
       RectangleR rect = {(float)offset_x + spacing_x * exist_x,
                          (float)offset_y + spacing_y * exist_y, 45, 45};
       PLAYER_BAG[i].hitBox = rect;

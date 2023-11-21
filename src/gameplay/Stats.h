@@ -1,5 +1,6 @@
 #ifndef DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
 #define DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
+struct Entity;
 
 struct MonsterScaler {
   float baseHealth;
@@ -55,43 +56,6 @@ struct DamageStats {
   }
 };
 
-struct PlayerSpentSkillPoints {
-  int16_t spentAttributePoints[9] = {0};
-  int16_t attributePointsToSpend = 0;
-  int16_t spentTalentPoints = 0;
-  int16_t talentPointsToSpend = 25;
-  inline bool SpendAttributePoint(uint8_t i) noexcept {
-    if (attributePointsToSpend > 0) {
-      spentAttributePoints[i]++;
-      attributePointsToSpend--;
-      return true;
-    }
-    return false;
-  }
-  inline bool SpendTalentPoint() noexcept {
-    if (talentPointsToSpend > 0) {
-      spentTalentPoints++;
-      talentPointsToSpend--;
-      return true;
-    }
-    return false;
-  }
-  inline void AddLevelUPPoints() noexcept {
-    attributePointsToSpend += 3;
-    talentPointsToSpend++;
-  }
-  [[nodiscard]] inline bool IsDefaultValue(Stat stat) const noexcept;
-  [[nodiscard]] inline bool HasAttributePointsToSpend() const noexcept {
-    return attributePointsToSpend > 0;
-  }
-  [[nodiscard]] inline bool HasTalentPointsToSpend() const noexcept {
-    return talentPointsToSpend > 0;
-  }
-};
-
-inline static PlayerSpentSkillPoints PLAYER_SPENT_POINTS{};
-
-struct Entity;
 struct EntityStats {
   float effects[STATS_ENDING] = {0};
   float health = 10;
@@ -150,7 +114,7 @@ struct EntityStats {
     mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline void EquipItem(const float* effectArr) noexcept {
-    for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
+    for (int i = 0; i < STATS_ENDING; i++) {
       effects[i] += effectArr[i];
     }
     ReCalculatePlayerStats();
@@ -163,10 +127,8 @@ struct EntityStats {
     shield = effects[MAX_SHIELD];
   }
   inline void SpendAttributePoint(uint8_t i) noexcept {
-    if (PLAYER_SPENT_POINTS.SpendAttributePoint(i)) {
-      effects[i]++;
-      ReCalculatePlayerStats();
-    }
+    effects[i]++;
+    ReCalculatePlayerStats();
   }
   inline void ReCalculatePlayerStats() noexcept;
 
@@ -222,10 +184,88 @@ struct EntityStats {
            mana >= stats.GetManaCost() * (1 - effects[MANA_COST_REDUCTION_P]);
   }
 };
+
 inline EntityStats PLAYER_STATS;
 
+struct PlayerStats {
+  float experience = 0;
+  int32_t prevLevelReq = 0;
+  int32_t nextLevelReq = 0;
+  int32_t coins = 0;
+  int16_t spentAttributePoints[9] = {0};
+  int16_t attributePointsToSpend = 0;
+  int16_t spentTalentPoints = 0;
+  int16_t talentPointsToSpend = 25;
+  PlayerStats() { UpdateRequirements(1); }
+  //Getters
+ public:
+  [[nodiscard]] inline bool IsDefaultValue(Stat stat) const noexcept {
+    return spentAttributePoints[stat] == (int)PLAYER_STATS.effects[stat];
+  }
+  [[nodiscard]] inline bool HasAttributePointsToSpend() const noexcept {
+    return attributePointsToSpend > 0;
+  }
+  [[nodiscard]] inline bool HasTalentPointsToSpend() const noexcept {
+    return talentPointsToSpend > 0;
+  }
+
+ public:
+  inline bool SpendAttributePoint(uint8_t i) noexcept {
+    if (attributePointsToSpend > 0) {
+      spentAttributePoints[i]++;
+      attributePointsToSpend--;
+      return true;
+    }
+    return false;
+  }
+  inline bool SpendTalentPoint() noexcept {
+    if (talentPointsToSpend > 0) {
+      spentTalentPoints++;
+      talentPointsToSpend--;
+      return true;
+    }
+    return false;
+  }
+  inline void AddPlayerExperience(float val) noexcept {
+    experience += val * (1 + PLAYER_STATS.effects[XP_MODIFIER_P]);
+    CheckForLevelUp();
+  }
+  inline void LoadExperience(int newExperience) noexcept {
+    experience = static_cast<float>(newExperience);
+    CheckForLevelUp();
+  }
+  //Check if the player has enough experience to level up
+  inline void CheckForLevelUp() noexcept {
+    while ((int)experience - prevLevelReq >= nextLevelReq) {
+      LevelUP();
+    }
+  }
+  // Called on a level up event
+  inline void LevelUP() noexcept {
+    PLAYER_STATS.level++;
+    UpdateRequirements(PLAYER_STATS.level);
+    AddLevelUPPoints();
+    PLAYER_STATS.ReCalculatePlayerStats();
+    IncrementSkillLevels();
+    // TODO: animation
+  }
+  static inline int GetXPRequiredForLevel(int level) noexcept {
+    if (level == 1) return 0;
+    return static_cast<int>((5 * level) * std::sqrt(level) * std::pow(1.05, level));
+  }
+
+ private:
+  inline void AddLevelUPPoints() noexcept {
+    attributePointsToSpend += 3;
+    talentPointsToSpend++;
+  }
+  inline void UpdateRequirements(int level) noexcept {
+    prevLevelReq += nextLevelReq;
+    nextLevelReq = GetXPRequiredForLevel(level + 1);
+  }
+  static inline void IncrementSkillLevels() noexcept;
+};
+
+inline static PlayerStats PLAYER_SECOND_STATS{};
 inline static std::unordered_map<MonsterType, MonsterScaler> monsterIdToScaler{};
-bool PlayerSpentSkillPoints::IsDefaultValue(Stat stat) const noexcept {
-  return spentAttributePoints[stat] == (int)PLAYER_STATS.effects[stat];
-}
 #endif  //DUNGEON_MASTER_SRC_ENTITIES_STATS_STATS_H_
