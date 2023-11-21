@@ -4,7 +4,7 @@ struct Quest;
 struct GameStatistics {
   float statistics[GAME_STATISTICS_END] = {};
   inline void Update() noexcept {
-    if (GAME_STATE == GameState::Game) {
+    if (GAME_STATE == GameState::Game ||  GAME_STATE == GameState::GameMenu) {
       statistics[GAME_TICKS_PLAYED]++;
     }
   }

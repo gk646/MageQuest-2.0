@@ -79,7 +79,7 @@ struct TalentNode {
   inline void SpendTalentPoint() noexcept {
     if (isUsable && !isActivated && isHovered &&
         IsMouseButtonReleased(MOUSE_BUTTON_LEFT) &&
-        PLAYER_SPENT_POINTS.SpendTalentPoint()) {
+        PLAYER_SECOND_STATS.SpendTalentPoint()) {
       DataBaseHandler::AddActivatedTalent(talentID);
       isActivated = true;
       if (talent.talentEffect) {

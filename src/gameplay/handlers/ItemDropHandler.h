@@ -68,7 +68,7 @@ inline static Item* CreateNewScaledItem(const Item* ptr, int quality,
     qualityMult = 1.1F;
   }
 
-  for (uint_fast32_t i = 0; i < BAG_SLOTS; i++) {
+  for (int i = 0; i < BAG_SLOTS; i++) {
     auto& val = newItem->effects[i];
     if (val == 0.0F) continue;
     if (val < 0) {

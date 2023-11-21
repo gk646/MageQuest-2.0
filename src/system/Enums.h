@@ -449,6 +449,7 @@ enum ProjectileType : uint8_t {
   PROJECTILE_END
 };
 
+enum class PlayerSave : uint8_t { EXPERIENCE = 1, COINS, END };
 inline static std::unordered_map<std::string, ProjectileType> stringToProjectile = {
     {"POISON_BALL", ProjectileType::POISON_BALL},
     {"FIRE_STRIKE_II", ProjectileType::FIRE_STRIKE_II},

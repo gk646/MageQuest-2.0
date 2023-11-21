@@ -332,4 +332,5 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
   }
 }
 
+
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

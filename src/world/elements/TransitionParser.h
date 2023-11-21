@@ -8,7 +8,7 @@ static void ParseTransitionFile() {
     zone = stringToZoneMap[i[0]];
     PointI dest = Util::ParsePointI(i[1]);
     Zone destZone = stringToZoneMap[i[2]];
-    for (uint_fast32_t j = 3; j < i.size(); j++) {
+    for (int j = 3; j < i.size(); j++) {
       WorldManager::zoneTPoints[(int)zone].emplace_back(Util::ParsePointI(i[j]), dest,
                                                         destZone);
     }

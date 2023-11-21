@@ -62,4 +62,9 @@ struct SkillSlot {
   }
 };
 
+void PlayerStats::IncrementSkillLevels() noexcept {
+  for (auto& skill : PLAYER_SKILLS) {
+    skill->skill->skillStats.skillLevel++;
+  }
+}
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_SKILLSLOT_H_

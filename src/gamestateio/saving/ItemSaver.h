@@ -38,7 +38,7 @@ struct ItemSaver {
   }
   inline static std::string GetEffectText(const float* arr) noexcept {
     std::string effect_string;
-    for (uint_fast32_t i = 0; i < STATS_ENDING; i++) {
+    for (int i = 0; i < STATS_ENDING; i++) {
       if (arr[i] != 0) {
         effect_string += std::to_string(i) + ":" + std::to_string(arr[i]) + ";";
       }

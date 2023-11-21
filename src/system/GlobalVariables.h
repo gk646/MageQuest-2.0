@@ -7,6 +7,7 @@
  * |                        SYSTEM                       |
  * |-----------------------------------------------------|
  */
+
 inline static constexpr int TEXT_BUFFER_SIZE = 100;
 inline static char TEXT_BUFFER[TEXT_BUFFER_SIZE] = {0};
 inline static float SCREEN_WIDTH = 1280;
@@ -119,5 +120,6 @@ inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
 inline void AddSkill(Skill* skill) noexcept;
+
 
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

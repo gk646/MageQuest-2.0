@@ -46,15 +46,19 @@ inline static float GetNumFromTable(const std::string& name, int y) noexcept {
   sqlite3_stmt* stmt;
   std::string sql = "SELECT NUM FROM " + name + " WHERE ROWID=?";
 
-  if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return 0;
+  if (!DataBaseHandler::PrepareStmt(sql, DataBaseHandler::gameSave, &stmt)) return 0.0f;
 
   sqlite3_bind_int(stmt, 1, y);
-  if (sqlite3_step(stmt) != SQLITE_ROW) return 0;
-  auto val = (float)sqlite3_column_double(stmt, 1);
+  if (sqlite3_step(stmt) != SQLITE_ROW) {
+    sqlite3_finalize(stmt);
+    return 0.0f;
+  }
+  auto val = static_cast<float>(sqlite3_column_double(stmt, 0));
 
   sqlite3_finalize(stmt);
   return val;
 }
+
 //Works for all *_STATE tables // returns true if an entry with the given values exists
 inline static bool StateExistsInTable(const std::string& tableName, int enumVal, int xPos,
                                       int yPos, int zone) noexcept {

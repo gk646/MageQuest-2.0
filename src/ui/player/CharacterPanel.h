@@ -115,9 +115,9 @@ struct CharacterPanel : public Window {
         0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
-    if (PLAYER_SPENT_POINTS.HasAttributePointsToSpend()) {
+    if (PLAYER_SECOND_STATS.HasAttributePointsToSpend()) {
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Unspent Attribute Points!: %i",
-               PLAYER_SPENT_POINTS.attributePointsToSpend);
+               PLAYER_SECOND_STATS.attributePointsToSpend);
       Util::DrawCenteredText(MINECRAFT_BOLD, SCALE(15), TEXT_BUFFER, x + size / 2,
                              y + SCALE(40), Colors::darkBackground);
     }
@@ -140,15 +140,15 @@ struct CharacterPanel : public Window {
 
     y -= 9 * (baseStats[0].bounds.height + 1);
     x -= baseStats[0].bounds.width + SCALE(22);
-    for (uint_fast32_t j = 0; j < 9; j++) {
+    for (int j = 0; j < 9; j++) {
       Stat stat = Stat(j);
-      if (PLAYER_SPENT_POINTS.HasAttributePointsToSpend() &&
+      if (PLAYER_SECOND_STATS.SpendAttributePoint(i) &&
           spendPoint.Draw(x + WIDTH / 2.5F + SCALE(10), y)) {
         PLAYER_STATS.SpendAttributePoint(j);
       }
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
       baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)std::round(PLAYER_STATS.effects[j]),
-                                PLAYER_SPENT_POINTS.IsDefaultValue(stat)
+          PLAYER_SECOND_STATS.IsDefaultValue(stat)
                                     ? Colors::darkBackground
                                     : Colors::StatGreen);
       y += baseStats[j].bounds.height + 1;

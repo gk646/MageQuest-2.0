@@ -32,7 +32,7 @@ static void Load() noexcept {
     }
     SKILLS[type] = skillPtr;
   }
-  for (uint_fast32_t i = 0; i < 6; i++) {
+  for (int i = 0; i < 6; i++) {
     PLAYER_HOTBAR[i] = new SkillSlot(48 + 65 * i, 20, SKILLS[LOCKED], false);
   }
 }
