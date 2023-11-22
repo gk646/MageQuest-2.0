@@ -3,7 +3,9 @@
 
 #include "loading/loaders/EntityLoader.h"
 #include "loading/loaders/QuestLoader.h"
+#include "loading/loaders/StatLoader.h"
 #include "loading/loaders/MapLoader.h"
+#include "loading/loaders/MiscLoader.h"
 #include "loading/loaders/SoundLoader.h"
 #include "loading/loaders/TextureLoader.h"
 #include "loading/loaders/TileLoader.h"
@@ -15,8 +17,6 @@
 #include "loading/loaders/ItemLoader.h"
 #include "loading/loaders/TalentLoader.h"
 #include "loading/loaders/ProjectileLoader.h"
-#include "loading/loaders/MiscLoader.h"
-#include "loading/loaders/StatLoader.h"
 
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
@@ -81,8 +81,8 @@ struct GameLoader {
     for (int i = 0; i < 15; i++) {
       // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
     }
-    //WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(14,ItemType::RING,50,15)));
-   // WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(15,ItemType::RING,50,15)));
+   WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(14,ItemType::RING,50,15)));
+    WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(15,ItemType::RING,50,15)));
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }
 };

@@ -1,5 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_
+
 namespace ItemLoader {
 //Creates new base items from the database tables
 static void CreateItemsFromTable(const std::string& table) noexcept {
@@ -59,20 +60,20 @@ static void LoadItemsFromTable(ItemSlot* slots, const std::string& table, int le
 }
 static void Load() noexcept {
   ITEMS.reserve(80);
-  std::array<std::string, 12> table_names = {
-      "ARM_AMULET",  "ARM_BAG",   "ARM_BOOTS",  "ARM_CHEST", "ARM_HEAD",    "ARM_OFFHAND",
-      "ARM_ONEHAND", "ARM_PANTS", "ARM_RELICS", "ARM_RINGS", "ARM_TWOHANDS", "MISC_ITEMS"};
+  std::array<std::string, 12> table_names = {"ARM_AMULET",  "ARM_BAG",      "ARM_BOOTS",
+                                             "ARM_CHEST",   "ARM_HEAD",     "ARM_OFFHAND",
+                                             "ARM_ONEHAND", "ARM_PANTS",    "ARM_RELICS",
+                                             "ARM_RINGS",   "ARM_TWOHANDS", "MISC_ITEMS"};
   for (const auto& name : table_names) {
     CreateItemsFromTable(name);
   }
   RANGE_EXISTING_ITEMS = std::uniform_int_distribution<int>(0, (int)ITEMS.size() - 1);
   std::cout << "ITEMS LOADED: " << ITEMS.size() << std::endl;
+  MiscLoader::LoadItemSets();
   LoadItemsFromTable(PLAYER_EQUIPPED, "PLAYER_INV", 10, true);
   LoadItemsFromTable(UI_MANAGER.playerUI.charBag.bagPanel.bagSlots.data(), "PLAYER_INV",
                      4, true, 12);
   LoadItemsFromTable(PLAYER_BAG, "PLAYER_BAG", (int)PLAYER_STATS.GetBagSlots());
-
-
 }
 }  // namespace ItemLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_

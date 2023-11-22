@@ -167,22 +167,7 @@ enum class ItemType : uint8_t {
   EMPTY = 0,
   MISC = 12
 };
-
-struct ItemIdentifier {
-  int8_t id;
-  ItemType type;
-};
-struct ItemSet {
-  std::array<ItemIdentifier, 4> items;
-  int8_t firstBonus;
-  int8_t secondBonus;
-  int8_t thirdBonus;
-};
-
-enum class ItemSetNum : uint8_t { ROMEO_JULIET, DEVILS_AVATAR, END };
-
-inline static std::array<ItemSet, (int)ItemSetNum::END> ITEM_SETS;
-
+enum class ItemSetNum : int8_t { NO_SET = -1, ROMEO_JULIET, DEVILS_AVATAR, END };
 enum class ItemRarity : uint8_t {
   NORMAL = 1,
   RARE = 2,

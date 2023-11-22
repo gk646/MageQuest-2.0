@@ -128,6 +128,14 @@ inline static std::string WrapText(const std::string& txt, float width, const Fo
   }
   return wrappedText;
 }
+template<typename T>
+inline static int GetMaxValue(const T* arr, int size) noexcept {
+  int max = INT_MIN;
+  for (uint_fast32_t i = 0; i < size; i++) {
+    if (arr[i] > max) max = arr[i];
+  }
+  return max;
+}
 inline static void DrawWrappedText(const Vector2& pos, const std::string& txt,
                                    float width, const Font& font, float fontSize,
                                    Color tint) {
@@ -303,7 +311,8 @@ inline static RectangleR GetToolTipRect(float width, float height) noexcept {
   }
   return ret;
 }
-inline static void SelectionSortInventorySlot(ItemSlot* arr, uint_32_cx len, bool ascending = true);
+inline static void SelectionSortInventorySlot(ItemSlot* arr, uint_32_cx len,
+                                              bool ascending = true);
 //Key press module / used for detecting key press on update tick rate(60)
 inline static bool e_previous[2] = {false, false};
 inline static void Update() noexcept {

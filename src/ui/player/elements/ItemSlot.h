@@ -189,4 +189,38 @@ void Util::SelectionSortInventorySlot(ItemSlot* arr, uint_32_cx len, bool ascend
     }
   }
 }
+int ItemSet::CountEquippedSetItemsOfSet(const ItemSet& itemSet) noexcept {
+
+  int count = 0;
+  for (int i = 0; i < 10; i++) {
+    if (IsPartOfItemSet(PLAYER_EQUIPPED[i].item, itemSet)) {
+      count++;
+    }
+  }
+  return count;
+}
+
+void Item::DrawSetItemToolTip(float x, float y, float& offSet) const noexcept {
+  if (itemSet == ItemSetNum::NO_SET) return;
+  const auto& set = ITEM_SETS[(int)itemSet];
+  int equippedCount = ItemSet::CountEquippedSetItemsOfSet(set);
+  snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Set: %s %d/%d", set.title.c_str(),
+           equippedCount ,set.thresholds[set.bonusCount-1]);
+  DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER, {x + 5, y + offSet}, 15, 0.5F,
+              Colors::darkBackground);
+
+  offSet += 17;
+  for (uint_fast32_t i = 0; i < set.bonusCount; i++) {
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "(%d)", set.thresholds[i]);
+    DrawTextExR(MINECRAFT_ITALIC, TEXT_BUFFER, {x + 2, y + offSet}, 14, 0.5F,
+                Colors::darkBackground);
+    int lineBreaks = 0;
+    auto wrappedText = Util::WrapText(set.descriptions[i], Item::TOOL_TIP_WIDTH - 25,
+                                      MINECRAFT_ITALIC, 14, &lineBreaks);
+    DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {x + 25, y + offSet}, 14, 0.5F,
+                equippedCount >= set.thresholds[i] ? Colors::descriptionOrange : Color{90, 105, 136, 120});
+    offSet += 14 * lineBreaks;
+  }
+  offSet += 14;
+}
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_ITEMSLOT_H_

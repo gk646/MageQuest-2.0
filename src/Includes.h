@@ -120,6 +120,7 @@ using namespace cxstructs;
 #include "graphics/elements/LogoDrawer.h"
 #include "system/Util.h"
 #include "world/Map.h"
+#include "gameplay/ItemSets.h"
 #include "gameplay/Item.h"
 #include "system/GlobalVariables.h"
 #include "resources/SoundStorage.h"
