@@ -13,7 +13,7 @@ static void LoadActivatedTalents(std::vector<TalentNode>& talents) noexcept {
     node.isActivated = true;
     PLAYER_STATS.EquipItem(node.talent.effects);
     if (node.talent.talentEffect) {
-      TALENT_EFFECTS.push_back(node.talent.talentEffect);
+      UNIQUE_EFFECTS.push_back(node.talent.talentEffect->OnAdd());
     }
   }
   sqlite3_finalize(stmt);
@@ -62,8 +62,8 @@ static void Load() noexcept {
         }
       }
     }
-    if (talentIDtoEffect.contains(node.talentID)) {
-      node.talent.talentEffect = talentIDtoEffect[node.talentID];
+    if (talentIDToEffect.contains(node.talentID)) {
+      node.talent.talentEffect = talentIDToEffect[node.talentID];
     }
     talents.emplace_back(node);
   }

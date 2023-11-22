@@ -25,9 +25,9 @@ struct CharacterPanel : public Window {
 
       // bottom middle
       ItemSlot(WIDTH / 2 - SLOT_SIZE * 1.5F, PADDING_TOP + GAP_TOP * 6.2F,
-                    ItemType::ONE_HAND),
+               ItemType::ONE_HAND),
       ItemSlot(WIDTH / 2 + SLOT_SIZE / 2, PADDING_TOP + GAP_TOP * 6.2F,
-                    ItemType::OFF_HAND)};
+               ItemType::OFF_HAND)};
 
   TexturedButton spendPoint{14,
                             14,
@@ -147,10 +147,10 @@ struct CharacterPanel : public Window {
         PLAYER_STATS.SpendAttributePoint(j);
       }
       snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s:", statToName[stat].c_str());
-      baseStats[j].DrawStatCell(x, y, TEXT_BUFFER, (int)std::round(PLAYER_STATS.effects[j]),
-          PLAYER_SECOND_STATS.IsDefaultValue(stat)
-                                    ? Colors::darkBackground
-                                    : Colors::StatGreen);
+      baseStats[j].DrawStatCell(
+          x, y, TEXT_BUFFER, (int)std::round(PLAYER_STATS.effects[j]),
+          PLAYER_SECOND_STATS.IsDefaultValue(stat) ? Colors::darkBackground
+                                                   : Colors::StatGreen);
       y += baseStats[j].bounds.height + 1;
     }
   }
@@ -166,4 +166,55 @@ struct CharacterPanel : public Window {
     y += baseStats[0].bounds.height + 1;
   }
 };
+
+void EntityStats::CheckForItemSets() noexcept {
+  int arr[(int)ItemSetNum::END] = {0};
+  for (int i = 0; i < 10; i++) {
+    const auto item = PLAYER_EQUIPPED[i].item;
+    if (!item) continue;
+    for (int j = 0; j < (int)ItemSetNum::END; j++) {
+      const auto& itemSet = ITEM_SETS[j];
+      for (const auto itemId : itemSet.items) {
+        if (item->id == itemId.id && item->type == itemId.type) {
+          arr[j]++;
+        }
+      }
+    }
+  }
+
+  for (int i = 0; i < (int)ItemSetNum::END; i++) {
+    auto& setEffect = itemSetEffects[i];
+    auto& itemSet = ITEM_SETS[i];
+
+    // Check for first bonus
+    if (itemSet.firstBonus > 0 && arr[i] >= itemSet.firstBonus) {
+      if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.first) == UNIQUE_EFFECTS.end()) {
+        UNIQUE_EFFECTS.push_back(setEffect.first->OnAdd());
+      }
+    } else if (setEffect.first && std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.first) != UNIQUE_EFFECTS.end()) {
+      setEffect.first->OnRemove();
+      UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.first), UNIQUE_EFFECTS.end());
+    }
+
+    // Check for second bonus
+    if (itemSet.secondBonus > 0 && arr[i] >= itemSet.secondBonus) {
+      if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.second) == UNIQUE_EFFECTS.end()) {
+        UNIQUE_EFFECTS.push_back(setEffect.second->OnAdd());
+      }
+    } else if (setEffect.second && std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.second) != UNIQUE_EFFECTS.end()) {
+      setEffect.second->OnRemove();
+      UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.second), UNIQUE_EFFECTS.end());
+    }
+
+    // Check for third bonus
+    if (itemSet.thirdBonus > 0 && arr[i] >= itemSet.thirdBonus) {
+      if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.third) == UNIQUE_EFFECTS.end()) {
+        UNIQUE_EFFECTS.push_back(setEffect.third->OnAdd());
+      }
+    } else if (setEffect.third && std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.third) != UNIQUE_EFFECTS.end()) {
+      setEffect.third->OnRemove();
+      UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.third), UNIQUE_EFFECTS.end());
+    }
+  }
+}
 #endif  //MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_

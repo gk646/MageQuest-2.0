@@ -83,7 +83,7 @@ struct TalentNode {
       DataBaseHandler::AddActivatedTalent(talentID);
       isActivated = true;
       if (talent.talentEffect) {
-        TALENT_EFFECTS.push_back(talent.talentEffect);
+        UNIQUE_EFFECTS.push_back(talent.talentEffect->OnAdd());
       }
       PLAYER_STATS.EquipItem(talent.effects);
       soundPlayer.PlaySound(&sound::talents::spendTalentPoint);

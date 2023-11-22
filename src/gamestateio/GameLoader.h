@@ -68,7 +68,7 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Hillcrest, {4, 96});
+    WorldManager::LoadMap(Zone::Hillcrest, {50, 35});
 #endif
 
     for (auto skill : SKILLS) {
@@ -76,12 +76,13 @@ struct GameLoader {
       AddSkill(skill);
     }
     //TODO implement saving and loading PLAYER_SKILLS
-    MONSTERS.push_back(
-        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
+   // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (int i = 0; i < 15; i++) {
       // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
     }
+    //WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(14,ItemType::RING,50,15)));
+   // WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(15,ItemType::RING,50,15)));
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }
 };

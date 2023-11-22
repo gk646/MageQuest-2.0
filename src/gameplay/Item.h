@@ -86,6 +86,7 @@ struct Item {
     DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
   //Draws the item tooltip correctly aligned, so It's not outside screen bounds
+  //TODO add item set tooltip
   void DrawToolTip() const noexcept {
     auto mouse = GetMousePosition();
     float startX, startY;
