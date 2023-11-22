@@ -151,6 +151,7 @@ enum class Keybind : uint8_t {
   ABILITY_6,
   END
 };
+
 enum class ItemType : uint8_t {
   HEAD = 5,
   CHEST = 4,
@@ -166,6 +167,22 @@ enum class ItemType : uint8_t {
   EMPTY = 0,
   MISC = 12
 };
+
+struct ItemIdentifier {
+  int8_t id;
+  ItemType type;
+};
+struct ItemSet {
+  std::array<ItemIdentifier, 4> items;
+  int8_t firstBonus;
+  int8_t secondBonus;
+  int8_t thirdBonus;
+};
+
+enum class ItemSetNum : uint8_t { ROMEO_JULIET, DEVILS_AVATAR, END };
+
+inline static std::array<ItemSet, (int)ItemSetNum::END> ITEM_SETS;
+
 enum class ItemRarity : uint8_t {
   NORMAL = 1,
   RARE = 2,
@@ -601,6 +618,10 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave},
     {"Oasis", Zone::Oasis},
     {"Oasis_Cave", Zone::Oasis_Cave}};
+inline static std::unordered_map<std::string, ItemSetNum> stringToItemSet = {
+    {"ROMEO_JULIET", ItemSetNum::ROMEO_JULIET},
+    {"DEVILS_AVATAR", ItemSetNum::DEVILS_AVATAR},
+};
 
 inline Difficulty GAME_DIFFICULTY = Difficulty::NORMAL;
 #endif  //MAGE_QUEST_SRC_ENUMS_ENUMS_H_

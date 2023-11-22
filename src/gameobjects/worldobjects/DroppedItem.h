@@ -33,7 +33,6 @@ struct DroppedItem final : public WorldObject {
         playerPos.x() -= 20;
         playerPos.y() -= 20;
         WORLD_OBJECTS.emplace_back(new DroppedItem(playerPos, slot->item));
-        slot->item = nullptr;
         return true;
       }
     }
@@ -113,6 +112,7 @@ void ItemSlot::Update() noexcept {
   if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
     if (!DRAGGED_ITEM && item && IsKeyDown(KEY_X)) {
       DroppedItem::DropItem(this);
+      item = nullptr;
       return;
     }
 
@@ -156,7 +156,9 @@ void ItemSlot::UpdateCharacterSlots() noexcept {
   if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
     if (!DRAGGED_ITEM && item && IsKeyDown(KEY_X)) {
       if(DroppedItem::DropItem(this)){
-        PLAYER_STATS.UnEquipItem(item->effects);
+        auto savedItem = item;
+        item = nullptr;
+        PLAYER_STATS.UnEquipItem(savedItem->effects);
       }
       return;
     }
@@ -166,16 +168,16 @@ void ItemSlot::UpdateCharacterSlots() noexcept {
         for (int i = 0; i < (int)PLAYER_STATS.GetBagSlots(); i++) {
           if (!PLAYER_BAG[i].item) {
             PLAYER_BAG[i].item = item;
-            PLAYER_STATS.UnEquipItem(item->effects);
             item = nullptr;
+            PLAYER_STATS.UnEquipItem( PLAYER_BAG[i].item->effects);
             break;
           }
         }
       } else {
-        PLAYER_STATS.UnEquipItem(item->effects);
         DRAGGED_ITEM = item;
-        DRAGGED_SLOT = this;
         item = nullptr;
+        DRAGGED_SLOT = this;
+        PLAYER_STATS.UnEquipItem(DRAGGED_ITEM->effects);
       }
     } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                CharacterSlotDropRules()) {
@@ -186,13 +188,13 @@ void ItemSlot::UpdateCharacterSlots() noexcept {
       DRAGGED_ITEM = nullptr;
     } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
                CharacterSlotDropRules()) {
-      if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
-        PLAYER_STATS.UnEquipItem(item->effects);
-      }
       PlaySoundR(sound::equip);
       PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
       DRAGGED_SLOT->item = item;
       item = DRAGGED_ITEM;
+      if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
+        PLAYER_STATS.UnEquipItem(DRAGGED_SLOT->item->effects);
+      }
       DRAGGED_SLOT = nullptr;
       DRAGGED_ITEM = nullptr;
     }

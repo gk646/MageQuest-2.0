@@ -101,6 +101,7 @@ void EntityStats::UnEquipItem(const float* effect_arr) noexcept {
   for (int i = 0; i < STATS_ENDING; i++) {
     effects[i] -= effect_arr[i];
   }
+  CheckForItemSets();
   CharacterBag::RemoveSlots((int)effect_arr[BAG_SLOTS]);
   ReCalculatePlayerStats();
 }

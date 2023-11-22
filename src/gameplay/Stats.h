@@ -117,10 +117,10 @@ struct EntityStats {
     for (int i = 0; i < STATS_ENDING; i++) {
       effects[i] += effectArr[i];
     }
+    CheckForItemSets();
     ReCalculatePlayerStats();
   }
   inline void UnEquipItem(const float* effect_arr) noexcept;
-  inline float TakeDamage(const DamageStats& dmgStats, const Entity* ent);
   inline void RefillStats() noexcept {
     mana = GetMaxMana();
     health = GetMaxHealth();
@@ -131,6 +131,7 @@ struct EntityStats {
     ReCalculatePlayerStats();
   }
   inline void ReCalculatePlayerStats() noexcept;
+  inline float TakeDamage(const DamageStats& dmgStats, const Entity* ent);
 
   //Getters
  public:
@@ -175,14 +176,16 @@ struct EntityStats {
     return effects[ARMOUR] * (1 + effects[ARMOUR_MULT_P]);
   }
   [[nodiscard]] inline float GetBagSlots() const noexcept { return effects[BAG_SLOTS]; }
-  [[nodiscard]] inline static bool RollCriticalHit(const DamageStats& stats) noexcept {
-    return RANGE_100_FLOAT(RNG_ENGINE) < stats.critChance;
-  }
   [[nodiscard]] inline bool IsSkillUsable(const SkillStats& stats,
                                           float ticks_done) const noexcept {
     return !stunned && ticks_done >= GetTotalCD(stats) &&
            mana >= stats.GetManaCost() * (1 - effects[MANA_COST_REDUCTION_P]);
   }
+ private:
+  [[nodiscard]] inline static bool RollCriticalHit(const DamageStats& stats) noexcept {
+    return RANGE_100_FLOAT(RNG_ENGINE) < stats.critChance;
+  }
+  static inline void CheckForItemSets() noexcept;
 };
 
 inline EntityStats PLAYER_STATS;
