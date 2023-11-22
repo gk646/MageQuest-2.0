@@ -2,8 +2,8 @@
 #define MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
 
 struct Item {
-  static constexpr int tooltip_x = 260;
-  static constexpr int tooltip_y = 275;
+  static constexpr int TOOL_TIP_WIDTH = 260;
+  static constexpr int TOOL_TIP_HEIGHT = 278;
   inline static char textBuffer[10];
   float effects[STATS_ENDING] = {0};
   std::string name;
@@ -15,6 +15,7 @@ struct Item {
   uint8_t id = 0;
   ItemRarity rarity = ItemRarity::NORMAL;
   ItemType type = ItemType::RING;
+  ItemSetNum itemSet = ItemSetNum::NO_SET;
   //Creating the item
   Item(int id, std::string name, ItemRarity rarity, ItemType type,
        std::string description, const Texture& texture)
@@ -33,7 +34,8 @@ struct Item {
         description(other.description),
         texture(other.texture),
         rarity(other.rarity),
-        type(other.type) {
+        type(other.type),
+        itemSet(other.itemSet) {
     std::copy(std::begin(other.effects), std::end(other.effects), std::begin(effects));
   }
   Item& operator=(const Item& other) {
@@ -49,6 +51,7 @@ struct Item {
     texture = other.texture;
     rarity = other.rarity;
     type = other.type;
+    itemSet = other.itemSet;
     std::copy(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
@@ -61,7 +64,8 @@ struct Item {
         description(std::move(other.description)),
         texture(other.texture),
         rarity(other.rarity),
-        type(other.type) {
+        type(other.type),
+        itemSet(other.itemSet) {
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
   }
   Item& operator=(Item&& other) noexcept {
@@ -77,6 +81,7 @@ struct Item {
     texture = other.texture;
     rarity = other.rarity;
     type = other.type;
+    itemSet = other.itemSet;
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
@@ -86,16 +91,21 @@ struct Item {
     DrawTextureScaled(texture, rect, 0, false, 0, WHITE);
   }
   //Draws the item tooltip correctly aligned, so It's not outside screen bounds
-  //TODO add item set tooltip
   void DrawToolTip() const noexcept {
     auto mouse = GetMousePosition();
     float startX, startY;
-    float width = tooltip_x * UI_SCALE;
+    float width = TOOL_TIP_WIDTH * UI_SCALE;
 
     int lineBreaks = 0;
     std::string wrappedText =
         Util::WrapText(description, width - 5, MINECRAFT_ITALIC, SCALE(15), &lineBreaks);
-    float height = tooltip_y * UI_SCALE + 15.0F * (float)lineBreaks;
+
+    float setHeight = 0;
+    if (itemSet != ItemSetNum::NO_SET) {
+      setHeight = ITEM_SETS[(int)itemSet].toolTipHeight;
+    }
+    float height = TOOL_TIP_HEIGHT * UI_SCALE + 15.0F * (float)lineBreaks + setHeight;
+
     if (mouse.x - width < 0) {
       startX = mouse.x + 10;
     } else {
@@ -199,6 +209,7 @@ struct Item {
         off_sety += font_size;
       }
     }
+
     for (int i = WEAPON_DAMAGE + 1; i < STATS_ENDING; i++) {
       if (effects[i] != 0) {
         if (std::round(effects[i]) == effects[i]) {
@@ -214,9 +225,12 @@ struct Item {
       }
     }
 
-    //description
-    off_sety = 240 * UI_SCALE;
+    off_sety = 240;
+    //Set item
+    DrawSetItemToolTip(startX, startY, off_sety);
 
+    //description
+    off_sety += 8;
     DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(),
                 {startX + off_setX, startY + off_sety}, SCALE(15), 0.5F,
                 Colors::darkBackground);
@@ -283,5 +297,19 @@ struct Item {
           ((float)level / 100.0F + std::min((float)rarity, 4.0F) / 100.0F) / 2.0F;
     }
   }
+
+ private:
+  void DrawSetItemToolTip(float x, float y, float& offset) const noexcept;
 };
+
+bool ItemSet::IsPartOfItemSet(Item* item, const ItemSet& itemSet) noexcept {
+  if (!item) return false;
+  for (const auto itemId : itemSet.items) {
+    if (item->id == itemId.id && item->type == itemId.type) {
+      return true;
+    }
+  }
+  return false;
+}
+
 #endif  //MAGEQUEST_SRC_GAMEPLAY_ITEM_H_

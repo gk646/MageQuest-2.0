@@ -173,12 +173,7 @@ void EntityStats::CheckForItemSets() noexcept {
     const auto item = PLAYER_EQUIPPED[i].item;
     if (!item) continue;
     for (int j = 0; j < (int)ItemSetNum::END; j++) {
-      const auto& itemSet = ITEM_SETS[j];
-      for (const auto itemId : itemSet.items) {
-        if (item->id == itemId.id && item->type == itemId.type) {
-          arr[j]++;
-        }
-      }
+      if (ItemSet::IsPartOfItemSet(item, ITEM_SETS[j])) arr[j]++;
     }
   }
 
@@ -186,34 +181,20 @@ void EntityStats::CheckForItemSets() noexcept {
     auto& setEffect = itemSetEffects[i];
     auto& itemSet = ITEM_SETS[i];
 
-    // Check for first bonus
-    if (itemSet.firstBonus > 0 && arr[i] >= itemSet.firstBonus) {
-      if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.first) == UNIQUE_EFFECTS.end()) {
-        UNIQUE_EFFECTS.push_back(setEffect.first->OnAdd());
+    for (int j = 0; j < 3; j++) {
+      if (itemSet.thresholds[i] > 0 && arr[i] >= itemSet.thresholds[i]) {
+        if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(),
+                      setEffect.effects[i]) == UNIQUE_EFFECTS.end()) {
+          UNIQUE_EFFECTS.push_back(setEffect.effects[i]->OnAdd());
+        }
+      } else if (setEffect.effects[i] &&
+                 std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(),
+                           setEffect.effects[i]) != UNIQUE_EFFECTS.end()) {
+        setEffect.effects[i]->OnRemove();
+        UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(),
+                                         setEffect.effects[i]),
+                             UNIQUE_EFFECTS.end());
       }
-    } else if (setEffect.first && std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.first) != UNIQUE_EFFECTS.end()) {
-      setEffect.first->OnRemove();
-      UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.first), UNIQUE_EFFECTS.end());
-    }
-
-    // Check for second bonus
-    if (itemSet.secondBonus > 0 && arr[i] >= itemSet.secondBonus) {
-      if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.second) == UNIQUE_EFFECTS.end()) {
-        UNIQUE_EFFECTS.push_back(setEffect.second->OnAdd());
-      }
-    } else if (setEffect.second && std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.second) != UNIQUE_EFFECTS.end()) {
-      setEffect.second->OnRemove();
-      UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.second), UNIQUE_EFFECTS.end());
-    }
-
-    // Check for third bonus
-    if (itemSet.thirdBonus > 0 && arr[i] >= itemSet.thirdBonus) {
-      if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.third) == UNIQUE_EFFECTS.end()) {
-        UNIQUE_EFFECTS.push_back(setEffect.third->OnAdd());
-      }
-    } else if (setEffect.third && std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.third) != UNIQUE_EFFECTS.end()) {
-      setEffect.third->OnRemove();
-      UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(), setEffect.third), UNIQUE_EFFECTS.end());
     }
   }
 }
