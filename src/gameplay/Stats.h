@@ -111,7 +111,7 @@ struct EntityStats {
     }
   }
   inline void ApplySkillCosts(const SkillStats& stats) noexcept {
-    mana -= stats.manaCost * (1 - effects[MANA_COST_REDUCTION_P]);
+    mana -= stats.GetManaCost() * (1 - effects[MANA_COST_REDUCTION_P]);
   }
   inline void EquipItem(const float* effectArr) noexcept {
     for (int i = 0; i < STATS_ENDING; i++) {

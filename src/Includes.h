@@ -131,7 +131,7 @@ using namespace cxstructs;
 #include "gameplay/TalentEffect.h"
 #include "gameplay/Talent.h"
 #include "ui/StyleSheet.h"
-#include "ui/player/elements/InventorySlot.h"
+#include "ui/player/elements/ItemSlot.h"
 #include "ui/player/CharacterBag.h"
 #include "gameobjects/Entity.h"
 #include "gameobjects/Projectile.h"

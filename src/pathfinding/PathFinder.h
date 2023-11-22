@@ -23,7 +23,7 @@ static inline std::unordered_set<PointT<int16_t>> closedSet{};
 static inline PointI star_movement[8] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0},
                                          {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
 
-static inline PointI cross_movement[4] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+static inline PointI cross_movement[4] = { {1, 0}, {0, -1}, {0, 1},{-1, 0}};
 
 static inline PointT<int16_t> FindNextPoint(NodeP* target_node) noexcept {
   NodeP* node = target_node;

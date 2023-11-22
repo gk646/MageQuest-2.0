@@ -40,7 +40,6 @@ struct GameLoader {
 
  private:
   static void Load() {
-    LoadStep(StatLoader::Load);
     LoadStep(MiscLoader::Load);
     LoadStep(ProjectileLoader::Load);
     LoadStep(TalentLoader::LoadConnections);
@@ -53,6 +52,7 @@ struct GameLoader {
     LoadStep(SoundLoader::Load);
     LoadStep(TileLoader::Load);
     LoadStep(MapLoader::Load);
+    LoadStep(StatLoader::Load);
     finished_cpu_loading = true;
   }
   static void SetupGameImpl() {
@@ -75,13 +75,12 @@ struct GameLoader {
       if (!skill) continue;
       AddSkill(skill);
     }
-
+    //TODO implement saving and loading PLAYER_SKILLS
     MONSTERS.push_back(
         Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (int i = 0; i < 15; i++) {
-      WORLD_OBJECTS.push_back(
-          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
+      // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
     }
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }

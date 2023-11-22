@@ -8,13 +8,15 @@ struct Playlist {
   int currentTrack = 0;
   bool isPlaying = false;
   //Loads all ".mp3" files from "0.mp3" ascending inside the given folder
-  void Load(const std::string& folderName) {
+  void Load(const std::string& folderName, float volume = 1) {
     std::string path;
     //To prevent indefinite loop
     for (int i = 0; i < 50; i++) {
       path = ASSET_PATH + "sound/music/" += folderName + std::to_string(i) + ".mp3";
       if (std::filesystem::exists(path)) {
-        tracks.push_back(LoadMusicStream(path.c_str()));
+        auto music = LoadMusicStream(path.c_str());
+        SetMusicVolume(music, volume);
+        tracks.push_back(music);
       } else {
         break;
       }
@@ -26,7 +28,7 @@ struct Playlist {
 //A wrapper for a "Music" ptr with volume control and dynamic removal
 struct Track {
   static constexpr float kVolumeFadeStep = 0.005F;
-  static constexpr float kEndTrackThreshold = 3.3F;
+  static constexpr float kEndTrackThreshold = 2.5F;
   Music* music = nullptr;
   float volume;
   bool markedForRemoval = false;
@@ -35,7 +37,7 @@ struct Track {
     if (markedForRemoval) {
       volume -= kVolumeFadeStep;
       SetMusicVolume(*music, volume);
-      if (volume <= 0.15F) {
+      if (volume <= 0.25F) {
         StopMusicStream(*music);
       }
     } else if (volume < 1.0F) {
@@ -86,7 +88,7 @@ inline void AddTrack(Music* music, bool fadeIn = true) noexcept {
     if (track.music == music) return;
   }
   PlayMusicStream(*music);
-  currentTracks.emplace_back(Track{music, fadeIn ? 0.15F : 1.0F});
+  currentTracks.emplace_back(Track{music, fadeIn ? 0.25F : 1.0F});
 }
 //Adds the playlist to "playingPlaylists" and plays the next track / updates itself automatically
 inline void StartPlaylist(Playlist* playlist) noexcept {

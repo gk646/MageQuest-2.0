@@ -29,7 +29,7 @@ struct CharacterBag final : public Window {
   explicit CharacterBag() noexcept
       : Window(SCREEN_WIDTH * 0.80 - width, SCREEN_HEIGHT * 0.6F, width, 300, 20, "Bags",
                KEY_B, sound::openBags, sound::closeBags) {
-    PLAYER_BAG = new InventorySlot[max_slots];
+    PLAYER_BAG = new ItemSlot[max_slots];
     CalculateSlots(max_slots);
     PLAYER_STATS.effects[BAG_SLOTS] = BagPanel::BASE_BAG_SLOTS;
   }

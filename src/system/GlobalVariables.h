@@ -70,10 +70,10 @@ inline static StatusEffectHandler PLAYER_EFFECTS{PLAYER_STATS, nullptr};
 inline static std::string PLAYER_NAME;
 inline static Item* DRAGGED_ITEM = nullptr;
 inline static Item* TOOL_TIP_ITEM = nullptr;
-struct InventorySlot;
-inline static InventorySlot* DRAGGED_SLOT;
-inline static InventorySlot* PLAYER_EQUIPPED;
-inline static InventorySlot* PLAYER_BAG;
+struct ItemSlot;
+inline static ItemSlot* DRAGGED_SLOT;
+inline static ItemSlot* PLAYER_EQUIPPED;
+inline static ItemSlot* PLAYER_BAG;
 struct SkillSlot;
 inline static SkillSlot* DRAGGED_SKILL_SLOT;
 /* |-----------------------------------------------------|
@@ -109,6 +109,7 @@ inline static std::vector<NPC*> NPCS;
 inline static std::vector<Monster*> MONSTERS;
 inline static std::array<Skill*, ProjectileType::PROJECTILE_END> SKILLS;
 
+//Checks collision against the two collision layers at the specified point
 inline static bool CheckTileCollision(int x, int y) noexcept {
   return COLLISIONS[CURRENT_BACK_GROUND[x][y]] == C_SOLID ||
          COLLISIONS[CURRENT_MIDDLE_GROUND[x][y]] == C_SOLID;
@@ -120,6 +121,5 @@ inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
 inline void AddSkill(Skill* skill) noexcept;
-
 
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

@@ -104,8 +104,8 @@ struct Skill {
     if (skillStats.type == DUMMY || skillStats.type == LOCKED) return;
 
     //-------------ResourceCost---------------//
-    if (skillStats.manaCost > 0) {
-      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%i Mana", (int)skillStats.manaCost);
+    if (skillStats.GetManaCost() > 0) {
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%i Mana", (int)skillStats.GetManaCost());
       DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {startX + 5, startY + 35}, 15, 0.5F,
                   Colors::darkBackground);
     }
