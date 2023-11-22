@@ -1,30 +1,29 @@
-#ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
-#define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
+#ifndef MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_ITEMSLOT_H_
+#define MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_ITEMSLOT_H_
 
 //A wrapper for an item
-struct InventorySlot {
+struct ItemSlot {
   RectangleR hitBox = {0};
   Item* item = nullptr;
   uint16_t baseX = 0, baseY = 0;
   ItemType slotType = ItemType::EMPTY;
   int8_t toolTipHoverTicks = 0;
   uint8_t baseWidth = 40, baseHeight = 40;
-  InventorySlot() = default;
-  InventorySlot(int x, int y, ItemType item_type, float width = 40,
-                float height = 40) noexcept
+  ItemSlot() = default;
+  ItemSlot(int x, int y, ItemType item_type, float width = 40, float height = 40) noexcept
       : hitBox((uint16_t)x, (uint16_t)y, width, height),
         baseX(x),
         baseY(y),
         slotType(item_type),
         baseWidth(width),
         baseHeight(height) {}
-  inline bool operator<(const InventorySlot& other) const {
+  inline bool operator<(const ItemSlot& other) const {
     if (!item) return other.item != nullptr;
     if (!other.item) return false;
     return *item < *other.item;
   }
 
-  inline bool operator>(const InventorySlot& other) const {
+  inline bool operator>(const ItemSlot& other) const {
     if (!item) return false;
     if (!other.item) return item != nullptr;
     return *item > *other.item;
@@ -66,87 +65,8 @@ struct InventorySlot {
 
   //Logic for exchanging items
  public:
-  void UpdateCharacterSlots() {
-    hitBox.height = baseWidth * UI_SCALE;
-    hitBox.width = baseHeight * UI_SCALE;
-    if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
-      if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-          for (int i = 0; i < (int)PLAYER_STATS.GetBagSlots(); i++) {
-            if (!PLAYER_BAG[i].item) {
-              PLAYER_BAG[i].item = item;
-              PLAYER_STATS.UnEquipItem(item->effects);
-              item = nullptr;
-              break;
-            }
-          }
-        } else {
-          PLAYER_STATS.UnEquipItem(item->effects);
-          DRAGGED_ITEM = item;
-          DRAGGED_SLOT = this;
-          item = nullptr;
-        }
-      } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 CharacterSlotDropRules()) {
-        item = DRAGGED_ITEM;
-        PlaySoundR(sound::equip);
-        PLAYER_STATS.EquipItem(item->effects);
-        DRAGGED_SLOT = nullptr;
-        DRAGGED_ITEM = nullptr;
-      } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) &&
-                 CharacterSlotDropRules()) {
-        if (DRAGGED_SLOT->slotType == ItemType::EMPTY) {
-          PLAYER_STATS.UnEquipItem(item->effects);
-        }
-        PlaySoundR(sound::equip);
-        PLAYER_STATS.EquipItem(DRAGGED_ITEM->effects);
-        DRAGGED_SLOT->item = item;
-        item = DRAGGED_ITEM;
-        DRAGGED_SLOT = nullptr;
-        DRAGGED_ITEM = nullptr;
-      }
-      toolTipHoverTicks = std::max(toolTipHoverTicks - 1, -1);
-    } else {
-      toolTipHoverTicks = 12;
-    }
-  }
-  void Update() noexcept {
-    hitBox.height = baseWidth * UI_SCALE;
-    hitBox.width = baseHeight * UI_SCALE;
-    if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
-      if (!DRAGGED_ITEM && item && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        if (IsKeyDown(KEY_LEFT_SHIFT)) {
-          for (int i = 0; i < 10; i++) {
-            if (NoSwitchDragRules(PLAYER_EQUIPPED[i])) {
-              PLAYER_EQUIPPED[i].item = item;
-              PLAYER_STATS.EquipItem(item->effects);
-              item = nullptr;
-              break;
-            }
-          }
-        } else {
-          DRAGGED_ITEM = item;
-          DRAGGED_SLOT = this;
-          item = nullptr;
-        }
-      } else if (DRAGGED_ITEM && !item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        item = DRAGGED_ITEM;
-        DRAGGED_SLOT = nullptr;
-        DRAGGED_ITEM = nullptr;
-      } else if (DRAGGED_ITEM && item && !IsMouseButtonDown(MOUSE_BUTTON_LEFT) && BagSlotDropRuleSwitch()) {
-        if (DRAGGED_SLOT->slotType != ItemType::EMPTY) {
-          PLAYER_STATS.EquipItem(item->effects);
-        }
-        DRAGGED_SLOT->item = item;
-        item = DRAGGED_ITEM;
-        DRAGGED_SLOT = nullptr;
-        DRAGGED_ITEM = nullptr;
-      }
-      toolTipHoverTicks = std::max(toolTipHoverTicks - 1, -1);
-    } else {
-      toolTipHoverTicks = 12;
-    }
-  }
+  void UpdateCharacterSlots() noexcept;
+  void Update() noexcept;
 
  public:
   inline static void RecoverDraggedItem() noexcept {
@@ -206,7 +126,7 @@ struct InventorySlot {
   }
 
  private:
-  [[nodiscard]] inline bool NoSwitchDragRules(const InventorySlot& ptr) const noexcept {
+  [[nodiscard]] inline bool NoSwitchDragRules(const ItemSlot& ptr) const noexcept {
     if (ptr.item) return false;
     if (item->type == ItemType::OFF_HAND) {
       return ptr.slotType == ItemType::OFF_HAND &&
@@ -230,24 +150,22 @@ struct InventorySlot {
       return slotType == DRAGGED_ITEM->type;
     }
   }
-
   [[nodiscard]] inline bool BagSlotDropRuleSwitch() const noexcept {
     if (DRAGGED_SLOT->slotType == ItemType::EMPTY) return true;
     if (item->type == ItemType::TWO_HAND) {
       return DRAGGED_ITEM->type == ItemType::ONE_HAND &&
              PLAYER_EQUIPPED[9].item == nullptr;
-    } else{
+    } else {
       return item->type == DRAGGED_SLOT->slotType;
     }
   }
 };
 
-void Util::SelectionSortInventorySlot(InventorySlot* arr, uint_32_cx len,
-                                      bool ascending) {
+void Util::SelectionSortInventorySlot(ItemSlot* arr, uint_32_cx len, bool ascending) {
   uint_32_cx index;
   if (ascending) {
     for (uint_32_cx i = 0; i < len; i++) {
-      InventorySlot low = arr[i];
+      ItemSlot low = arr[i];
       index = i;
       for (uint_32_cx j = i + 1; j < len; j++) {
         if (arr[j] < low) {
@@ -259,7 +177,7 @@ void Util::SelectionSortInventorySlot(InventorySlot* arr, uint_32_cx len,
     }
   } else {
     for (uint_32_cx i = 0; i < len; i++) {
-      InventorySlot high = arr[i];
+      ItemSlot high = arr[i];
       index = i;
       for (uint_32_cx j = i + 1; j < len; j++) {
         if (arr[j] > high) {
@@ -271,4 +189,4 @@ void Util::SelectionSortInventorySlot(InventorySlot* arr, uint_32_cx len,
     }
   }
 }
-#endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_INVENTORYSLOT_H_
+#endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_ITEMSLOT_H_

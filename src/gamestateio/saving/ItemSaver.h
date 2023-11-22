@@ -7,7 +7,7 @@ struct ItemSaver {
     SaveItemsToTable(UI_MANAGER.playerUI.charBag.bagPanel.bagSlots.data(), 4,
                      "PLAYER_INV", 12);
   }
-  static void SaveItemsToTable(InventorySlot* slots, int size, const std::string& table,
+  static void SaveItemsToTable(ItemSlot* slots, int size, const std::string& table,
                                int offsetY = 0) noexcept {
     sqlite3_stmt* stmt;
     std::string sql =

@@ -10,23 +10,23 @@ struct CharacterPanel : public Window {
   static constexpr int GAP_TOP = 55;
   std::array<TextCell, 18> baseStats =
       TextCell::CreateCharacterCells(WIDTH / 2.5F, 12, MINECRAFT_BOLD, 15);
-  std::array<InventorySlot, 10> equipSlots = {
+  std::array<ItemSlot, 10> equipSlots = {
       //Left, from top to bottom
-      InventorySlot(PADDING_LEFT, PADDING_TOP, ItemType::HEAD),
-      InventorySlot(PADDING_LEFT, PADDING_TOP + GAP_TOP, ItemType::CHEST),
-      InventorySlot(PADDING_LEFT, PADDING_TOP + GAP_TOP * 2, ItemType::PANTS),
-      InventorySlot(PADDING_LEFT, PADDING_TOP + GAP_TOP * 3, ItemType::BOOTS),
+      ItemSlot(PADDING_LEFT, PADDING_TOP, ItemType::HEAD),
+      ItemSlot(PADDING_LEFT, PADDING_TOP + GAP_TOP, ItemType::CHEST),
+      ItemSlot(PADDING_LEFT, PADDING_TOP + GAP_TOP * 2, ItemType::PANTS),
+      ItemSlot(PADDING_LEFT, PADDING_TOP + GAP_TOP * 3, ItemType::BOOTS),
 
       //Right, from top to bottom
-      InventorySlot(PADDING_RIGHT, PADDING_TOP, ItemType::AMULET),
-      InventorySlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP, ItemType::RING),
-      InventorySlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP * 2, ItemType::RING),
-      InventorySlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP * 3, ItemType::RELIC),
+      ItemSlot(PADDING_RIGHT, PADDING_TOP, ItemType::AMULET),
+      ItemSlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP, ItemType::RING),
+      ItemSlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP * 2, ItemType::RING),
+      ItemSlot(PADDING_RIGHT, PADDING_TOP + GAP_TOP * 3, ItemType::RELIC),
 
       // bottom middle
-      InventorySlot(WIDTH / 2 - SLOT_SIZE * 1.5F, PADDING_TOP + GAP_TOP * 6.2F,
+      ItemSlot(WIDTH / 2 - SLOT_SIZE * 1.5F, PADDING_TOP + GAP_TOP * 6.2F,
                     ItemType::ONE_HAND),
-      InventorySlot(WIDTH / 2 + SLOT_SIZE / 2, PADDING_TOP + GAP_TOP * 6.2F,
+      ItemSlot(WIDTH / 2 + SLOT_SIZE / 2, PADDING_TOP + GAP_TOP * 6.2F,
                     ItemType::OFF_HAND)};
 
   TexturedButton spendPoint{14,

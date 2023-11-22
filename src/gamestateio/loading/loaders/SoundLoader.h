@@ -105,6 +105,11 @@ struct SoundLoader {
     SetSoundVolume(sound::closeInventory, 0.3F);
 
     SetSoundVolume(sound::player::abilityCast, 0.7F);
+
+
+
+
+
   }
 };
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_

@@ -96,12 +96,9 @@ struct PlayerUI {
   static inline void UpdateDraggedSlots() noexcept {
     if (DRAGGED_ITEM && !IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
       if (WINDOW_FOCUSED) {
-        InventorySlot::RecoverDraggedItem();
+        ItemSlot::RecoverDraggedItem();
       } else {
-        WORLD_OBJECTS.push_back(
-            new DroppedItem({PLAYER_X + (float)PLAYER.size.x / 2.0F + 50,
-                             PLAYER_Y + (float)PLAYER.size.y / 2.0F},
-                            DRAGGED_ITEM));
+        DroppedItem::DropItemAimed(DRAGGED_ITEM);
         DRAGGED_ITEM = nullptr;
         DRAGGED_SLOT = nullptr;
       }

@@ -30,7 +30,7 @@ static void CreateItemsFromTable(const std::string& table) noexcept {
   sqlite3_finalize(stmt);
 }
 //Loads saved items from the bag or inventory
-static void LoadItemsFromTable(InventorySlot* slots, const std::string& table, int length,
+static void LoadItemsFromTable(ItemSlot* slots, const std::string& table, int length,
                                bool equip = false, int offsetY = 0) noexcept {
   sqlite3_stmt* stmt;
   if (!DataBaseHandler::PrepareStmt("SELECT * FROM " + table, DataBaseHandler::gameSave,

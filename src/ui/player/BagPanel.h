@@ -2,11 +2,11 @@
 #define MAGEQUEST_SRC_UI_PLAYER_BAGPANEL_H_
 struct BagPanel {
   inline static int BASE_BAG_SLOTS = 9;
-  std::array<InventorySlot, 4> bagSlots = {
-      InventorySlot(0, 2, ItemType::BAG, 25, 25),
-      InventorySlot(0, 2, ItemType::BAG, 25, 25),
-      InventorySlot(0, 2, ItemType::BAG, 25, 25),
-      InventorySlot(0, 2, ItemType::BAG, 25, 25),
+  std::array<ItemSlot, 4> bagSlots = {
+      ItemSlot(0, 2, ItemType::BAG, 25, 25),
+      ItemSlot(0, 2, ItemType::BAG, 25, 25),
+      ItemSlot(0, 2, ItemType::BAG, 25, 25),
+      ItemSlot(0, 2, ItemType::BAG, 25, 25),
   };
   TexturedButton bagPanelButton = {25,
                                    25,
