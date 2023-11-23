@@ -25,7 +25,7 @@ struct Skill {
         icon(icon) {
     this->skillStats.attackAnimation = attackAnimation;
   }
-//TODO add channeled skills // add hit pushback
+  //TODO add channeled skills // add hit pushback
  public:
   //Draws the cast bar
   inline static void DrawCastBar() noexcept {
@@ -77,6 +77,7 @@ struct Skill {
                          Colors::lightGreyMiddleAlpha);
     DrawRangeCircle();
     int lineBreaks = 0;
+
     auto descriptionText = Util::WrapText(
         Util::CreateToolTipString(
             description,
@@ -331,6 +332,5 @@ inline static void Multiplayer::HandleProjectile(UDP_Projectile* data,
     }
   }
 }
-
 
 #endif  //MAGEQUEST_SRC_GAMEPLAY_SKILL_H_

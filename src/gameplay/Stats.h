@@ -132,11 +132,13 @@ struct EntityStats {
   }
   inline void ReCalculatePlayerStats() noexcept;
   inline float TakeDamage(const DamageStats& dmgStats, const Entity* ent);
+  static inline void CheckForItemSets() noexcept;
 
   //Getters
  public:
   [[nodiscard]] inline float GetAbilityDmg(float damage,
                                            DamageType dmgType) const noexcept {
+
     damage *= effects[WEAPON_DAMAGE];
     switch (dmgType) {
       case DamageType::FIRE:
@@ -181,11 +183,11 @@ struct EntityStats {
     return !stunned && ticks_done >= GetTotalCD(stats) &&
            mana >= stats.GetManaCost() * (1 - effects[MANA_COST_REDUCTION_P]);
   }
+
  private:
   [[nodiscard]] inline static bool RollCriticalHit(const DamageStats& stats) noexcept {
     return RANGE_100_FLOAT(RNG_ENGINE) < stats.critChance;
   }
-  static inline void CheckForItemSets() noexcept;
 };
 
 inline EntityStats PLAYER_STATS;

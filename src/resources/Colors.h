@@ -4,7 +4,7 @@
 namespace Colors {
 // QUALITIES
 inline const Color Blue = {0, 153, 219, 255};
-inline const Color setItem = {13, 200, 15, 255};
+inline const Color setItem = {60, 198, 0, 255};
 inline const Color mediumQuality = {27, 178, 1, 255};
 inline const Color highQuality = {178, 14, 23, 255};
 inline const Color NormalGrey = {123, 123, 120, 255};

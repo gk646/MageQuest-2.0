@@ -1,0 +1,3 @@
+#ENUM_VAL|ITEM1 | ITEM2 | ITEM3 | ITEM4|Threshholds|Title|Description
+ROMEO_JULIET|14,10|15,10|-1,-1|-1,-1|2,-1,-1|Passions's Edge |Increases damage dealt by 10% if your above 90% health. If your health falls below 90% you deal 10% less damage.:s:s
+DEVILS_AVATAR|9,4|5,5|5,3|9,9|2,4,-1|Devil's Avatar|Increases fire damage by 15%, health regen by 5% and crit damage by 5%:Make a pact with the davil, increasing your crit chance by 30% but reducing your crit damage by 50%:s

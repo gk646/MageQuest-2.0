@@ -128,7 +128,7 @@ inline static std::string WrapText(const std::string& txt, float width, const Fo
   }
   return wrappedText;
 }
-template<typename T>
+template <typename T>
 inline static int GetMaxValue(const T* arr, int size) noexcept {
   int max = INT_MIN;
   for (uint_fast32_t i = 0; i < size; i++) {
@@ -192,12 +192,12 @@ inline static std::string CreateToolTipString(const std::string& s, float damage
 
   pos = ret.find("MAX_DMG");
   if (pos != std::string::npos) {
-    ret.replace(pos, 7, std::to_string((int)(damage * 1.1F)));
+    ret.replace(pos, 7, std::to_string((int)std::round(damage * 1.1F)));
   }
 
   pos = ret.find("MIN_DMG");
   if (pos != std::string::npos) {
-    ret.replace(pos, 7, std::to_string((int)(damage * 0.9F)));
+    ret.replace(pos, 7, std::to_string((int)std::round(damage * 0.9F)));
   }
 
   if (val1 != FLT_MAX) {

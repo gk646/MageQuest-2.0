@@ -3,7 +3,7 @@
 
 struct Item {
   static constexpr int TOOL_TIP_WIDTH = 260;
-  static constexpr int TOOL_TIP_HEIGHT = 278;
+  static constexpr int TOOL_TIP_HEIGHT = 276;
   inline static char textBuffer[10];
   float effects[STATS_ENDING] = {0};
   std::string name;
@@ -232,7 +232,6 @@ struct Item {
     DrawSetItemToolTip(startX, startY, off_sety);
 
     //description
-    off_sety += 8;
     DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(),
                 {startX + off_setX, startY + off_sety}, SCALE(15), 0.5F,
                 Colors::darkBackground);

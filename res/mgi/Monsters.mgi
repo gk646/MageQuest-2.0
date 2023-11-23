@@ -1,0 +1,18 @@
+#MonsterType|DisplayName|BaseHealth|HealthPerLevel|BaseSpeed|AttackCD|AttackRange|ChaseRange|MaxScaledLevel|Damage
+SKEL_WAR|Skeletal Warrior|8|6|2|160|8|9|60|1
+BLOOD_HOUND|Bloodhound|4|2.5|2.6|195|6|10|60|0.75
+GHOST|Ghost|15|4.5|0|120|7|9|60|2
+SKEL_SPEAR|Skeletal Spearman|6|5|2.2|170|5|9|60|1.2
+WOLF|Wolf|3.5|2.5|2.5|230|5|8|60|0.5
+BOSS_DEATH_BRINGER|Death Bringer|125|45|2.5|0|10|50|80|4
+BOSS_KNIGHT|Stone Knight|100|50|2.5|0|10|50|80|3
+BOSS_SLIME|Giant Slime|75|65|2|0|10|50|80|2.5
+GOBLIN|Goblin|5|4|2.5|150|6|10|60|0.8
+KNIGHT|Knight|0|0|0|200|0|0|60|1
+MUSHROOM|Fangshroom|6|3.5|2|230|7|11|60|1
+SKEL_ARCHER|Skeletal Archer|5|4|1.8|190|8|11|60|1
+SKEL_SHIELD|Skeletal Defender|6|7|1.5|210|8|11|60|0.7
+SNAKE|Snake|3|2.5|2|250|4|6|60|0.4
+SKULL_WOLF|Skull Wolf|10|4.5|2.5|150|8|10|60|1.5
+BOSS_STONE_GOLEM|Ancient Golem|150|75|1.5|0|10|50|60|2.5
+RAT|Rat|2|3.5|2.4|90|7|10|60|0.25

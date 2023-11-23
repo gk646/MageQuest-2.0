@@ -1,0 +1,17 @@
+#EnumName|DisplayName|SpecVal2|SpecVal2|BaseDamage|Cooldown|Range|ManaCost|Description|CastTime|DmgType
+BLAST_HAMMER|Blast Hammer|0|0|10|720|300|10|Summons a massive, blazing hammer to strike down your enemies dealing MIN_DMG to MAX_DMG area damage. Leaves a trail of smoldering embers in its wake.|90|fire
+FIRE_STRIKE|Fire Strike|6|0|1.5|300|420|3|Unleashes a radial burst of fireballs, scorching nearby enemies for MIN_DMG to MAX_DMG per second.|0|fire
+FIRE_STRIKE_II|Fire Strike II|9|0|3|360|420|5|Unleashes a radial burst of fireballs, scorching nearby enemies for MIN_DMG to MAX_DMG per second.|0|fire
+ENERGY_SPHERE|Energy Sphere|0|0|2|180|0|2|Conjures a pulsing orb of crackling arcane energy, inflicting MIN_DMG to MAX_DMG damage per second to all nearby enemies.|0|arcane
+FIRE_BALL|Fire Ball|0|0|3|120|0|3|Throws a single fireball at a target, dealing MIN_DMG to MAX_DMG damage upon impact.|60|fire
+LIGHTNING|Lightning Strike|0|0|5|300|420|4|Unleashes a bolt of electricity, damaging all nearby enemies for MIN_DMG to MAX_DMG on impact with a small chance to stun them.|0|arcane
+FROST_NOVA|Frost Nova|0|0|1|720|90|4|Releases a chilling blast dealing MIN_DMG to MAX_DMG damage and rooting nearby enemies in place.|0|ice
+ARCANE_BOLT|Arcane Bolt|0|0|3|150|0|2|Cast an Arcane Bolt that hurls through the air, exploding on contact dealing MIN_DMG to MAX_DMG area damage to enemies caught in the blast.|0|arcane
+DUMMY|Empty Slot|0|0|0|0|0|0|This slot is empty. Drag and drop a skill from your ability panel!|0|physical
+LOCKED|Locked|0|0|0|0|0|0|This slot is locked. Level up to unlock it!|0|physical
+ICE_LANCE|Ice Lance|0|0|3|180|0|3|Launch a piercing shard of ice at an enemy, inflicting MIN_DMG to MAX_DMG ice damage and slowing their movement speed for a short duration.|30|ice
+GLACIAL_BURST|Glacial Burst|300|0|8|600|300|8|Conjures a frigid ice crystal from the earth, exploding to deal MIN_DMG to MAX_DMG damage. Shatters frozen targets dealing VAL1% bonus damage.|0|ice
+INFERNO_RAY|Inferno Ray|0|0|2|460|0|2|Channel a relentless stream of fire towards your foes, dealing MIN_DMG to MAX_DMG fire damage over time.|0|fire
+FIRE_SWORD|Fire Sword|0|0|1.5|360|150|4|Wield a blazing sword to unleash three fiery blows to enemies around you, each dealing MIN_DMG to MAX_DMG fire damage to surrounding enemies.|0|fire
+VOID_FIELD|Void Field|0|0|1|720|300|5|Create a zone of dark energy at a target location, dealing MIN_DMG to MAX_DMG dark damage per second to enemies within and slowing them.|45|dark
+VOID_ERUPTION|Void Eruption|0|0|4.5|600|300|7|Unleash a surge of void energy, dealing MIN_DMG to MAX_DMG dark damage to all nearby enemies.|0|dark

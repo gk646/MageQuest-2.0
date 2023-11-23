@@ -74,6 +74,7 @@ static void Load() noexcept {
   LoadItemsFromTable(UI_MANAGER.playerUI.charBag.bagPanel.bagSlots.data(), "PLAYER_INV",
                      4, true, 12);
   LoadItemsFromTable(PLAYER_BAG, "PLAYER_BAG", (int)PLAYER_STATS.GetBagSlots());
+  PLAYER_STATS.CheckForItemSets();
 }
 }  // namespace ItemLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_ITEMLOADER_H_

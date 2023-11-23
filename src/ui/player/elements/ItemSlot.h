@@ -210,8 +210,10 @@ int ItemSet::CountEquippedSetItemsOfSet(const ItemSet& itemSet) noexcept {
 }
 void Item::DrawSetItemToolTip(float x, float y, float& offSet) const noexcept {
   if (itemSet == ItemSetNum::NO_SET) return;
+  offSet+=10;
   const auto& set = ITEM_SETS[(int)itemSet];
   int equippedCount = ItemSet::CountEquippedSetItemsOfSet(set);
+
   snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Set: %s %d/%d", set.title.c_str(),
            equippedCount, set.thresholds[set.bonusCount - 1]);
   DrawTextExR(MINECRAFT_BOLD, TEXT_BUFFER, {x + 5, y + offSet}, 15, 0.5F,
@@ -228,7 +230,7 @@ void Item::DrawSetItemToolTip(float x, float y, float& offSet) const noexcept {
     DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {x + 25, y + offSet}, 14, 0.5F,
                 equippedCount >= set.thresholds[i] ? Colors::descriptionOrange
                                                    : Color{90, 105, 136, 120});
-    offSet += 14 * lineBreaks;
+    offSet += 14 * (lineBreaks+1);
   }
   offSet += 14;
 }

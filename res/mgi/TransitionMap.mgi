@@ -1,0 +1,15 @@
+#StartZone|DestinationPoint|DestinationZone|TelePortsPoints
+Hillcrest|1,100|TheGrove|99,35|98,35|98,36|99,36|98,37|99,37
+Hillcrest|56,58|Hillcrest_Mountain_Cave|87,93
+Hillcrest|26,18|Hillcrest_Treasure_Cave|64,66
+Hillcrest|1,14|Hillcrest_Mountain_Cave|75,82
+TheGrove|97,36|Hillcrest|0,99|0,100|0,101
+Tutorial|28,4|TutorialDungeon|71,56
+Tutorial|1,1|Hillcrest|98,98|98,99|99,98
+Hillcrest|35,68|Hillcrest_Hermit_Cave|89,0
+Hillcrest_Hermit_Cave|89,1|Hillcrest|35,69
+TutorialDungeon|69,56|Tutorial|27,4|28,4
+Tutorial|28,5|TutorialDungeon|71,56
+Oasis|2,57|Oasis_Cave|62,14|63,14|64,14
+Oasis_Cave|63,16|Oasis|0,58|1,59|1,58
+Hillcrest_Treasure_Cave|64,67|Hillcrest|24,17
