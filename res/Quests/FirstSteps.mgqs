@@ -1,0 +1,37 @@
+Name:First steps in a troubled World
+Reward:Gold,25:XP,50
+Description:Having seen these visions left you unclear of what to think. You have to go forward and grow stronger, even if it is the very single thing your certain about...
+Zone:Tutorial
+Level:2
+
+SPEAK:DECKARD:Speak to the old man:WAYPOINT,11,4
+Ah, hello there. 'Tis a surprise to see you here!
+You look as if you just escaped from the woods. Was it something that chased you, perhaps?
+You have asked me for guidance in your new journey, and I shall be happy to provide it.
+First and foremost, you must learn the basics of moving around in this world. We shall use the WASD keys on your keyboard to do so.
+Press the W key to move forward, the S key to move backward, the A key to move left, and the D key to move right.
+Follow me!
+*
+NPC_MOVE:DECKARD:Follow the old man:WAYPOINT,35,34:24,4:12,14:13,32:36,34
+SPEAK:DECKARD:Speak to Deckard
+Now that you have mastered the basics of movement, it is time to learn the basics of combat.
+Press LEFT MOUSE button to shoot!
+Watch out there are coming!
+*
+SPAWN:WOLF:1:42,30:42,37:44,34
+KILL:ANY,3:Kill the monsters:MAJOR
+SPEAK:DECKARD:Speak to Deckard
+Well done, adventurer!
+In this treacherous world, one must always be mindful of their surroundings and wary of their enemies.
+Gather whatever weapons and armor you can find, and use them to fight off those who wish to do you harm.
+Let me clear the path!
+*
+NPC_MOVE:DECKARD:Follow Deckard:WAYPOINT,0,0:47,34
+TILE_ACTION:Tutorial:MIDDLE:48,34:-1
+NPC_SAY:DECKARD
+Let's see where this goes...
+*
+SPEAK:DECKARD:Speak to Deckard
+Hmm, a door? You could help me out, see if you can find anything down these paths here that might help us. But before you go!
+It might be dangerous, and you already helped me out, so you earned a little reward that should come in handy for you.
+*

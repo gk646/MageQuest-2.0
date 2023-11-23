@@ -1,0 +1,78 @@
+Name:Start of something new
+Reward:Gold,25:XP,50
+Description:Stranded in what looks like a deep forest and with little to no memory of how you got there, you itch forward hoping to find answers.
+Zone:Oasis
+Level:0
+
+PLAYER_THOUGHT:Where ... where am I? How did I get here. I just remember getting lost in the forest:Look around
+GOTO:18,87:Look around:Oasis
+PLAYER_THOUGHT:Hmm ... a water stream. Would probably be smart to follow it for now:Follow the stream
+OPTIONAL_POSITION:Follow the stream:13,70,0:30,72,1
+PLAYER_THOUGHT:A little exploring shouldn't hurt, nobody...:Follow the stream
+PLAYER_THOUGHT:Looks like the stream leads me down there. Well I cant jump... Gotta find another way:Follow the stream
+*
+GOTO:61,92:Follow the stream:Oasis
+PLAYER_THOUGHT:This looks like a maze... How did this get here? Must be a joke of a powerful and especially bored mage*sigh*:Find a way through the maze
+OPTIONAL_POSITION:Find a way through the maze:82,86,0:82,98,1:73,80,0
+PLAYER_THOUGHT:Huh, wrong way...:s
+PLAYER_THOUGHT:This feels... right?:s
+PLAYER_THOUGHT:A chest - here? Almost feels like it was placed here on purpose. Well, here's hoping I'll find something useful:s
+*
+OPTIONAL_POSITION:Find a way through the maze:88,95,0:94,95,0:78,80,0:98,76,1
+PLAYER_THOUGHT:Nope...:s
+PLAYER_THOUGHT:Ok, I should have seen that coming...:s
+PLAYER_THOUGHT:Another chest... That cant be a coincidence. Buuut, then again do I really care?:s
+PLAYER_THOUGHT:Finally - About time I get out of that. I should find that stream again. Can't afford to get lost - AGAIN...:s
+*
+OPTIONAL_POSITION:Find your way back to the stream:90,65,0:67,66,1
+PLAYER_THOUGHT:Broken down - Of course. Then again all this looks abandoned for a long time:s
+PLAYER_THOUGHT:Hey, that's the stream I saw earlier:s
+*
+GOTO:67,66:Find the stream:Oasis
+PLAYER_THOUGHT:Hmm ... a water stream. Would probably be smart to follow it for now:Follow the stream
+GOTO:44,43:Follow the stream:Oasis
+PLAYER_THOUGHT:Hmm, the path splits up. Let's be smart here... I should follow each direction for a bit and take the more promising one. Sound good? Sound good! - Who am I talking to?... I gotta get back!*sigh*:Pick a direction
+OPTIONAL_POSITION:Pick a direction:46,38,0:65,35,1:28,29,0
+PLAYER_THOUGHT:It is enchantingly beautiful here. How come I have never heard of this place? Well... if many people would know it, it'd probably not be beautiful for a long time no more. Think! I gotta think more...:s
+PLAYER_THOUGHT:This certainly looks promising. Is that a cave over there next to the water? Worth a check for sure, after all I might need some shelter if I don't find another way:s
+PLAYER_THOUGHT:So I guess this just leads to more hills and away from the lake... I am not really the hiking type. Here's hoping the other direction is better...:s
+*
+SPAWN:SATIRO:1,Oasis_Cave:7,53
+GOTO:66,18:Inspect the cave:Oasis
+PLAYER_THOUGHT:I guess I should check that out:Inspect the cave
+GOTO:1,58:Explore the cave:Oasis_Cave
+NPC_SAY:SATIRO
+And who might you be?... You don't look - evil?
+*
+CHOICE_DIALOGUE_SIMPLE:SATIRO:So ?:1
+I am the incarnation of the devil himself!:*chuckles* And to think you have seen it all. Lucky for you, I know your not. You should be more careful in these dark times. Others won't hesitate to smite down evil.
+I... I just remember waking up in this forest. *Tell it the rest of your story*:*You spot a look of disbelief* Being honest is a fading virtue, not held by many anymore.
+I could ask you the same thing!:I am afraid I cant answer you for now. Just know that I won't harm you. I am seeking shelter in this cave just as you.
+*
+CHOICE_DIALOGUE_SIMPLE:SATIRO: I might be able to help you in your predicament. I propose... How do you - Hmm, a favor for a favor!:0:MAJOR
+A favor for a *sigh* - Sure I guess. What do you want?:Its simple enough... Bring me a - flower. A "magnificent" one! You should start your search the hillside across the lake. I felt something there while searching for a hiding spot.
+Who, or what are you? How come your seeking shelter - here of all places?:Not all I can tell is made for mortal ears. Accept my offer, and you will receive what you seek in due time.
+*
+SPAWN:12,6:1,Oasis:3,10
+GOTO:66,18:Leave the cave:Oasis
+PLAYER_THOUGHT:So I guess I'll have to get that flower...:Go across the bridge to the hills
+GOTO:27,28:Find the hills:Oasis
+PLAYER_THOUGHT:Why am I doing this again? Right - cause it's my only way of getting out of here...:Find a "magnificent" flower
+COLLECT:12,6:Find a "magnificent" flower
+PLAYER_THOUGHT:Soo, the same way back... What does it want with a flower anyway?:Bring Satiro the flower
+GOTO:6,54:Bring Satiro the flower:Oasis_Cave
+REMOVE_ITEM:12,6:1
+SPEAK:SATIRO:Wait for Satiro to return the favor:WAYPOINT,0,0:MAJOR
+Thank you. Truly a beautiful flower don't you think? It's more than just beautiful however...
+*Satiros lips begin to move, muttering undiscernable words casting what appears to be some kind of ritual. You see the flower being consumed by a bright light, that splits up into thousands of golden string slowly wrapping around you.*
+*Before you can even react, all the energy is absorbed by your body - strengthening you?*
+Hmm, this should have awakened something in you - the ability to call on the things between the worlds. You might know it as magic.
+*
+CHOICE_DIALOGUE_SIMPLE:SATIRO: It's a rare gift not many carry with them. It's up to you now what you make of it.:0
+A favor for a *sigh* - Sure I guess. What do you want?:Its simple enough... Bring me a - flower. A "magnificent" one! You should start your search the hillside across the lake. I felt something there while searching for a hiding spot.
+Who, or what are you? How come your seeking shelter - here of all places?:Not all I can tell is made for mortal ears. Accept my offer, and you will receive what you seek in due time.
+*
+CHOICE_DIALOGUE_SIMPLE:SATIRO:Hmm, this should have awakened something in you - the ability to call on the things between the worlds. You might know it as magic. I felt it when you walked in...:0:MAJOR
+A favor for a *sigh* - Sure I guess. What do you want?:Its simple enough. Bring me a flower. A magnificent one. The hillside across the lake looks like a promising start.
+Who, or what are you? How come your seeking shelter - here of all places?:Not all I can tell is made for mortal ears. Accept my offer, and you will receive what you seek in due time.
+*

@@ -49,5 +49,6 @@ std::unordered_map<int16_t, UniqueEffect*> talentIDToEffect{
 struct ItemSetEffects {
   UniqueEffect* effects [3] = {};
 };
-std::array<ItemSetEffects, (int)ItemSetNum::END> itemSetEffects{{new RomeoJuliet()}};
+
+std::array<ItemSetEffects, (int)ItemSetNum::END> itemSetEffects{{new RomeoJuliet(), nullptr, nullptr  }};
 #endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_UNIQUEEFFECTS_H_

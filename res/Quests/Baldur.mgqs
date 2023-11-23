@@ -1,0 +1,13 @@
+Name:Troubles of this World
+Reward:Gold,0:XP,50
+Description:hey
+Zone:GrassLands
+Level:7
+
+
+NPC_SAY:BALDUR:
+What brings you here stranger?
+*
+SPEAK:BALDUR:Speak with the unknown man
+
+*

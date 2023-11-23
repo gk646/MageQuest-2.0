@@ -240,6 +240,7 @@ inline float EntityStats::TakeDamage(const DamageStats& dmgStats, const Entity* 
   bool crit = false;
   float armour = GetArmour();
   float damage = dmgStats.damage;
+  damage *= (0.9F + RANGE_01(RNG_ENGINE) * 0.2F);
   if (RollCriticalHit(dmgStats)) {
     crit = true;
     damage *= 1 + dmgStats.critDamage;
