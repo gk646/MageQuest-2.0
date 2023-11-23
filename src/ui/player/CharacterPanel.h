@@ -182,17 +182,17 @@ void EntityStats::CheckForItemSets() noexcept {
     auto& itemSet = ITEM_SETS[i];
 
     for (int j = 0; j < 3; j++) {
-      if (itemSet.thresholds[i] > 0 && arr[i] >= itemSet.thresholds[i]) {
+      if (itemSet.thresholds[j] > 0 && arr[i] >= itemSet.thresholds[j]) {
         if (std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(),
-                      setEffect.effects[i]) == UNIQUE_EFFECTS.end()) {
-          UNIQUE_EFFECTS.push_back(setEffect.effects[i]->OnAdd());
+                      setEffect.effects[j]) == UNIQUE_EFFECTS.end()) {
+          UNIQUE_EFFECTS.push_back(setEffect.effects[j]->OnAdd());
         }
-      } else if (setEffect.effects[i] &&
+      } else if (setEffect.effects[j] &&
                  std::find(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(),
-                           setEffect.effects[i]) != UNIQUE_EFFECTS.end()) {
-        setEffect.effects[i]->OnRemove();
+                           setEffect.effects[j]) != UNIQUE_EFFECTS.end()) {
+        setEffect.effects[j]->OnRemove();
         UNIQUE_EFFECTS.erase(std::remove(UNIQUE_EFFECTS.begin(), UNIQUE_EFFECTS.end(),
-                                         setEffect.effects[i]),
+                                         setEffect.effects[j]),
                              UNIQUE_EFFECTS.end());
       }
     }

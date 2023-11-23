@@ -26,7 +26,7 @@ static void LoadItemSets() noexcept {
         int lineBreak = 0;
         auto waste = Util::WrapText(desc[i], Item::TOOL_TIP_WIDTH - 25, MINECRAFT_ITALIC,
                                     14, &lineBreak);
-        itemSet.toolTipHeight += 14 * lineBreak;
+        itemSet.toolTipHeight += 14 * (lineBreak + 1);
       }
       itemSet.descriptions[i] = desc[i];
     }

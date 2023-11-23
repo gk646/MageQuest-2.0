@@ -1,0 +1,7 @@
+#EnumVal|CommonName|HealthMultiplier
+0|EASY|0.5
+1|NORMAL|1
+2|HARD|1.5
+3|TORMENT|3
+4|TORMENT_2|5
+5|TORMENT_3|10

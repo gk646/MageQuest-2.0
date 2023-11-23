@@ -1,0 +1,13 @@
+#EnumVal|Name|Description|iconPath
+STUN|Stun|Stunned!|Debuffs/stunned.png
+BURN|Burn|Burning for AMOUNT every VAL3 for DURATION!|Debuffs/on_fire.png
+SLOW|Slow|Slowed by AMOUNT% for DURATIONs!|Debuffs/slowed.png
+ROOT|Root|Unable to move for DURATIONs!|Debuffs/rooted.png
+SPELL_ECHO_CD|Spell Exhaustion|You recently activated the spell echo talent and need to refocus.|Debuffs/spell_echo_cd.png
+ELEMENTAL_EQUILIBRIUM_BUFF|Elemental Imbalance|Your next non STRING elemental spell is empowered and deals 30% more damage.|Buffs/element_boost.png
+ELEMENTAL_EQUILIBRIUM_CD|Elemental Equilibrium|The elements have experience imbalance and need to refocus.|Debuffs/elemental_equi_cd.png
+POISON|Poisoned|Poisoned taking AMOUNT damage every VAL3s for DURATIONs!|Debuffs/poisoned.png
+SWIFTNESS|Swiftness|Increased speed by AMOUNT% for DURATIONs!|Buffs/swiftness.png
+BERSERK|Berserk|AMOUNT% increased physical damage for DURATIONs!|Buffs/attack_boost.png
+BLEED|Bleed|Bleeding for AMOUNT every VAL3s for DURATIONs!|Debuffs/bleeding.png
+RESISTANCE|Resistance|All incoming damage reduced by AMOUNT for DURATIONs.|Buffs/defense_boost.png
