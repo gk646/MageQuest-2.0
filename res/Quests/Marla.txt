@@ -1,0 +1,50 @@
+Name:The lost necklace
+Reward:Gold,25:XP,50
+Description:As you arrive in Hillcrest your  being (quite insistently) called by a villager, Marla. As you listen to Marla's story about her necklace your left unsure on what to do. Will this quest lead you on a way to find easy treasure, a new friend ... or lose one?
+Zone:Hillcrest
+Level:4
+
+NPC_SAY_PROXIMITY:MARLA:10
+Hey, you. Yeah, you with the bat black coat. Would you hear out a damsel in distress?
+Hello? Don't you see I am talking to you?!
+*
+SET_QUEST_SHOWN:MARLA:MAJOR
+SPEAK:MARLA:Listen to Marla's story:WAYPOINT,0,0
+Thank you, ill catch you up on what happened, but don't judge me!
+You see, I recently "sold" a necklace. Well, I had some debts to pay off and the only valuable thing I have is an old magical necklace.
+But it's a longtime family heirloom, I just couldn't bring myself to sell it. So I foolishly made a fake version and sold it to a traveler who passed through here.
+It seemed like a good idea at first, but I realized too late that she wasn't just any ordinary traveler. She was an adventurer, like yourself, and now I'm worried she might catch on to the lie.
+If she got in danger and die because of the useless necklace... But if you tell her the lie she might come back and threaten me!
+You have to find her, and help me out of my situation.
+*
+CHOICE_DIALOGUE_SIMPLE:MARLA:I cant pay much but ill find something I am sure. Will you help me?:0:MAJOR
+Sure, ill help you out:I was somehow convinced you would help me after I saw you...
+Maybe later:I see how it is. You're not willing to help out a fellow traveler in need. I thought you were different, but I guess I was wrong.
+*
+SPEAK:MARLA:Listen to Marla's side of the story:WAYPOINT,0,0
+She headed east, so I've marked it on your map. Make sure she doesn't come back here and ruin everything, please!
+*
+GOTO:83,46:Head east and pickup the Aria's trail!:Hillcrest
+SPAWN:ARIA:0:58,53
+PLAYER_THOUGHT:She has to be close... I should look around:Find and speak to Aria
+CHOICE_DIALOGUE_SIMPLE:ARIA:You came right on time, who ever you might be?! You're not here to rob me or beat me to it?:0
+Beat you to what?:Sure ill tell YOU?... ... Watch out!
+*
+SPAWN:BLOOD_HOUND:0:52,52:57,50
+SPAWN:MUSHROOM:0:49,58:60,63
+SPAWN:SNAKE:0:48,62
+KILL:ANY,5:Help Aria through the ambush:MAJOR
+CHOICE_DIALOGUE_SIMPLE:ARIA:Arrgh, those little pesky mushroom thingys. Hate em. So, yeah bla bla you helped me. Don't make me say it!:0
+You couldn't have done it without me!:*Sigh*, okay. You can come along. I could definitely use the help with how dangerous everything got recently...
+*
+SPEAK:ARIA:Hear out Aria's plan
+So, to stop being so secretive about this. I got a tip, about a hidden cave entrance leading to the mountain top. What will we find there? I hope treasure and riches, of course.
+I think down here is the right path. I'll give you a sec to look around if you want. Man, speaking of, looks like these mushrooms got you bad. Here a little something for helping me fight them off.
+*
+#ADD_ITEM
+NPC_SAY:ARIA
+Sooo... Are you helping me now?
+*
+NPC_MOVE:ARIA:Help Aria | Tell Aria about the necklace:WAYPOINT,0,0:38,61
+
+

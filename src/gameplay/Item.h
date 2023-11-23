@@ -85,6 +85,8 @@ struct Item {
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
+  inline bool operator==(const Item& other) const { return id == other.id && type == other.type; }
+  inline bool operator!=(const Item& other) const { return id != other.id || type != other.type; }
   inline bool operator<(const Item& other) const { return rarity < other.rarity; }
   inline bool operator>(const Item& other) const { return rarity > other.rarity; }
   void Draw(const RectangleR& rect) const noexcept {

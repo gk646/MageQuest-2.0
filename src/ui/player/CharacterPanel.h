@@ -173,7 +173,7 @@ void EntityStats::CheckForItemSets() noexcept {
     const auto item = PLAYER_EQUIPPED[i].item;
     if (!item) continue;
     for (int j = 0; j < (int)ItemSetNum::END; j++) {
-      if (ItemSet::IsPartOfItemSet(item, ITEM_SETS[j])) arr[j]++;
+      arr[j] = ItemSet::CountEquippedSetItemsOfSet(ITEM_SETS[j]);
     }
   }
 

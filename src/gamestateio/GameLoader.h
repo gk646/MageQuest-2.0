@@ -81,6 +81,7 @@ struct GameLoader {
     for (int i = 0; i < 15; i++) {
       // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
     }
+
    WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(14,ItemType::RING,50,15)));
     WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(15,ItemType::RING,50,15)));
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
