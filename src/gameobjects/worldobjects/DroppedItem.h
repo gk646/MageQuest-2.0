@@ -36,8 +36,9 @@ struct DroppedItem final : public WorldObject {
         return true;
       }
     }
+    Notifications::UpdateStatusMessage("All sides are blocked!",
+                                       StatusMessageType::FAILED_ITEM_DROP);
     return false;
-    //TODO cant drop item notification
   }
   inline static void DropItemAimed(Item* item) noexcept {
     if (!item) return;
@@ -56,42 +57,29 @@ struct DroppedItem final : public WorldObject {
 //Same as "DroppedItem" but is animated in a Bézier curve once
 struct AnimatedDroppedItem final : public WorldObject {
   Item* item;
-  float arcPosition = 0;
-  float startX, startY, endX{}, endY, controlX{}, controlY{};
+  float t = 0;
+  BezierCurve curve;
   AnimatedDroppedItem(const Point& pos, Item* item)
       : WorldObject(pos, {40, 40}, ShapeType::RECT, CURRENT_ZONE),
         item(item),
-        endY(pos.y_),
-        startX(pos.x_),
-        startY(pos.y_) {
-    GetArcEndPoints();
-  }
+        curve(pos, {pos.x() + 25, pos.y() - 100}, {pos.x_ + 50, pos.y()}) {}
 
   void Update() final {
     ENTITY_UPDATE()
-    if (arcPosition >= 1 && this->Intersects(PLAYER)) {
+    if (t >= 1 && this->Intersects(PLAYER)) {
       isDead = CharacterBag::AddItem(item);
+    }
+    if (t <= 1.0) {
+      t += 0.01F;
+      pos = curve.CalculatePoint(t);
     }
   }
   void Draw() final {
-    if (arcPosition <= 1.0) {
-      float t = arcPosition;
-      float u = 1 - t;
-      pos.x_ = u * u * startX + 2 * u * t * controlX + t * t * endX;
-      pos.y_ = u * u * startY + 2 * u * t * controlY + t * t * endY;
-      arcPosition += 0.01f;
-    }
     DrawTextureScaled(item->texture,
                       {std::floor(pos.x_ + DRAW_X), std::floor(pos.y_ + DRAW_Y),
                        (float)size.x, (float)size.y},
                       0, false, 0, WHITE);
     DRAW_HITBOXES();
-  }
-  //Sets right values for the animation so items stays accessible
-  inline void GetArcEndPoints() noexcept {
-    endX = pos.x_ + 50;
-    controlX = pos.x_ + 25;
-    controlY = pos.y_ - 100;
   }
 };
 //Clears the previously owned slots and drops their items
@@ -155,7 +143,7 @@ void ItemSlot::UpdateCharacterSlots() noexcept {
   hitBox.width = baseHeight * UI_SCALE;
   if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
     if (!DRAGGED_ITEM && item && IsKeyDown(KEY_X)) {
-      if(DroppedItem::DropItem(this)){
+      if (DroppedItem::DropItem(this)) {
         auto savedItem = item;
         item = nullptr;
         PLAYER_STATS.UnEquipItem(savedItem->effects);
@@ -169,7 +157,7 @@ void ItemSlot::UpdateCharacterSlots() noexcept {
           if (!PLAYER_BAG[i].item) {
             PLAYER_BAG[i].item = item;
             item = nullptr;
-            PLAYER_STATS.UnEquipItem( PLAYER_BAG[i].item->effects);
+            PLAYER_STATS.UnEquipItem(PLAYER_BAG[i].item->effects);
             break;
           }
         }

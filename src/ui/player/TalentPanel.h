@@ -15,10 +15,7 @@ struct TalentPanel final : public Window {
   void Draw() noexcept {
     WINDOW_LOGIC()
     DrawBackGround();
-    //TODO debug
-    //cxstructs::now();
     DrawConnections();
-    //cxstructs::printTime<std::chrono::microseconds>();
     DrawTalentNodes(middlePoint);
     DrawToolTipNode();
   }
@@ -26,17 +23,6 @@ struct TalentPanel final : public Window {
     WINDOW_UPDATE();
     for (auto& node : TALENTS) {
       node.Update();
-    }
-  }
-  //Removes the effects of all active TALENTS
-  inline static void RemoveEffects() noexcept {
-    auto& stats = PLAYER_STATS;
-    for (const auto& t : TALENTS) {
-      if (t.isActivated) {
-        for (int i = 0; i < STATS_ENDING; i++) {
-          stats.effects[i] -= t.talent.effects[i];
-        }
-      }
     }
   }
   //Applies all effects from TALENTS
@@ -212,7 +198,7 @@ void EntityStats::ReCalculatePlayerStats() noexcept {
 
   //Reset stats
   for (const auto unique : UNIQUE_EFFECTS) {
-    unique->OnRemove();  //Called for safety
+    unique->OnRemove();  //Called for safety and completion
   }
   std::memset(PLAYER_STATS.effects, 0, sizeof(float) * STATS_ENDING);
 

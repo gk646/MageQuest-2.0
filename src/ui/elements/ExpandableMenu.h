@@ -15,7 +15,6 @@ struct ExpandableQuestMenu final : public Content {
   std::vector<QuestBox> items{};
   RectangleR bounds;
   QuestSidePanel* panel;
-  float lowerLimit = 0, upperLimit = 0;
   uint32_t prevSize = 0;
   ExpandableQuestMenu(float width, float height, QuestSidePanel* panel)
       : bounds(0, 0, width, height), panel(panel) {
@@ -81,17 +80,6 @@ struct ExpandableQuestMenu final : public Content {
   }
 
  private:
-  //Method to update limits
-  inline void UpdateLimits(RectangleR& cBounds, float offSet) noexcept {
-    lowerLimit = cBounds.y;
-    upperLimit = cBounds.y + cBounds.height;
-    cBounds.y -= offSet;
-    cBounds.y += 5;
-  }
-  //Returns true if within the content bounds
-  [[nodiscard]] inline bool IsInBounds(float y, float height) const noexcept {
-    return y >= lowerLimit && y + height <= upperLimit;
-  }
   inline void UpdateImpl(float x, float y) noexcept {
     bounds.x = x;
     bounds.y = y;

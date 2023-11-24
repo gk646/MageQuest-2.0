@@ -2,18 +2,18 @@
 #define MAGEQUEST_SRC_UI_ELEMENTS_SCROLLPANE_H_
 
 struct ScrollPane {
-  inline static constexpr float SCROLL_BUTTON_WIDTH = 20;
   RectangleR bounds;
   RectangleR scrollBounds;
   Content* content;
+  float scrollPaneWidth = 20;
   float lastContentHeight = 0;
   double logicalScrollY = 5.0F;
   bool isScrollShown = false;
   bool isDragged = false;
-  ScrollPane(RectangleR bounds, Content* content)
+  ScrollPane(RectangleR bounds, Content* content, float scrollPaneWidth = 20)
       : content(content),
         bounds(bounds),
-        scrollBounds(bounds.x + bounds.width, 0, SCROLL_BUTTON_WIDTH, 30) {}
+        scrollBounds(bounds.x + bounds.width, 0, scrollPaneWidth, 30), scrollPaneWidth(scrollPaneWidth) {}
   //Draws the scroll pane and its content aligned width the given coordinates
   inline void Draw(float x, float y) noexcept {
     UpdateImpl(x, y);
@@ -38,7 +38,7 @@ struct ScrollPane {
     }
 
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) &&
-        CheckCollisionPointRec(MOUSE_POS, {bounds.x + bounds.width - SCROLL_BUTTON_WIDTH,
+        CheckCollisionPointRec(MOUSE_POS, {bounds.x + bounds.width - scrollPaneWidth,
                                            scrollBounds.y + bounds.y, scrollBounds.width,
                                            scrollBounds.height})) {
       isDragged = true;
@@ -53,6 +53,7 @@ struct ScrollPane {
       scrollBounds.y = 5;
       logicalScrollY = 0;
     }
+
     if (!WINDOW_FOCUSED) {
       WINDOW_FOCUSED = isDragged;
     }
@@ -86,7 +87,7 @@ struct ScrollPane {
   }
   inline void DrawScrollPanel() const noexcept {
     if (isScrollShown) {
-      DrawRectangleProFast(bounds.x + bounds.width - SCROLL_BUTTON_WIDTH,
+      DrawRectangleProFast(bounds.x + bounds.width - scrollPaneWidth,
                            scrollBounds.y + bounds.y, scrollBounds.width,
                            scrollBounds.height, Colors::mediumLightGreyDarker);
     }

@@ -33,7 +33,8 @@ struct CharacterItems {
                             textures::ui::spendButtonNormal,
                             textures::ui::spendButtonHovered,
                             textures::ui::spendButtonPressed};
-
+  ScrollPane advancedStats {{0,0,200,450  },new CharacterStats(),10};
+  //TODO add toggle button
   CharacterItems() { PLAYER_EQUIPPED = equipSlots.data(); }
   void Draw(const RectangleR& wholeWindow) noexcept {
     RectangleR scaleWhole = SCALE_RECT(wholeWindow);
@@ -46,8 +47,10 @@ struct CharacterItems {
       slot.DrawCharacterSlot(wholeWindow.x, wholeWindow.y);
       slot.DrawBackGroundIcons();
     }
+    advancedStats.Draw(wholeWindow.x-advancedStats.bounds.width,wholeWindow.y);
   }
   void Update() noexcept {
+    advancedStats.Update();
     for (auto& slot : equipSlots) {
       slot.UpdateCharacterSlots();
     }
