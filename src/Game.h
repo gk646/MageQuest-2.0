@@ -2,8 +2,8 @@
 #define MAGE_QUEST_SRC_GAME_H_
 
 class Game {
-  static bool logic_thread_running;
-  std::thread logic_thread;
+  inline static bool isLogicThreadRunning = true;
+  std::thread logicThread;
 
   static void UPDATE_AND_COLLISION() {
     SIMD_PRAGMA
@@ -91,7 +91,7 @@ class Game {
     auto nextUpdate = std::chrono::high_resolution_clock::now();
     auto targetDuration = std::chrono::milliseconds(16);
 
-    while (logic_thread_running) {
+    while (isLogicThreadRunning) {
       auto currentTime = std::chrono::high_resolution_clock::now();
 
       if (currentTime >= nextUpdate) {
@@ -296,17 +296,16 @@ class Game {
     for (uint16_t i = 0; i < TEXTURE_COUNT + 1500; i++) {
       UnloadTextureI(i);
     }
-    logic_thread_running = false;
-    logic_thread.join();
+    isLogicThreadRunning = false;
+    logicThread.join();
     CloseAudioDevice();
     CloseWindowR();
     SteamAPI_Shutdown();
   }
-  void start() noexcept {
-    GameLoader::LoadGame();
-    logic_thread = std::thread(Game::LogicLoop);
+  void Start() noexcept {
+    GameLoader::Load();
+    logicThread = std::thread(Game::LogicLoop);
     RenderLoop();
   }
 };
-bool Game::logic_thread_running = true;
 #endif  //MAGE_QUEST_SRC_GAME_H_

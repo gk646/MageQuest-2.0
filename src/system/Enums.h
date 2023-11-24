@@ -151,7 +151,12 @@ enum class Keybind : uint8_t {
   ABILITY_6,
   END
 };
-
+enum class StatusMessageType{
+  OUT_OF_RANGE,
+  NOT_ENOUGH_MANA,
+  NOT_IN_SIGHT,
+  FAILED_EQUIP
+};
 enum class ItemType : uint8_t {
   HEAD = 5,
   CHEST = 4,
@@ -273,8 +278,8 @@ enum Stat : uint8_t {
   STATS_ENDING
 };
 
-inline static std::array<uint8_t, 6> CRITICAL_STATS{
-    MAX_HEALTH, MAX_MANA, HEALTH_REGEN, MANA_REGEN, SPEED_MULT_P, DODGE_CHANCE};
+inline static std::array<uint8_t, 7> CRITICAL_STATS{
+    MAX_HEALTH, MAX_MANA, HEALTH_REGEN, MANA_REGEN, SPEED_MULT_P, DODGE_CHANCE, CRIT_CHANCE};
 /* |-----------------------------------------------------|
  * |                  QUESTS                             |
  * |-----------------------------------------------------|

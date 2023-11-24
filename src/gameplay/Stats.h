@@ -66,16 +66,7 @@ struct EntityStats {
   bool stunned = false;
   DamageType lastHitType = DamageType::TRUE_DMG;
   //Player stats
-  EntityStats() {
-    effects[CRIT_CHANCE] = 0;
-    effects[CRIT_DAMAGE_P] = 0.5F;
-    effects[HEALTH_REGEN] = 0.2F;
-    effects[MANA_REGEN] = 1;
-    effects[MAX_HEALTH] = 10;
-    effects[MAX_MANA] = 20;
-    effects[WEAPON_DAMAGE] = 1;
-    effects[DODGE_CHANCE] = 0;
-  };
+  EntityStats() { SetPlayerDefaults(); };
   //Monster stats
   EntityStats(const MonsterScaler& scaler, uint8_t level)
       : level(level), speed(scaler.speed) {
@@ -133,7 +124,17 @@ struct EntityStats {
   inline void ReCalculatePlayerStats() noexcept;
   inline float TakeDamage(const DamageStats& dmgStats, const Entity* ent);
   static inline void CheckForItemSets() noexcept;
-
+  inline void SetPlayerDefaults() noexcept {
+    effects[CRIT_CHANCE] = 0;
+    effects[CRIT_DAMAGE_P] = 0.5F;
+    effects[HEALTH_REGEN] = 0.2F;
+    effects[MANA_REGEN] = 1;
+    effects[MAX_HEALTH] = 10;
+    effects[MAX_MANA] = 20;
+    effects[WEAPON_DAMAGE] = 1;
+    effects[DODGE_CHANCE] = 0;
+    effects[BAG_SLOTS] = 9;
+  }
   //Getters
  public:
   [[nodiscard]] inline float GetAbilityDmg(float damage,

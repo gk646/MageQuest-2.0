@@ -24,6 +24,7 @@ struct PlayerUI {
   inline void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
     skillPanel.searchField.UpdateLogic();
+    Notifications::Draw();
     playerHotbar.Draw();
     miniMap.Draw();
     statusBar.Draw();

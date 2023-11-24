@@ -55,12 +55,6 @@ static void Load() noexcept {
       std::string effect = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 6));
       Item::ParseAttributeStats(node.talent.effects, effect);
       Item::ParseEffectText(node.talent.effects, sqlite3_column_text(stmt, 6));
-      for (const auto num : CRITICAL_STATS) {
-        if (node.talent.effects[num] != 0.0F) {
-          node.talent.hasModifiableStats = true;
-          break;
-        }
-      }
     }
     if (talentIDToEffect.contains(node.talentID)) {
       node.talent.talentEffect = talentIDToEffect[node.talentID];

@@ -153,8 +153,13 @@ struct ItemSlot {
   [[nodiscard]] inline bool BagSlotDropRuleSwitch() const noexcept {
     if (DRAGGED_SLOT->slotType == ItemType::EMPTY) return true;
     if (item->type == ItemType::TWO_HAND) {
-      return DRAGGED_ITEM->type == ItemType::ONE_HAND &&
-             PLAYER_EQUIPPED[9].item == nullptr;
+      if (DRAGGED_ITEM->type == ItemType::ONE_HAND &&
+          PLAYER_EQUIPPED[9].item == nullptr) {
+        return true;
+      } else {
+        Notifications::UpdateStatusMessage("Cant equip two handed weapon - offhand slot blocked", StatusMessageType::FAILED_EQUIP);
+        return false;
+      }
     } else {
       return item->type == DRAGGED_SLOT->slotType;
     }
@@ -210,7 +215,7 @@ int ItemSet::CountEquippedSetItemsOfSet(const ItemSet& itemSet) noexcept {
 }
 void Item::DrawSetItemToolTip(float x, float y, float& offSet) const noexcept {
   if (itemSet == ItemSetNum::NO_SET) return;
-  offSet+=10;
+  offSet += 10;
   const auto& set = ITEM_SETS[(int)itemSet];
   int equippedCount = ItemSet::CountEquippedSetItemsOfSet(set);
 
@@ -230,7 +235,7 @@ void Item::DrawSetItemToolTip(float x, float y, float& offSet) const noexcept {
     DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {x + 25, y + offSet}, 14, 0.5F,
                 equippedCount >= set.thresholds[i] ? Colors::descriptionOrange
                                                    : Color{90, 105, 136, 120});
-    offSet += 14 * (lineBreaks+1);
+    offSet += 14 * (lineBreaks + 1);
   }
   offSet += 14;
 }

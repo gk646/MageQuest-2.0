@@ -20,17 +20,18 @@ struct Button {
     return ret;
   }
 
+
  private:
   inline static void DrawNormalButton(const RectangleR& bound) noexcept {
-    DrawRectangleRounded(bound,0.2F,ROUND_SEGMENTS,Colors::mediumVeryLight);
+    DrawRectangleRounded(bound, 0.2F, ROUND_SEGMENTS, Colors::mediumVeryLight);
     DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
   }
   inline static void DrawHoveredButton(const RectangleR& bound) noexcept {
-    DrawRectangleRounded(bound,0.2F,ROUND_SEGMENTS,Colors::mediumLightGreyBitDarker);
+    DrawRectangleRounded(bound, 0.2F, ROUND_SEGMENTS, Colors::mediumLightGreyBitDarker);
     DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
   }
   inline static void DrawPressedButton(const RectangleR& bound) noexcept {
-    DrawRectangleRounded(bound,0.2F,ROUND_SEGMENTS,Colors::mediumLightGreyDarker);
+    DrawRectangleRounded(bound, 0.2F, ROUND_SEGMENTS, Colors::mediumLightGreyDarker);
     DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
   }
   inline static void DrawButtonText(const RectangleR& bounds, const std::string& txt,

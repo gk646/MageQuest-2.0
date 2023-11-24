@@ -2,6 +2,7 @@
 #define MAGE_QUEST_SRC_ENTITY_H_
 
 #include "../pathfinding/PathFinder.h"
+#include "components/BezierCurve.h"
 
 //Base class of objects in the game
 struct Entity {
