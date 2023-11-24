@@ -1,10 +1,14 @@
 #ifndef MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 #define MAGEQUEST_SRC_UI_PLAYER_CHARACTERPANEL_H_
 
+#include "elements/CharacterStats.h"
 #include "elements/CharacterItems.h"
+
 struct CharacterPanel : public Window {
+  enum WindowState { CHARACTER,  STATISTICS, CURRENCY };
   static constexpr int WIDTH = 350;
   static constexpr int HEIGHT = 450;
+  WindowState state = CHARACTER;
   CharacterItems itemsTab;
   CharacterPanel() noexcept
       : Window(SCREEN_WIDTH * 0.1F, SCREEN_HEIGHT * 0.2F, WIDTH, HEIGHT, 18,
@@ -12,14 +16,24 @@ struct CharacterPanel : public Window {
   void Draw() noexcept {
     WINDOW_LOGIC()
     DrawWindow();
-    itemsTab.Draw(wholeWindow);
+    switch (state) {
+      case CHARACTER:
+        itemsTab.Draw(wholeWindow);
+      case STATISTICS:
+      case CURRENCY:
+        break;
+    }
   }
   void Update() noexcept {
     WINDOW_UPDATE();
-    itemsTab.Update();
+    switch (state) {
+      case CHARACTER:
+        itemsTab.Update();
+      case STATISTICS:
+      case CURRENCY:
+        break;
+    }
   }
-
- private:
 };
 
 void EntityStats::CheckForItemSets() noexcept {

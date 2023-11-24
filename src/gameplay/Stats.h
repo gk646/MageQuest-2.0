@@ -33,7 +33,7 @@ struct SkillStats {
   int16_t range = 0;
   int16_t skillLevel = 1;
   int8_t attackAnimation = 1;
-  DamageType dmgType = DamageType::TRUE_DMG;
+  DamageType dmgType = DamageType::PHYSICAL;
   ProjectileType type = ProjectileType::LOCKED;
   [[nodiscard]] inline float GetLeveledDMG() const noexcept {
     return ((float)std::sqrt(skillLevel) * baseDamage);
