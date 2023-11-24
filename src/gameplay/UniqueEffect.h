@@ -9,6 +9,16 @@ struct UniqueEffect {
   inline virtual void OnPlayerHit(Projectile* prj) noexcept {}
   inline virtual UniqueEffect* OnAdd() noexcept { return this; }
   inline virtual UniqueEffect* OnRemove() noexcept { return this; }
+  inline static void RemoveUniqueEffects() noexcept{
+    for(auto& effect : UNIQUE_EFFECTS){
+      effect->OnRemove();
+    }
+  }
+  inline static void ApplyUniqueEffects() noexcept{
+    for(auto& effect : UNIQUE_EFFECTS){
+      effect->OnAdd();
+    }
+  }
 };
 inline static void ApplyTalentsToProjectile(Projectile* prj) noexcept {
   for (const auto& te : UNIQUE_EFFECTS) {
@@ -30,4 +40,7 @@ inline static void ApplyTalentsToPlayerHit(Projectile* prj) noexcept {
     te->OnPlayerHit(prj);
   }
 }
+
+
+
 #endif  //MAGEQUEST_SRC_GAMEPLAY_UNIQUEEFFECT_H_

@@ -30,6 +30,9 @@ struct Player final : public Entity {
       p.HitTargetCallback();
       PLAYER_STATS.TakeDamage(p.damageStats, this);
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
+      if(Skill::castProgress > 0 && Skill::lastCastedSkill){
+        Skill::castProgress = std::max(0, Skill::castProgress - 15);
+      }
     }
   }
   void Draw() final {
@@ -223,13 +226,14 @@ bool Skill::RangeLineOfSightCheck(const Point& targetPos) const noexcept {
   if (Point(PLAYER.GetMiddlePoint()).dist(targetPos) <= (float)skillStats.range) {
     if (PathFinding::LineOfSightCheck(PLAYER.tilePos, targetPos)) {
       return true;
-      //TODO quick notifications
     } else {
       ResetCast();
+      Notifications::UpdateStatusMessage("Target not in line of sight",StatusMessageType::NOT_IN_SIGHT);
       // No line of sight to target
     }
   } else {
     ResetCast();
+    Notifications::UpdateStatusMessage("Target is out of range",StatusMessageType::OUT_OF_RANGE);
     // Target is out of range
   }
   return false;

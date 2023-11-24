@@ -9,7 +9,7 @@ int main() {
   std::ios::sync_with_stdio(false);
   DataBaseHandler::Init();
   auto game = new Game();
-  game->start();
+  game->Start();
   delete game;
   return 0;
 }

@@ -32,7 +32,7 @@ struct TalentPanel final : public Window {
   inline static void RemoveEffects() noexcept {
     auto& stats = PLAYER_STATS;
     for (const auto& t : TALENTS) {
-      if (t.isActivated && t.talent.hasModifiableStats) {
+      if (t.isActivated) {
         for (int i = 0; i < STATS_ENDING; i++) {
           stats.effects[i] -= t.talent.effects[i];
         }
@@ -43,8 +43,13 @@ struct TalentPanel final : public Window {
   inline static void ApplyEffects() noexcept {
     auto& stats = PLAYER_STATS;
     for (const auto& t : TALENTS) {
-      if (t.isActivated && t.talent.hasModifiableStats) {
+      if (t.isActivated) {
         for (int i = 0; i < STATS_ENDING; i++) {
+          if (i < 9) {
+            stats.effects[i] +=
+                t.talent.effects[i] * (float)std::sqrt(PLAYER_STATS.level);
+            continue;
+          }
           stats.effects[i] += t.talent.effects[i];
         }
       }
@@ -202,20 +207,45 @@ struct TalentPanel final : public Window {
 };
 
 void EntityStats::ReCalculatePlayerStats() noexcept {
-  PLAYER_EFFECTS.RemoveEffects();
-  TalentPanel::RemoveEffects();
+  //Sources: Talents | Effects | Items | UniqueEffects
+  auto& stats = PLAYER_STATS.effects;
 
-  //Using "=" here means all these stats cant receive flat bonuses unless they are all removed and reapplied
-  effects[MAX_HEALTH] = 20.0F + effects[VITALITY] * 5.0F;
-  effects[MAX_MANA] = 10.0F + effects[INTELLIGENCE] * 7.5F;
+  //Reset stats
+  for (const auto unique : UNIQUE_EFFECTS) {
+    unique->OnRemove();  //Called for safety
+  }
+  std::memset(PLAYER_STATS.effects, 0, sizeof(float) * STATS_ENDING);
 
-  effects[HEALTH_REGEN] = 0.2F + effects[ENDURANCE] / 18.0F;
-  effects[MANA_REGEN] = 1 + effects[WISDOM] / 9.0F;
+  PLAYER_STATS.SetPlayerDefaults();
 
-  effects[SPEED_MULT_P] = (effects[AGILITY] / (level * 2)) / 10;
-  effects[DODGE_CHANCE] = (effects[AGILITY] / level) * std::sqrt(level);
-
+  //Activate Talents
   TalentPanel::ApplyEffects();
+
+  //Equip Items
+  for (int i = 0; i < 10; i++) {
+    auto item = PLAYER_EQUIPPED[i].item;
+    if (item) {
+      for (int j = 0; j < STATS_ENDING; j++) {
+        stats[j] += item->effects[j];
+      }
+    }
+  }
+
+  //Activate Unique Effects
+  for (const auto unique : UNIQUE_EFFECTS) {
+    unique->OnAdd();
+  }
+
   PLAYER_EFFECTS.ApplyEffects();
+
+  effects[MAX_HEALTH] += effects[VITALITY] * 5.0F;
+  effects[MAX_MANA] += effects[INTELLIGENCE] * 7.5F;
+
+  effects[HEALTH_REGEN] += effects[ENDURANCE] / 18.0F;
+  effects[MANA_REGEN] += effects[WISDOM] / 9.0F;
+
+  effects[SPEED_MULT_P] += (effects[AGILITY] / (float)std::sqrt(level)) / 44.0F;
+  effects[DODGE_CHANCE] += (effects[AGILITY] / (float)std::sqrt(level)) / 1.8F;
+  effects[CRIT_CHANCE] += (effects[LUCK] / (float)std::sqrt(level)) * 1.3F;
 }
 #endif  //MAGEQUEST_SRC_UI_PLAYER_TALENTPANEL_H_

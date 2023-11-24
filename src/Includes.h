@@ -123,6 +123,7 @@ using namespace cxstructs;
 #include "gameplay/ItemSets.h"
 #include "gameplay/Item.h"
 #include "system/GlobalVariables.h"
+#include "ui/notifications/Notifications.h"
 #include "resources/SoundStorage.h"
 #include "gameplay/handlers/ItemDropHandler.h"
 #include "gamestateio/loading/EntityResource.h"

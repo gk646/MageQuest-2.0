@@ -21,8 +21,8 @@
 struct GameLoader {
   static std::atomic_bool finished_cpu_loading;
   static std::array<std::function<void()>, 6> load_functions;
-  static void LoadGame() {
-    std::thread worker(Load);
+  static void Load() {
+    std::thread worker(LoadGame);
     worker.detach();
   }
   static void LoadWithGPU() {
@@ -39,7 +39,7 @@ struct GameLoader {
   }
 
  private:
-  static void Load() {
+  static void LoadGame() {
     LoadStep(MiscLoader::Load);
     LoadStep(ProjectileLoader::Load);
     LoadStep(TalentLoader::LoadConnections);
@@ -52,10 +52,11 @@ struct GameLoader {
     LoadStep(SoundLoader::Load);
     LoadStep(TileLoader::Load);
     LoadStep(MapLoader::Load);
-    LoadStep(StatLoader::Load);
+
     finished_cpu_loading = true;
   }
   static void SetupGameImpl() {
+    StatLoader::Load();
     delete RAYLIB_LOGO;
     PlaySoundR(sound::intro);
     PLAYER_STATS.RefillStats();
@@ -76,16 +77,21 @@ struct GameLoader {
       AddSkill(skill);
     }
     //TODO implement saving and loading PLAYER_SKILLS
-   // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
+    MONSTERS.push_back(
+        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (int i = 0; i < 15; i++) {
       // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));
     }
 
-   WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(9,ItemType(4),50,15)));
-    WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(5,ItemType(5),50,15)));
-    WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(5,ItemType(3),50,15)));
-    WORLD_OBJECTS.push_back(new DroppedItem({50 * 48, 35 * 48}, Item::FindBaseItemClone(9,ItemType(9),50,15)));
+    WORLD_OBJECTS.push_back(new DroppedItem(
+        {50 * 48, 35 * 48}, Item::FindBaseItemClone(9, ItemType(4), 50, 15)));
+    WORLD_OBJECTS.push_back(new DroppedItem(
+        {50 * 48, 35 * 48}, Item::FindBaseItemClone(5, ItemType(5), 50, 15)));
+    WORLD_OBJECTS.push_back(new DroppedItem(
+        {50 * 48, 35 * 48}, Item::FindBaseItemClone(5, ItemType(3), 50, 15)));
+    WORLD_OBJECTS.push_back(new DroppedItem(
+        {50 * 48, 35 * 48}, Item::FindBaseItemClone(9, ItemType(9), 50, 15)));
     PLAYER_HOTBAR[0]->skill = SKILLS[VOID_FIELD];
   }
 };

@@ -428,24 +428,19 @@ struct SwordSpin final : Projectile {
 
 struct Bomb final : Projectile {
   Point targetPos;
-  Point startPos;
-  Point controlPoint;
+  BezierCurve curve;
   float t = 0.0f;
-  //TODO extract curve into component
+
   Bomb(const Point& pos, bool isFriendlyToPlayer, float damage,
        const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects, int16_t pov,
        const Vector2& mvmt, const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::PHYSICAL, damage}, effects, mvmt,
-                   pov, sound::EMPTY_SOUND, sender, BOMB) {
-    targetPos = {mvmt.x, mvmt.y};
-    startPos = pos;
+                   pov, sound::EMPTY_SOUND, sender, BOMB),
+        targetPos({mvmt.x, mvmt.y}),
+        curve(pos, BezierCurve::CalculateControlPoint(pos, {mvmt.x, mvmt.y}),
+              {mvmt.x, mvmt.y}) {
     speed = 0;
-    controlPoint = CalculateControlPoint();
     isDoingDamage = false;
-  }
-
-  Point CalculateControlPoint() {
-    return {(startPos.x() + targetPos.x()) / 2, (startPos.y() + targetPos.y()) / 2 - 100};
   }
   void Draw() final {
     DrawTextureProFast(resources->frames[spriteCounter % 152 / 8], pos.x_ + DRAW_X - 43,
@@ -455,30 +450,19 @@ struct Bomb final : Projectile {
   void Update() final {
     if (t < 1.0f) {
       t += 0.01f;
-      pos = CalculateBezierPoint(t, startPos, controlPoint, targetPos);
+      pos = curve.CalculatePoint(t);
     }
     Projectile::Update();
-    if (spriteCounter < 72) {
+    if (spriteCounter < 80) {
       targetPos = {PLAYER_X, PLAYER_Y};
-      controlPoint = CalculateControlPoint();
+      curve.control = BezierCurve::CalculateControlPoint(pos, targetPos);
+      curve.end = targetPos;
     }
     if (spriteCounter == 110) {
       isDoingDamage = true;
     } else {
       isDoingDamage = false;
     }
-  }
-
-  static Point CalculateBezierPoint(float t, Point& start, Point& control, Point& end) {
-    float u = 1 - t;
-    float tt = t * t;
-    float uu = u * u;
-
-    Point p = start * uu;
-    p += control * t * u * 2;
-    p += end * tt;
-
-    return p;
   }
 };
 
