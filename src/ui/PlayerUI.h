@@ -39,6 +39,7 @@ struct PlayerUI {
   //Order as top windows overlap lower ones //reverse order of drawing
   inline void Update() noexcept {
     WINDOW_FOCUSED = false;
+    Notifications::Update();
     talentPanel.Update();
     regionMap.Update();
     miniMap.Update();

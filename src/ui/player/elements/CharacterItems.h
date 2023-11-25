@@ -25,7 +25,19 @@ struct CharacterItems {
                ItemType::ONE_HAND),
       ItemSlot(WIDTH / 2 + SLOT_SIZE / 2, PADDING_TOP + GAP_TOP * 6.2F,
                ItemType::OFF_HAND)};
-
+  bool showStats = false;
+  TexturedButton showStatsButton{27,
+                                 27,
+                                 "",
+                                 15,
+                                 textures::ui::stats,
+                                 textures::ui::statsHovered,
+                                 textures::ui::statsPressed,
+                                 255,
+                                 "Open advanced stats",
+                                 [&]() {
+                                   showStats = !showStats;
+                                 }};
   TexturedButton spendPoint{14,
                             14,
                             "",
@@ -33,13 +45,14 @@ struct CharacterItems {
                             textures::ui::spendButtonNormal,
                             textures::ui::spendButtonHovered,
                             textures::ui::spendButtonPressed};
-  ScrollPane advancedStats {{0,0,200,450  },new CharacterStats(),10};
-  //TODO add toggle button
+  ScrollPane advancedStats{{0, 0, 200, 450}, new CharacterStats(), 10};
+
   CharacterItems() { PLAYER_EQUIPPED = equipSlots.data(); }
   void Draw(const RectangleR& wholeWindow) noexcept {
     RectangleR scaleWhole = SCALE_RECT(wholeWindow);
     float x = scaleWhole.x + SCALE(PADDING_LEFT / 2.0F);
     float y = scaleWhole.y + SCALE(275);
+
     DrawStatCells(x, y);
     DrawHeaderText(scaleWhole.x, scaleWhole.y, scaleWhole.width);
     DrawBigPlayer(scaleWhole);
@@ -47,10 +60,15 @@ struct CharacterItems {
       slot.DrawCharacterSlot(wholeWindow.x, wholeWindow.y);
       slot.DrawBackGroundIcons();
     }
-    advancedStats.Draw(wholeWindow.x-advancedStats.bounds.width,wholeWindow.y);
+    showStatsButton.Draw(wholeWindow.x + 20, wholeWindow.y + 25);
+    if (showStats) {
+      advancedStats.Draw(wholeWindow.x - advancedStats.bounds.width, wholeWindow.y);
+    }
   }
   void Update() noexcept {
-    advancedStats.Update();
+    if (showStats) {
+      advancedStats.Update();
+    }
     for (auto& slot : equipSlots) {
       slot.UpdateCharacterSlots();
     }

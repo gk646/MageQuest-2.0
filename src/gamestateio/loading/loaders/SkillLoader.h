@@ -11,6 +11,19 @@ inline static int Range_INDEX = 6;
 inline static int ManaCost_INDEX = 7;
 inline static int Description_INDEX = 8;
 
+static void LoadLearnedSkills() noexcept {
+  sqlite3_stmt* stmt;
+  if (!DataBaseHandler::PrepareStmt("SELECT * FROM PLAYER_SKILLS",
+                                    DataBaseHandler::gameSave, &stmt))
+    return;
+
+  while (sqlite3_step(stmt) == SQLITE_ROW) {
+   SkillPanel::AddSkill(SKILLS[sqlite3_column_int(stmt, 0)]);
+  }
+
+  sqlite3_finalize(stmt);
+}
+
 static void Load() noexcept {
   auto ret = Util::ReadMGI("mgi/Skills.mgi");
   for (const auto& vec : ret) {
@@ -32,9 +45,12 @@ static void Load() noexcept {
     }
     SKILLS[type] = skillPtr;
   }
+
   for (int i = 0; i < 6; i++) {
     PLAYER_HOTBAR[i] = new SkillSlot(48 + 65 * i, 20, SKILLS[LOCKED], false);
   }
+
+  LoadLearnedSkills();
 }
 }  // namespace SkillLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SKILLLOADER_H_

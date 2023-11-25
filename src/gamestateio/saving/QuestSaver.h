@@ -1,6 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_SAVING_QUESTSAVER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_SAVING_QUESTSAVER_H_
 namespace QuestSaver {
+
 static void Save() noexcept {
   sqlite3_stmt* stmt;
   DataBaseHandler::PrepareStmt(
@@ -20,5 +21,9 @@ static void Save() noexcept {
 
   sqlite3_finalize(stmt);
 }
+
 }  // namespace QuestSaver
+void Quest::SaveProgress() noexcept {
+  QuestSaver::Save();
+}
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_SAVING_QUESTSAVER_H_
