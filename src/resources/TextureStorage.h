@@ -108,6 +108,11 @@ inline static Texture info;
 inline static Texture infoHovered;
 inline static Texture infoPressed;
 
+inline static Texture stats;
+inline static Texture statsHovered;
+inline static Texture statsPressed;
+
+
 namespace questpanel {
 inline static Texture questBox;
 inline static Texture questBoxHovered;

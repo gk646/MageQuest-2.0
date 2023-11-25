@@ -31,14 +31,14 @@ struct CharacterStats final : public Content {
   }
 
   void Update() noexcept final {}
-  float GetHeight() const noexcept final { return lastHeight; }
-  float GetWidth() const noexcept final { return 200; }
+  [[nodiscard]] float GetHeight() const noexcept final { return 580; }
+  [[nodiscard]] float GetWidth() const noexcept final { return 200; }
 
  private:
   void DrawOffensive(float x, float& y) {
     DrawCategory(x, y, offensive,
-                 {WEAPON_DAMAGE, ARCANE_DMG_P, DARK_DMG_P, POISON_DMG_P, FIRE_DMG_P, ICE_DMG_P,
-                  CRIT_CHANCE, CRIT_DAMAGE_P});
+                 {WEAPON_DAMAGE, ARCANE_DMG_P, DARK_DMG_P, POISON_DMG_P, FIRE_DMG_P,
+                  ICE_DMG_P, CRIT_CHANCE, CRIT_DAMAGE_P});
   }
   void DrawDefensive(float x, float& y) {
     DrawCategory(
@@ -73,12 +73,12 @@ struct CharacterStats final : public Content {
         DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {x, y}, STAT_FONT_SIZE, 0.5F,
                     Colors::darkBackground);
 
-        if (Util::ArrayContains(NON_PERCENT_STATS.data(),stat,4    )){
+        if (Util::ArrayContains(NON_PERCENT_STATS.data(), stat, 4)) {
           snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f", PLAYER_STATS.effects[stat]);
-        }else{
+        } else {
           snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f%%", PLAYER_STATS.effects[stat]);
         }
-        Util::DrawRightAlignedText(MINECRAFT_BOLD, STAT_FONT_SIZE, TEXT_BUFFER, x + 170,
+        Util::DrawRightAlignedText(MINECRAFT_BOLD, STAT_FONT_SIZE, TEXT_BUFFER, x + 173,
                                    y, Colors::darkBackground);
       }
       y += STAT_FONT_SIZE;

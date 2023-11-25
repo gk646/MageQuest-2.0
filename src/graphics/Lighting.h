@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_
 #define MAGEQUEST_SRC_GRAPHICS_LIGHTING_H_
 
-//TODO add colors for the other abilities and illuminate them
 namespace Lighting {
 struct SpotLightInfo {
   float outerRadius;

@@ -72,11 +72,6 @@ struct GameLoader {
     WorldManager::LoadMap(Zone::Hillcrest, {50, 35});
 #endif
 
-    for (auto skill : SKILLS) {
-      if (!skill) continue;
-      AddSkill(skill);
-    }
-    //TODO implement saving and loading PLAYER_SKILLS
     MONSTERS.push_back(
         Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));

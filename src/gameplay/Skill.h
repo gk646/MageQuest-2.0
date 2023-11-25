@@ -25,7 +25,7 @@ struct Skill {
         icon(icon) {
     this->skillStats.attackAnimation = attackAnimation;
   }
-  //TODO add channeled skills // add hit pushback
+  //TODO add channeled skills
  public:
   //Draws the cast bar
   inline static void DrawCastBar() noexcept {

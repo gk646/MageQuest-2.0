@@ -220,12 +220,20 @@ struct TextureLoader {
         LoadTexture((ASSET_PATH + "ui/skillbar/icons/glacialBurst.png").c_str());
 
     textures::ui::toolTip = LoadTexture((ASSET_PATH + "ui/toolTip.png").c_str());
+
     textures::ui::buttonNormal =
         LoadTexture((ASSET_PATH + "ui/button_normal.png").c_str());
     textures::ui::buttonHovered =
         LoadTexture((ASSET_PATH + "ui/button_hovered.png").c_str());
     textures::ui::buttonPressed =
         LoadTexture((ASSET_PATH + "ui/button_pressed.png").c_str());
+
+    textures::ui::stats =
+        LoadTexture((ASSET_PATH + "ui/inventory/characterPanel/stats.png").c_str());
+    textures::ui::statsHovered =
+        LoadTexture((ASSET_PATH + "ui/inventory/characterPanel/stats_hovered.png").c_str());
+    textures::ui::statsPressed =
+        LoadTexture((ASSET_PATH + "ui/inventory/characterPanel/stats_pressed.png").c_str());
 
     textures::ui::buttonExpand =
         LoadTexture((ASSET_PATH + "ui/questpanel/button_expand.png").c_str());

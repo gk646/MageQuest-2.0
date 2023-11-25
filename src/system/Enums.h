@@ -535,7 +535,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {MANA_REGEN, "Mana Regen"},
     {MANA_COST_REDUCTION_P, "Mana Cost Red."},
     {CDR_P, "Cooldown Reduction"},
-    {ARMOUR_MULT_P, "Armour Bonus(%)"},
+    {ARMOUR_MULT_P, "Armour Bonus"},
     {MAGIC_FIND, "Magic Find"},
     {MAX_HEALTH, "Max Health"},
     {MAX_MANA, "Max Mana"},

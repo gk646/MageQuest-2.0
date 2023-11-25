@@ -45,7 +45,7 @@ struct HotBar {
 
     experienceBar.Draw(startX + 5, startY);
     PLAYER_EFFECTS.DrawPlayer(startY - 44);
-    DrawMenuButtons(startX + 800);
+    DrawMenuButtons(startX + 850);
 
     DrawHotbar(startX, startY);
     UpdatePlayerSkills();

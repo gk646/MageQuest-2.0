@@ -67,11 +67,12 @@ struct CharacterBag final : public Window {
     }
   }
   inline static void RemoveSlots(int n) noexcept;
-  inline static bool AddItem(Item* new_item) noexcept {
+  inline static bool AddItem(Item* newItem) noexcept {
     for (int i = 0; i < (int)PLAYER_STATS.GetBagSlots(); i++) {
       if (!PLAYER_BAG[i].item && &PLAYER_BAG[i] != DRAGGED_SLOT) {
-        PLAYER_BAG[i].item = new_item;
-        GAME_STATISTICS.PickedUpItem(new_item->rarity);
+        PLAYER_BAG[i].item = newItem;
+        GAME_STATISTICS.PickedUpItem(newItem->rarity);
+        StatusText::AddItemPickup(newItem);
         return true;
       }
     }

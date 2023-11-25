@@ -36,6 +36,17 @@ struct SkillPanel final : public Window {
     }
   }
   void OnOpen() final { searchField.Reset(); }
+  inline void static AddSkill(Skill* skill) noexcept {
+    PLAYER_SKILLS.push_back(new SkillSlot(0, 0, skill));
+  }
+  inline void static RemoveSkill(Skill* skill) noexcept {
+    auto it = std::find_if(
+        PLAYER_SKILLS.begin(), PLAYER_SKILLS.end(),
+        [skill](const SkillSlot* skillSlot) { return skillSlot->skill == skill; });
+    if (it != PLAYER_SKILLS.end()) {
+      PLAYER_SKILLS.erase(it);
+    }
+  }
 
  private:
   //Draws all the skills from top left to top right with line breaking
@@ -60,7 +71,5 @@ struct SkillPanel final : public Window {
     }
   }
 };
-void AddSkill(Skill* skill) noexcept {
-  PLAYER_SKILLS.push_back(new SkillSlot(0, 0, skill));
-}
+
 #endif  //MAGEQUEST_SRC_UI_PLAYER_ELEMENTS_SKILLPANEL_H_

@@ -64,15 +64,13 @@ struct Quest final {
 
  private:
   void CompleteQuest() noexcept;
-  void SaveProgress() noexcept {
-    //TODO save quest state
-  }
+  static void SaveProgress() noexcept;
   inline void FinishStage(const QuestNode* obj) noexcept {
     if (obj->isMajorObjective) {
+      SaveProgress();
       PlaySoundR(sound::majorObjective);
     }
     stage++;
-    SaveProgress();
     if (stage == objectives.size()) {
       CompleteQuest();
     }

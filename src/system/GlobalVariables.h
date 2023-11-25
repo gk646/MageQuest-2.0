@@ -120,6 +120,5 @@ inline static bool BoundCheckMap(int x, int y) noexcept {
 inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
-inline void AddSkill(Skill* skill) noexcept;
 
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_
