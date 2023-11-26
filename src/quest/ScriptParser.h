@@ -110,6 +110,10 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
     }
     case NodeType::SET_QUEST_SHOWN:
       return new SET_QUEST_SHOWN(stringToQuestID[parts[1]]);
+    case NodeType::SET_QUEST_ZONE:
+      return new SET_QUEST_ZONE(parts[1]);
+    case NodeType::SET_NPC_POS:
+      return new SET_NPC_POS(parts);
     case NodeType::SWITCH_ALTERNATIVE:
       return new SWITCH_ALTERNATIVE(parts[1]);
     default:

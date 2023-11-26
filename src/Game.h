@@ -130,8 +130,8 @@ class Game {
         PLAYER_STATS.Update();
         PLAYER_EFFECTS.Update();
         PLAYER.Update();
-        UPDATE_AND_COLLISION();
         UI_MANAGER.Update();
+        UPDATE_AND_COLLISION();
         break;
       case GameState::Loading: {
       } break;
@@ -140,6 +140,7 @@ class Game {
       } break;
     }
     lock.unlock();
+    Util::Update();
     Multiplayer::BroadCastGameState();
   }
 

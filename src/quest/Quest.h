@@ -107,7 +107,6 @@ struct Quest final {
       CompleteQuest();
     }
 
-
     if (choice != -1) {
       alternatives[choice].Progress();
     } else {
@@ -138,6 +137,9 @@ inline static Quest* GetQuest(Quest_ID id) {
       return Quests::START_SOMETHING_NEW;
     case Quest_ID::END:
       return nullptr;
+    case Quest_ID::HILLCREST_PUZZLE:
+      return Quests::HILLCREST_PUZZLE;
+      break;
   }
 }
 
@@ -165,39 +167,45 @@ void QuestNode::TrackText(const std::string& s, TextSource source,
   quest->pastDialogue.emplace_back(std::move(name));
 }
 bool CHOICE_DIALOGUE::Progress() noexcept {
+  if (!foundNPC) {
+    for (const auto npc : NPCS) {
+      if (npc->id == target) {
+        npcPtr = npc;
+        foundNPC = true;
+      }
+    }
+  }
+  if (!foundNPC) return false;
+
   for (auto& b : choices) {
     b.UpdateGlobalWindowState();
   }
 
   if (!assignedChoices) {
-    for (const auto npc : NPCS) {
-      if (npc->id == target) {
-        npcPtr = npc;
-        npc->UpdateDialogue(&text);
-        TrackText(text, TextSource::NPC, (int16_t)target);
-        npc->choices = &choices;
-        assignedChoices = true;
-        break;
-      }
-    }
+    npcPtr->UpdateDialogue(&questionText);
+    TrackText(questionText, TextSource::NPC, (int16_t)target);
+    npcPtr->choices = &choices;
+    npcPtr->hideContinueButton = true;
+    assignedChoices = true;
   }
 
-  if (answerIndex != -1) {
+  if (pickedAnswer && Util::EPressed()) {
+    return npcPtr->dialogueProgressCount >= 1000.0F;
+  } else if (answerIndex != -1 && !pickedAnswer) {
     npcPtr->UpdateDialogue(&answers[answerIndex]);
-    TrackText(text, TextSource::NPC, (int16_t)target);
+    TrackText(questionText, TextSource::NPC, (int16_t)target);
     npcPtr->choices = nullptr;
-    return true;
-  } else if (npcPtr->dialogueProgressCount == 1000) {
-    if (npcPtr->dialogue != &text) {
-      npcPtr->UpdateDialogue(&text);
-      npcPtr->dialogueProgressCount = 1000;
-      npcPtr->choices = &choices;
-    }
+    npcPtr->hideContinueButton = false;
+    pickedAnswer = true;
   }
   return false;
 }
 bool SWITCH_ALTERNATIVE::Progress() noexcept {
   quest->choice = choiceNum;
+  return true;
+}
+bool SET_QUEST_ZONE::Progress() noexcept {
+  quest->questZone = zone;
   return true;
 }
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

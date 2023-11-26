@@ -151,7 +151,7 @@ enum class Keybind : uint8_t {
   ABILITY_6,
   END
 };
-enum class StatusMessageType{
+enum class StatusMessageType {
   OUT_OF_RANGE,
   NOT_ENOUGH_MANA,
   NOT_IN_SIGHT,
@@ -254,7 +254,7 @@ enum Stat : uint8_t {
   FIRE_COST_REDUCTION_P,
   ICE_COST_REDUCTION_P,
   DAMAGE_RESISTANCE_P,  //Percent reduction of total damage received
-  FILL7,
+  GOLD_PICKUP_P,
   FILL8,
   FILL9,
   FILL0,
@@ -280,7 +280,8 @@ enum Stat : uint8_t {
 };
 
 inline static std::array<uint8_t, 7> CRITICAL_STATS{
-    MAX_HEALTH, MAX_MANA, HEALTH_REGEN, MANA_REGEN, SPEED_MULT_P, DODGE_CHANCE, CRIT_CHANCE};
+    MAX_HEALTH,   MAX_MANA,     HEALTH_REGEN, MANA_REGEN,
+    SPEED_MULT_P, DODGE_CHANCE, CRIT_CHANCE};
 /* |-----------------------------------------------------|
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
@@ -291,10 +292,12 @@ enum class NodeType : uint8_t {
   KILL,
   SPAWN,
   SPEAK,
+  SET_QUEST_ZONE,
   COLLECT,
   REMOVE_ITEM,
   SET_QUEST_SHOWN,
   SWITCH_ALTERNATIVE,
+  SET_NPC_POS,
   REQUIRE,
   FINISH_QUEST,
   DESPAWN_NPC,
@@ -323,8 +326,10 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"COLLECT", NodeType::COLLECT},
     {"REQUIRE", NodeType::REQUIRE},
     {"FINISH_QUEST", NodeType::FINISH_QUEST},
+    {"SET_QUEST_ZONE", NodeType::SET_QUEST_ZONE},
     {"DESPAWN_NPC", NodeType::DESPAWN_NPC},
     {"REMOVE_ITEM", NodeType::REMOVE_ITEM},
+    {"SET_NPC_POS", NodeType::SET_NPC_POS},
     {"WAIT", NodeType::WAIT},
     {"SWITCH_ALTERNATIVE", NodeType::SWITCH_ALTERNATIVE},
     {"PROTECT", NodeType::PROTECT},
@@ -342,8 +347,13 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class TextSource : uint8_t { NPC, MONSTER, PLAYER };
 
-enum class Quest_ID : uint8_t { START_SOMETHING_NEW = 1, TUTORIAL,
-  MARLA_QUEST, HILLCREST_PUZZLE,END };
+enum class Quest_ID : uint8_t {
+  START_SOMETHING_NEW = 1,
+  TUTORIAL,
+  MARLA_QUEST,
+  HILLCREST_PUZZLE,
+  END
+};
 
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
     {"TUTORIAL", Quest_ID::TUTORIAL},
@@ -378,7 +388,7 @@ inline static std::unordered_set<int16_t> worldObjectTable{
 
 std::unordered_map<std::string, NPC_ID> stringToNPCID = {
     {"DECKARD", NPC_ID::DECKARD},
-    {"MARLA_QUEST", NPC_ID::MARLA},
+    {"MARLA", NPC_ID::MARLA},
     {"ARIA", NPC_ID::ARIA},
     {"HILLCREST_MAYOR", NPC_ID::HILLCREST_MAYOR},
     {"RECEPTIONS", NPC_ID::RECEPTIONS},
@@ -573,8 +583,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {ICE_COST_REDUCTION_P, "Ice Cost Red"},
     {DAMAGE_RESISTANCE_P, "Damage Resistance"},
     {XP_MODIFIER_P, "XP Modifier"},
-
-    {FILL7, "Filler Stat 7"},
+    {GOLD_PICKUP_P, "Coin Find"},
     {FILL8, "Filler Stat 8"},
     {FILL9, "Filler Stat 9"},
     {FILL0, "Filler Stat 0"},
@@ -585,8 +594,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {FILL4, "Filler Stat 4"},
     {FILL5, "Filler Stat 5"},
     {FILL11, "Filler Stat 11"},
-    {STATS_ENDING, "Stats Ending"}
-};
+    {STATS_ENDING, "Stats Ending"}};
 
 inline static std::unordered_map<Zone, std::string> zoneMap = {
     {Zone::Tutorial, "Woodland Edge"},
@@ -597,7 +605,7 @@ inline static std::unordered_map<Zone, std::string> zoneMap = {
     {Zone::Ruin_Dungeon, "Ruin Dungeon"},
     {Zone::Hillcrest, "Hillcrest"},
     {Zone::Hillcrest_Treasure_Cave, "Treasure Cave"},
-    {Zone::Hillcrest_Mountain_Cave, "Hillcrest Mountain Cave"},
+    {Zone::Hillcrest_Mountain_Cave, "Mountain Cave"},
     {Zone::The_Grove, "The Grove"},
     {Zone::TestRoom, "TestRoom"},
     {Zone::Goblin_Cave, "Goblin Cave"},
@@ -650,6 +658,8 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave},
     {"Oasis", Zone::Oasis},
     {"Oasis_Cave", Zone::Oasis_Cave}};
+
+
 inline static std::unordered_map<std::string, ItemSetNum> stringToItemSet = {
     {"ROMEO_JULIET", ItemSetNum::ROMEO_JULIET},
     {"DEVILS_AVATAR", ItemSetNum::DEVILS_AVATAR},

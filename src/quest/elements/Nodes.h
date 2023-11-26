@@ -75,14 +75,13 @@ struct SPEAK final : public QuestNode {
         npc->UpdateDialogue(&lines[stage]);
         TrackText(lines[stage], TextSource::NPC, (int16_t)target);
         if (stage == 0) {
-          npc->last = false;
-        } else if (stage == lines.size() - 1) {
-          npc->last = true;
+          npc->hideContinueButton = false;
         }
         stage++;
         return false;
       } else {
         npc->dialogue = nullptr;
+        npc->hideContinueButton = false;
         return true;
       }
     }
@@ -274,8 +273,8 @@ struct NPC_SAY final : public QuestNode {
   bool Progress() noexcept final {
     for (auto npc : NPCS) {
       if (npc->id == target) {
-
         if (!startedTalking) {
+          npc->hideContinueButton = true;
           npc->UpdateDialogue(&lines[currLine]);
           TrackText(lines[currLine], TextSource::NPC, (int16_t)target);
           startedTalking = true;
@@ -326,7 +325,7 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
           currentTicks += npc->dialogueProgressCount == 1000;
           if (currentTicks >= DELAY_TICKS) {
             npc->UpdateDialogue(&lines[currentLine]);
-            npc->last = true;
+            npc->hideContinueButton = true;
             if (currentLine == lines.size() - 1) currentTicks = -1000;
             currentLine++;
             currentTicks = 0;
@@ -345,50 +344,69 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
   }
 };
 struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
-  std::string text;
+  std::string questionText;
   std::vector<TexturedButton> choices;
   std::vector<std::string> answers;
+  int16_t upCounter = 0;
   int8_t answerIndex = -1;
   NPC_ID target;
   bool assignedChoices = false;
   uint8_t correctAnswer;
   NPC* npcPtr = nullptr;
+  bool foundNPC = false;
+  bool pickedAnswer = false;
   explicit CHOICE_DIALOGUE_SIMPLE(NPC_ID target, std::string text, int correctAnswer)
       : QuestNode("Speak with " + npcIdToStringMap[target],
                   NodeType::CHOICE_DIALOGUE_SIMPLE),
         target(target),
-        text(std::move(text)),
+        questionText(std::move(text)),
         correctAnswer(correctAnswer){};
   bool Progress() noexcept final {
-    for (auto& b : choices) {
-      b.UpdateGlobalWindowState();
-    }
-    if (!assignedChoices) {
+    if (!foundNPC) {
       for (const auto npc : NPCS) {
         if (npc->id == target) {
           npcPtr = npc;
-          npc->UpdateDialogue(&text);
-          TrackText(text, TextSource::NPC, (int16_t)target);
-          npc->choices = &choices;
-          assignedChoices = true;
-          break;
+          foundNPC = true;
         }
       }
     }
+    if (!foundNPC) return false;
 
-    if (answerIndex != -1) {
+    for (auto& b : choices) {
+      b.UpdateGlobalWindowState();
+    }
+
+    if (!assignedChoices) {
+      npcPtr->UpdateDialogue(&questionText);
+      TrackText(questionText, TextSource::NPC, (int16_t)target);
+      npcPtr->choices = &choices;
+      npcPtr->hideContinueButton = true;
+      assignedChoices = true;
+    }
+
+    if (pickedAnswer) {
+      if (npcPtr->dialogueProgressCount == 1000.0F && Util::EPressed()) {
+        if (answerIndex == correctAnswer) {
+          return true;
+        } else {
+          pickedAnswer = false;
+          answerIndex = -1;
+        }
+      }
+    } else if (answerIndex != -1) {
       npcPtr->UpdateDialogue(&answers[answerIndex]);
-      TrackText(text, TextSource::NPC, (int16_t)target);
+      TrackText(questionText, TextSource::NPC, (int16_t)target);
       npcPtr->choices = nullptr;
-      bool rightAnswer = answerIndex == correctAnswer;
-      npcPtr->last = rightAnswer;
-      answerIndex = -1;
-      return rightAnswer;
+      npcPtr->hideContinueButton = false;
+      pickedAnswer = true;
     } else if (npcPtr->dialogueProgressCount == 1000) {
-      if (npcPtr->dialogue != &text) {
-        npcPtr->UpdateDialogue(&text);
-        npcPtr->dialogueProgressCount = 1000;
-        npcPtr->choices = &choices;
+      if (npcPtr->dialogue != &questionText) {
+        if (npcPtr->dialogueProgressCount == 1000) {
+          npcPtr->UpdateDialogue(&questionText);
+          npcPtr->dialogueProgressCount = 1000;
+          npcPtr->choices = &choices;
+          npcPtr->hideContinueButton = true;
+        }
       }
     }
     return false;
@@ -396,13 +414,20 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   inline void SetAnswerIndex(int num) { answerIndex = (int8_t)num; }
   inline static CHOICE_DIALOGUE_SIMPLE* ParseQuestNode(
       const std::vector<std::string>& parts) {
-    return new CHOICE_DIALOGUE_SIMPLE(stringToNPCID[parts[1]], parts[2], std::stoi(parts[3]));
+    return new CHOICE_DIALOGUE_SIMPLE(stringToNPCID[parts[1]], parts[2],
+                                      std::stoi(parts[3]));
   }
 };
 struct SET_QUEST_SHOWN final : public QuestNode {
   Quest_ID id;
   explicit SET_QUEST_SHOWN(Quest_ID id)
       : QuestNode("", NodeType::SET_QUEST_SHOWN), id(id) {}
+  bool Progress() noexcept final;
+};
+struct SET_QUEST_ZONE final : public QuestNode {
+  Zone zone;
+  explicit SET_QUEST_ZONE(const std::string& zoneString)
+      : QuestNode("", NodeType::SET_QUEST_ZONE), zone(stringToZoneMap[zoneString]) {}
   bool Progress() noexcept final;
 };
 struct PLAYER_THOUGHT final : public QuestNode {
@@ -528,18 +553,20 @@ struct WAIT final : public QuestNode {
   }
 };
 struct CHOICE_DIALOGUE final : public QuestNode {
-  std::string text;
+  std::string questionText;
   std::vector<TexturedButton> choices;
   std::vector<std::string> answers;
+  NPC* npcPtr = nullptr;
   int16_t choiceNums[5] = {-1, -1, -1, -1, -1};
   int8_t answerIndex = -1;
   NPC_ID target;
+  bool foundNPC = false;
   bool assignedChoices = false;
-  NPC* npcPtr = nullptr;
+  bool pickedAnswer = false;
   explicit CHOICE_DIALOGUE(NPC_ID target, std::string text)
       : QuestNode("Speak with " + npcIdToStringMap[target], NodeType::CHOICE_DIALOGUE),
         target(target),
-        text(std::move(text)) {}
+        questionText(std::move(text)) {}
   bool Progress() noexcept final;
   inline void SetAnswerIndex(int num) { answerIndex = (int8_t)num; }
   inline static CHOICE_DIALOGUE* ParseQuestNode(const std::vector<std::string>& parts) {
@@ -556,17 +583,39 @@ struct SWITCH_ALTERNATIVE final : public QuestNode {
     return new SWITCH_ALTERNATIVE(parts[1]);
   }
 };
+struct SET_NPC_POS final : public QuestNode {
+  NPC_ID target;
+  Point pos;
+  Zone zone = CURRENT_ZONE;
+  explicit SET_NPC_POS(const std::vector<std::string>& vec)
+      : QuestNode("", NodeType::SET_NPC_POS),
+        target(stringToNPCID[vec[1]]),
+        pos(Util::ParsePoint(vec[2])),
+        zone(stringToZoneMap[vec[3]]) {
+    pos = pos * 48;
+  }
+  bool Progress() noexcept final {
+    for (auto& npc : NPCS) {
+      if (npc->id == target) {
+        npc->pos = pos;
+        npc->currentZone = zone;
+        return true;
+      }
+    }
+    return true;
+  }
+};
 struct FINISH_QUEST final : public QuestNode {
   FINISH_QUEST() : QuestNode("", NodeType::FINISH_QUEST) {}
   bool Progress() noexcept final { return true; }
 };
-
 /**
  * Attempts to remove 1 (the first) of the given npc type
  */
 struct DESPAWN_NPC final : public QuestNode {
   NPC_ID target;
-  DESPAWN_NPC(const std::string& targetString) : QuestNode("", NodeType::DESPAWN_NPC) , target(stringToNPCID[targetString]){}
+  explicit DESPAWN_NPC(const std::string& targetString)
+      : QuestNode("", NodeType::DESPAWN_NPC), target(stringToNPCID[targetString]) {}
   bool Progress() noexcept final {
     for (auto& npc : NPCS) {
       if (npc->id == target) {
