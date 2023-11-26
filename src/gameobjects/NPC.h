@@ -13,7 +13,7 @@ struct NPC : public Entity {
   bool isFlipped = false;
   bool moving = false;
   NPC_ID id;
-  bool last = false;
+  bool hideContinueButton = false;
   NPC(const Point& pos, MonsterResource* resource, Zone zone, NPC_ID id = NPC_ID::RANDOM,
       float speed = 2, const PointT<int16_t>& size = {25, 45})
       : Entity(pos, size, ShapeType::RECT, 0, false, zone),
@@ -23,9 +23,8 @@ struct NPC : public Entity {
         name(npcIdToStringMap[id]) {}
   void Draw() override {
     Util::DrawCenteredText(VARNISHED, 15, name.c_str(), pos.x_ + DRAW_X + size.x / 2,
-                           pos.y_ + DRAW_Y - 20, Colors::white_smoke);
+                           pos.y_ + DRAW_Y - 20, Colors::LightGrey);
   };
-
   void Update() override {
     ENTITY_UPDATE()
     spriteCounter++;
@@ -33,17 +32,19 @@ struct NPC : public Entity {
       dialogueProgressCount += 0.4F;
     } else {
       dialogueProgressCount = 1000.0F;
-      dialogueShowDelayTicks--;
+      dialogueShowDelayTicks -= PLAYER.tilePos.dist(tilePos) > 2;
     }
   }
   bool MoveToPointI(const PointI& next) noexcept {
     moving = false;
     PointT<int16_t> next_pos;
     if ((next_pos = PathFinding::AStarPathFinding(tilePos, next)) > 0) {
+      isFlipped = next_pos.x < tilePos.x;
       CalculateMovement(next_pos, speed);
       moving = true;
     } else if (next_pos == 0) {
       moving = false;
+      isFlipped = false;
       return true;
     }
     return false;
@@ -52,7 +53,7 @@ struct NPC : public Entity {
     if (dialogueShowDelayTicks > 0) {
       if (dialogue) {
         TextRenderer::RenderDialogue(pos.x_ + DRAW_X + size.x / 2, pos.y_ + DRAW_Y,
-                                     dialogue, dialogueProgressCount, last);
+                                     dialogue, dialogueProgressCount, hideContinueButton);
       }
       if (choices) {
         float offSet = 0;
@@ -67,7 +68,7 @@ struct NPC : public Entity {
   void UpdateDialogue(std::string* text) {
     dialogueProgressCount = 0;
     dialogue = text;
-    dialogueShowDelayTicks = text->size() * 3;
+    dialogueShowDelayTicks = std::max((int)text->size() * 2, 300);
   }
   inline static NPC* GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
                                Zone npcZone) noexcept;
@@ -79,10 +80,10 @@ struct NPC : public Entity {
     if (!dialogue) {                                                                 \
       PLAYER_QUESTS.InteractWithNPC(this);                                           \
       dialogueProgressCount = 0;                                                     \
-      dialogueShowDelayTicks = 400;                                                  \
+      dialogueShowDelayTicks = 300;                                                  \
     } else if (dialogueShowDelayTicks < 0) {                                         \
       dialogueProgressCount = 0;                                                     \
-      dialogueShowDelayTicks = 400;                                                  \
+      dialogueShowDelayTicks = 300;                                                  \
     } else if (dialogueProgressCount < 1000) {                                       \
       dialogueProgressCount = 1000;                                                  \
     } else {                                                                         \

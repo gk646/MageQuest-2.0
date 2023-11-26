@@ -316,8 +316,8 @@ inline static void SelectionSortInventorySlot(ItemSlot* arr, uint_32_cx len,
 //Key press module / used for detecting key press on update tick rate(60)
 inline static bool e_previous[2] = {false, false};
 inline static void Update() noexcept {
-  e_previous[0] = e_previous[1];
-  e_previous[1] = IsKeyDown(KEY_E);
+  e_previous[1] = e_previous[0];
+  e_previous[0] = IsKeyDown(KEY_E);
 }
 inline static bool EPressed() noexcept {
   return e_previous[0] && !e_previous[1];

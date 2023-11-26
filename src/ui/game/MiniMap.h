@@ -19,7 +19,7 @@ struct MiniMap {
     int tileX = playerTile.x - MINIMAP_TILE_WIDTH / 2;
     int tileY = playerTile.y - MINIMAP_TILE_WIDTH / 2;
 
-    DrawTextExR(ANT_PARTY, zoneMap[CURRENT_ZONE].c_str(), {(float)drawX - 20, 9}, 17, 1,
+    DrawTextExR(VARNISHED, zoneMap[CURRENT_ZONE].c_str(), {(float)drawX - 20, 9}, 17, 1,
                 Colors::white);
     DrawTextExR(ANT_PARTY, time_str.c_str(), {SCREEN_WIDTH - 55, 9}, 17, 1,
                 Colors::white);

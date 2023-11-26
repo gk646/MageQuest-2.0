@@ -6,7 +6,7 @@ struct Button {
                    const std::string& toolTip) noexcept {
     bool ret = false;
     if (CheckCollisionPointRec(MOUSE_POS, bounds)) {
-      ToolTip::DrawToolTipAtMouse(toolTip, ANT_PARTY, 15);
+      ToolTip::DrawToolTipAtMouse(toolTip, VARNISHED, 15);
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         DrawPressedButton(bounds);
       } else {
@@ -47,7 +47,7 @@ struct Button {
 
       break;
       case Alignment::RIGHT:
-        Util::DrawRightAlignedText(ANT_PARTY, fontSize, txt.c_str(),
+        Util::DrawRightAlignedText(VARNISHED, fontSize, txt.c_str(),
                                    bounds.x + bounds.width - fontSize,
                                    bounds.y + bounds.height / 3.4F, GetTextColor());
 

@@ -20,7 +20,7 @@ inline static void UpdateStatusMessage(std::string text, StatusMessageType newSt
 }
 inline static void DrawStatusText() {
   if (upCounter > 0) {
-    Util::DrawCenteredText(ANT_PARTY, 16, currentText.c_str(), SCREEN_WIDTH / 2,
+    Util::DrawCenteredText(VARNISHED, 16, currentText.c_str(), SCREEN_WIDTH / 2,
                            SCREEN_HEIGHT * 0.2F,
                            isNegative ? Colors::Red : Colors::green_npc);
     upCounter++;

@@ -216,6 +216,9 @@ struct PlayerStats {
   }
 
  public:
+  inline void AddCoins(int32_t val) noexcept {
+    coins += (int)std::round((float)val * (1.0F + PLAYER_STATS.effects[GOLD_PICKUP_P]));
+  }
   inline bool SpendAttributePoint(uint8_t i) noexcept {
     if (attributePointsToSpend > 0) {
       spentAttributePoints[i]++;

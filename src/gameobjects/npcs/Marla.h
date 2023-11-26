@@ -5,6 +5,7 @@ struct Marla final : public NPC {
   Marla(float x, float y, Zone zone)
       : NPC({x, y}, &textures::npc::MARLA, zone, NPC_ID::MARLA, 2) {}
   void Draw() final {
+    NPC::Draw();
     if (moving) {
       DrawTextureProFastEx(resource->walk[spriteCounter % 78 / 13], pos.x_ + DRAW_X,
                            pos.y_ + DRAW_Y, -23, 0, isFlipped, WHITE);

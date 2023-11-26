@@ -17,7 +17,6 @@ struct QuestHandler {
   }
   //Called each tick for misc updates
   inline void Update() noexcept {
-    
     for (auto it = quests.begin(); it != quests.end();) {
       if ((*it)->state == QuestState::ACTIVE) {
         (*it)->Update();

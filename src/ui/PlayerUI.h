@@ -49,7 +49,6 @@ struct PlayerUI {
     skillPanel.Update();
     questPanel.Update();
     playerHotbar.Update();
-    Util::Update();
     UpdateDraggedSlots();
   }
   //When ESC is pressed with open windows they are closed and "consume the action"

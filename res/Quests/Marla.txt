@@ -49,7 +49,7 @@ I'll wait ahead
 NPC_MOVE:ARIA:Help Aria or tell her about the necklace:WAYPOINT,0,0:38,61
 CHOICE_DIALOGUE:ARIA:Sooo... Are you ready to go?
 Yep, iam ready!:Let's go, eh, adventuring! ... ... Hey don't judge me on my oneliners!:-1
-The necklace is fake! You got ripped of:I got... you better watch your tone. It's not like I this is my first time buying... Why do I even - come one before you have more stupid ideas.:-1
+The necklace is fake! You got ripped of:So you come here out of nowhere, help me and then complain about my necklace?. It's not like I this is my first time buying... Why do I even - come one before you have more stupid ideas.:-1
 *
 NPC_SAY:ARIA:SKIP
 These woods are usually tame, except the occasional wolf pack here and there.
@@ -96,10 +96,37 @@ CHOICE_DIALOGUE_SIMPLE:ARIA:Ha! This time the counter question for you - What's 
 CHOICE_DIALOGUE_SIMPLE:ARIA:You have one for telling stories, I'll admit so much!:0
 It happened. It's real!:I never heard of anything even close to that. But seeing you use magic - makes your think...
 *
-CHOICE_DIALOGUE_SIMPLE:ARIA:Hey, almost forgot - we wanna reach that mountain remember? You rested and ready to go again?:0
+CHOICE_DIALOGUE_SIMPLE:ARIA:Hey, almost forgot - we wanna reach that mountain remember? You rested and ready to go again? Iam sure we can continue this sometime.:0
 Let's go:That's the spirit. Maybe you're useful after all. *chuckles* Just messing with you...
 I wanna a bit longer:Fine, well wait one bit more. You're lucky the fish here are quite nice to watch...
 *
+NPC_SAY:ARIA:SKIP
+I bet we have to be close here.
+*
+NPC_MOVE:ARIA:Follow Aria:WAYPOINT,89,69:89,69
+NPC_SAY:ARIA
+So, the tip said through here, and here then left, no right... ...?
+Look over there. A small passage through the rocks.
+*
+NPC_MOVE:ARIA:Follow Aria:WAYPOINT,97,81:97,81
+NPC_SAY:ARIA:SKIP
+Yeah, guess that 15 coins for the tip was worth it... I would have never found that!
+*
+NPC_MOVE:ARIA:Follow Aria:WAYPOINT,93,96:93,96
+CHOICE_DIALOGUE:ARIA:That has to be the cave that leads to the top! *About to go in* You got this strange thing in your look, like your not telling me something?
+Caves are not my thing.:*chuckles* Same here, but it just a small one i bet. If you look up there you can already see the top!:-1
+As I said... the necklace is not magical:*inspecting the amulet* You know what - sure. When we are back in Hillcrest imma take a closer look. But we are too close to back out now!:-1
+*
+NPC_SAY:ARIA:SKIP
+Okay, here goes nothing!
+*
+NPC_MOVE:ARIA:Enter the cave:WAYPOINT,0,0:87,95:87,94
+SET_NPC_POS:ARIA:53,54:Hillcrest_Mountain_Cave
+SET_QUEST_ZONE:Hillcrest_Mountain_Cave
+GOTO:56,56:Enter the cave2:Hillcrest_Mountain_Cave
+
+
+
 
 #Starting the walking back to marla choice
 START_CHOICE:0

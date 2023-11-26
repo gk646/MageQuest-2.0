@@ -54,6 +54,7 @@ Texture LoadFrame(const Image& spriteSheet, int frameWidth, int frameHeight, int
 void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHeight,
                            std::vector<Texture>& frames, int xOffset, int yOffset) {
   std::string path = ASSET_PATH + name;
+  if (!std::filesystem::exists(path)) return;
   Image spriteSheet = LoadImageR(path.c_str());
 
   int framesHorizontal = spriteSheet.width / frameWidth;
