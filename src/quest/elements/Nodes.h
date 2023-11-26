@@ -53,7 +53,7 @@ struct NPC_MOVE final : public QuestNode {
     return false;
   }
   static NPC_MOVE* ParseQuestNode(const std::vector<std::string>& parts) noexcept {
-    auto obj = new NPC_MOVE(npcIdMap[parts[1]], parts[2]);
+    auto obj = new NPC_MOVE(stringToNPCID[parts[1]], parts[2]);
     obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
                      std::stoi(Util::SplitString(parts[3], ',')[2])};
     for (int i = 4; i < parts.size(); i++) {
@@ -89,7 +89,7 @@ struct SPEAK final : public QuestNode {
     return false;
   }
   inline static SPEAK* ParseQuestNode(const std::vector<std::string>& parts) {
-    auto obj = new SPEAK(parts[2], npcIdMap[parts[1]]);
+    auto obj = new SPEAK(parts[2], stringToNPCID[parts[1]]);
     if (parts.size() > 3) {
       obj->wayPoint = {std::stoi(Util::SplitString(parts[3], ',')[1]),
                        std::stoi(Util::SplitString(parts[3], ',')[2])};
@@ -217,8 +217,8 @@ struct SPAWN final : public QuestNode {
     SPAWN* obj;
     if (stringToMonsterID.contains(parts[1])) {
       obj = new SPAWN(stringToMonsterID[parts[1]], std::stoi(parts[2]));
-    } else if (npcIdMap.contains(parts[1])) {
-      obj = new SPAWN(npcIdMap[parts[1]], std::stoi(parts[2]));
+    } else if (stringToNPCID.contains(parts[1])) {
+      obj = new SPAWN(stringToNPCID[parts[1]], std::stoi(parts[2]));
     } else {
       obj = new SPAWN(NPC_ID::NPC_END, std::stoi(parts[2]));
       auto idVec = Util::SplitString(parts[1], ',');
@@ -263,28 +263,39 @@ NPC_SAY:SHOPKEEPER:SKIP
 @note No spaces in the command.
 */
 struct NPC_SAY final : public QuestNode {
-  std::string txt;
+  int currLine = 0;
+  const int waitTicks = 90;
+  int upCounter = 0;
+  std::vector<std::string> lines;
   NPC_ID target;
   bool skipWait = false;
   bool startedTalking = false;
-  explicit NPC_SAY(NPC_ID target) : QuestNode("", NodeType::MIX), target(target) {}
+  explicit NPC_SAY(NPC_ID target) : QuestNode("", NodeType::NPC_SAY), target(target) {}
   bool Progress() noexcept final {
     for (auto npc : NPCS) {
       if (npc->id == target) {
+
         if (!startedTalking) {
-          npc->UpdateDialogue(&txt);
-          TrackText(txt, TextSource::NPC, (int16_t)target);
+          npc->UpdateDialogue(&lines[currLine]);
+          TrackText(lines[currLine], TextSource::NPC, (int16_t)target);
           startedTalking = true;
-        } else if (npc->dialogueProgressCount == 1000 || skipWait) {
-          return true;
+        } else if (npc->dialogueProgressCount >= 1000.0F || skipWait) {
+          upCounter++;
+          if (upCounter == waitTicks) {
+            upCounter = 0;
+            currLine++;
+            startedTalking = false;
+          }
+          if (currLine == lines.size()) return true;
         }
         return false;
       }
     }
     return false;
   }
+
   inline static NPC_SAY* ParseQuestNode(const std::vector<std::string>& parts) {
-    auto obj = new NPC_SAY(npcIdMap[parts[1]]);
+    auto obj = new NPC_SAY(stringToNPCID[parts[1]]);
     if (parts.size() > 2) {
       if (parts[2] == "SKIP") {
         obj->skipWait = true;
@@ -330,7 +341,7 @@ struct NPC_SAY_PROXIMITY final : public QuestNode {
     return false;
   }
   inline static NPC_SAY_PROXIMITY* ParseQuestNode(const std::vector<std::string>& parts) {
-    return new NPC_SAY_PROXIMITY(npcIdMap[parts[1]], std::stoi(parts[2]));
+    return new NPC_SAY_PROXIMITY(stringToNPCID[parts[1]], std::stoi(parts[2]));
   }
 };
 struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
@@ -385,7 +396,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
   inline void SetAnswerIndex(int num) { answerIndex = (int8_t)num; }
   inline static CHOICE_DIALOGUE_SIMPLE* ParseQuestNode(
       const std::vector<std::string>& parts) {
-    return new CHOICE_DIALOGUE_SIMPLE(npcIdMap[parts[1]], parts[2], std::stoi(parts[3]));
+    return new CHOICE_DIALOGUE_SIMPLE(stringToNPCID[parts[1]], parts[2], std::stoi(parts[3]));
   }
 };
 struct SET_QUEST_SHOWN final : public QuestNode {
@@ -481,8 +492,7 @@ struct REMOVE_ITEM final : public QuestNode {
   int id;
   ItemType type;
   int quantity = 0;
-  REMOVE_ITEM(const std::string& itemID,
-              const std::string& quantityString)
+  REMOVE_ITEM(const std::string& itemID, const std::string& quantityString)
       : QuestNode("", NodeType::REMOVE_ITEM) {
     auto idVec = Util::SplitString(itemID, ',');
     type = ItemType(std::stoi(idVec[0]));
@@ -505,4 +515,67 @@ struct REMOVE_ITEM final : public QuestNode {
     return new REMOVE_ITEM(parts[1], parts[2]);
   }
 };
+struct WAIT final : public QuestNode {
+  int ticks = 0;
+  explicit WAIT(const std::string& timeString)
+      : QuestNode("", NodeType::WAIT), ticks(std::stoi(timeString)) {}
+  bool Progress() noexcept final {
+    if (ticks == 0) return true;
+    ticks--;
+  }
+  inline static WAIT* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new WAIT(parts[1]);
+  }
+};
+struct CHOICE_DIALOGUE final : public QuestNode {
+  std::string text;
+  std::vector<TexturedButton> choices;
+  std::vector<std::string> answers;
+  int16_t choiceNums[5] = {-1, -1, -1, -1, -1};
+  int8_t answerIndex = -1;
+  NPC_ID target;
+  bool assignedChoices = false;
+  NPC* npcPtr = nullptr;
+  explicit CHOICE_DIALOGUE(NPC_ID target, std::string text)
+      : QuestNode("Speak with " + npcIdToStringMap[target], NodeType::CHOICE_DIALOGUE),
+        target(target),
+        text(std::move(text)) {}
+  bool Progress() noexcept final;
+  inline void SetAnswerIndex(int num) { answerIndex = (int8_t)num; }
+  inline static CHOICE_DIALOGUE* ParseQuestNode(const std::vector<std::string>& parts) {
+    return new CHOICE_DIALOGUE(stringToNPCID[parts[1]], parts[2]);
+  }
+};
+struct SWITCH_ALTERNATIVE final : public QuestNode {
+  int16_t choiceNum;
+  explicit SWITCH_ALTERNATIVE(const std::string& text)
+      : QuestNode("", NodeType::SWITCH_ALTERNATIVE), choiceNum(std::stoi(text)) {}
+  bool Progress() noexcept final;
+  inline static SWITCH_ALTERNATIVE* ParseQuestNode(
+      const std::vector<std::string>& parts) {
+    return new SWITCH_ALTERNATIVE(parts[1]);
+  }
+};
+struct FINISH_QUEST final : public QuestNode {
+  FINISH_QUEST() : QuestNode("", NodeType::FINISH_QUEST) {}
+  bool Progress() noexcept final { return true; }
+};
+
+/**
+ * Attempts to remove 1 (the first) of the given npc type
+ */
+struct DESPAWN_NPC final : public QuestNode {
+  NPC_ID target;
+  DESPAWN_NPC(const std::string& targetString) : QuestNode("", NodeType::DESPAWN_NPC) , target(stringToNPCID[targetString]){}
+  bool Progress() noexcept final {
+    for (auto& npc : NPCS) {
+      if (npc->id == target) {
+        npc->isDead = true;
+        return true;
+      }
+    }
+    return true;
+  }
+};
+
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

@@ -15,17 +15,25 @@ static void LoadProgress() noexcept {
         quest->pastDialogue = Quest::LoadQuestText(
             reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)));
       }
+      quest->hidden = sqlite3_column_int(stmt, 4) == 1;
+      if (sqlite3_column_type(stmt, 5) != SQLITE_NULL) {
+        Quest::LoadAlternatives(
+            quest, reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5)));
+      }
+      quest->choice = (int16_t)sqlite3_column_int(stmt, 6);
       PLAYER_QUESTS.AddQuest(quest);
     }
   }
   sqlite3_finalize(stmt);
 }
 static void Load() noexcept {
-  Quests::TUTORIAL = ScriptParser::load("Quests/FirstSteps.mgqs", Quest_ID::TUTORIAL);
+  Quests::TUTORIAL = ScriptParser::Load("Quests/FirstSteps.mgqs", Quest_ID::TUTORIAL);
   Quests::MARLA_LOST_NECKLACE =
-      ScriptParser::load("Quests/Marla.txt", Quest_ID::MARLA, true);
+      ScriptParser::Load("Quests/Marla.txt", Quest_ID::MARLA_QUEST, true);
   Quests::START_SOMETHING_NEW =
-      ScriptParser::load("Quests/StartSomethingNew.txt", Quest_ID::START_SOMETHING_NEW);
+      ScriptParser::Load("Quests/StartSomethingNew.txt", Quest_ID::START_SOMETHING_NEW);
+  Quests::HILLCREST_PUZZLE =
+      ScriptParser::Load("Quests/HillcrestPuzzle.mgqs", Quest_ID::HILLCREST_PUZZLE, true);
 
   LoadProgress();
   if (PLAYER_QUESTS.quests.empty()) {

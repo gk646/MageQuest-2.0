@@ -38,7 +38,8 @@ inline static void DrawContinueButton(float startX, float width, float startY,
   }
   spriteCounter++;
 }
-static void RenderDialogue(int x, int y, const std::string* text, float count,
+//TODO fix dialogue choice dissaper // make smooother // fix dialogue hide counter to be more dynamic
+static void RenderDialogue(int x, int y, const std::string* text, float& count,
                            bool last) noexcept {
   if (!text) return;
   float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
@@ -52,7 +53,7 @@ static void RenderDialogue(int x, int y, const std::string* text, float count,
   DrawRectangleRoundedLines({startX, startY, width, height - 10}, 0.2F, ROUND_SEGMENTS, 2,
                             Colors::white);
   if (count > text->size()) {
-    count = 1000;
+    count = 1000.0F;
     if (!last) {
       DrawContinueButton(startX, width, startY, height);
     }

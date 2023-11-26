@@ -5,7 +5,7 @@ namespace QuestSaver {
 static void Save() noexcept {
   sqlite3_stmt* stmt;
   DataBaseHandler::PrepareStmt(
-      "UPDATE QUEST_FACTS SET State = ?, Stage = ?, JournalText = ? WHERE QUEST_ID = ?",
+      "UPDATE QUEST_FACTS SET State = ?, Stage = ?, JournalText = ?, HIDDEN = ?, ALTERNATIVES = ?, CURR_ALTERNATIVE= ? WHERE QUEST_ID = ?",
       DataBaseHandler::gameSave, &stmt);
 
   for (const auto& quest : PLAYER_QUESTS.quests) {
@@ -13,7 +13,11 @@ static void Save() noexcept {
     sqlite3_bind_int(stmt, 2, (int)quest->stage);
     sqlite3_bind_text(stmt, 3, Quest::SaveQuestText(quest->pastDialogue).c_str(), -1,
                       SQLITE_TRANSIENT);
-    sqlite3_bind_int(stmt, 4, (int)quest->id);
+    sqlite3_bind_int(stmt, 4, quest->hidden? 1 : 0);
+    sqlite3_bind_text(stmt,5, Quest::SaveAlternativesStatus(quest->alternatives).c_str(), -1,
+                      SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 6, (int)quest->choice);
+    sqlite3_bind_int(stmt, 7, (int)quest->id);
     if (sqlite3_step(stmt) != SQLITE_DONE) {}
 
     sqlite3_reset(stmt);

@@ -43,7 +43,6 @@ inline static void AddItemPickup(Item* item) {
   }
   lastItems[0].Reset(item);
 }
-
 static void Draw() noexcept {
   for (int i = 4; i > -1; i--) {
     lastItems[i].Draw();

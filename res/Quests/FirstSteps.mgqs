@@ -31,7 +31,7 @@ TILE_ACTION:Tutorial:MIDDLE:48,34:-1
 NPC_SAY:DECKARD
 Let's see where this goes...
 *
-SPEAK:DECKARD:Speak to Deckard
+SPEAK:DECKARD:Speak to Deckard:WAYPOINT,0,0
 Hmm, a door? You could help me out, see if you can find anything down these paths here that might help us. But before you go!
 It might be dangerous, and you already helped me out, so you earned a little reward that should come in handy for you.
 *
