@@ -32,6 +32,7 @@ struct NPC : public Entity {
     if (dialogueProgressCount < 1000) {
       dialogueProgressCount += 0.4F;
     } else {
+      dialogueProgressCount = 1000.0F;
       dialogueShowDelayTicks--;
     }
   }

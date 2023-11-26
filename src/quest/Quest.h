@@ -3,13 +3,25 @@
 
 #include "elements/Nodes.h"
 #include "elements/QuestReward.h"
-
+struct Alternative {
+  std::vector<QuestNode*> objectives;
+  int16_t stage = 0;
+  [[nodiscard]] inline QuestNode* GetNode() const noexcept { return objectives[stage]; }
+  inline void Progress() noexcept { stage++; }
+  ~Alternative() {
+    for (auto obj : objectives) {
+      delete obj;
+    }
+  }
+};
 struct Quest final {
   std::string name;
   std::string description;
   std::vector<std::string> pastDialogue;
   std::vector<QuestNode*> objectives;
+  std::vector<Alternative> alternatives;
   QuestReward* reward = nullptr;
+  int16_t choice = -1;
   int16_t stage = 0;
   Quest_ID id;
   QuestState state = QuestState::ACTIVE;
@@ -24,28 +36,28 @@ struct Quest final {
     delete reward;
   }
   [[nodiscard]] inline bool Progressable(NodeType type) const noexcept {
-    return state == QuestState::ACTIVE && objectives[stage]->IsNodeTypeCompatible(type);
+    return state == QuestState::ACTIVE && GetCurrentStage()->IsNodeTypeCompatible(type);
   }
   void Progress(NPC* npc) noexcept {
-    if (((SPEAK*)objectives[stage])->Progress(npc)) {
-      FinishStage(objectives[stage]);
+    if (((SPEAK*)GetCurrentStage())->Progress(npc)) {
+      FinishStage(GetCurrentStage());
     }
   }
   void Progress(MonsterType type) noexcept {
-    if (((KILL*)objectives[stage])->Progress(type)) {
-      FinishStage(objectives[stage]);
+    if (((KILL*)GetCurrentStage())->Progress(type)) {
+      FinishStage(GetCurrentStage());
     }
   }
   inline void Update() noexcept {
-    if (objectives[stage]->Progress()) {
-      FinishStage(objectives[stage]);
+    if (GetCurrentStage()->Progress()) {
+      FinishStage(GetCurrentStage());
     }
   }
   [[nodiscard]] inline const std::string& GetActiveObjective() const noexcept {
-    return objectives[stage]->objectiveText;
+    return GetCurrentStage()->objectiveText;
   }
   [[nodiscard]] inline PointT<int16_t> GetActiveWaypoint() const noexcept {
-    return CURRENT_ZONE == questZone ? objectives[stage]->wayPoint
+    return CURRENT_ZONE == questZone ? GetCurrentStage()->wayPoint
                                      : PointT<int16_t>{0, 0};
   }
   //Serialization methods
@@ -61,8 +73,28 @@ struct Quest final {
     }
     return ret;
   }
+  inline static std::string SaveAlternativesStatus(const std::vector<Alternative>& vec) {
+    std::string ret{};
+    for (const auto& alt : vec) {
+      ret.append(std::to_string(alt.stage)).append("|");
+    }
+    return ret;
+  }
+  inline static void LoadAlternatives(Quest* quest, const std::string& text) {
+    auto nums = Util::SplitString(text, '|');
+    for (int i = 0; i < quest->alternatives.size(); i++) {
+      quest->alternatives[i].stage = std::stoi(nums[i]);
+    }
+  }
 
  private:
+  [[nodiscard]] inline QuestNode* GetCurrentStage() const noexcept {
+    if (choice == -1) {
+      return objectives[stage];
+    } else {
+      return alternatives[choice].GetNode();
+    }
+  }
   void CompleteQuest() noexcept;
   static void SaveProgress() noexcept;
   inline void FinishStage(const QuestNode* obj) noexcept {
@@ -70,12 +102,46 @@ struct Quest final {
       SaveProgress();
       PlaySoundR(sound::majorObjective);
     }
-    stage++;
-    if (stage == objectives.size()) {
+
+    if (obj->type == NodeType::FINISH_QUEST) {
       CompleteQuest();
+    }
+
+
+    if (choice != -1) {
+      alternatives[choice].Progress();
+    } else {
+      stage++;
+      if (stage == objectives.size()) {
+        CompleteQuest();
+      }
+    }
+
+    if (obj->type == NodeType::CHOICE_DIALOGUE) {
+      choice = ((CHOICE_DIALOGUE*)obj)->choiceNums[((CHOICE_DIALOGUE*)obj)->answerIndex];
+    } else if (obj->type == NodeType::SWITCH_ALTERNATIVE) {
+      choice = ((SWITCH_ALTERNATIVE*)obj)->choiceNum;
     }
   }
 };
+
+#include "QuestStorage.h"
+#include "ScriptParser.h"
+
+inline static Quest* GetQuest(Quest_ID id) {
+  switch (id) {
+    case Quest_ID::TUTORIAL:
+      return Quests::TUTORIAL;
+    case Quest_ID::MARLA_QUEST:
+      return Quests::MARLA_LOST_NECKLACE;
+    case Quest_ID::START_SOMETHING_NEW:
+      return Quests::START_SOMETHING_NEW;
+    case Quest_ID::END:
+      return nullptr;
+  }
+}
+
+//QuestNode methods using "Quest" class
 void QuestNode::TrackText(const std::string& s, TextSource source,
                           int16_t enumVal) const noexcept {
   std::string prefix;
@@ -98,20 +164,40 @@ void QuestNode::TrackText(const std::string& s, TextSource source,
 
   quest->pastDialogue.emplace_back(std::move(name));
 }
-
-#include "QuestStorage.h"
-#include "ScriptParser.h"
-
-inline static Quest* GetQuest(Quest_ID id) {
-  switch (id) {
-    case Quest_ID::TUTORIAL:
-      return Quests::TUTORIAL;
-    case Quest_ID::MARLA:
-      return Quests::MARLA_LOST_NECKLACE;
-    case Quest_ID::START_SOMETHING_NEW:
-      return Quests::START_SOMETHING_NEW;
-    case Quest_ID::END:
-      return nullptr;
+bool CHOICE_DIALOGUE::Progress() noexcept {
+  for (auto& b : choices) {
+    b.UpdateGlobalWindowState();
   }
+
+  if (!assignedChoices) {
+    for (const auto npc : NPCS) {
+      if (npc->id == target) {
+        npcPtr = npc;
+        npc->UpdateDialogue(&text);
+        TrackText(text, TextSource::NPC, (int16_t)target);
+        npc->choices = &choices;
+        assignedChoices = true;
+        break;
+      }
+    }
+  }
+
+  if (answerIndex != -1) {
+    npcPtr->UpdateDialogue(&answers[answerIndex]);
+    TrackText(text, TextSource::NPC, (int16_t)target);
+    npcPtr->choices = nullptr;
+    return true;
+  } else if (npcPtr->dialogueProgressCount == 1000) {
+    if (npcPtr->dialogue != &text) {
+      npcPtr->UpdateDialogue(&text);
+      npcPtr->dialogueProgressCount = 1000;
+      npcPtr->choices = &choices;
+    }
+  }
+  return false;
+}
+bool SWITCH_ALTERNATIVE::Progress() noexcept {
+  quest->choice = choiceNum;
+  return true;
 }
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

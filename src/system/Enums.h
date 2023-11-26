@@ -294,8 +294,13 @@ enum class NodeType : uint8_t {
   COLLECT,
   REMOVE_ITEM,
   SET_QUEST_SHOWN,
+  SWITCH_ALTERNATIVE,
   REQUIRE,
+  FINISH_QUEST,
+  DESPAWN_NPC,
+  WAIT,
   PROTECT,
+  CHOICE_DIALOGUE,
   ESCORT,
   MIX,
   NPC_MOVE,
@@ -317,8 +322,13 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"SPEAK", NodeType::SPEAK},
     {"COLLECT", NodeType::COLLECT},
     {"REQUIRE", NodeType::REQUIRE},
+    {"FINISH_QUEST", NodeType::FINISH_QUEST},
+    {"DESPAWN_NPC", NodeType::DESPAWN_NPC},
     {"REMOVE_ITEM", NodeType::REMOVE_ITEM},
+    {"WAIT", NodeType::WAIT},
+    {"SWITCH_ALTERNATIVE", NodeType::SWITCH_ALTERNATIVE},
     {"PROTECT", NodeType::PROTECT},
+    {"CHOICE_DIALOGUE", NodeType::CHOICE_DIALOGUE},
     {"ESCORT", NodeType::ESCORT},
     {"MIX", NodeType::MIX},
     {"NPC_MOVE", NodeType::NPC_MOVE},
@@ -332,12 +342,14 @@ inline static std::unordered_map<std::string, NodeType> node_to_type = {
 enum class QuestState : uint8_t { IN_ACTIVE, ACTIVE, COMPLETED };
 enum class TextSource : uint8_t { NPC, MONSTER, PLAYER };
 
-enum class Quest_ID : uint8_t { START_SOMETHING_NEW = 1, TUTORIAL, MARLA, END };
+enum class Quest_ID : uint8_t { START_SOMETHING_NEW = 1, TUTORIAL,
+  MARLA_QUEST, HILLCREST_PUZZLE,END };
 
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
     {"TUTORIAL", Quest_ID::TUTORIAL},
-    {"MARLA", Quest_ID::MARLA},
+    {"MARLA_QUEST", Quest_ID::MARLA_QUEST},
     {"START_SOMETHING_NEW", Quest_ID::START_SOMETHING_NEW},
+    {"HILLCREST_PUZZLE", Quest_ID::HILLCREST_PUZZLE},
 };
 enum class NPC_ID : uint8_t {
   //only add to bottom as number is needed when saving
@@ -364,9 +376,9 @@ inline static std::unordered_set<int16_t> worldObjectTable{
     (int16_t)WorldObjectType::BASIC_CHEST, (int16_t)WorldObjectType::NORMAL_CHEST,
     (int16_t)WorldObjectType::EPIC_CHEST};
 
-std::unordered_map<std::string, NPC_ID> npcIdMap = {
+std::unordered_map<std::string, NPC_ID> stringToNPCID = {
     {"DECKARD", NPC_ID::DECKARD},
-    {"MARLA", NPC_ID::MARLA},
+    {"MARLA_QUEST", NPC_ID::MARLA},
     {"ARIA", NPC_ID::ARIA},
     {"HILLCREST_MAYOR", NPC_ID::HILLCREST_MAYOR},
     {"RECEPTIONS", NPC_ID::RECEPTIONS},
@@ -381,6 +393,7 @@ std::unordered_map<std::string, NPC_ID> npcIdMap = {
 std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
     {NPC_ID::DECKARD, "Deckard"},
     {NPC_ID::MARLA, "Marla"},
+    {NPC_ID::ARIA, "Aria"},
     {NPC_ID::HILLCREST_MAYOR, "Hillcrest Mayor"},
     {NPC_ID::RECEPTIONS, "Receptionist"},
     {NPC_ID::DYING_MAN, "Dying Man"},
