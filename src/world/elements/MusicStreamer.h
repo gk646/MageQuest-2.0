@@ -1,7 +1,7 @@
 #ifndef MAGEQUEST_SRC_WORLD_MUSICSTREAMER_H_
 #define MAGEQUEST_SRC_WORLD_MUSICSTREAMER_H_
 
-//A wrapper for a list of "Music"instances / holds all the instances directly
+//A wrapper for a list of "Music" instances // holds all the instances directly
 //Progressed automatically by calling the "Update" method each tick
 struct Playlist {
   std::vector<Music> tracks;
