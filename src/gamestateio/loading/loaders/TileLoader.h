@@ -17,7 +17,8 @@ static void LoadToGPU() {
 static void LoadTextureSpan(int start, int end) {
   images.reserve((end - start) + 10);
   for (int i = start; i < end; ++i) {
-    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%stextures/Tiles/%d.png", ASSET_PATH.c_str(), i);
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%stextures/Tiles/%d.png", ASSET_PATH.c_str(),
+             i);
     images.emplace_back(LoadImageR(TEXT_BUFFER));
   }
 }
@@ -39,6 +40,7 @@ static void LoadTileCollisionFromFile(const std::string& path) {
   while (std::getline(file, line)) {
     std::size_t start = line.find("id=\"");
     if (start != std::string::npos) {
+      if (line.find("type=\"") == std::string::npos) continue;
       start += 4;
       std::size_t end = line.find('\"', start);
       if (end != std::string::npos) {
@@ -51,7 +53,7 @@ static void LoadTileCollisionFromFile(const std::string& path) {
 }
 static void Load() {
   LoadTextureSpan(0, TEXTURE_COUNT);
-  LoadTileCollisionFromFile("textures/spriteSheet.tsx");
+  LoadTileCollisionFromFile("textures/grassspritesheet16.tsx");
 }
 }  // namespace TileLoader
 

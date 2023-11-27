@@ -29,7 +29,6 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {FROST_NOVA, {40, {0.12f, 0.301f, 0.913f}}},
     {GLACIAL_BURST, {90, {0.12f, 0.301f, 0.913f}}},
     {ENERGY_SPHERE, {180, {0.3804f, 0.6588f, 0.8902f}}}};
-
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
 inline static uint16_t dayTicks = 15000;
 inline static float currentNightAlpha = 0;
@@ -148,6 +147,7 @@ inline static void StartPostProcessing() noexcept {
 }
 }  // namespace Shaders
 inline static float CalculateAlpha() noexcept {
+  if (IsCave(CURRENT_ZONE)) return 0.90F;
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
   float alphaDouble = (std::sin(phaseOfDay - (PI / 2)) + 1) / 2;
   return alphaDouble * 0.99F;

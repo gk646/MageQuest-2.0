@@ -26,6 +26,7 @@ enum class MonsterType : uint8_t {
   SKEL_SPEAR,
   WOLF,
   RAT,
+  FLYING_EYE,
   BOSS_DEATH_BRINGER,
   BOSS_ANCIENT_GOLEM,
   BOSS_STONE_KNIGHT,
@@ -202,6 +203,13 @@ enum class Zone : uint8_t {
   NO_ZONE,
   ZONE_END
 };
+
+inline static bool IsCave(Zone zone) noexcept {
+  return zone == Zone::Ruin_Dungeon || zone == Zone::Hillcrest_Treasure_Cave ||
+         zone == Zone::Hillcrest_Mountain_Cave || zone == Zone::Hillcrest_Hermit_Cave ||
+         zone == Zone::Goblin_Cave || zone == Zone::Oasis_Cave;
+}
+
 enum GameStatistic : uint8_t {
   PIXELS_WALKED,
   MONSTERS_KILLED,
@@ -431,6 +439,7 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"SKEL_SPEAR", MonsterType::SKEL_SPEAR},
     {"SKULL_WOLF", MonsterType::SKULL_WOLF},
     {"WOLF", MonsterType::WOLF},
+    {"FLYING_EYE", MonsterType::FLYING_EYE},
     {"GHOST", MonsterType::GHOST},
     {"BOSS_DEATH_BRINGER", MonsterType::BOSS_DEATH_BRINGER},
     {"BOSS_KNIGHT", MonsterType::BOSS_STONE_KNIGHT},
@@ -527,6 +536,7 @@ struct DifficultyMultipliers {
   float healthMult;
   float damageMult;
 };
+
 inline static std::unordered_map<Difficulty, DifficultyMultipliers>
     DIFFICULTY_HEALTH_MULT = {{Difficulty::EASY, {0.75F, 0.8F}},
                               {Difficulty::NORMAL, {1.0F, 1.0F}},
@@ -658,7 +668,6 @@ inline static std::unordered_map<std::string, Zone> stringToZoneMap = {
     {"Hillcrest_Hermit_Cave", Zone::Hillcrest_Hermit_Cave},
     {"Oasis", Zone::Oasis},
     {"Oasis_Cave", Zone::Oasis_Cave}};
-
 
 inline static std::unordered_map<std::string, ItemSetNum> stringToItemSet = {
     {"ROMEO_JULIET", ItemSetNum::ROMEO_JULIET},

@@ -37,6 +37,7 @@ inline MonsterResource RAT;
 inline MonsterResource BLOOD_HOUND;
 inline MonsterResource GHOST;
 inline MonsterResource SKULL_WOLF;
+inline MonsterResource FLYING_EYE;
 }  // namespace monsters
 
 namespace projectile {

@@ -72,7 +72,7 @@ struct GameLoader {
     WorldManager::LoadMap(Zone::Hillcrest, {91, 45});
 #endif
 
-   // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::GOBLIN, 1));
+   MONSTERS.push_back(        Monster::GetNewMonster({91 * 48, 35 * 45}, MonsterType::FLYING_EYE, 4));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (int i = 0; i < 15; i++) {
       // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));

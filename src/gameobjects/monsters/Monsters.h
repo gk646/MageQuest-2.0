@@ -501,6 +501,13 @@ struct SkeletonSpear final : public Monster {
     healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
     DRAW_HITBOXES();
   }
+  void Update() final {
+    MONSTER_UPDATE();
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && WalkToEntity(target)) {
+      attackComponent.AttackClose();
+    }
+  }
   inline void DrawDeath() noexcept {
     int num = spriteCounter % 120 / 20;
     if (num < 5) {
@@ -539,13 +546,6 @@ struct SkeletonSpear final : public Monster {
                            pos.x_ + size.x / 2 > MIRROR_POINT, WHITE);
     } else {
       actionState = 0;
-    }
-  }
-  void Update() final {
-    MONSTER_UPDATE();
-    auto target = threatManager.GetHighestThreatTarget();
-    if (target && WalkToEntity(target)) {
-      attackComponent.AttackClose();
     }
   }
 };
@@ -825,6 +825,7 @@ struct SkeletonShield final : public Monster {
     }
   }
 };
+//TODO add sounds
 struct Rat final : public Monster {
   Rat(const Point& pos, uint8_t level, MonsterType type, Zone zone) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::RAT, type,
@@ -881,6 +882,7 @@ struct Rat final : public Monster {
     }
   }
 };
+//TODO add sounds
 struct Goblin final : public Monster {
   Goblin(const Point& pos, uint8_t level, MonsterType type, Zone zone) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::GOBLIN, type,
@@ -953,6 +955,97 @@ struct Goblin final : public Monster {
     if (num < 8) {
       DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 42,
                            pos.y_ + DRAW_Y - 71, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawAttack3() noexcept {
+    int num = spriteCounter % 73 / 6;
+    if (num < 12) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 58,
+                           pos.y_ + DRAW_Y - 65, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+};
+//TODO add sounds
+struct FlyingEye final : public Monster {
+  FlyingEye(const Point& pos, uint8_t level, MonsterType type, Zone zone) noexcept
+      : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::FLYING_EYE,
+                type, {30, 37}, zone) {
+    attackComponent.RegisterConeAttack(1, stats.effects[WEAPON_DAMAGE],
+                                       monsterIdToScaler[type].attackCD, 25, 37,
+                                       sound::EMPTY_SOUND, 1, 44);
+    attackComponent.RegisterConeAttack(
+        2, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD * 1.5F, 35, 37,
+        sound::EMPTY_SOUND, 1, 36,
+        {new Bleed(stats.effects[WEAPON_DAMAGE] / 10, 300, 60), new Slow(20, 300)});
+
+    //attackComponent.RegisterProjectileAttack(3, stats.effects[WEAPON_DAMAGE],
+    //monsterIdToScaler[type].attackCD, BOMB, -5,
+    //   51, {}, 1.0F, 5.0F);
+  }
+  void Draw() final {
+    if (actionState == -100) [[unlikely]] {
+      DrawDeath();
+    } else if (actionState == 1) {
+      DrawAttack1();
+    } else if (actionState == 2) {
+      DrawAttack2();
+    } else if (actionState == 3) {
+      DrawAttack3();
+    } else {
+      if (isMoving) {
+        DrawTextureProFastEx(resource->walk[spriteCounter % 72 / 9], pos.x_ + DRAW_X - 58,
+                             pos.y_ + DRAW_Y - 61, 0, 0, isFlipped,
+                             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+      } else {
+        DrawTextureProFastEx(resource->idle[spriteCounter % 72 / 9], pos.x_ + DRAW_X - 58,
+                             pos.y_ + DRAW_Y - 61, 0, 0, isFlipped,
+                             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+      }
+    }
+    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    DRAW_HITBOXES();
+  }
+  void Update() final {
+    MONSTER_UPDATE();
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target) {
+      attackComponent.AttackFar();
+      if (WalkToEntity(target)) {
+        attackComponent.AttackClose();
+      }
+    }
+  }
+  inline void DrawDeath() noexcept {
+    int num = spriteCounter % 61 / 15;
+    if (num < 4) {
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 57,
+                           pos.y_ + DRAW_Y - 61, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      isDead = true;
+    }
+  }
+  inline void DrawAttack1() noexcept {
+    int num = spriteCounter % 57 / 7;
+    if (num < 8) {
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 56,
+                           pos.y_ + DRAW_Y - 61, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawAttack2() noexcept {
+    int num = spriteCounter % 65 / 8;
+    if (num < 8) {
+      DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 56,
+                           pos.y_ + DRAW_Y - 62, 0, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;

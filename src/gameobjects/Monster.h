@@ -215,6 +215,8 @@ Monster* Monster::GetNewMonster(const Point& pos, MonsterType type, uint8_t leve
       return new Rat(pos, level, type, zone);
     case MonsterType::GOBLIN:
       return new Goblin(pos, level, type, zone);
+    case MonsterType::FLYING_EYE:
+      return new FlyingEye(pos, level, type, zone);
     case MonsterType::BOSS_DEATH_BRINGER:
     case MonsterType::BOSS_STONE_KNIGHT:
     case MonsterType::BOSS_SLIME:
@@ -290,7 +292,6 @@ void ThreatManager::Update() noexcept {
 void SpawnTrigger::Trigger() noexcept {
   if (triggered) return;
   triggered = true;
-
   if (level == 0) level = PLAYER_STATS.level;
   if (isSingular) {
     MONSTERS.push_back(Monster::GetNewMonster({(float)pos.x, (float)pos.y}, type, level));
