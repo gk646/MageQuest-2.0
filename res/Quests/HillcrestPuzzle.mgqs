@@ -1,0 +1,9 @@
+Name:The 4 statues
+Reward:Gold,0:XP,15
+Description:hey
+Zone:Hillcrest
+Level:4
+
+
+#CUSTOM_NODE:0
+GOTO:64,66:Explore the hidden cave:Hillcrest

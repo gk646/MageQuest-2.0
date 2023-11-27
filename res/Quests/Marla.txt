@@ -114,7 +114,7 @@ Yeah, guess that 15 coins for the tip was worth it... I would have never found t
 *
 NPC_MOVE:ARIA:Follow Aria:WAYPOINT,93,96:93,96
 CHOICE_DIALOGUE:ARIA:That has to be the cave that leads to the top! *About to go in* You got this strange thing in your look, like your not telling me something?
-Caves are not my thing.:*chuckles* Same here, but it just a small one i bet. If you look up there you can already see the top!:-1
+Caves are not my thing.:*chuckles* Same here, but it just a small one I bet. If you look up there you can already see the top!:-1
 As I said... the necklace is not magical:*inspecting the amulet* You know what - sure. When we are back in Hillcrest imma take a closer look. But we are too close to back out now!:-1
 *
 NPC_SAY:ARIA:SKIP
