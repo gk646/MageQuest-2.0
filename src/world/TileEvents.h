@@ -5,6 +5,7 @@ namespace TileEvents {
 //active tiles / BG / BG1 / FG
 inline static int16_t ACTIVE_TILES[3];
 }  // namespace TileEvents
+
 #include "elements/TileActions.h"
 #include "elements/TileProximity.h"
 #include "elements/TileEffects.h"
@@ -18,9 +19,6 @@ inline void Update() noexcept {
   ACTIVE_TILES[0] = CURRENT_BACK_GROUND[pos.x][pos.y];
   ACTIVE_TILES[1] = CURRENT_MIDDLE_GROUND[pos.x][pos.y];
   ACTIVE_TILES[2] = CURRENT_FORE_GROUND[pos.x][pos.y];
-
-
-
 }
 }  // namespace TileEvents
 

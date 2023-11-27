@@ -123,9 +123,48 @@ Okay, here goes nothing!
 NPC_MOVE:ARIA:Enter the cave:WAYPOINT,0,0:87,95:87,94
 SET_NPC_POS:ARIA:53,54:Hillcrest_Mountain_Cave
 SET_QUEST_ZONE:Hillcrest_Mountain_Cave
-GOTO:56,56:Enter the cave2:Hillcrest_Mountain_Cave
+GOTO:56,56:Enter the cave:Hillcrest_Mountain_Cave
+
+#inside cave
+SPEAK:ARIA:Listen to Aria:WAYPOINT,56,56
+You saw those skeletons? Those are nasty. We better stay together and - don't go too far into the dark!
+*
+NPC_MOVE:ARIA:Follow Aria:WAYPOINT,45,54:54,54:45,54
+NPC_SAY:ARIA
+Woah - and yeah, stay away from these cliffs. Anything going down there, doesn't come back up...
+*
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,25:45:25:45
+NPC_SAY:ARIA
+Hmm, those stones looks interesting. Wonder if they're worth anything... *shrugs* Won't hurt if I take a few "souvenirs"!
+*
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,40,30:40,30
+CHOICE_DIALOGUE:*Takes a look over the edge* Phew, lets see if this bridge holds up? It certainly doesn't look like it... You wanna go first?
+I hereby transfer the full rights to go first:Thanks...:-1
+Sure thing!:Hey, one of use alive is better than none right?:1
+*
+NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,45,30:40,30
+NPC_SAY:ARIA
+By the way, I knew it would hold up. Just look at the support pillars there. Old, but intact. I wouldn't want you to get hurt...
+I wanted to see if you take the risk. But I guess I respect, you looking out for yourself. In the end, nobody else is gonna do it.
+*
+NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,50,30:50,30
+GOTO:50,30:Cross the bridge after Aria:Hillcrest_Mountain_Cave
+
+#bridge choice
+START_CHOICE:1
+GOTO:45,30:See if the bridge is safe to cross:Hillcrest_Mountain_Cave
+PLAYER_THOUGHT:*You look around and tap your foot on the bridge* Hmm, the bridge is a bit creaky when I step on it and looks old. Despite that it appears to be in good shape however...:See if the bridge is safe to cross
+GOTO:50,30:Cross the bridge:Hillcrest_Mountain_Cave
+NPC_SAY:ARIA
+Dont look at me like that. I knew it was holding up... Come on, I wouldn't want you to get hurt.
+*
+NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,45,30:45,30
+END_CHOICE
 
 
+NPC_SAY:ARIA
+I suggest we don't stick around for too long. Left here looks more promising...
+*
 
 
 #Starting the walking back to marla choice

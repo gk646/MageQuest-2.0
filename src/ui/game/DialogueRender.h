@@ -88,8 +88,8 @@ static void RenderPlayerThought() noexcept {
   }
 
   auto wrappedText = Util::WrapText(playerText->substr(0, (int)*playerDialogueCount),
-                                    width - 3, MINECRAFT_REGULAR, SCALE(17));
-  DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
+                                    width - 3, MINECRAFT_ITALIC, SCALE(17));
+  DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);
 }
 }  // namespace TextRenderer
