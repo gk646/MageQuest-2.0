@@ -13,3 +13,5 @@ Tutorial|28,5|TutorialDungeon|71,56
 Oasis|2,57|Oasis_Cave|62,14|63,14|64,14
 Oasis_Cave|63,16|Oasis|0,58|1,59|1,58
 Hillcrest_Treasure_Cave|64,67|Hillcrest|24,17
+Hillcrest_Mountain_Cave|87,95|Hillcrest|54,59|55,59|56,59|57,59|58,59
+Hillcrest_Mountain_Cave|75,84|Hillcrest|0,13|0,14|0,15|0,16|0,17
