@@ -41,10 +41,10 @@ struct Quest final {
     delete reward;
   }
   [[nodiscard]] inline bool Progressable(NodeType type) const noexcept {
-    return state == QuestState::ACTIVE && GetCurrentStage()->IsNodeTypeCompatible(type);
+    return state == QuestState::ACTIVE;
   }
   void Progress(NPC* npc) noexcept {
-    if (((SPEAK*)GetCurrentStage())->Progress(npc)) {
+    if (GetCurrentStage()->Progress(npc)) {
       FinishStage(GetCurrentStage());
     }
   }
@@ -59,10 +59,10 @@ struct Quest final {
     }
   }
   [[nodiscard]] inline const std::string& GetActiveObjective() const noexcept {
-    return GetCurrentStage()->objectiveText;
+    return GetCurrentStage()->GetObjectiveText();
   }
   [[nodiscard]] inline PointT<int16_t> GetActiveWaypoint() const noexcept {
-    return CURRENT_ZONE == questZone ? GetCurrentStage()->wayPoint
+    return CURRENT_ZONE == questZone ? GetCurrentStage()->GetWayPoint()
                                      : PointT<int16_t>{0, 0};
   }
   //Serialization methods
@@ -217,10 +217,9 @@ bool COMBAT_TRIGGER::Progress() noexcept {
   if (pastChoice == -10) {
     pastChoice = quest->choice;
   }
-  if (currIndex == objectives.size() || PLAYER_SECOND_STATS.isInCombat) {
-    quest->choice = pastChoice;
-    return true;
-  }
+
+  if (Finish()) return true;
+
   auto& obj = objectives[currIndex];
   if (obj->Progress()) {
     if (obj->type == NodeType::CHOICE_DIALOGUE) {
@@ -229,10 +228,15 @@ bool COMBAT_TRIGGER::Progress() noexcept {
     } else if (obj->type == NodeType::SWITCH_ALTERNATIVE) {
       quest->choice = ((SWITCH_ALTERNATIVE*)obj)->choiceNum;
     }
-    if (quest->choice != pastChoice) {
-      return true;
-    }
+
     currIndex++;
+  }
+  return false;
+}
+bool COMBAT_TRIGGER::Finish() noexcept {
+  if (currIndex == objectives.size() || PLAYER.isInCombat) {
+    quest->choice = pastChoice;
+    return true;
   }
 }
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

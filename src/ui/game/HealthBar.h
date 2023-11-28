@@ -25,7 +25,7 @@ struct HealthBar {
                              startY - height, WHITE);
     }
   }
-  void update() { delay--; }
-  void Update() { delay = 300; }
+  void Update() { delay--; }
+  void Show() { delay = 300; }
 };
 #endif  //MAGE_QUEST_SRC_UI_GAME_HEALTHBAR_H_

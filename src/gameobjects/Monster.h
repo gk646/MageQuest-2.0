@@ -7,7 +7,7 @@
 #define MONSTER_UPDATE()                                                              \
   ENTITY_UPDATE()                                                                     \
   spriteCounter++;                                                                    \
-  healthBar.update();                                                                 \
+  healthBar.Update();                                                                 \
   effectHandler.Update();                                                             \
   CheckForDeath();                                                                    \
   if (MP_TYPE == MultiplayerType::CLIENT) return;                                     \
@@ -34,7 +34,7 @@ struct Monster : public Entity {
   Monster(const Point& pos, const MonsterScaler& scaler, uint8_t level,
           const MonsterResource* resourceArg, MonsterType typeArg,
           const PointT<int16_t>& size, Zone zone, ShapeType hitboxShape = ShapeType::RECT)
-      : Entity(pos, size, hitboxShape),
+      : Entity(pos, size, hitboxShape, 0, false, zone),
         stats({scaler, level}),
         resource(resourceArg),
         attackComponent(this, scaler),
@@ -72,7 +72,7 @@ struct Monster : public Entity {
   inline void Hit(Projectile& p) noexcept {
     if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100 &&
         !IsHitDodged(stats)) {
-      healthBar.Update();
+      healthBar.Show();
       p.HitTargetCallback();
       const float dmg = stats.TakeDamage(p.damageStats, this);
       threatManager.AddThreat(p.sender, dmg);
@@ -141,7 +141,7 @@ struct Monster : public Entity {
   inline void UpdateWithRemoteState(const UDP_MonsterUpdate* data) noexcept {
     if (stats.health != (float)data->new_health) {
       stats.health = data->new_health;
-      healthBar.Update();
+      healthBar.Show();
     }
 
     if ((actionState == 0 && spriteCounter > 100) || data->action_state == -100) {
@@ -267,11 +267,14 @@ void Client::UpdateMonsters(const UDP_MonsterUpdate* data) noexcept {
 void ThreatManager::Update() noexcept {
   if (targetCount > 0) {
     for (auto& te : targets) {
-      if (te.entity && te.entity->tilePos.dist(self->tilePos) >
-                           self->attackComponent.chaseRangeTiles) {
-        te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
-        if (te.threat <= 0) {
-          RemoveTarget(te.entity);
+      if (te.entity) {
+        te.entity->isInCombat = true;
+        if (te.entity->tilePos.dist(self->tilePos) >
+            self->attackComponent.chaseRangeTiles) {
+          te.threat -= std::max(te.threat * THREAT_DROP, 1.0F);
+          if (te.threat <= 0) {
+            RemoveTarget(te.entity);
+          }
         }
       }
     }
@@ -279,7 +282,6 @@ void ThreatManager::Update() noexcept {
     if (PLAYER.tilePos.dist(self->tilePos) <= self->attackComponent.attackRangeTiles) {
       AddTarget(&PLAYER, PLAYER_STATS.level);
     }
-
     for (const auto np : OTHER_PLAYERS) {
       if (np) {
         if (np->tilePos.dist(self->tilePos) <= self->attackComponent.attackRangeTiles) {

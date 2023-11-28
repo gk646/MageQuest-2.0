@@ -41,7 +41,7 @@ inline static void DrawContinueButton(float startX, float width, float startY,
 //TODO fix dialogue choice dissaper // make smooother // fix dialogue hide counter to be more dynamic
 static void RenderDialogue(int x, int y, const std::string* text, float& count,
                            bool last) noexcept {
-  if (!text) return;
+  if (!text || count == 0.0F) return;
   float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
   float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
 
@@ -63,7 +63,8 @@ static void RenderDialogue(int x, int y, const std::string* text, float& count,
     }
   }
 
-  auto wrappedText =    Util::WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, SCALE(17));
+  auto wrappedText =
+      Util::WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, SCALE(17));
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);
 }

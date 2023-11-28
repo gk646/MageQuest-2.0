@@ -395,6 +395,9 @@ struct Ghost final : public Monster {
         spriteCounter = 0;
       } else if (!teleported) {
         spriteCounter = 0;
+        if (attackComponent.currentCooldown == 0) {
+          teleported = false;
+        }
         TeleportToTarget(target);
       }
     }
@@ -438,7 +441,9 @@ struct Ghost final : public Monster {
     } else {
       actionState = 1;
       teleported = false;
-      attackComponent.ExecuteAttack(0);
+      PROJECTILES.emplace_back(new PsychicScream({pos.x_ -1, pos.y_ +4}, false,
+                                                 stats.effects[WEAPON_DAMAGE]));
+      attackComponent.currentCooldown = 150;
       spriteCounter = 0;
       disappeared = false;
     }
@@ -1205,6 +1210,8 @@ struct BossStoneGolem final : public Monster {
     }
   }
 };
+//TODO fight ambiance text
+//TODO boss health bar
 struct BossStoneKnight final : public Monster {
   bool isFighting = false;
   BossStoneKnight(const Point& pos, int level, MonsterType type, Zone zone) noexcept
@@ -1212,13 +1219,12 @@ struct BossStoneKnight final : public Monster {
                 &textures::monsters::BOSS_STONE_KNIGHT, type, {32, 70}, zone) {
     attackComponent.RegisterAbility(
         1, 7.5F * 60, [](Monster* attacker) {}, -1, 0, 1.0F);
-    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 190, 40, 91,
+    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 190, 35, 91,
                                        resource->attackSounds[1], 40, 0, {});
     attackComponent.RegisterConeAttack(
-        3, stats.effects[WEAPON_DAMAGE], 190, 40, 91, resource->attackSounds[2], 50, 0,
+        3, stats.effects[WEAPON_DAMAGE], 190, 35, 91, resource->attackSounds[2], 50, 0,
         {new Bleed(stats.effects[WEAPON_DAMAGE] / 10.0F, 500, 60)});
-
-    attackComponent.RegisterConeAttack(4, stats.effects[WEAPON_DAMAGE], 220, 75, 91,
+    attackComponent.RegisterConeAttack(4, stats.effects[WEAPON_DAMAGE], 220, 20, 70,
                                        resource->attackSounds[0], 50, 0,
                                        {new Slow(20, 120)});
     attackComponent.RegisterAbility(
@@ -1229,9 +1235,7 @@ struct BossStoneKnight final : public Monster {
         },
         0);
   }
-  ~BossStoneKnight() final{
-    MusicStreamer::StopPlaylist(&sound::music::bossMusic);
-  }
+  ~BossStoneKnight() final { MusicStreamer::StopPlaylist(&sound::music::bossMusic); }
 
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -1277,7 +1281,7 @@ struct BossStoneKnight final : public Monster {
   }
 
   inline void DrawDeath() noexcept {
-    int num = spriteCounter % 61 / 15;
+    int num = spriteCounter % 81 / 20;
     if (num < 4) {
       DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 61,
                            pos.y_ + DRAW_Y - 30, 0, 0, isFlipped,

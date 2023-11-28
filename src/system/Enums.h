@@ -296,6 +296,9 @@ enum Stat : uint8_t {
   STATS_ENDING
 };
 
+inline static bool IsPercentile(const Stat stat) noexcept {
+  return stat >= 9 && stat <= 43;
+}
 inline static std::array<uint8_t, 7> CRITICAL_STATS{
     MAX_HEALTH,   MAX_MANA,     HEALTH_REGEN, MANA_REGEN,
     SPEED_MULT_P, DODGE_CHANCE, CRIT_CHANCE};
@@ -455,7 +458,7 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
     {"FLYING_EYE", MonsterType::FLYING_EYE},
     {"GHOST", MonsterType::GHOST},
     {"BOSS_DEATH_BRINGER", MonsterType::BOSS_DEATH_BRINGER},
-    {"BOSS_KNIGHT", MonsterType::BOSS_STONE_KNIGHT},
+    {"BOSS_STONE_KNIGHT", MonsterType::BOSS_STONE_KNIGHT},
     {"BOSS_STONE_GOLEM", MonsterType::BOSS_ANCIENT_GOLEM},
     {"BOSS_SLIME", MonsterType::BOSS_SLIME},
     {"GOBLIN", MonsterType::GOBLIN},

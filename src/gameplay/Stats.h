@@ -207,7 +207,6 @@ struct PlayerStats {
   int16_t attributePointsToSpend = 0;
   int16_t spentTalentPoints = 0;
   int16_t talentPointsToSpend = 25;
-  bool isInCombat = false;
   PlayerStats() { UpdateRequirements(1); }
   //Getters
  public:

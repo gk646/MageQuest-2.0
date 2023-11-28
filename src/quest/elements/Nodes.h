@@ -9,15 +9,19 @@ struct QuestNode {
   bool isMajorObjective = false;
   QuestNode(std::string objectiveText, NodeType type, const PointI& wayPoint = {0, 0})
       : objectiveText(std::move(objectiveText)), type(type), wayPoint(wayPoint) {}
-  virtual ~QuestNode() {}
-  [[nodiscard]] inline bool IsNodeTypeCompatible(NodeType event_type) const {
-    return event_type == type || event_type == NodeType::MIX;
-  };
+  virtual ~QuestNode() = default;
   //Main function to progress the node
   virtual bool Progress() noexcept { return false; };
   //Adds an entry to the quests past dialogues with the corresponding source
   inline void TrackText(const std::string& s, TextSource source,
                         int16_t enumVal) const noexcept;
+  virtual inline bool Progress(NPC* npc) noexcept { return false; }
+  [[nodiscard]] virtual const std::string& GetObjectiveText() const noexcept {
+    return objectiveText;
+  }
+  [[nodiscard]] virtual const PointT<int16_t>& GetWayPoint() const noexcept {
+    return wayPoint;
+  }
 };
 struct GOTO final : public QuestNode {
   PointI target;
@@ -70,7 +74,7 @@ struct SPEAK final : public QuestNode {
   std::vector<std::string> lines;
   explicit SPEAK(std::string obj_txt, NPC_ID target)
       : QuestNode(std::move(obj_txt), NodeType::SPEAK), target(target) {}
-  bool Progress(NPC* npc) noexcept {
+  bool Progress(NPC* npc) noexcept final {
     if (npc->id == target) {
       if (stage < lines.size()) {
         npc->UpdateDialogue(&lines[stage]);
@@ -285,6 +289,7 @@ struct NPC_SAY final : public QuestNode {
             upCounter = 0;
             currLine++;
             startedTalking = false;
+            npc->hideContinueButton = true;
           }
           if (currLine == lines.size()) return true;
         }
@@ -388,6 +393,7 @@ struct CHOICE_DIALOGUE_SIMPLE final : public QuestNode {
     if (pickedAnswer) {
       if (npcPtr->dialogueProgressCount == 1000.0F && Util::EPressed()) {
         if (answerIndex == correctAnswer) {
+          npcPtr->hideContinueButton = true;
           return true;
         } else {
           pickedAnswer = false;
@@ -635,13 +641,29 @@ struct COMBAT_TRIGGER final : public QuestNode {
   int16_t pastChoice = -10;
   std::vector<QuestNode*> objectives;
   COMBAT_TRIGGER() : QuestNode("", NodeType::COMBAT_TRIGGER) {}
-  bool Progress() noexcept final;
   ~COMBAT_TRIGGER() final {
     for (auto& obj : objectives) {
       delete obj;
       obj = nullptr;
     }
   }
+  bool Progress() noexcept final;
+  [[nodiscard]] const PointT<int16_t>& GetWayPoint() const noexcept final {
+    return objectives[currIndex]->GetWayPoint();
+  }
+  [[nodiscard]] const std::string& GetObjectiveText() const noexcept final {
+    return objectives[currIndex]->GetObjectiveText();
+  }
+  bool Progress(NPC* npc) noexcept final {
+    if (Finish()) return true;
+    if (objectives[currIndex]->Progress(npc)) {
+      currIndex++;
+    }
+    return false;
+  }
+
+ private:
+  inline bool Finish() noexcept;
 };
 struct SCRIPTED_NODE final : public QuestNode {
   int16_t num;

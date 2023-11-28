@@ -23,7 +23,7 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {FIRE_SWORD, {120, {0.8745f, 0.2431f, 0.1373f}}},
     {PYRO_BLAST, {70, {0.8745f, 0.2431f, 0.1373f}}},
     {VOID_FIELD, {180, {0.401f, 0.0f, 0.401f}}},
-    {PSYCHIC_SCREAM, {100, {0.501f, 0.0f, 0.501f}}},
+    {PSYCHIC_SCREAM, {120, {0.501f, 0.0f, 0.501f}}},
     {VOID_ERUPTION, {90, {0.501f, 0.0f, 0.501f}}},
     {ICE_LANCE, {50, {0.12f, 0.301f, 0.913f}}},
     {FROST_NOVA, {170, {0.12f, 0.301f, 0.913f}}},
