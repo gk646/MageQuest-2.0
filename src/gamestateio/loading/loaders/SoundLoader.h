@@ -1,7 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_SOUNDLOADER_H_
 struct SoundLoader {
-
   static void Load() {
     LoadSoundIntoVector("sound/effects/player/walkSounds/grass/",
                         sound::player::grassWalk, 0.3F);
@@ -91,7 +90,6 @@ struct SoundLoader {
     sound::EMPTY_SOUND = LoadSound((ASSET_PATH + "sound/effects/empty.wav").c_str());
     SetVolumes();
   }
-
   static void SetVolumes() noexcept {
     SetSoundVolume(sound::menu_back, 1);
 

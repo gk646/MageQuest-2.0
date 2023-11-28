@@ -117,7 +117,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
             textures::ui::questpanel::choiceBoxHovered,
             textures::ui::questpanel::choiceBoxHovered, 255, "", boundFunction);
         obj->answers.emplace_back(choice[1]);
-        obj->choiceNums[i] = std::stoi(choice[2]);
+        obj->choiceNums[i] = (int16_t)std::stoi(choice[2]);
         i++;
       }
       return obj;

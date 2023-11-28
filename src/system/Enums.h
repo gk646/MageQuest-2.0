@@ -39,6 +39,13 @@ enum class MonsterType : uint8_t {
   SKEL_SHIELD,
   SNAKE
 };
+
+inline static bool IsBoss(const MonsterType type) {
+  return type == MonsterType::BOSS_STONE_KNIGHT ||
+         type == MonsterType::BOSS_ANCIENT_GOLEM ||
+         type == MonsterType::BOSS_DEATH_BRINGER || type == MonsterType::BOSS_SLIME;
+}
+
 enum class EffectType : uint8_t {
   STUN,
   BURN,
