@@ -14,6 +14,7 @@ inline static Sound normalChest;
 inline static Sound epicChest;
 inline static Sound lever;
 }  // namespace interactable
+
 namespace music {
 inline static Music firePlace;
 inline static Music lava;

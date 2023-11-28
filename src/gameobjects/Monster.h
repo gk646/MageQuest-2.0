@@ -69,7 +69,6 @@ struct Monster : public Entity {
     }
     return *this;
   }
-  ~Monster() override { PLAYER_SECOND_STATS.AddPlayerExperience(stats.level); }
   inline void Hit(Projectile& p) noexcept {
     if (p.isFriendlyToPlayer && p.IsActive() && actionState != -100 &&
         !IsHitDodged(stats)) {

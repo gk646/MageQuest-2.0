@@ -97,7 +97,15 @@ struct NPC : public Entity {
   TextRenderer::RenderPlayerThought();
 
 void Monster::MonsterDiedCallback() noexcept {
-  ItemDropHandler::RollForItemDrop(pos.x_ + size.x / 2, pos.y_ + size.y / 2, stats.level);
+  if (IsBoss(type)) {
+    PLAYER_SECOND_STATS.AddPlayerExperience(stats.level * 5);
+    if (RANGE_100(RNG_ENGINE) < 15) {
+      //TODO drop coins
+    }
+  } else {
+    ItemDropHandler::RollForItemDrop(pos.x_ + size.x / 2, pos.y_ + size.y / 2, stats.level);
+    PLAYER_SECOND_STATS.AddPlayerExperience(stats.level);
+  }
   PLAYER_QUESTS.MonsterKilled(type);
   GAME_STATISTICS.MonsterKilled(type);
   ApplyTalentsToMonsterDeath(this);

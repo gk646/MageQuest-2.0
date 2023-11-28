@@ -29,7 +29,7 @@ inline static float GetStringSimilarityPrefix(const std::string& base,
 }
 //Returns true if the given array contains the given value
 template <typename T>
-inline static bool ArrayContains(const T* arr, const T& val, int size) noexcept {
+inline static bool ArrayContains(const T* arr, const T& val,const int size) noexcept {
   for (int i = 0; i < size; i++) {
     if (arr[i] == val) {
       return true;
@@ -39,7 +39,7 @@ inline static bool ArrayContains(const T* arr, const T& val, int size) noexcept 
 }
 //creates a 2D array of the given type and size
 template <typename T>
-inline static T** Create2DArr(int x, int y) {
+inline static T** Create2DArr(const int x, const int y) {
   auto ptr = new T*[x];
   for (int i = 0; i < y; i++) {
     ptr[i] = new T[y];
@@ -48,7 +48,7 @@ inline static T** Create2DArr(int x, int y) {
 }
 //frees a 2D array of the given type and size
 template <typename T>
-inline static void Delete2DArr(T** arr, int rows) {
+inline static void Delete2DArr(T** arr,const int rows) {
   for (int i = 0; i < rows; i++) {
     delete[] arr[i];
   }
@@ -56,13 +56,13 @@ inline static void Delete2DArr(T** arr, int rows) {
 }
 //Draws text aligned to the right with "align" / uses 0.5 spacing
 inline static void DrawRightAlignedText(const Font& font, float fontSize, const char* txt,
-                                        float align, float y, const Color& color) {
+                                        const float align, const float y, const Color& color) {
   DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x, y},
               fontSize, 0.5F, color);
 }
 //Draws text centered to "align" / uses 0.5 spacing
 inline static void DrawCenteredText(const Font& font, float fontSize, const char* txt,
-                                    float align, float y, const Color& color) {
+                                    const  float align, const float y, const Color& color) {
   DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x / 2, y},
               fontSize, 0.5F, color);
 }
@@ -99,8 +99,8 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.8F, textColor);
 }
 //Wraps "txt" according to "width" / Uses 0.5 spacing / "lineBreaks" is set the number of line breaks
-inline static std::string WrapText(const std::string& txt, float width, const Font& font,
-                                   float fontSize, int* lineBreaks = nullptr) {
+inline static std::string WrapText(const std::string& txt, const float width, const Font& font,
+                                   const float fontSize, int* lineBreaks = nullptr) {
   if (lineBreaks) {
     *lineBreaks = 0;
   }
@@ -305,7 +305,7 @@ inline static void DrawSwipeCooldownEffect(float x, float y, float size, int tot
   }
 }
 //Returns a correctly aligned rect inside the window bounds with the given measures
-inline static RectangleR GetToolTipRect(float width, float height) noexcept {
+inline static RectangleR GetToolTipRect(const float width, const float height) noexcept {
   RectangleR ret = {0, 0, width, height};
   auto mouse = GetMousePosition();
   if (mouse.x - width < 0) {
