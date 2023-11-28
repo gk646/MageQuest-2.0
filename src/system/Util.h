@@ -159,6 +159,15 @@ inline static std::vector<std::string> SplitString(const std::string& s,
   }
   return result;
 }
+//Trim leading whitespace from a string in place // returns itself after modification
+inline static std::string& TrimLeadingWhiteSpace(std::string& str) {
+  auto it = std::find_if_not(str.begin(), str.end(), [](unsigned char ch) {
+    return std::isspace(ch);
+  });
+
+  str.erase(str.begin(), it);
+  return str;
+}
 //Loads .mgi (simple table format) into a vector
 std::vector<std::vector<std::string>> ReadMGI(const std::string& filePath) noexcept {
   auto ret = std::vector<std::vector<std::string>>{};

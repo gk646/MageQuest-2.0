@@ -1,16 +1,21 @@
 #ifndef MAGEQUEST_SRC_QUESTS_QUEST_H_
 #define MAGEQUEST_SRC_QUESTS_QUEST_H_
 
+#include "ScriptedNodes.h"
 #include "elements/Nodes.h"
 #include "elements/QuestReward.h"
+
 struct Alternative {
-  std::vector<QuestNode*> objectives;
+  std::vector<QuestNode*> objectives{};
   int16_t stage = 0;
   [[nodiscard]] inline QuestNode* GetNode() const noexcept { return objectives[stage]; }
   inline void Progress() noexcept { stage++; }
   ~Alternative() {
-    for (auto obj : objectives) {
-      delete obj;
+    for (auto& obj : objectives) {
+      if (obj) {
+        delete obj;
+        obj = nullptr;
+      }
     }
   }
 };
@@ -19,7 +24,7 @@ struct Quest final {
   std::string description;
   std::vector<std::string> pastDialogue;
   std::vector<QuestNode*> objectives;
-  std::vector<Alternative> alternatives;
+  std::vector<Alternative> alternatives{10};
   QuestReward* reward = nullptr;
   int16_t choice = -1;
   int16_t stage = 0;
@@ -82,7 +87,7 @@ struct Quest final {
   }
   inline static void LoadAlternatives(Quest* quest, const std::string& text) {
     auto nums = Util::SplitString(text, '|');
-    for (int i = 0; i < quest->alternatives.size(); i++) {
+    for (int i = 0; i < quest->alternatives.size() && i < nums.size(); i++) {
       quest->alternatives[i].stage = std::stoi(nums[i]);
     }
   }
@@ -207,5 +212,27 @@ bool SWITCH_ALTERNATIVE::Progress() noexcept {
 bool SET_QUEST_ZONE::Progress() noexcept {
   quest->questZone = zone;
   return true;
+}
+bool COMBAT_TRIGGER::Progress() noexcept {
+  if (pastChoice == -10) {
+    pastChoice = quest->choice;
+  }
+  if (currIndex == objectives.size() || PLAYER_SECOND_STATS.isInCombat) {
+    quest->choice = pastChoice;
+    return true;
+  }
+  auto& obj = objectives[currIndex];
+  if (obj->Progress()) {
+    if (obj->type == NodeType::CHOICE_DIALOGUE) {
+      quest->choice =
+          ((CHOICE_DIALOGUE*)obj)->choiceNums[((CHOICE_DIALOGUE*)obj)->answerIndex];
+    } else if (obj->type == NodeType::SWITCH_ALTERNATIVE) {
+      quest->choice = ((SWITCH_ALTERNATIVE*)obj)->choiceNum;
+    }
+    if (quest->choice != pastChoice) {
+      return true;
+    }
+    currIndex++;
+  }
 }
 #endif  //MAGEQUEST_SRC_QUESTS_QUEST_H_

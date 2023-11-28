@@ -11,3 +11,4 @@ SWIFTNESS|Swiftness|Increased speed by AMOUNT% for DURATIONs!|Buffs/swiftness.pn
 BERSERK|Berserk|AMOUNT% increased physical damage for DURATIONs!|Buffs/attack_boost.png
 BLEED|Bleed|Bleeding for AMOUNT every VAL3s for DURATIONs!|Debuffs/bleeding.png
 RESISTANCE|Resistance|All incoming damage reduced by AMOUNT for DURATIONs.|Buffs/defense_boost.png
+REGENERATION|Regeneration|Regenerates AMOUNT health every VAL3s for DURATIONs.|Buffs/regeneration.png

@@ -25,24 +25,24 @@ static void Load() {
 
   textures::monsters::SKELETON_WARRIOR.Load("enemies/skeletonWarrior/");
   textures::monsters::SKELETON_SPEAR.Load("enemies/skeletonSpear/");
-  textures::monsters::SKELETON_SHIELD.LoadSpriteFromSheets("enemies/skeletonShield/", 150,
-                                                           150);
+  textures::monsters::SKELETON_SHIELD.LoadFromSpriteSheet("enemies/skeletonShield/", 150,
+                                                          150);
   textures::monsters::SKELETON_ARCHER.Load("enemies/skeletonArcher/");
   textures::monsters::BOSS_DEATH_BRINGER.Load("enemies/BOSSDeathBringer/");
-  textures::monsters::BOSS_KNIGHT.Load("enemies/BOSSKnight/");
+  textures::monsters::BOSS_STONE_KNIGHT.LoadFromSpriteSheet("enemies/BOSSKnight/",192,96);
   textures::monsters::BOSS_SLIME.Load("enemies/BossSlime/");
-  textures::monsters::GOBLIN.LoadSpriteFromSheets("enemies/goblin/",150,150);
+  textures::monsters::GOBLIN.LoadFromSpriteSheet("enemies/goblin/", 150, 150);
   textures::monsters::KNIGHT.Load("enemies/Knight/");
-  textures::monsters::MUSHROOM.LoadSpriteFromSheets("enemies/mushroom/", 150, 150);
+  textures::monsters::MUSHROOM.LoadFromSpriteSheet("enemies/mushroom/", 150, 150);
   textures::monsters::SNAKE.Load("enemies/snake/");
-  textures::monsters::RAT.LoadSpriteFromSheets("enemies/rat/",32,32);
+  textures::monsters::RAT.LoadFromSpriteSheet("enemies/rat/", 32, 32);
   textures::monsters::WOLF.Load("enemies/wolf/");
   textures::monsters::BLOOD_HOUND.Load("enemies/bloodHound/");
   textures::monsters::GHOST.Load("enemies/Ghost/");
-  textures::monsters::SKULL_WOLF.LoadSpriteFromSheets("enemies/skullWolf/", 64, 48);
-  textures::monsters::FLYING_EYE.LoadSpriteFromSheets("enemies/flyingEye/", 150, 150);
-  textures::monsters::BOSS_STONE_GOLEM.LoadSpriteFromSheets("enemies/BOSSStoneGolem/",
-                                                            200, 164);
+  textures::monsters::SKULL_WOLF.LoadFromSpriteSheet("enemies/skullWolf/", 64, 48);
+  textures::monsters::FLYING_EYE.LoadFromSpriteSheet("enemies/flyingEye/", 150, 150);
+  textures::monsters::BOSS_STONE_GOLEM.LoadFromSpriteSheet("enemies/BOSSStoneGolem/", 200,
+                                                           164);
 
   textures::projectile::BLAST_HAMMER.Load("blastHammer/");
   textures::projectile::ENERGY_SPHERE.Load("EnergySphere/");
