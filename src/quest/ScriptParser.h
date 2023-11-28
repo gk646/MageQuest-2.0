@@ -6,8 +6,21 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
                                 std::ifstream& file, Quest* quest) noexcept {
   auto type = node_to_type[parts[0]];
   switch (type) {
+    case NodeType::SCRIPTED_NODE:
+      return new SCRIPTED_NODE(parts[1], parts[2]);
     case NodeType::DESPAWN_NPC:
       return new DESPAWN_NPC(parts[1]);
+    case NodeType::COMBAT_TRIGGER: {
+      auto obj = new COMBAT_TRIGGER;
+      std::string line;
+      while (std::getline(file, line) &&
+             Util::TrimLeadingWhiteSpace(line) != "COMBAT_TRIGGER_END") {
+        Util::TrimLeadingWhiteSpace(line);
+        obj->objectives.push_back(
+            ParseNextNode(Util::SplitString(line, ':'), file, quest));
+      }
+      return obj;
+    }
     case NodeType::FINISH_QUEST:
       return new FINISH_QUEST();
     case NodeType::SKIP:
@@ -16,7 +29,8 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       auto obj = new OPTIONAL_POSITION(parts);
       std::string line;
       int i = 0;
-      while (std::getline(file, line) && line != "*" && i < obj->limit) {
+      while (std::getline(file, line) && Util::TrimLeadingWhiteSpace(line) != "*" &&
+             i < obj->limit) {
         auto node = ParseNextNode(Util::SplitString(line, ':'), file, quest);
         node->quest = quest;
         obj->choices[i].node = node;
@@ -35,7 +49,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
     case NodeType::SPEAK: {
       std::string line;
       auto obj = SPEAK::ParseQuestNode(parts);
-      while (std::getline(file, line) && line != "*") {
+      while (std::getline(file, line) && Util::TrimLeadingWhiteSpace(line) != "*") {
         obj->lines.push_back(line);
       }
       return obj;
@@ -54,7 +68,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
     case NodeType::NPC_SAY: {
       std::string line;
       auto obj = NPC_SAY::ParseQuestNode(parts);
-      while (std::getline(file, line) && line != "*") {
+      while (std::getline(file, line) && Util::TrimLeadingWhiteSpace(line) != "*") {
         obj->lines.push_back(line);
       }
       return obj;
@@ -64,7 +78,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
     case NodeType::NPC_SAY_PROXIMITY: {
       std::string line;
       auto obj = NPC_SAY_PROXIMITY::ParseQuestNode(parts);
-      while (std::getline(file, line) && line != "*") {
+      while (std::getline(file, line) && Util::TrimLeadingWhiteSpace(line) != "*") {
         obj->lines.push_back(line);
       }
       return obj;
@@ -73,7 +87,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       std::string line;
       auto* obj = CHOICE_DIALOGUE_SIMPLE::ParseQuestNode(parts);
       int i = 0;
-      while (std::getline(file, line) && line != "*") {
+      while (std::getline(file, line) && Util::TrimLeadingWhiteSpace(line) != "*") {
         auto choice = Util::SplitString(line, ':');
         auto textBound = MeasureTextEx(MINECRAFT_BOLD, choice[0].c_str(), 16, 0.5F);
         auto boundFunction = [obj, i] {
@@ -92,7 +106,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       std::string line;
       auto* obj = CHOICE_DIALOGUE::ParseQuestNode(parts);
       int i = 0;
-      while (std::getline(file, line) && line != "*") {
+      while (std::getline(file, line) && Util::TrimLeadingWhiteSpace(line) != "*") {
         auto choice = Util::SplitString(line, ':');
         auto textBound = MeasureTextEx(MINECRAFT_BOLD, choice[0].c_str(), 16, 0.5F);
         auto boundFunction = [obj, i] {
@@ -116,8 +130,8 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       return new SET_NPC_POS(parts);
     case NodeType::SWITCH_ALTERNATIVE:
       return new SWITCH_ALTERNATIVE(parts[1]);
-    default:
-      return nullptr;
+    case NodeType::WAIT:
+      return new WAIT(parts[1]);
   }
 }
 //Adds the node to the given quest and setting the "isMajor" variable
@@ -128,9 +142,6 @@ inline void AddToQuest(QuestNode* node, Quest* q, const std::vector<std::string>
   if (choice == -1) {
     q->objectives.push_back(node);
   } else {
-    if (q->alternatives.size() <= choice) {
-      q->alternatives.resize(choice + 1);
-    }
     q->alternatives[choice].objectives.push_back(node);
   }
 }
@@ -158,7 +169,7 @@ Quest* Load(const std::string& path, Quest_ID id, bool hidden = false) {
 
   std::vector<std::string> parts;
   while (std::getline(file, line)) {
-    if (line.empty() || line.starts_with('#')) continue;
+    if (Util::TrimLeadingWhiteSpace(line).empty() || line.starts_with('#')) continue;
     parts.clear();
     parts = Util::SplitString(line, ':');
     if (parts[0] == "START_CHOICE") {

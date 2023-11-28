@@ -16,19 +16,19 @@ struct ShadowObject {
 
 inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {FIRE_BALL, {100, {0.8745f, 0.2431f, 0.1373f}}},
-    {BOMB, {50, {0.8745f, 0.2431f, 0.1373f}}},
+    {BOMB, {60, {0.8745f, 0.2431f, 0.1373f}}},
     {ARCANE_BOLT, {100, {0.3804f, 0.6588f, 0.8902f}}},
     {BLAST_HAMMER, {180, {0.8745f, 0.2431f, 0.1373f}}},
-    {LIGHTNING, {60, {0.3804f, 0.6588f, 0.8902f}}},
-    {FIRE_SWORD, {70, {0.8745f, 0.2431f, 0.1373f}}},
+    {LIGHTNING, {80, {0.3804f, 0.6588f, 0.8902f}}},
+    {FIRE_SWORD, {120, {0.8745f, 0.2431f, 0.1373f}}},
     {PYRO_BLAST, {70, {0.8745f, 0.2431f, 0.1373f}}},
     {VOID_FIELD, {180, {0.401f, 0.0f, 0.401f}}},
     {PSYCHIC_SCREAM, {100, {0.501f, 0.0f, 0.501f}}},
     {VOID_ERUPTION, {90, {0.501f, 0.0f, 0.501f}}},
-    {ICE_LANCE, {40, {0.12f, 0.301f, 0.913f}}},
-    {FROST_NOVA, {40, {0.12f, 0.301f, 0.913f}}},
+    {ICE_LANCE, {50, {0.12f, 0.301f, 0.913f}}},
+    {FROST_NOVA, {170, {0.12f, 0.301f, 0.913f}}},
     {GLACIAL_BURST, {90, {0.12f, 0.301f, 0.913f}}},
-    {ENERGY_SPHERE, {180, {0.3804f, 0.6588f, 0.8902f}}}};
+    {ENERGY_SPHERE, {160, {0.3804f, 0.6588f, 0.8902f}}}};
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
 inline static uint16_t dayTicks = 15000;
 inline static float currentNightAlpha = 0;

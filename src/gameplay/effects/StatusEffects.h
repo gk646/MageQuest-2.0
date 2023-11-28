@@ -104,7 +104,7 @@ struct Burn final : public StatusEffect {
   [[nodiscard]] Burn* Clone() const final { return new Burn(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void TickEffect(EntityStats& stats, const Entity* self) final {
-    if (IsDamageTick()) {
+    if (IsActiveTick()) {
       stats.TakeDamage(damageStats, self);
     }
     UpdateDuration();
@@ -134,7 +134,7 @@ struct Poison final : public StatusEffect {
   [[nodiscard]] Poison* Clone() const final { return new Poison(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void TickEffect(EntityStats& stats, const Entity* self) final {
-    if (IsDamageTick()) {
+    if (IsActiveTick()) {
       stats.TakeDamage(damageStats, self);
     }
     UpdateDuration();
@@ -237,7 +237,7 @@ struct Bleed final : public StatusEffect {
   [[nodiscard]] Bleed* Clone() const final { return new Bleed(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {}
   void TickEffect(EntityStats& stats, const Entity* self) final {
-    if (IsDamageTick()) {
+    if (IsActiveTick()) {
       stats.TakeDamage(damageStats, self);
     }
     UpdateDuration();
@@ -257,9 +257,9 @@ struct Bleed final : public StatusEffect {
 };
 struct Resistance final : public StatusEffect {
   float resistanceAmount;
-  Resistance(float value, int duration)
+  Resistance(float percentile, int duration)
       : StatusEffect(false, 0, duration, EffectType::RESISTANCE),
-        resistanceAmount(value / 100) {
+        resistanceAmount(percentile / 100) {
     maxStacks = 15;
   }
   [[nodiscard]] Resistance* Clone() const final { return new Resistance(*this); }
@@ -284,6 +284,42 @@ struct Resistance final : public StatusEffect {
   [[nodiscard]] std::string GetToolTip() const noexcept final {
     return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
                                            resistanceAmount * 100.0F);
+  }
+};
+//In case of percent based val is a percent value from max health e.g. 0.01 for 1% each tick
+struct Regeneration final : public StatusEffect {
+  float val;
+  float lastHealed = 0;
+  bool isPercentFromMax;
+  Regeneration(float val, int duration, int tickSpeed, bool isPercent)
+      : StatusEffect(false, tickSpeed, duration, EffectType::REGENERATION),
+        val(val),
+        isPercentFromMax(isPercent) {}
+  [[nodiscard]] Regeneration* Clone() const final { return new Regeneration(*this); }
+  void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {}
+  void TickEffect(EntityStats& stats, const Entity* self) final {
+    if (IsActiveTick()) {
+      if (isPercentFromMax) {
+        lastHealed = stats.GetMaxHealth() * val;
+        stats.AddHealth(lastHealed);
+      } else {
+        stats.AddHealth(val);
+      }
+    }
+    UpdateDuration();
+  }
+  void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {}
+  void AddStack(EntityStats& stats, const StatusEffect* other,
+                const Entity* self) noexcept final {
+    TakeLongestDuration(other);
+    MAX_STACKS_RETURN()
+    val += ((Regeneration*)other)->val;
+    stacks++;
+  }
+  [[nodiscard]] std::string GetToolTip() const noexcept final {
+    return Util::CreateEffectToolTipString(effectToInfo[type].description, duration,
+                                           isPercentFromMax ? lastHealed : val,
+                                           (float)cadence / 60.0F);
   }
 };
 #endif  //MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_

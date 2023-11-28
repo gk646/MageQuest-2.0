@@ -217,8 +217,9 @@ Monster* Monster::GetNewMonster(const Point& pos, MonsterType type, uint8_t leve
       return new Goblin(pos, level, type, zone);
     case MonsterType::FLYING_EYE:
       return new FlyingEye(pos, level, type, zone);
-    case MonsterType::BOSS_DEATH_BRINGER:
     case MonsterType::BOSS_STONE_KNIGHT:
+      return new BossStoneKnight(pos, level, type, zone);
+    case MonsterType::BOSS_DEATH_BRINGER:
     case MonsterType::BOSS_SLIME:
     case MonsterType::KNIGHT:
     case MonsterType::ANY:
@@ -292,7 +293,8 @@ void ThreatManager::Update() noexcept {
 void SpawnTrigger::Trigger() noexcept {
   if (triggered) return;
   triggered = true;
-  if (level == 0) level = PLAYER_STATS.level;
+  level += PLAYER_STATS.level;
+
   if (isSingular) {
     MONSTERS.push_back(Monster::GetNewMonster({(float)pos.x, (float)pos.y}, type, level));
   } else {
@@ -307,8 +309,8 @@ void AttackComponent::StartAnimation(int8_t actionState) const noexcept {
 }
 bool CustomAbility::IsReady(Monster* self) noexcept {
   return currentCooldown == 0 && currentDelay == -1 &&
-         ((range > 0 && PLAYER.tilePos.dist(self->tilePos) > range) ||
-          (range < 0 && PLAYER.tilePos.dist(self->tilePos) < std::abs(range)));
+         ((range >= 0 && PLAYER.tilePos.dist(self->tilePos) > range) ||
+          (range <= 0 && PLAYER.tilePos.dist(self->tilePos) < std::abs(range)));
 }
 bool ProjectileAttack::IsReady(Monster* self) noexcept {
   return currentCooldown == 0 && currentDelay == -1 &&
@@ -322,7 +324,8 @@ void ProjectileAttack::Execute(Monster* attacker) const {
     copy[i] = effects[i]->Clone();
   }
   PROJECTILES.emplace_back(GetProjectileInstance(type, attacker->GetMiddlePoint(), false,
-                                                 damage * modifier, attacker, Vector2(), 0, copy));
+                                                 damage * modifier, attacker, Vector2(),
+                                                 0, copy));
 }
 void ConeAttack::Execute(Monster* attacker) const {
   std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ> copy{};
@@ -331,8 +334,8 @@ void ConeAttack::Execute(Monster* attacker) const {
     copy[i] = effects[i]->Clone();
   }
   auto prj = new AttackCone(attacker->GetAttackConeBounds(width, height), false,
-                            (int16_t)std::max(hitDelay * 2, 90), hitDelay, damage * modifier, copy,
-                            sound, attacker);
+                            (int16_t)std::max(hitDelay * 2, 90), hitDelay,
+                            damage * modifier, copy, sound, attacker);
   SetDamageStats(prj, attacker->stats.effects[CRIT_CHANCE],
                  attacker->stats.effects[CRIT_DAMAGE_P]);
   PROJECTILES.emplace_back(prj);

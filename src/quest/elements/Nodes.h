@@ -9,6 +9,7 @@ struct QuestNode {
   bool isMajorObjective = false;
   QuestNode(std::string objectiveText, NodeType type, const PointI& wayPoint = {0, 0})
       : objectiveText(std::move(objectiveText)), type(type), wayPoint(wayPoint) {}
+  virtual ~QuestNode() {}
   [[nodiscard]] inline bool IsNodeTypeCompatible(NodeType event_type) const {
     return event_type == type || event_type == NodeType::MIX;
   };
@@ -626,5 +627,27 @@ struct DESPAWN_NPC final : public QuestNode {
     return true;
   }
 };
-
+/**
+ * Is a container of objectives with the function to skip all nodes inside should the player enter combat (or be in combat)
+ */
+struct COMBAT_TRIGGER final : public QuestNode {
+  int16_t currIndex = 0;
+  int16_t pastChoice = -10;
+  std::vector<QuestNode*> objectives;
+  COMBAT_TRIGGER() : QuestNode("", NodeType::COMBAT_TRIGGER) {}
+  bool Progress() noexcept final;
+  ~COMBAT_TRIGGER() final {
+    for (auto& obj : objectives) {
+      delete obj;
+      obj = nullptr;
+    }
+  }
+};
+struct SCRIPTED_NODE final : public QuestNode {
+  int16_t num;
+  ScriptedNodeInfo info{};
+  explicit SCRIPTED_NODE(const std::string& intString, const std::string& objText)
+      : QuestNode(objText, NodeType::SCRIPTED_NODE), num((int16_t)std::stoi(intString)) {}
+  bool Progress() noexcept final { return functionArray[num](info); }
+};
 #endif  //MAGEQUEST_SRC_QUESTS_OBJECTIVE_H_

@@ -132,7 +132,7 @@ struct BloodHound final : public Monster {
                                        resource->attackSounds[1], 50);
     attackComponent.RegisterConeAttack(
         1, stats.effects[WEAPON_DAMAGE], 90 + 105, 20, 30, resource->attackSounds[2], 50,
-        0, {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.5F, 300, 60)});
+        0, {new Bleed(stats.effects[WEAPON_DAMAGE] / 5.0F, 300, 60)});
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -288,7 +288,7 @@ struct SkeletonWarrior final : public Monster {
                                        resource->attackSounds[0], 16);
     attackComponent.RegisterConeAttack(
         3, stats.effects[WEAPON_DAMAGE], 350, 40, 48, resource->attackSounds[1], 16, 0,
-        {new Bleed(stats.effects[WEAPON_DAMAGE] * 0.2F, 300, 60)}, 1.0F, 1.2F);
+        {new Bleed(stats.effects[WEAPON_DAMAGE] / 10.0F, 300, 60)}, 1.0F, 1.2F);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -476,7 +476,7 @@ struct SkeletonSpear final : public Monster {
                                        resource->attackSounds[0], 15);
     attackComponent.RegisterConeAttack(
         3, stats.effects[WEAPON_DAMAGE], 370, 40, 48, resource->attackSounds[0], 24, 0,
-        {new Bleed(stats.effects[WEAPON_DAMAGE], 300, 60)}, 1.0F, 1.2F);
+        {new Bleed(stats.effects[WEAPON_DAMAGE] / 10.0F, 300, 60)}, 1.0F, 1.2F);
   }
   void Draw() final {
     if (actionState == -100) [[unlikely]] {
@@ -982,7 +982,7 @@ struct FlyingEye final : public Monster {
     attackComponent.RegisterConeAttack(
         2, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD * 1.5F, 35, 37,
         sound::EMPTY_SOUND, 1, 36,
-        {new Bleed(stats.effects[WEAPON_DAMAGE] / 10, 300, 60), new Slow(20, 300)});
+        {new Bleed(stats.effects[WEAPON_DAMAGE] / 10.0F, 300, 60), new Slow(20, 300)});
 
     //attackComponent.RegisterProjectileAttack(3, stats.effects[WEAPON_DAMAGE],
     //monsterIdToScaler[type].attackCD, BOMB, -5,
@@ -1165,7 +1165,7 @@ struct BossStoneGolem final : public Monster {
     }
   }
   inline void DrawRangeAttack() noexcept {
-    int num = spriteCounter % 80 / 8;
+    int num = spriteCounter % 90 / 9;
     if (num < 9) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 50,
                            pos.y_ + DRAW_Y - 35, 0, 0, isFlipped,
@@ -1201,6 +1201,166 @@ struct BossStoneGolem final : public Monster {
                            pos.y_ + DRAW_Y - 57, 0, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
+      actionState = 0;
+    }
+  }
+};
+struct BossStoneKnight final : public Monster {
+  bool isFighting = false;
+  BossStoneKnight(const Point& pos, int level, MonsterType type, Zone zone) noexcept
+      : Monster(pos, monsterIdToScaler[type], level,
+                &textures::monsters::BOSS_STONE_KNIGHT, type, {32, 70}, zone) {
+    attackComponent.RegisterAbility(
+        1, 7.5F * 60, [](Monster* attacker) {}, -1, 0, 1.0F);
+    attackComponent.RegisterConeAttack(2, stats.effects[WEAPON_DAMAGE], 190, 40, 91,
+                                       sound::EMPTY_SOUND, 50, 0, {new Slow(20, 120)});
+    attackComponent.RegisterConeAttack(3, stats.effects[WEAPON_DAMAGE], 190, 40, 91,
+                                       sound::EMPTY_SOUND, 50, 0, {new Slow(20, 120)});
+    attackComponent.RegisterAbility(
+        6, 30 * 60,
+        [](Monster* self) {
+          self->effectHandler.AddEffect(new Regeneration(0.08F, 7.5F * 60.0F, 60, true));
+        },
+        0);
+  }
+
+  void Draw() final {
+    if (actionState == -100) [[unlikely]] {
+      DrawDeath();
+    } else if (actionState == 1) {
+      DrawAttack1();
+    } else if (actionState == 2) {
+      DrawAttack2();
+    } else if (actionState == 3) {
+      DrawAttack3();
+    } else if (actionState == 4) {
+      DrawAttack4();
+    } else if (actionState == 5) {
+      DrawAttack5();
+    } else if (actionState == 6) {
+      DrawHeal();
+    } else {
+      if (isMoving) {
+        DrawTextureProFastEx(resource->walk[spriteCounter % 80 / 10],
+                             pos.x_ + DRAW_X - 75, pos.y_ + DRAW_Y - 28, 0, 0, isFlipped,
+                             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+      } else if (isFighting) {
+        DrawTextureProFastEx(resource->idle[spriteCounter % 80 / 10],
+                             pos.x_ + DRAW_X - 82, pos.y_ + DRAW_Y - 25, 0, 0, isFlipped,
+                             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+      } else {
+        DrawHibernate();
+      }
+    }
+    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    DRAW_HITBOXES();
+  }
+
+  void Update() final {
+    if (!isFighting) {
+      effectHandler.AddEffect(new Resistance(1, 1));
+    }
+    MONSTER_UPDATE();
+    auto target = threatManager.GetHighestThreatTarget();
+    if (target && isFighting) {
+      attackComponent.AttackFar();
+      if (WalkToEntity(target)) {
+        attackComponent.AttackClose();
+      }
+    }
+  }
+
+  inline void DrawDeath() noexcept {
+    int num = spriteCounter % 61 / 15;
+    if (num < 4) {
+      DrawTextureProFastEx(resource->death[num], pos.x_ + DRAW_X - 61,
+                           pos.y_ + DRAW_Y - 30, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      isDead = true;
+    }
+  }
+  inline void DrawAttack1() noexcept {
+    int num = spriteCounter % 64 / 7;
+    if (spriteCounter == 28 || spriteCounter == 56) {
+      auto prj = new AttackCone(GetAttackConeBounds(50, 75), false, 15, 1,
+                                stats.effects[WEAPON_DAMAGE], {},
+                                resource->attackSounds[0], this);
+      SetDamageStats(prj, stats.effects[CRIT_CHANCE], stats.effects[CRIT_DAMAGE_P]);
+      PROJECTILES.push_back(prj);
+      attackComponent.currentCooldown = 200;
+    }
+    if (num < 9) {
+      DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 73,
+                           pos.y_ + DRAW_Y - 25, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawAttack2() noexcept {
+    int num = spriteCounter % 61 / 12;
+    if (num < 5) {
+      DrawTextureProFastEx(resource->attack2[num], pos.x_ + DRAW_X - 87,
+                           pos.y_ + DRAW_Y - 30, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawAttack3() noexcept {
+    int num = spriteCounter % 61 / 10;
+    if (num < 6) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 78,
+                           pos.y_ + DRAW_Y - 24, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawAttack4() noexcept {
+    int num = spriteCounter % 73 / 6;
+    if (num < 12) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 58,
+                           pos.y_ + DRAW_Y - 65, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawAttack5() noexcept {
+    int num = spriteCounter % 73 / 6;
+    if (num < 12) {
+      DrawTextureProFastEx(resource->attack3[num], pos.x_ + DRAW_X - 58,
+                           pos.y_ + DRAW_Y - 65, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawHeal() noexcept {
+    int num = spriteCounter % 81 / 10;
+    if (num < 8) {
+      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 72,
+                           pos.y_ + DRAW_Y - 25, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      actionState = 0;
+    }
+  }
+  inline void DrawHibernate() noexcept {
+    int num = spriteCounter % 241 / 20;
+    if (threatManager.targetCount == 0) {
+      if (spriteCounter > 180) {
+        spriteCounter = 41;
+      }
+    }
+    if (num < 12) {
+      DrawTextureProFastEx(resource->idle2[num], pos.x_ + DRAW_X - 84,
+                           pos.y_ + DRAW_Y - 30, 0, 0, isFlipped,
+                           hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
+    } else {
+      isFighting = true;
       actionState = 0;
     }
   }

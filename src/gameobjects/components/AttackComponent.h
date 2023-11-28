@@ -148,8 +148,9 @@ struct AttackComponent {
       }
     }
   }
+  //A range less than 0 means min range, above 0 max range
   void RegisterAbility(int8_t actionState, int16_t cooldown,
-                       std::function<void(Monster*)> action, int range, int delay = 0,
+                       const std::function<void(Monster*)>& action, int range, int delay = 0,
                        float chance = 1.0F) {
     for (auto& attackSlot : attacks) {
       if (!attackSlot) {

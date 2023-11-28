@@ -135,6 +135,11 @@ struct EntityStats {
     effects[DODGE_CHANCE] = 0;
     effects[BAG_SLOTS] = 9;
   }
+  //Setters
+ public:
+  inline void AddHealth(float val) noexcept {
+    health = std::min(health + val, GetMaxHealth());
+  }
   //Getters
  public:
   [[nodiscard]] inline float GetAbilityDmg(float damage,
@@ -202,6 +207,7 @@ struct PlayerStats {
   int16_t attributePointsToSpend = 0;
   int16_t spentTalentPoints = 0;
   int16_t talentPointsToSpend = 25;
+  bool isInCombat = false;
   PlayerStats() { UpdateRequirements(1); }
   //Getters
  public:

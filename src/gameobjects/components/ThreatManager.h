@@ -51,6 +51,7 @@ struct ThreatManager {
 
  private:
   inline void AddTarget(Entity* NewEnt, float threat) noexcept {
+    PLAYER_SECOND_STATS.isInCombat = true;
     for (auto& te : targets) {
       if (!te.entity) {
         te.entity = NewEnt;
@@ -69,6 +70,7 @@ struct ThreatManager {
         break;
       }
     }
+    PLAYER_SECOND_STATS.isInCombat = targetCount == 0;
   }
 };
 

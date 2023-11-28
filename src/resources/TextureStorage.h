@@ -25,7 +25,7 @@ inline MonsterResource SKELETON_SPEAR;
 inline MonsterResource SKELETON_SHIELD;
 inline MonsterResource SKELETON_ARCHER;
 inline MonsterResource BOSS_DEATH_BRINGER;
-inline MonsterResource BOSS_KNIGHT;
+inline MonsterResource BOSS_STONE_KNIGHT;
 inline MonsterResource BOSS_SLIME;
 inline MonsterResource BOSS_STONE_GOLEM;
 inline MonsterResource GOBLIN;

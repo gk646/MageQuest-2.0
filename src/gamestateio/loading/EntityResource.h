@@ -59,8 +59,8 @@ void LoadSpriteSheetFrames(const std::string& name, int frameWidth, int frameHei
 
   int framesHorizontal = spriteSheet.width / frameWidth;
   int framesVertical = std::max(spriteSheet.height / frameHeight, 1);
-  for (int y = 0; y < framesVertical; ++y) {
-    for (int x = 0; x < framesHorizontal; ++x) {
+  for (int y = 0; y < framesVertical; y++) {
+    for (int x = 0; x < framesHorizontal; x++) {
       Texture frame =
           LoadFrame(spriteSheet, frameWidth, frameHeight, x, y, xOffset, yOffset);
       frames.push_back(frame);
@@ -88,7 +88,7 @@ struct MonsterResource {
     LoadTextures(name);
     LoadSoundFiles(name);
   }
-  void LoadSpriteFromSheets(const std::string& name, int frameWidth, int frameHeight) {
+  void LoadFromSpriteSheet(const std::string& name, int frameWidth, int frameHeight) {
     LoadSpriteSheets(name, frameWidth, frameHeight);
     LoadSoundFiles(name);
   }

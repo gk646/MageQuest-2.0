@@ -126,73 +126,139 @@ SET_QUEST_ZONE:Hillcrest_Mountain_Cave
 GOTO:56,56:Enter the cave:Hillcrest_Mountain_Cave
 
 #inside cave
-SPEAK:ARIA:Listen to Aria:WAYPOINT,56,56
+SPEAK:ARIA:Listen to Aria:WAYPOINT,53,54
 You saw those skeletons? Those are nasty. We better stay together and - don't go too far into the dark!
 *
-NPC_MOVE:ARIA:Follow Aria:WAYPOINT,45,54:54,54:45,54
+NPC_MOVE:ARIA:Follow Aria:WAYPOINT,30,50:42,54:42,52:35,52:25,51:30,50
 NPC_SAY:ARIA
 Woah - and yeah, stay away from these cliffs. Anything going down there, doesn't come back up...
 *
-NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,25:45:25:45
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,12,50:12,50
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,12,53:12,53
 NPC_SAY:ARIA
 Hmm, those stones looks interesting. Wonder if they're worth anything... *shrugs* Won't hurt if I take a few "souvenirs"!
 *
-NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,40,30:40,30
-CHOICE_DIALOGUE:*Takes a look over the edge* Phew, lets see if this bridge holds up? It certainly doesn't look like it... You wanna go first?
+GOTO:12,53:Pickup some stones:Hillcrest_Mountain_Cave
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,22,29:12,41:18,37:20,32:22,29
+CHOICE_DIALOGUE:ARIA:*Takes a look over the edge* Phew, lets see if this bridge holds up? It has certainly been here a while... You wanna go first?
 I hereby transfer the full rights to go first:Thanks...:-1
-Sure thing!:Hey, one of use alive is better than none right?:1
+Sure thing!:Hey, one of us alive is better than none right?:1
 *
-NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,45,30:40,30
+NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,22,29:28,28
 NPC_SAY:ARIA
 By the way, I knew it would hold up. Just look at the support pillars there. Old, but intact. I wouldn't want you to get hurt...
 I wanted to see if you take the risk. But I guess I respect, you looking out for yourself. In the end, nobody else is gonna do it.
 *
-NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,50,30:50,30
-GOTO:50,30:Cross the bridge after Aria:Hillcrest_Mountain_Cave
+NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,22,29:35,28
+GOTO:35,28:Cross the bridge after Aria:Hillcrest_Mountain_Cave
 
 #bridge choice
 START_CHOICE:1
-GOTO:45,30:See if the bridge is safe to cross:Hillcrest_Mountain_Cave
+GOTO:28,28:See if the bridge is safe to cross:Hillcrest_Mountain_Cave
 PLAYER_THOUGHT:*You look around and tap your foot on the bridge* Hmm, the bridge is a bit creaky when I step on it and looks old. Despite that it appears to be in good shape however...:See if the bridge is safe to cross
-GOTO:50,30:Cross the bridge:Hillcrest_Mountain_Cave
+GOTO:35,28:Cross the bridge:Hillcrest_Mountain_Cave
 NPC_SAY:ARIA
-Dont look at me like that. I knew it was holding up... Come on, I wouldn't want you to get hurt.
+Dont look at me like that. I knew it was holding up... You just gotta look at the support pillars there.
+But I appreciate you taking the risk. I guess I can really rely on you - and ill have your back as well don't worry...
 *
-NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,45,30:45,30
+NPC_MOVE:ARIA:Wait for Aria to cross the bridge:WAYPOINT,35,28:28,28
+END_CHOICE
+
+CHOICE_DIALOGUE_SIMPLE:ARIA:I suggest we don't stick around for too long. Left here looks more promising...:0
+Let's go:I couldn't agree more.
+*
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,23,9:37,26:37,18:29,14:28,10
+GOTO:23,9:Stay close to Aria:Hillcrest_Mountain_Cave
+NPC_SAY:ARIA
+Hey, look over there it lightens up. Let's - Wait, you got that look in your eyes. Like you wanna explore every inch of that cave.
+I get it, but I dont wanna risk anything now, not when were so close. I'll wait outside the cave - and take care, I heard some weird sound from the back there...
+*
+NPC_MOVE:ARIA:Catch up to Aria:WAYPOINT,0,0:21,9:12,11:7,13:2,15:0,14
+
+#exit cave
+SET_NPC_POS:ARIA:77,85:Hillcrest
+SET_QUEST_ZONE:Hillcrest
+GOTO:75,85:Catch up to Aria:Hillcrest_Mountain_Cave:MAJOR
+
+#combat trigger
+COMBAT_TRIGGER
+    SPEAK:ARIA:Talk to Aria:WAYPOINT,75,85
+    Hey! You made it aswe - Woah, woah shhhh. Do you see that over there? Follow me, stay close.
+    *
+    NPC_MOVE:ARIA:Quietly follow Aria:WAYPOINT,71,90:73,88:71,90
+    SPEAK:ARIA:Quietly speak with Aria:WAYPOINT,71,90
+    Wait, that can't be? That has to be - a stone knight. I heard about them but never seen one.
+    Apparently a long ago a powerful mage discovered a ritual to fuse man and stone to create these creatures. I wonder if they agreed to it?...
+    Their purpose was to protect something. As long as nobody gets within range they just "hibernate". They become resistant to the effects of time and are nearly invulnerable!
+    Good thing is, they are also very territorial. So don't go too close, or it will attack!. I am guessing this one is guarding the treasure here.
+    Sooo, I think together we can take him on. Besides, I got a necklace with a magic shield should things go south.
+    *
+    PLAYER_THOUGHT:Right, I almost forgot about the necklace. Marla told me to solve it without Aria noticing...:Decide what to do about the necklace
+    CHOICE_DIALOGUE:ARIA:Got any ideas?
+    Wait, the necklace is fake remember? You cant fight!:That again... Even if, I probably won't even need it anyway!:2
+    I'll help!. Together we can do it!:That's what iam talking about:-1
+    *
+    CHOICE_DIALOGUE_SIMPLE:ARIA:So are you prepared and ready to fight?:0
+    Let's fight!:...
+    I need to prepare...:Get ready and do it fast!
+    *
+COMBAT_TRIGGER_END
+
+
+#confirm your choice to expose marla
+START_CHOICE:2
+    CHOICE_DIALOGUE:ARIA:And what are you suggesting? That I should head back right now? Without fighting? Leave you all the loot?
+    It's too risky! Think about it...:*Aria visibly gets angry but then seems to lighten up* ... I guess - you have a point:0
+    Hmm, I guess you could fight without:Yeah, that's more like it! Go on, prepare yourself and tell me when you're ready:-1
+    *
 END_CHOICE
 
 
-NPC_SAY:ARIA
-I suggest we don't stick around for too long. Left here looks more promising...
+#fight
+NPC_SAY:ARIA:SKIP
+Let's rip this guy a new one!
 *
+SCRIPTED_NODE:0:Fight the Stone Knight
+
+
+
+
+
+
+
+
 
 
 #Starting the walking back to marla choice
 START_CHOICE:0
-NPC_SAY:ARIA:
-I paid a sum for this! Hmm, didn't expect to meet cutthroats in this village. On the other hand this weird mayor should have given it away...
-I am going back there ill demand an explanation and the real necklace, if there is one! Thanks for telling me, meet me there!.
-*
-NPC_MOVE:ARIA:Wait for Aria to meet Marla:WAYPOINT,41,28:38,61:56,57:71,56:82,40:50,35:41,28
-GOTO:40,29:Meet Aria and Marla:Hillcrest
-NPC_SAY:ARIA
-Good day Marla. How are you doing on this sunny day. Only thing better is buying a nice necklace for oneself don't you agree?
-*
-NPC_SAY:MARLA
-You found out! I am so sorry, its just that the necklace is so important to me, but I needed the money. I hope you can understand and don't hurt me, I will give you the real necklace.
-*
-NPC_SAY:ARIA
-You see, that's something you could have done already, right. I think it's only fair if I get, lets say 50 coins for my troubles.
-I planned to use the necklaces power to help me fight off all kinds of things, I could have died because of you!
-*
-NPC_SAY:MARLA
-You are right, you are right, here is the necklace. But ... but I don't have 50 coins. I really want to make it right!
-*
-NPC_SAY:ARIA
-Well, looks to me, you can't. I don't wanna hurt you, there's enough bloodshed in the world these days. I'll just go my way, far away from here.
-And I won't fail to tell everyone to turn there back on this cutthroat village! Good day madam! And to you, thanks for telling me maybe we will meet again one day in different, better circumstances.
-*
-NPC_MOVE:ARIA:Let Aria wander off:WAYPOINT,41,28:37,32:18,42:19,78:15,85:10,90:3,96:1,98
-DESPAWN_NPC:ARIA
-FINISH_QUEST
+    CHOICE_DIALOGUE_SIMPLE:ARIA:But now once and for all. Is the necklace fake?:0
+    Yes! Marla, told me she sold you the fake necklace but she...:She actually told you! Like that? You should have said that from the getgo...
+    *
+    NPC_SAY:ARIA:
+    I paid a sum for this! Hmm, didn't expect to meet cutthroats in this village. On the other hand this weird mayor should have given it away...
+    I am going back there ill demand an explanation and the real necklace, if there is one! Thanks for telling me, meet me there!.
+    *
+    NPC_MOVE:ARIA:Wait for Aria to meet Marla:WAYPOINT,41,28:75,83
+    SET_NPC_POS:ARIA:41,28:Hillcrest
+    GOTO:40,29:Meet Aria and Marla:Hillcrest
+    NPC_SAY:ARIA
+    Good day Marla. How are you doing on this sunny day. Only thing better is buying a nice necklace for oneself don't you agree?
+    *
+    NPC_SAY:MARLA
+    You found out! I am so sorry, its just that the necklace is so important to me, but I needed the money. I hope you can understand and don't hurt me, I will give you the real necklace.
+    *
+    NPC_SAY:ARIA
+    You see, that's something you could have done already, right. I think it's only fair if I get, lets say 50 coins for my troubles.
+    I planned to use the necklaces power to help me fight off all kinds of things, I could have died because of you!
+    *
+    NPC_SAY:MARLA
+    You are right, you are right, here is the necklace. But ... but I don't have 50 coins. I really want to make it right!
+    *
+    NPC_SAY:ARIA
+    Well, looks to me, you can't. I don't wanna hurt you, there's enough bloodshed in the world these days. I'll just go my way, far away from here.
+    And I won't fail to tell everyone to turn there back on this cutthroat village! Good day madam! And to you, thanks for telling me maybe we will meet again one day in different, better circumstances.
+    *
+    NPC_MOVE:ARIA:Let Aria wander off:WAYPOINT,41,28:37,32:18,42:19,78:15,85:10,90:3,96:1,98
+    DESPAWN_NPC:ARIA
+    FINISH_QUEST
 END_CHOICE

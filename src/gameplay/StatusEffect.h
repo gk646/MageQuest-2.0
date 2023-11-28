@@ -71,7 +71,7 @@ struct StatusEffect {
                                const Entity* self) noexcept = 0;
 
  protected:
-  [[nodiscard]] inline bool IsDamageTick() const noexcept {
+  [[nodiscard]] inline bool IsActiveTick() const noexcept {
     return duration > 0 && duration % cadence == 0;
   }
   inline void TakeLongestDuration(const StatusEffect* stackEffect) {
