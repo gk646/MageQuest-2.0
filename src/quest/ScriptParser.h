@@ -16,8 +16,9 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       while (std::getline(file, line) &&
              Util::TrimLeadingWhiteSpace(line) != "COMBAT_TRIGGER_END") {
         Util::TrimLeadingWhiteSpace(line);
-        obj->objectives.push_back(
-            ParseNextNode(Util::SplitString(line, ':'), file, quest));
+        auto node = ParseNextNode(Util::SplitString(line, ':'), file, quest);
+        node->quest = quest;
+        obj->objectives.push_back(node);
       }
       return obj;
     }

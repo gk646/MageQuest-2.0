@@ -1,5 +1,5 @@
 Name:The lost necklace
-Reward:Gold,0:XP,50
+Reward:Gold,0:XP,30
 Description:As you arrive in Hillcrest your  being (quite insistently) called by a villager, Marla. As you listen to Marla's story about her necklace your left unsure on what to do. Will this quest lead you on a way to find easy treasure, a new friend ... or lose one?
 Zone:Hillcrest
 Level:4
@@ -167,18 +167,19 @@ END_CHOICE
 CHOICE_DIALOGUE_SIMPLE:ARIA:I suggest we don't stick around for too long. Left here looks more promising...:0
 Let's go:I couldn't agree more.
 *
-NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,23,9:37,26:37,18:29,14:28,10
-GOTO:23,9:Stay close to Aria:Hillcrest_Mountain_Cave
+NPC_MOVE:ARIA:Stay close to Aria:WAYPOINT,23,9:37,26:37,18:29,14:28,10:23,9
+GOTO:22,9:Stay close to Aria:Hillcrest_Mountain_Cave
 NPC_SAY:ARIA
 Hey, look over there it lightens up. Let's - Wait, you got that look in your eyes. Like you wanna explore every inch of that cave.
-I get it, but I dont wanna risk anything now, not when were so close. I'll wait outside the cave - and take care, I heard some weird sound from the back there...
+I get it, but I dont wanna risk anything now, not when were so close. I'll wait outside the cave - and take care, I heard some weird sounds from the back there...
 *
-NPC_MOVE:ARIA:Catch up to Aria:WAYPOINT,0,0:21,9:12,11:7,13:2,15:0,14
+NPC_MOVE:ARIA:Catch up to Aria:WAYPOINT,0,0:21,9:12,11:7,13:2,15:1,14
 
 #exit cave
 SET_NPC_POS:ARIA:77,85:Hillcrest
 SET_QUEST_ZONE:Hillcrest
-GOTO:75,85:Catch up to Aria:Hillcrest_Mountain_Cave:MAJOR
+GOTO:75,85:Catch up to Aria:Hillcrest:MAJOR
+
 
 #combat trigger
 COMBAT_TRIGGER
@@ -219,11 +220,6 @@ NPC_SAY:ARIA:SKIP
 Let's rip this guy a new one!
 *
 SCRIPTED_NODE:0:Fight the Stone Knight
-
-
-
-
-
 
 
 

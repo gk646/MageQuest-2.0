@@ -107,6 +107,7 @@ struct Player final : public Entity {
     UncoverMapCover();
     Multiplayer::UDP_SEND_POSITION(static_cast<int16_t>(pos.x_),
                                    static_cast<int16_t>(pos.y_));
+    isInCombat = false;
   }
 
  private:

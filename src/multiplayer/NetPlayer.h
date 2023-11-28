@@ -5,22 +5,19 @@ struct NetPlayer final : public Entity {
   EntityStats stats;
   MonsterResource* resource = &textures::PLAYER_RESOURCE;
   std::string name;
-  StatusEffectHandler status_effects{stats, this};
   SteamNetworkingIdentity identity = SteamNetworkingIdentity();
-  Zone zone = Zone::Tutorial;
   int sprite_counter = 0;
   bool moving = false;
   bool prev_moving = false;
   bool flip = false;
   explicit NetPlayer(const Point& pos, Zone zone, CSteamID steam_id,
                      const PointT<int16_t>& size = {28, 50})
-      : Entity(pos, size, ShapeType::RECT),
-        zone(zone),
+      : Entity(pos, size, ShapeType::RECT,0,false, zone),
         name(SteamFriends()->GetFriendPersonaName(steam_id)) {
     identity.SetSteamID(steam_id);
   }
   void Draw() final {
-    if (zone != CURRENT_ZONE) {
+    if (currentZone != CURRENT_ZONE) {
       return;
     }
     draw_direction_indicator();
@@ -52,6 +49,7 @@ struct NetPlayer final : public Entity {
     sprite_counter++;
     tilePos.x = (pos.x_ + size.x / 2) / TILE_SIZE;
     tilePos.y = (pos.y_ + size.y / 2) / TILE_SIZE;
+    isInCombat = false;
   }
   inline void update_state(uint16_t x, uint16_t y) noexcept {
     if (pos.x_ == x && pos.y_ == y) {
@@ -72,7 +70,6 @@ struct NetPlayer final : public Entity {
   inline void Hit(Projectile& p) noexcept {
     if (!p.isFriendlyToPlayer) {
       p.HitTargetCallback();
-      status_effects.AddEffects(p.statusEffects);
       stats.TakeDamage(p.damageStats, this);
     }
   }

@@ -129,8 +129,8 @@ class Game {
         WorldManager::Update();
         PLAYER_STATS.Update();
         PLAYER_EFFECTS.Update();
-        PLAYER.Update();
         UI_MANAGER.Update();
+        PLAYER.Update();
         UPDATE_AND_COLLISION();
         break;
       case GameState::Loading: {

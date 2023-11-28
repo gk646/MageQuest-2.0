@@ -20,6 +20,7 @@ struct Entity {
   //Is in the same zone and closer than "UPDATE_RANGE"
   bool isUpdated = true;
   bool isIlluminated = false;
+  bool isInCombat = false;
   Entity(const Point& pos, const PointT<int16_t>& size, ShapeType hitboxShape,
          int16_t pov = 0, bool isIlluminated = false, Zone zone = CURRENT_ZONE)
       : pos(pos),

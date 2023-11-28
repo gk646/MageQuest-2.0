@@ -20,6 +20,15 @@ struct ThreatManager {
     }
     return *this;
   }
+  inline void ResetEntity(Entity* ptr) noexcept {
+    for (auto& te : targets) {
+      if(te.entity == ptr){
+        te.entity = nullptr;
+        te.threat = 0;
+      }
+    }
+    targetCount = 0;
+  }
   inline void Reset() noexcept {
     for (auto& te : targets) {
       te.entity = nullptr;
@@ -50,8 +59,7 @@ struct ThreatManager {
   }
 
  private:
-  inline void AddTarget(Entity* NewEnt, float threat) noexcept {
-    PLAYER_SECOND_STATS.isInCombat = true;
+  inline void AddTarget(Entity* NewEnt, const float threat) noexcept {
     for (auto& te : targets) {
       if (!te.entity) {
         te.entity = NewEnt;
@@ -70,7 +78,6 @@ struct ThreatManager {
         break;
       }
     }
-    PLAYER_SECOND_STATS.isInCombat = targetCount == 0;
   }
 };
 

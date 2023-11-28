@@ -72,11 +72,14 @@ struct CharacterStats final : public Content {
 
         DrawTextExR(MINECRAFT_REGULAR, TEXT_BUFFER, {x, y}, STAT_FONT_SIZE, 0.5F,
                     Colors::darkBackground);
-
+        float val = PLAYER_STATS.effects[stat];
+        if (IsPercentile(stat)) {
+          val *= 100.0F;
+        }
         if (Util::ArrayContains(NON_PERCENT_STATS.data(), stat, 4)) {
-          snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f", PLAYER_STATS.effects[stat]);
+          snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f", val);
         } else {
-          snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f%%", PLAYER_STATS.effects[stat]);
+          snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f%%", val);
         }
         Util::DrawRightAlignedText(MINECRAFT_BOLD, STAT_FONT_SIZE, TEXT_BUFFER, x + 173,
                                    y, Colors::darkBackground);
