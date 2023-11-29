@@ -7,7 +7,8 @@ static void LoadScaling() noexcept {
   auto table = Util::ReadMGI("mgi/Monsters.mgi");
 
   for (const auto& vec : table) {
-    MonsterScaler scaler = {0};
+    MonsterScaler scaler{};
+    scaler.name = vec[1];
     scaler.baseHealth = std::stof(vec[2]);
     scaler.healthPerLevel = std::stof(vec[3]);
     scaler.speed = std::stof(vec[4]);

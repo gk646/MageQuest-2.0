@@ -4,18 +4,20 @@
 #include "../ui/game/HealthBar.h"
 #include "components/HealthDropComponent.h"
 
-#define MONSTER_UPDATE()                                                              \
-  ENTITY_UPDATE()                                                                     \
-  spriteCounter++;                                                                    \
-  healthBar.Update();                                                                 \
-  effectHandler.Update();                                                             \
-  CheckForDeath();                                                                    \
-  if (MP_TYPE == MultiplayerType::CLIENT) return;                                     \
-  hitFlashDuration = std::max(-12, hitFlashDuration - 1);                             \
-  isFlipped = pos.x_ + size.x / 2.0F > MIRROR_POINT && threatManager.targetCount > 0; \
-  attackComponent.Update();                                                           \
-  if (actionState != 0) return;                                                       \
-  threatManager.Update();                                                             \
+#define MONSTER_UPDATE()                                                      \
+  ENTITY_UPDATE()                                                             \
+  spriteCounter++;                                                            \
+  healthBar.Update();                                                         \
+  effectHandler.Update();                                                     \
+  CheckForDeath();                                                            \
+  if (MP_TYPE == MultiplayerType::CLIENT) return;                             \
+  hitFlashDuration = std::max(-12, hitFlashDuration - 1);                     \
+  isFlipped = threatManager.targetCount > 0 &&                                \
+              pos.x_ + size.x / 2.0F >                                        \
+                  threatManager.GetHighestThreatTarget()->GetMiddlePoint().x_; \
+  attackComponent.Update();                                                   \
+  if (actionState != 0) return;                                               \
+  threatManager.Update();                                                     \
   isMoving = false;
 
 struct Monster : public Entity {
@@ -23,6 +25,7 @@ struct Monster : public Entity {
   ThreatManager threatManager{this};
   AttackComponent attackComponent;
   StatusEffectHandler effectHandler{stats, this};
+  const std::string* name;
   const MonsterResource* resource;
   HealthBar healthBar;
   uint16_t u_id = MONSTER_ID++;
@@ -39,7 +42,11 @@ struct Monster : public Entity {
         resource(resourceArg),
         attackComponent(this, scaler),
         type(typeArg),
-        healthBar((int)size.x) {
+        healthBar((int)size.x),
+        name(&monsterIdToScaler[typeArg].name) {
+    if (IsBoss(type)) {
+      healthBar.isBoss = true;
+    }
     if (MP_TYPE == MultiplayerType::SERVER) {
       Server::SendMsgToAllUsers(
           UDP_MONSTER_SPAWN,
@@ -56,7 +63,8 @@ struct Monster : public Entity {
         resource(other.resource),
         healthBar(other.healthBar),
         attackComponent(other.attackComponent),
-        type(other.type) {}
+        type(other.type),
+        name(other.name) {}
   Monster& operator=(const Monster& other) {
     if (this != &other) {
       Entity::operator=(other);
@@ -340,5 +348,50 @@ void ConeAttack::Execute(Monster* attacker) const {
   SetDamageStats(prj, attacker->stats.effects[CRIT_CHANCE],
                  attacker->stats.effects[CRIT_DAMAGE_P]);
   PROJECTILES.emplace_back(prj);
+}
+
+//HealthBar
+void HealthBar::DrawNormal(const Monster* self) const noexcept {
+  if (delay <= 0) return;
+  float x = self->pos.x_ + DRAW_X;
+  float y = self->pos.y_ + DRAW_Y;
+
+  const float scaledWidth = 50 * UI_SCALE;
+  const float scaledHeight = height * UI_SCALE;
+
+  const float startX = x - (scaledWidth - width) / 2;
+  const float startY = y - scaledHeight * 1.2F;
+  const float healthWidth =
+      self->stats.health / self->stats.GetMaxHealth() * scaledWidth - 2;
+
+  DrawRectanglePro(startX + 1, startY + 4, healthWidth, scaledHeight / 2, {0, 0}, 0,
+                   Colors::Red);
+  DrawTexturePro(textures::ui::HEALTH_BAR, {0, 0, 50, 10},
+                 {startX, startY, scaledWidth, scaledHeight}, {0, 0}, 0, WHITE);
+  self->effectHandler.DrawEntity(self);
+  if (SHOW_HEALTH_NUMBERS) {
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f/%.0f", self->stats.health,
+             self->stats.GetMaxHealth());
+    Util::DrawCenteredText(MINECRAFT_BOLD, 12, TEXT_BUFFER, x + width / 2,
+                           startY - height, WHITE);
+  }
+}
+
+void HealthBar::DrawBossBar(const Monster* self, int i) {
+  float startY = 25.0F + 100.0F * (float)i;
+  float startX = (SCREEN_WIDTH - 351.0F) / 2.0F;
+  auto& stats = self->stats;
+  Util::DrawCenteredText(EDIT_UNDO, 17, self->name->c_str(), startX + 176, startY - 10,
+                         Colors::white_smoke);
+  DrawRectangleProFast(startX + 17, startY + 16,
+                       stats.health / stats.GetMaxHealth() * 319, 15, Colors::Red);
+  DrawTextureProFast(textures::ui::bossbar, startX, startY, 0, WHITE);
+
+  if (SHOW_HEALTH_NUMBERS) {
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f/%.0f", stats.health,
+             stats.GetMaxHealth());
+    Util::DrawCenteredText(EDIT_UNDO, 16, TEXT_BUFFER, startX + 175, startY + 14,
+                           Colors::white_smoke);
+  }
 }
 #endif  //MAGE_QUEST_SRC_ENTITIES_MONSTER_H_

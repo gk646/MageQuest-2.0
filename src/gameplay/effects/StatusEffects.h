@@ -257,9 +257,9 @@ struct Bleed final : public StatusEffect {
 };
 struct Resistance final : public StatusEffect {
   float resistanceAmount;
-  Resistance(float percentile, int duration)
+  Resistance(float percent, int duration)
       : StatusEffect(false, 0, duration, EffectType::RESISTANCE),
-        resistanceAmount(percentile / 100) {
+        resistanceAmount(percent / 100) {
     maxStacks = 15;
   }
   [[nodiscard]] Resistance* Clone() const final { return new Resistance(*this); }

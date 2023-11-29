@@ -220,6 +220,25 @@ NPC_SAY:ARIA:SKIP
 Let's rip this guy a new one!
 *
 SCRIPTED_NODE:0:Fight the Stone Knight
+PLAYER_THOUGHT:That looked bad! ... I won't let it get away with that! One of us dies now!:Kill the Stone Knight!
+KILL:BOSS_STONE_KNIGHT,1:Kill the Stone Knight!:MAJOR
+PLAYER_THOUGHT:*phew* That wasn't easy... Aria! I should check on her!:Check on Aria!
+SPEAK:ARIA:Check on Aria!:WAYPOINT,0,0
+*You inspect Aria's body, fearing the worst. You quickly spot grave wounds inflicted by the devastating blows from the Stone Knight.*
+*You try to spot any movement, but there is none... Was your mind racing moments ago in battle, it now falls into an eerie silence - and the whole mountaintop with it.*
+She's dead. *Past moments flash before your eyes - crossing the bridge together - helping her during the ambush - resting at the pond...*
+Did I make the right decisions... ?
+Was it my fault... ?
+I have to move on. I have to be ready for the darkness out there.
+*
+CHOICE_DIALOGUE_SIMPLE:ARIA:So are you prepared and ready to fight?:0
+Let's fight!:...
+I need to prepare...:Get ready and do it fast!
+*
+#SET_PLAYER_POS:83,42:Hillcrest
+PLAYER_THOUGHT:It's not far from here. Let's get this over with:Tie up loose ends
+GOTO:40,29:Tie up loose ends:Hillcrest
+
 
 
 

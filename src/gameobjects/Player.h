@@ -30,7 +30,7 @@ struct Player final : public Entity {
       p.HitTargetCallback();
       PLAYER_STATS.TakeDamage(p.damageStats, this);
       PLAYER_EFFECTS.AddEffects(p.statusEffects);
-      if(Skill::castProgress > 0 && Skill::lastCastedSkill){
+      if (Skill::castProgress > 0 && Skill::lastCastedSkill) {
         Skill::castProgress = std::max(0, Skill::castProgress - 15);
       }
     }
@@ -67,12 +67,9 @@ struct Player final : public Entity {
     } else if (PLAYER_STATS.stunned || GAME_STATE == GameState::GameMenu) {
       return;
     }
-
     float speed = PLAYER_STATS.GetSpeed();
-
     bool verticalMove = (IsKeyDown(KEY_W) || IsKeyDown(KEY_S));
     bool horizontalMove = (IsKeyDown(KEY_A) || IsKeyDown(KEY_D));
-
     if (verticalMove && horizontalMove) {
       speed /= SQRT_2;
     }
@@ -229,12 +226,14 @@ bool Skill::RangeLineOfSightCheck(const Point& targetPos) const noexcept {
       return true;
     } else {
       ResetCast();
-      Notifications::UpdateStatusMessage("Target not in line of sight",StatusMessageType::NOT_IN_SIGHT);
+      Notifications::UpdateStatusMessage("Target not in line of sight",
+                                         StatusMessageType::NOT_IN_SIGHT);
       // No line of sight to target
     }
   } else {
     ResetCast();
-    Notifications::UpdateStatusMessage("Target is out of range",StatusMessageType::OUT_OF_RANGE);
+    Notifications::UpdateStatusMessage("Target is out of range",
+                                       StatusMessageType::OUT_OF_RANGE);
     // Target is out of range
   }
   return false;

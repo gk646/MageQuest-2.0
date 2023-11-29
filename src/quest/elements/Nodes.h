@@ -667,7 +667,7 @@ struct COMBAT_TRIGGER final : public QuestNode {
 };
 struct SCRIPTED_NODE final : public QuestNode {
   int16_t num;
-  ScriptedNodeInfo info{};
+  ScriptMemory info{};
   explicit SCRIPTED_NODE(const std::string& intString, const std::string& objText)
       : QuestNode(objText, NodeType::SCRIPTED_NODE), num((int16_t)std::stoi(intString)) {}
   bool Progress() noexcept final { return functionArray[num](info); }

@@ -6,7 +6,7 @@ struct SpellEcho final : public UniqueEffect {
     if (RANGE_100(RNG_ENGINE) < 5 &&
         !PLAYER_EFFECTS.IsEffectActive(EffectType::SPELL_ECHO_CD)) {
       skill->Activate(true);
-      PLAYER_EFFECTS.AddEffect(new SpellEchoCD());
+      PLAYER_EFFECTS.AddEffect(new SpellEchoCD(), true);
     }
   }
 };
@@ -17,7 +17,7 @@ struct ElementalEquilibrium final : public UniqueEffect {
     if (!PLAYER_EFFECTS.IsEffectActive(EffectType::ELEMENTAL_EQUILIBRIUM_BUFF) &&
         !PLAYER_EFFECTS.IsEffectActive(EffectType::ELEMENTAL_EQUILIBRIUM_CD)) {
       excludedType = skill->skillStats.dmgType;
-      PLAYER_EFFECTS.AddEffect(new ElementalEquilibriumBuff(skill->skillStats.dmgType));
+      PLAYER_EFFECTS.AddEffect(new ElementalEquilibriumBuff(skill->skillStats.dmgType), true);
     }
   }
   inline void OnProjectileCreation(Projectile* prj) noexcept final {
@@ -26,7 +26,7 @@ struct ElementalEquilibrium final : public UniqueEffect {
       if (type != excludedType && Util::ArrayContains(commonSchools, type, 4)) {
         prj->damageStats.damage *= 1.3F;
         PLAYER_EFFECTS.RemoveEffect(EffectType::ELEMENTAL_EQUILIBRIUM_BUFF);
-        PLAYER_EFFECTS.AddEffect(new ElementalEquilibriumCD());
+        PLAYER_EFFECTS.AddEffect(new ElementalEquilibriumCD(), true);
       }
     }
   }

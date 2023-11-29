@@ -47,6 +47,7 @@ struct UIManager {
     };
   }
   inline void UIUpdate() noexcept {
+    HealthBar::UpdateStatic();
     MOUSE_POS = GetMousePosition();
     if (!IsWindowFullscreen()) {
       if (GetScreenWidth() != SCREEN_WIDTH || GetScreenHeight() != SCREEN_HEIGHT) {

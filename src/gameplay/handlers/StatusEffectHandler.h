@@ -75,13 +75,19 @@ struct StatusEffectHandler {
     }
   }
   //Doesn't take ownership of the ptr but makes its own copy which it manages automatically
-  inline void AddEffect(StatusEffect* newEffect) {
+  inline void AddEffect(StatusEffect* newEffect, bool takeOwnerShip = false) {
     if (!newEffect) return;
     if (!TryAddOrStackEffect(newEffect)) {
-
-      auto new_copy = newEffect->Clone();
-      new_copy->ApplyEffect(stats, self);
-      currentEffects.push_back(new_copy);
+      auto newAdd = newEffect;
+      if (!takeOwnerShip) {
+        newAdd = newEffect->Clone();
+      }
+      newAdd->ApplyEffect(stats, self);
+      currentEffects.push_back(newAdd);
+    } else {
+      if (takeOwnerShip) {
+        delete newEffect;
+      }
     }
   }
   inline void AddEffects(
