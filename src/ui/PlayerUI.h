@@ -23,6 +23,7 @@ struct PlayerUI {
   //Draws the ui elements from lowest to top level visibility
   inline void Draw() noexcept {
     DRAW_NPC_DIALOGUE()
+    HealthBar::DrawStatic();
     skillPanel.searchField.UpdateLogic();
     Notifications::Draw();
     playerHotbar.Draw();

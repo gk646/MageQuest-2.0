@@ -30,11 +30,11 @@ struct Wolf final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       attackComponent.AttackClose();
@@ -89,11 +89,11 @@ struct Snake final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       attackComponent.AttackClose();
@@ -150,11 +150,11 @@ struct BloodHound final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       attackComponent.AttackClose();
@@ -172,7 +172,7 @@ struct BloodHound final : public Monster {
   }
   inline void DrawAttack1() noexcept {
     int num = spriteCounter % 105 / 15;
-    if (num < 5) {
+    if (num < 6) {
       DrawTextureProFastEx(resource->attack1[num], pos.x_ + DRAW_X - 12,
                            pos.y_ + DRAW_Y - 19, 10, 0, !isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
@@ -222,11 +222,11 @@ struct FangShroom final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target) {
       attackComponent.AttackFar();
@@ -310,11 +310,11 @@ struct SkeletonWarrior final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       attackComponent.AttackClose();
@@ -383,11 +383,11 @@ struct Ghost final : public Monster {
                            pos.y_ + DRAW_Y - 20, -3, 0, !isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && attackComponent.currentCooldown == 0) {
       if (!disappeared) {
@@ -403,7 +403,7 @@ struct Ghost final : public Monster {
     }
   }
   inline void TeleportToTarget(const Entity* ent) noexcept {
-    int num = RANGE_100_FLOAT(RNG_ENGINE) - 1;
+    int num = (int)RANGE_100_FLOAT(RNG_ENGINE) - 1;
     num /= 10;
 
     for (int i = 0; i < 9; ++i) {
@@ -413,7 +413,8 @@ struct Ghost final : public Monster {
       float newX = ent->pos.x_ + 24 * dir.x;
       float newY = ent->pos.y_ + 24 * dir.y;
 
-      if (!CheckTileCollision((newX + size.x / 2) / 48, (newY + size.y / 2) / 48)) {
+      if (!CheckTileCollision((int)(newX + size.x / 2.0F) / 48,
+                              (int)(newY + size.y / 2.0F) / 48)) {
         pos.x_ = newX;
         pos.y_ = newY;
         actionState = 2;
@@ -441,7 +442,7 @@ struct Ghost final : public Monster {
     } else {
       actionState = 1;
       teleported = false;
-      PROJECTILES.emplace_back(new PsychicScream({pos.x_ -1, pos.y_ +4}, false,
+      PROJECTILES.emplace_back(new PsychicScream({pos.x_ - 1, pos.y_ + 4}, false,
                                                  stats.effects[WEAPON_DAMAGE]));
       attackComponent.currentCooldown = 150;
       spriteCounter = 0;
@@ -496,18 +497,18 @@ struct SkeletonSpear final : public Monster {
       if (isMoving) {
         DrawTextureProFastEx(resource->walk[spriteCounter % 105 / 15],
                              pos.x_ + DRAW_X - 30, pos.y_ + DRAW_Y - 45, 0, 0,
-                             pos.x_ + size.x / 2 > MIRROR_POINT, WHITE);
+                             pos.x_ + size.x / 2.0F > MIRROR_POINT, WHITE);
       } else {
         DrawTextureProFastEx(resource->idle[spriteCounter % 84 / 12],
                              pos.x_ + DRAW_X - 38, pos.y_ + DRAW_Y - 45, 10, 0,
-                             pos.x_ + size.x / 2 > MIRROR_POINT, WHITE);
+                             pos.x_ + size.x / 2.0F > MIRROR_POINT, WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       attackComponent.AttackClose();
@@ -578,11 +579,11 @@ struct SkeletonArcher final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target) {
       attackComponent.AttackFar();
@@ -637,7 +638,7 @@ struct SkeletonShield final : public Monster {
         4, 10 * 60,
         [](Monster* attacker) {
           int rand = std::max((int)(RANGE_01(RNG_ENGINE) * 300), 100);
-          attacker->effectHandler.AddEffect(new Resistance(50, rand));
+          attacker->effectHandler.AddEffect(new Resistance(50, rand), true);
           attacker->attackComponent.currentCooldown = rand;
         },
         2, 0, 1.0F);
@@ -664,11 +665,11 @@ struct SkeletonShield final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target) {
       attackComponent.AttackFar();
@@ -759,7 +760,7 @@ struct SkullWolf final : public Monster {
             hitFlashDuration > 0 ? Color{255, 0, 68, 200} : Color{255, 255, 255, alpha});
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
@@ -771,8 +772,8 @@ struct SkullWolf final : public Monster {
           actionState = 2;
           spriteCounter = 0;
           attackComponent.currentCooldown = 60;
-          effectHandler.AddEffect(new Swiftness(25, 700));
-          effectHandler.AddEffect(new Berserk(1.4F, 700));
+          effectHandler.AddEffect(new Swiftness(25, 700), true);
+          effectHandler.AddEffect(new Berserk(1.4F, 700), true);
           PlaySoundR(resource->attackSounds[1]);
         } else if (alpha == 50 && !effectHandler.IsEffectActive(EffectType::SWIFTNESS)) {
           actionState = 3;
@@ -856,11 +857,11 @@ struct Rat final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && WalkToEntity(target)) {
       attackComponent.AttackClose();
@@ -922,11 +923,11 @@ struct Goblin final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target) {
       attackComponent.AttackFar();
@@ -1013,11 +1014,11 @@ struct FlyingEye final : public Monster {
                              hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   void Update() final {
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target) {
       attackComponent.AttackFar();
@@ -1079,20 +1080,20 @@ struct BossStoneGolem final : public Monster {
     attackComponent.RegisterAbility(
         2, 25 * 60,
         [](Monster* attacker) {
-          attacker->effectHandler.AddEffect(new Resistance(100, 150));
+          attacker->effectHandler.AddEffect(new Resistance(100, 150), true);
           attacker->attackComponent.currentCooldown = 150;
         },
         0);
     attackComponent.RegisterAbility(
         5, 15 * 60,
         [](Monster* attacker) {
-          attacker->effectHandler.AddEffect(new Resistance(20, 600));
+          attacker->effectHandler.AddEffect(new Resistance(20, 600), true);
         },
         0, 0, 0.75F);
     attackComponent.RegisterAbility(
         6, 15 * 60,
         [](Monster* attacker) {
-          attacker->effectHandler.AddEffect(new Berserk(1.2F, 600));
+          attacker->effectHandler.AddEffect(new Berserk(1.2F, 600), true);
         },
         0, 0, 0.75F);
     attackComponent.RegisterProjectileAttack(1, stats.effects[WEAPON_DAMAGE], 150,
@@ -1119,7 +1120,7 @@ struct BossStoneGolem final : public Monster {
                            pos.y_ + DRAW_Y - 48, 0, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    healthBar.Draw(this);
     DRAW_HITBOXES();
   }
   inline void Update() final {
@@ -1263,14 +1264,16 @@ struct BossStoneKnight final : public Monster {
         DrawHibernate();
       }
     }
-    healthBar.Draw(pos.x_ + DRAW_X, pos.y_ + DRAW_Y, stats);
+    if (isFighting) {
+      healthBar.Draw(this);
+    }
     DRAW_HITBOXES();
   }
   void Update() final {
     if (!isFighting) {
-      effectHandler.AddEffect(new Resistance(1, 1));
+      effectHandler.AddEffect(new Resistance(100, 2), true);
     }
-    MONSTER_UPDATE();
+    MONSTER_UPDATE()
     auto target = threatManager.GetHighestThreatTarget();
     if (target && isFighting) {
       attackComponent.AttackFar();
@@ -1342,8 +1345,8 @@ struct BossStoneKnight final : public Monster {
   inline void DrawHeal() noexcept {
     int num = spriteCounter % 81 / 10;
     if (num < 8) {
-      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 72,
-                           pos.y_ + DRAW_Y - 30, 0, 0, isFlipped,
+      DrawTextureProFastEx(resource->special[num], pos.x_ + DRAW_X - 78,
+                           pos.y_ + DRAW_Y - 25, 0, 0, isFlipped,
                            hitFlashDuration > 0 ? Color{255, 0, 68, 200} : WHITE);
     } else {
       actionState = 0;

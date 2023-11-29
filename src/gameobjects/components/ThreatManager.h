@@ -10,7 +10,6 @@ struct ThreatManager {
   std::array<ThreatEntity, 4> targets{};
   Monster* self;
   int8_t targetCount = 0;
-
   explicit ThreatManager(Monster* self) : self(self) {}
   ThreatManager& operator=(const ThreatManager& other) {
     if (this != &other) {
@@ -57,8 +56,6 @@ struct ThreatManager {
       }
     }
   }
-
- private:
   inline void AddTarget(Entity* NewEnt, const float threat) noexcept {
     for (auto& te : targets) {
       if (!te.entity) {
@@ -69,6 +66,8 @@ struct ThreatManager {
       }
     }
   }
+ private:
+
   inline void RemoveTarget(Entity* NewEnt) noexcept {
     for (auto& te : targets) {
       if (te.entity == NewEnt) {

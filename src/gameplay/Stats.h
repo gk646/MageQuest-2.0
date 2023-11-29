@@ -3,6 +3,7 @@
 struct Entity;
 
 struct MonsterScaler {
+  std::string name{};
   float baseHealth;
   float healthPerLevel;
   float speed;
