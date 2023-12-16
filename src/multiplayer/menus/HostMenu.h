@@ -9,15 +9,15 @@ struct HostMenu {
   const int FONT_SIZE_OTHER = 16;
 
   void update_values() {
-    PLAYER_WIDTH = 150.0f * UI_SCALE;
-    PLAYER_HEIGHT = 250.0f * UI_SCALE;
-    PLAYER_GAP = 30.0f * UI_SCALE;
+    PLAYER_WIDTH = 150.0f;
+    PLAYER_HEIGHT = 250.0f;
+    PLAYER_GAP = 30.0f;
   }
   void drawPlayerBox(float x, float y) {
-    DrawRectangleRounded({x, y, PLAYER_WIDTH, PLAYER_HEIGHT}, ROUNDNESS, ROUND_SEGMENTS,
-                         Colors::mediumLightGrey);
+    DrawRectangleRounded({x, y, PLAYER_WIDTH, PLAYER_HEIGHT}, ROUNDNESS,
+                         GAME_SETTINGS.roundSegments, Colors::mediumLightGrey);
     DrawRectangleRoundedLines({x, y, PLAYER_WIDTH, PLAYER_HEIGHT}, ROUNDNESS,
-                              ROUND_SEGMENTS, 2, Colors::darkBackground);
+                              GAME_SETTINGS.roundSegments, 2, Colors::darkBackground);
   }
   void drawPlayerName(const std::string& name, float x, float y) const {
     DrawTextR(

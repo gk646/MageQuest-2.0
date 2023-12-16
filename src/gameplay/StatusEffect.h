@@ -44,9 +44,9 @@ struct StatusEffect {
 
     float toolTipHeight = TOOL_TIP_BASE_HEIGHT + (float)lineBreaks * 15.0F;
     y -= toolTipHeight;
-    DrawRectangleRounded({x, y, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F, ROUND_SEGMENTS,
+    DrawRectangleRounded({x, y, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F, GAME_SETTINGS.roundSegments,
                          Colors::lightGreyMiddleAlpha);
-    DrawRectangleRoundedLines({x, y, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F, ROUND_SEGMENTS,
+    DrawRectangleRoundedLines({x, y, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F, GAME_SETTINGS.roundSegments,
                               2, Colors::darkBackground);
     DrawTextExR(MINECRAFT_BOLD, effectToInfo[type].name.c_str(), {x + 4, y + 3}, 14, 0.5F,
                 Colors::darkBackground);

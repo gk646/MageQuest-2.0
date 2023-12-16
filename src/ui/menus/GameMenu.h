@@ -16,9 +16,9 @@ struct GameMenu {
       : settingsMenu(settings_menu), playerUI(playerUI) {}
   void Draw() noexcept {
     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, ColorAlpha(GRAY, 0.7));
-    const float scaled_width = 110 * UI_SCALE;
-    const float scaled_height = 30 * UI_SCALE;
-    const float vertical_gap = 10 * UI_SCALE;
+    const float scaled_width = 110 ;
+    const float scaled_height = 30 ;
+    const float vertical_gap = 10 ;
     const float xOffset = (SCREEN_WIDTH / 2.0f) - (scaled_width / 2.0f);
 
     if (menuState == MenuState::Main) {

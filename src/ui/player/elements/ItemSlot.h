@@ -30,8 +30,8 @@ struct ItemSlot {
   }
   //General update method for all bag slots
   void Draw(float x, float y) noexcept {
-    hitBox.x = (x + (float)baseX) * UI_SCALE;
-    hitBox.y = (y + (float)baseY) * UI_SCALE;
+    hitBox.x = (x + (float)baseX) ;
+    hitBox.y = (y + (float)baseY) ;
 
     auto ptr = item;  //thread safety
     DrawRectangleRounded(hitBox, 0.4F, 40, Colors::mediumVeryLight);

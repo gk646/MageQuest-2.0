@@ -17,8 +17,8 @@ struct TextPanel {
   inline void Draw(float x, float y) noexcept {
     if (!isOpen) return;
     UpdateImpl(x, y);
-    DrawRectangleRounded(bounds, 0.2F, ROUND_SEGMENTS, Colors::LightGrey);
-    DrawRectangleRoundedLines(bounds, 0.2F, ROUND_SEGMENTS, 2, Colors::darkBackground);
+    DrawRectangleRounded(bounds, 0.2F, GAME_SETTINGS.roundSegments, Colors::LightGrey);
+    DrawRectangleRoundedLines(bounds, 0.2F, GAME_SETTINGS.roundSegments, 2, Colors::darkBackground);
 
     DrawTextExR(MINECRAFT_REGULAR, text.c_str(), {bounds.x + 5, bounds.y + 5}, fontSize,
                 0.5F, Colors::darkBackground);

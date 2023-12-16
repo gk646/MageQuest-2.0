@@ -89,9 +89,9 @@ struct Skill {
     float startX = MOUSE_POS.x - TOOL_TIP_WIDTH / 2;
     float startY = MOUSE_POS.y - toolTipHeight - 3;
     DrawRectangleRounded({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
-                         ROUND_SEGMENTS, Colors::mediumLightGrey);
+                         GAME_SETTINGS.roundSegments, Colors::mediumLightGrey);
     DrawRectangleRoundedLines({startX, startY, TOOL_TIP_WIDTH, toolTipHeight}, 0.1F,
-                              ROUND_SEGMENTS, 2, damageTypeToColor[skillStats.dmgType]);
+                              GAME_SETTINGS.roundSegments, 2, damageTypeToColor[skillStats.dmgType]);
 
     //-----------Description-----------//
 

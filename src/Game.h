@@ -175,7 +175,7 @@ class Game {
   }
   inline static void DrawGame() noexcept {
     WorldRender::PreRenderTasks();
-    if (!DISABLE_DYNAMIC_LIGHTING) [[likely]] {
+    if (!GAME_SETTINGS.disableDynamicLighting) [[likely]] {
       BeginTextureMode(FIRST_LAYER_BUFFER);
       ClearBackground(BLANK);
       Lighting::Shaders::StartDynamicLights();
@@ -238,7 +238,7 @@ class Game {
       case GameState::GameOver:
         break;
     }
-    if (SHOW_FPS) {
+    if (GAME_SETTINGS.showFPS) {
       DrawFPS(25, 25);
     }
   }
@@ -266,7 +266,7 @@ class Game {
     SetConfigFlags(FLAG_WINDOW_TOPMOST);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
-    SetTargetFPS(TARGET_FPS);
+    SetTargetFPS(GAME_SETTINGS.targetFPS);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 21);
     InitWindow(1280, 960, "Mage Quest II");
     SCREEN_WIDTH = GetScreenWidth();
@@ -288,7 +288,7 @@ class Game {
 #ifdef MG2_DEBUG
     //SetMasterVolume(0);
 #endif
-    SettingsMenu::set_full_screen();
+    SettingsMenu::SetFullScreen();
   }
   ~Game() noexcept {
     GameSaver::Save();

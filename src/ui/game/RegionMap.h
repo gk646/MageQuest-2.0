@@ -7,7 +7,8 @@ struct RegionMap final : public Window {
   float zoom = 5;
   bool dragged = false;
   RegionMap()
-      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, "Map", KEY_M, sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
+      : Window(100, 100, SCREEN_WIDTH * 0.9F, SCREEN_HEIGHT * 0.9F, 20, "Map", KEY_M,
+               sound::EMPTY_SOUND, sound::EMPTY_SOUND) {}
   void Draw() noexcept {
     WINDOW_LOGIC()
     DragMap();
@@ -55,7 +56,7 @@ struct RegionMap final : public Window {
       }
     }
 
-    if (FAST_UI) {
+    if (GAME_SETTINGS.fastUI) {
       return;
     }
 
@@ -77,7 +78,7 @@ struct RegionMap final : public Window {
       }
     }
 
-    PointT<int16_t>  questWaypoint;
+    PointT<int16_t> questWaypoint;
     if (PLAYER_QUESTS.activeQuest &&
         (questWaypoint = PLAYER_QUESTS.activeQuest->GetActiveWaypoint()) != 0) {
       DrawSquareProFast(base_x + questWaypoint.x * zoom, base_y + questWaypoint.y * zoom,
@@ -107,24 +108,24 @@ struct RegionMap final : public Window {
     RectangleR scaled_whole = SCALE_RECT(wholeWindow);
     RectangleR scaled_head = SCALE_RECT(header_bar);
 
-    DrawRectangleRounded(scaled_whole, 0.03F, ROUND_SEGMENTS,
+    DrawRectangleRounded(scaled_whole, 0.03F, GAME_SETTINGS.roundSegments,
                          Colors::lightGreyMiddleAlpha);
 
-    DrawRectangleRounded(scaled_head, 0.5F, ROUND_SEGMENTS,
+    DrawRectangleRounded(scaled_head, 0.5F, GAME_SETTINGS.roundSegments,
                          isHeaderHovered ? isDragged ? Colors::mediumLightGreyDarker
                                                      : Colors::mediumLightGreyBitDarker
                                          : Colors::mediumLightGrey);
 
-    DrawRectangleRoundedLines(scaled_whole, 0.03F, ROUND_SEGMENTS, 3,
+    DrawRectangleRoundedLines(scaled_whole, 0.03F, GAME_SETTINGS.roundSegments, 3,
                               Colors::darkBackground);
-    DrawRectangleRoundedLines(scaled_head, 0.5F, ROUND_SEGMENTS, 2,
+    DrawRectangleRoundedLines(scaled_head, 0.5F, GAME_SETTINGS.roundSegments, 2,
                               Colors::darkBackground);
 
     DrawTextExR(ANT_PARTY, header_text,
                 {scaled_whole.x + scaled_whole.width / 2.0F -
-                     GetTextWidth(header_text, fontSize * UI_SCALE) / 2.0F,
+                     GetTextWidth(header_text, fontSize) / 2.0F,
                  scaled_whole.y + scaled_head.height / 4.0F},
-                fontSize * UI_SCALE, 1, Colors::darkBackground);
+                fontSize, 1, Colors::darkBackground);
   }
 };
 #endif  //MAGEQUEST_SRC_UI_GAME_REGIONMAP_H_

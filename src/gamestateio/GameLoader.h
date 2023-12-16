@@ -40,12 +40,12 @@ struct GameLoader {
 
  private:
   static void LoadGame() {
+    LoadStep(GameInfoLoader::Load);
     LoadStep(MiscLoader::Load);
     LoadStep(ProjectileLoader::Load);
     LoadStep(TalentLoader::LoadConnections);
     LoadStep(MusicLoader::Load);
     LoadStep(SkillLoader::Load);
-    LoadStep(GameInfoLoader::Load);
     LoadStep(TransitionParser::ParseTransitionFile);
     LoadStep(NPCLoader::LoadNamedNPCs);
     LoadStep(QuestLoader::Load);
@@ -56,6 +56,7 @@ struct GameLoader {
     finished_cpu_loading = true;
   }
   static void SetupGameImpl() {
+    UI_MANAGER.settings_menu.ApplySettings();
     StatLoader::Load();
     delete RAYLIB_LOGO;
     PlaySoundR(sound::intro);
@@ -71,7 +72,7 @@ struct GameLoader {
 #else
     WorldManager::LoadMap(Zone::Hillcrest, {75, 95});
 #endif
-   //MONSTERS.push_back(Monster::GetNewMonster({75 * 48, 85 * 48}, MonsterType::BOSS_STONE_KNIGHT, 4));
+    //MONSTERS.push_back(Monster::GetNewMonster({75 * 48, 85 * 48}, MonsterType::BOSS_STONE_KNIGHT, 4));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (int i = 0; i < 15; i++) {
       // WORLD_OBJECTS.push_back(          new DroppedItem({50 * 48, 35 * 48}, ItemDropHandler::GetRandomScaledItem(15)));

@@ -23,16 +23,16 @@ struct Button {
 
  private:
   inline static void DrawNormalButton(const RectangleR& bound) noexcept {
-    DrawRectangleRounded(bound, 0.2F, ROUND_SEGMENTS, Colors::mediumVeryLight);
-    DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
+    DrawRectangleRounded(bound, 0.2F, GAME_SETTINGS.roundSegments, Colors::mediumVeryLight);
+    DrawRectangleRoundedLines(bound, 0.2F, GAME_SETTINGS.roundSegments, 1, Colors::darkBackground);
   }
   inline static void DrawHoveredButton(const RectangleR& bound) noexcept {
-    DrawRectangleRounded(bound, 0.2F, ROUND_SEGMENTS, Colors::mediumLightGreyBitDarker);
-    DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
+    DrawRectangleRounded(bound, 0.2F, GAME_SETTINGS.roundSegments, Colors::mediumLightGreyBitDarker);
+    DrawRectangleRoundedLines(bound, 0.2F, GAME_SETTINGS.roundSegments, 1, Colors::darkBackground);
   }
   inline static void DrawPressedButton(const RectangleR& bound) noexcept {
-    DrawRectangleRounded(bound, 0.2F, ROUND_SEGMENTS, Colors::mediumLightGreyDarker);
-    DrawRectangleRoundedLines(bound, 0.2F, ROUND_SEGMENTS, 1, Colors::darkBackground);
+    DrawRectangleRounded(bound, 0.2F, GAME_SETTINGS.roundSegments, Colors::mediumLightGreyDarker);
+    DrawRectangleRoundedLines(bound, 0.2F, GAME_SETTINGS.roundSegments, 1, Colors::darkBackground);
   }
   inline static void DrawButtonText(const RectangleR& bounds, const std::string& txt,
                                     Alignment align) noexcept {

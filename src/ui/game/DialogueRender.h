@@ -12,28 +12,24 @@ inline static void DrawContinueButton(float startX, float width, float startY,
   int num = spriteCounter % 160 / 40;
   switch (num) {
     case 0:
-      DrawTextureScaled(
-          textures::ui::dialogContinue,
-          {startX + width - SCALE(20), startY + height - SCALE(35), SCALE(16), SCALE(16)},
-          0, false, 0, WHITE);
+      DrawTextureScaled(textures::ui::dialogContinue,
+                        {startX + width - 20, startY + height - 35, 16, 16}, 0, false, 0,
+                        WHITE);
       break;
     case 1:
-      DrawTextureScaled(
-          textures::ui::dialogContinue2,
-          {startX + width - SCALE(20), startY + height - SCALE(35), SCALE(16), SCALE(16)},
-          0, false, 0, WHITE);
+      DrawTextureScaled(textures::ui::dialogContinue2,
+                        {startX + width - 20, startY + height - 35, 16, 16}, 0, false, 0,
+                        WHITE);
       break;
     case 2:
-      DrawTextureScaled(
-          textures::ui::dialogContinue3,
-          {startX + width - SCALE(20), startY + height - SCALE(35), SCALE(16), SCALE(16)},
-          0, false, 0, WHITE);
+      DrawTextureScaled(textures::ui::dialogContinue3,
+                        {startX + width - 20, startY + height - 35, 16, 16}, 0, false, 0,
+                        WHITE);
       break;
     case 3:
-      DrawTextureScaled(
-          textures::ui::dialogContinue2,
-          {startX + width - SCALE(20), startY + height - SCALE(35), SCALE(16), SCALE(16)},
-          0, false, 0, WHITE);
+      DrawTextureScaled(textures::ui::dialogContinue2,
+                        {startX + width - 20, startY + height - 35, 16, 16}, 0, false, 0,
+                        WHITE);
       break;
   }
   spriteCounter++;
@@ -42,16 +38,16 @@ inline static void DrawContinueButton(float startX, float width, float startY,
 static void RenderDialogue(int x, int y, const std::string* text, float& count,
                            bool last) noexcept {
   if (!text || count == 0.0F) return;
-  float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
-  float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
+  float width = BASE_DIALOGUE_BOX_WIDTH;
+  float height = BASE_DIALOGUE_BOX_HEIGHT;
 
   float startX = x - width / 2;
   float startY = y - height;
 
-  DrawRectangleRounded({startX, startY, width, height - 10}, 0.2F, ROUND_SEGMENTS,
-                       Colors::black_transparent);
-  DrawRectangleRoundedLines({startX, startY, width, height - 10}, 0.2F, ROUND_SEGMENTS, 2,
-                            Colors::white);
+  DrawRectangleRounded({startX, startY, width, height - 10}, 0.2F,
+                       GAME_SETTINGS.roundSegments, Colors::black_transparent);
+  DrawRectangleRoundedLines({startX, startY, width, height - 10}, 0.2F,
+                            GAME_SETTINGS.roundSegments, 2, Colors::white);
   if (count > text->size()) {
     count = 1000.0F;
     if (!last) {
@@ -64,15 +60,15 @@ static void RenderDialogue(int x, int y, const std::string* text, float& count,
   }
 
   auto wrappedText =
-      Util::WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, SCALE(17));
+      Util::WrapText(text->substr(0, count), width - 3, MINECRAFT_REGULAR, 17);
   DrawTextExR(MINECRAFT_REGULAR, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);
 }
 static void RenderPlayerThought() noexcept {
   if (!playerText) return;
   *playerDialogueCount += 0.4F * (60.0F / GetFPS());
-  float width = SCALE(BASE_DIALOGUE_BOX_WIDTH);
-  float height = SCALE(BASE_DIALOGUE_BOX_HEIGHT);
+  float width = BASE_DIALOGUE_BOX_WIDTH;
+  float height = BASE_DIALOGUE_BOX_HEIGHT;
 
   float startX = CAMERA_X - width / 2;
   float startY = CAMERA_Y - height;
@@ -89,7 +85,7 @@ static void RenderPlayerThought() noexcept {
   }
 
   auto wrappedText = Util::WrapText(playerText->substr(0, (int)*playerDialogueCount),
-                                    width - 3, MINECRAFT_ITALIC, SCALE(17));
+                                    width - 3, MINECRAFT_ITALIC, 17);
   DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(), {startX + 3, startY + 3}, 17, 0.5,
               WHITE);
 }

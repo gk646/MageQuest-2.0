@@ -79,16 +79,17 @@ struct Window {
       ROUNDNESS = 0.05F;
     }
 
-    DrawRectangleRounded(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, Colors::LightGrey);
+    DrawRectangleRounded(scaled_whole, ROUNDNESS, GAME_SETTINGS.roundSegments,
+                         Colors::LightGrey);
 
-    DrawRectangleRounded(scaled_head, 0.5F, ROUND_SEGMENTS,
+    DrawRectangleRounded(scaled_head, 0.5F, GAME_SETTINGS.roundSegments,
                          isHeaderHovered ? isDragged ? Colors::mediumLightGreyDarker
                                                      : Colors::mediumLightGreyBitDarker
                                          : Colors::mediumLightGrey);
 
-    DrawRectangleRoundedLines(scaled_head, 1.5F, ROUND_SEGMENTS, 2,
+    DrawRectangleRoundedLines(scaled_head, 1.5F, GAME_SETTINGS.roundSegments, 2,
                               Colors::darkBackground);
-    DrawRectangleRoundedLines(scaled_whole, ROUNDNESS, ROUND_SEGMENTS, 3,
+    DrawRectangleRoundedLines(scaled_whole, ROUNDNESS, GAME_SETTINGS.roundSegments, 3,
                               Colors::darkBackground);
     Util::DrawCenteredText(
         ANT_PARTY, SCALE(fontSize), header_text, scaled_whole.x + scaled_whole.width / 2,
@@ -106,30 +107,30 @@ struct Window {
   virtual inline void OnOpen(){};
   virtual inline void OnClose(){};
 
-#define WINDOW_LOGIC()                                              \
-  if (IsKeyPressed(windowOpenKey)) {                                \
-    if (isWindowOpen) {                                             \
-      CloseWindow();                                                \
-    } else {                                                        \
-      OpenWindow();                                                 \
-    }                                                               \
-  }                                                                 \
-                                                                    \
-  if (!isWindowOpen) {                                              \
-    return;                                                         \
-  }                                                                 \
-                                                                    \
-  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {          \
-    auto mouse_pos = MOUSE_POS;                                     \
-    auto delta_x = (mouse_pos.x - lastMousePos.x) * (1 / UI_SCALE); \
-    auto delta_y = (mouse_pos.y - lastMousePos.y) * (1 / UI_SCALE); \
-    wholeWindow.x += delta_x;                                       \
-    wholeWindow.y += delta_y;                                       \
-    header_bar.x += delta_x;                                        \
-    header_bar.y += delta_y;                                        \
-    lastMousePos = mouse_pos;                                       \
-  } else {                                                          \
-    isDragged = false;                                              \
+#define WINDOW_LOGIC()                                     \
+  if (IsKeyPressed(windowOpenKey)) {                       \
+    if (isWindowOpen) {                                    \
+      CloseWindow();                                       \
+    } else {                                               \
+      OpenWindow();                                        \
+    }                                                      \
+  }                                                        \
+                                                           \
+  if (!isWindowOpen) {                                     \
+    return;                                                \
+  }                                                        \
+                                                           \
+  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) { \
+    auto mouse_pos = MOUSE_POS;                            \
+    auto delta_x = (mouse_pos.x - lastMousePos.x);         \
+    auto delta_y = (mouse_pos.y - lastMousePos.y);         \
+    wholeWindow.x += delta_x;                              \
+    wholeWindow.y += delta_y;                              \
+    header_bar.x += delta_x;                               \
+    header_bar.y += delta_y;                               \
+    lastMousePos = mouse_pos;                              \
+  } else {                                                 \
+    isDragged = false;                                     \
   }
 
 #define WINDOW_UPDATE()                                                               \

@@ -2,7 +2,7 @@
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_GAMEINFOLOADER_H_
 namespace GameInfoLoader {
 static void Load() {
-  PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT] = KEY_R;
+  GameSettings::Load(GAME_SETTINGS);
 }
 }  // namespace GameInfoLoader
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_GAMEINFOLOADER_H_

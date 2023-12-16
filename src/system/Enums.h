@@ -151,15 +151,15 @@ std::unordered_map<ShadowType, Texture> shadowToTexture{
 };
 enum class TalentSize : uint8_t { NORMAL, MID, BIG };
 
-enum class Keybind : uint8_t {
-  PLAYER_LIGHT,
-  ABILITY_1,
-  ABILITY_2,
-  ABILITY_3,
-  ABILITY_4,
-  ABILITY_5,
-  ABILITY_6,
-  END
+enum  Keybind : uint8_t {
+  KB_PLAYER_LIGHT,
+  KB_ABILITY_1,
+  KB_ABILITY_2,
+  KB_ABILITY_3,
+  KB_ABILITY_4,
+  KB_ABILITY_5,
+  KB_ABILITY_6,
+  KB_END
 };
 enum class StatusMessageType {
   OUT_OF_RANGE,
@@ -297,11 +297,11 @@ enum Stat : uint8_t {
 };
 
 inline static bool IsPercentile(const Stat stat) noexcept {
-  return stat >= 9 && stat <= 43;
+  return stat >= 9 && stat < 43;
 }
-inline static std::array<uint8_t, 7> CRITICAL_STATS{
-    MAX_HEALTH,   MAX_MANA,     HEALTH_REGEN, MANA_REGEN,
-    SPEED_MULT_P, DODGE_CHANCE, CRIT_CHANCE};
+inline static bool IsPercentStat(const Stat stat) noexcept {
+  return true;
+}
 /* |-----------------------------------------------------|
  * |                  QUESTS                             |
  * |-----------------------------------------------------|
@@ -589,14 +589,14 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {MAX_HEALTH, "Max Health"},
     {MAX_MANA, "Max Mana"},
     {WEAPON_DAMAGE, "Weapon Damage"},
-    {HEALTH_MULT_P, "Health"},
-    {MANA_MULT_P, "Mana"},
+    {HEALTH_MULT_P, "Health Bonus"},
+    {MANA_MULT_P, "Mana Bonus"},
     {ARMOUR, "Armour"},
     {MAX_SHIELD, "Max Shield"},
     {SPEED_MULT_P, "Speed"},
     {DODGE_CHANCE, "Dodge Chance"},
-    {MANA_REGEN_MULT_P, "Mana Regen"},
-    {HEALTH_REGEN_MULT_P, "Health Regen"},
+    {MANA_REGEN_MULT_P, "Mana Regen Mult"},
+    {HEALTH_REGEN_MULT_P, "Health Regen Mult"},
     {ARCANE_DMG_WEAKNESS_P, "Arcane Weakness"},
     {DARK_DMG_WEAKNESS_P, "Dark Weakness"},
     {POISON_DMG_WEAKNESS_P, "Poison Weakness"},
@@ -607,7 +607,7 @@ inline std::unordered_map<Stat, std::string> statToName = {
     {POISON_COST_REDUCTION_P, "Poison Cost Red"},
     {FIRE_COST_REDUCTION_P, "Fire Cost Red"},
     {ICE_COST_REDUCTION_P, "Ice Cost Red"},
-    {DAMAGE_RESISTANCE_P, "Damage Resistance"},
+    {DAMAGE_RESISTANCE_P, "Damage Reduction"},
     {XP_MODIFIER_P, "XP Modifier"},
     {GOLD_PICKUP_P, "Coin Find"},
     {FILL8, "Filler Stat 8"},
