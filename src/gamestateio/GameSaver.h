@@ -15,6 +15,7 @@ static void Save() noexcept {
   MapCoverSaver::Save();
   QuestSaver::Save();
   StatSaver::Save();
+  GameSettings::Save(GAME_SETTINGS);
 }
 }  // namespace GameSaver
 #endif  //MAGEQUEST_SRC_GAMESTATEIO_GAMESAVER_H_

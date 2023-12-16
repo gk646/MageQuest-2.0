@@ -69,7 +69,6 @@ inline UIManager UI_MANAGER{};
 
 namespace UIFunctions {
 inline void RestUIPosition() {
-  UI_SCALE = 1;
   UI_MANAGER.ResetUIPosition();
 }
 }  // namespace UIFunctions

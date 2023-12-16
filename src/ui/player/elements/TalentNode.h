@@ -42,9 +42,9 @@ struct TalentNode {
     std::string wrappedText = Util::WrapText(talent.description, TOOLTIP_WIDTH,
                                              MINECRAFT_REGULAR, 15, &lineBreaks);
     toolTipBounds.height += lineBreaks * 15.0F;
-    DrawRectangleRounded(toolTipBounds, 0.1F, ROUND_SEGMENTS,
+    DrawRectangleRounded(toolTipBounds, 0.1F, GAME_SETTINGS.roundSegments,
                          Colors::mediumLightGreyTransparent);
-    DrawRectangleRoundedLines(toolTipBounds, 0.1F, ROUND_SEGMENTS, 2,
+    DrawRectangleRoundedLines(toolTipBounds, 0.1F, GAME_SETTINGS.roundSegments, 2,
                               Colors::darkBackground);
 
     DrawTextExR(MINECRAFT_BOLD, talent.name.c_str(),

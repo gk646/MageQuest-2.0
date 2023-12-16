@@ -2,6 +2,22 @@
 #define MAGE_QUEST_SRC_UTIL_MATHUTIL_H_
 struct ItemSlot;
 namespace Util {
+//Returns the letter associated with a raylib keycode // enforcing MageQuest default keybinds
+const char* GetKeyName(int key) {
+  static char keyName[2] = {'\0', '\0'};
+
+  if (key >= KEY_A && key <= KEY_Z) {
+    keyName[0] = 'A' + (key - KEY_A);
+    return keyName;
+  }
+
+  if (key >= KEY_ZERO && key <= KEY_NINE) {
+    keyName[0] = '0' + (key - KEY_ZERO);
+    return keyName;
+  }
+
+  return nullptr;
+}
 //Returns a value between 0-1 based on their alphabetical distance // handles capitalization
 inline static float GetCharacterSimilarity(char base, char check) noexcept {
   if (base == check) return 1.0F;
@@ -29,7 +45,7 @@ inline static float GetStringSimilarityPrefix(const std::string& base,
 }
 //Returns true if the given array contains the given value
 template <typename T>
-inline static bool ArrayContains(const T* arr, const T& val,const int size) noexcept {
+inline static bool ArrayContains(const T* arr, const T& val, const int size) noexcept {
   for (int i = 0; i < size; i++) {
     if (arr[i] == val) {
       return true;
@@ -48,7 +64,7 @@ inline static T** Create2DArr(const int x, const int y) {
 }
 //frees a 2D array of the given type and size
 template <typename T>
-inline static void Delete2DArr(T** arr,const int rows) {
+inline static void Delete2DArr(T** arr, const int rows) {
   for (int i = 0; i < rows; i++) {
     delete[] arr[i];
   }
@@ -56,13 +72,15 @@ inline static void Delete2DArr(T** arr,const int rows) {
 }
 //Draws text aligned to the right with "align" / uses 0.5 spacing
 inline static void DrawRightAlignedText(const Font& font, float fontSize, const char* txt,
-                                        const float align, const float y, const Color& color) {
+                                        const float align, const float y,
+                                        const Color& color) {
   DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x, y},
               fontSize, 0.5F, color);
 }
 //Draws text centered to "align" / uses 0.5 spacing
 inline static void DrawCenteredText(const Font& font, float fontSize, const char* txt,
-                                    const  float align, const float y, const Color& color) {
+                                    const float align, const float y,
+                                    const Color& color) {
   DrawTextExR(font, txt, {align - MeasureTextEx(font, txt, fontSize, 0.5F).x / 2, y},
               fontSize, 0.5F, color);
 }
@@ -99,8 +117,9 @@ inline static void DrawOutlineText(const Font& font, float fontSize, const char*
   DrawTextExR(font, txt, {dx, dy}, fontSize, 0.8F, textColor);
 }
 //Wraps "txt" according to "width" / Uses 0.5 spacing / "lineBreaks" is set the number of line breaks
-inline static std::string WrapText(const std::string& txt, const float width, const Font& font,
-                                   const float fontSize, int* lineBreaks = nullptr) {
+inline static std::string WrapText(const std::string& txt, const float width,
+                                   const Font& font, const float fontSize,
+                                   int* lineBreaks = nullptr) {
   if (lineBreaks) {
     *lineBreaks = 0;
   }
@@ -161,9 +180,8 @@ inline static std::vector<std::string> SplitString(const std::string& s,
 }
 //Trim leading whitespace from a string in place // returns itself after modification
 inline static std::string& TrimLeadingWhiteSpace(std::string& str) {
-  auto it = std::find_if_not(str.begin(), str.end(), [](unsigned char ch) {
-    return std::isspace(ch);
-  });
+  auto it = std::find_if_not(str.begin(), str.end(),
+                             [](unsigned char ch) { return std::isspace(ch); });
 
   str.erase(str.begin(), it);
   return str;

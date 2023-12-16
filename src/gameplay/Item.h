@@ -85,8 +85,12 @@ struct Item {
     std::move(std::begin(other.effects), std::end(other.effects), std::begin(effects));
     return *this;
   }
-  inline bool operator==(const Item& other) const { return id == other.id && type == other.type; }
-  inline bool operator!=(const Item& other) const { return id != other.id || type != other.type; }
+  inline bool operator==(const Item& other) const {
+    return id == other.id && type == other.type;
+  }
+  inline bool operator!=(const Item& other) const {
+    return id != other.id || type != other.type;
+  }
   inline bool operator<(const Item& other) const { return rarity < other.rarity; }
   inline bool operator>(const Item& other) const { return rarity > other.rarity; }
   void Draw(const RectangleR& rect) const noexcept {
@@ -96,17 +100,17 @@ struct Item {
   void DrawToolTip() const noexcept {
     auto mouse = GetMousePosition();
     float startX, startY;
-    float width = TOOL_TIP_WIDTH * UI_SCALE;
+    float width = TOOL_TIP_WIDTH * GAME_SETTINGS.uiScale;
 
     int lineBreaks = 0;
     std::string wrappedText =
-        Util::WrapText(description, width - 5, MINECRAFT_ITALIC, SCALE(15), &lineBreaks);
+        Util::WrapText(description, width - 5, MINECRAFT_ITALIC, 15, &lineBreaks);
 
     float setHeight = 0;
     if (itemSet != ItemSetNum::NO_SET) {
       setHeight = ITEM_SETS[(int)itemSet].toolTipHeight;
     }
-    float height = TOOL_TIP_HEIGHT * UI_SCALE + 15.0F * (float)lineBreaks + setHeight;
+    float height = TOOL_TIP_HEIGHT + 15.0F * (float)lineBreaks + setHeight;
 
     if (mouse.x - width < 0) {
       startX = mouse.x + 10;
@@ -120,42 +124,38 @@ struct Item {
     }
 
     DrawRectangleRounded({startX - 4, startY - 4, width + 8, height + 8}, 0.1,
-                         ROUND_SEGMENTS, Colors::LightGrey);
-    DrawRectangleRoundedLines({startX, startY, width, height}, 0.1, ROUND_SEGMENTS, 2,
-                              rarity_to_color[rarity]);
+                         GAME_SETTINGS.roundSegments, Colors::LightGrey);
+    DrawRectangleRoundedLines({startX, startY, width, height}, 0.1,
+                              GAME_SETTINGS.roundSegments, 2, rarity_to_color[rarity]);
 
     /* |-----------------------------------------------------|
      * |                     ITEM LEVEL                      |
      * |-----------------------------------------------------|
      */
     snprintf(textBuffer, 10, "ilvl:%d", level);
-    DrawTextExR(MINECRAFT_ITALIC, textBuffer,
-                {startX + 3 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE, 1,
+    DrawTextExR(MINECRAFT_ITALIC, textBuffer, {startX + 3, startY + 2}, 16, 1,
                 Colors::darkBackground);
 
     //quality
     snprintf(textBuffer, 10, "%d%%", quality);
     if (quality == 100) [[unlikely]] {
-      DrawTextExR(MINECRAFT_REGULAR, textBuffer,
-                  {startX + width - 36 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE,
-                  1, GetQualityColor());
+      DrawTextExR(MINECRAFT_REGULAR, textBuffer, {startX + width - 36, startY + 2}, 16, 1,
+                  GetQualityColor());
     } else {
-      DrawTextExR(MINECRAFT_REGULAR, textBuffer,
-                  {startX + width - 29 * UI_SCALE, startY + 2 * UI_SCALE}, 16 * UI_SCALE,
-                  1, GetQualityColor());
+      DrawTextExR(MINECRAFT_REGULAR, textBuffer, {startX + width - 29, startY + 2}, 16, 1,
+                  GetQualityColor());
     }
 
     //name
-    DrawTextExR(MINECRAFT_BOLD, name.c_str(),
-                {startX + 5 * UI_SCALE, startY + 40 * UI_SCALE}, 21 * UI_SCALE, 1,
+    DrawTextExR(MINECRAFT_BOLD, name.c_str(), {startX + 5, startY + 40}, 21, 1,
                 rarity_to_color[rarity]);
 
     //attributes
-    float off_setX = 6 * UI_SCALE;
-    float off_sety = 80 * UI_SCALE;
-    float v_space = 15 * UI_SCALE;
-    float h_space = 90 * UI_SCALE;
-    float font_size = 16 * UI_SCALE;
+    float off_setX = 6;
+    float off_sety = 80;
+    float v_space = 15;
+    float h_space = 90;
+    float font_size = 16;
 
     snprintf(textBuffer, 10, "INT: %d", (int)effects[INTELLIGENCE]);
     DrawTextExR(MINECRAFT_REGULAR, textBuffer, {startX + off_setX, startY + off_sety},
@@ -197,7 +197,7 @@ struct Item {
                 font_size, 1, Colors::darkBackground);
 
     //effects
-    off_sety = 145 * UI_SCALE;
+    off_sety = 145;
     DrawTextExR(MINECRAFT_BOLD, "Effects:", {startX + off_setX, startY + off_sety},
                 font_size, 1, Colors::darkBackground);
     off_sety += 20;
@@ -233,27 +233,24 @@ struct Item {
 
     //description
     DrawTextExR(MINECRAFT_ITALIC, wrappedText.c_str(),
-                {startX + off_setX, startY + off_sety}, SCALE(15), 0.5F,
-                Colors::darkBackground);
+                {startX + off_setX, startY + off_sety}, 15, 0.5F, Colors::darkBackground);
 
     //durability
     snprintf(textBuffer, 10, "D:%d", durability);
-    DrawTextExR(MINECRAFT_ITALIC, textBuffer,
-                {startX + off_setX, startY + height - 15 * UI_SCALE}, 15 * UI_SCALE, 0.5F,
-                Colors::darkBackground);
+    DrawTextExR(MINECRAFT_ITALIC, textBuffer, {startX + off_setX, startY + height - 15},
+                15, 0.5F, Colors::darkBackground);
 
     //type
     DrawTextExR(
         MINECRAFT_ITALIC, type_to_string[type].c_str(),
         {startX + width / 2 - (float)GetTextWidth(type_to_string[type].c_str()) / 2.0F,
-         startY + height - 15 * UI_SCALE},
-        15 * UI_SCALE, 0.5F, Colors::darkBackground);
+         startY + height - 15},
+        15, 0.5F, Colors::darkBackground);
 
     //id
     snprintf(textBuffer, 10, "id:%d%d", id, (int)type);
-    DrawTextExR(MINECRAFT_ITALIC, textBuffer,
-                {startX + width - 35 * UI_SCALE, startY + height - 15 * UI_SCALE},
-                15 * UI_SCALE, 0.5F, Colors::darkBackground);
+    DrawTextExR(MINECRAFT_ITALIC, textBuffer, {startX + width - 35, startY + height - 15},
+                15, 0.5F, Colors::darkBackground);
   }
   [[nodiscard]] inline Color GetQualityColor() const noexcept {
     if (quality < 90) [[likely]] {

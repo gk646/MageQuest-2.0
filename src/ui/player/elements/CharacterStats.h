@@ -3,8 +3,6 @@
 struct CharacterStats final : public Content {
   inline static constexpr float STAT_FONT_SIZE = 15;
   inline static constexpr float HORIZONTAL_GAP = 170;
-  inline static std::array<Stat, 4> NON_PERCENT_STATS{WEAPON_DAMAGE, WEAPON_DAMAGE,
-                                                      WEAPON_DAMAGE, WEAPON_DAMAGE};
   inline static std::string offensive = "Offensive:";
   inline static std::string defensive = "Defensive:";
   inline static std::string resources = "Resources:";
@@ -19,8 +17,8 @@ struct CharacterStats final : public Content {
     BOUNDS.x = bounds.x;
     BOUNDS.y = bounds.y;
     UpdateLimits(bounds, scrollOffset);
-    DrawRectangleRounded(BOUNDS, 0.1F, ROUND_SEGMENTS, Colors::LightGrey);
-    DrawRectangleRoundedLines(BOUNDS, 0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
+    DrawRectangleRounded(BOUNDS, 0.1F, GAME_SETTINGS.roundSegments, Colors::LightGrey);
+    DrawRectangleRoundedLines(BOUNDS, 0.1F, GAME_SETTINGS.roundSegments, 2, Colors::darkBackground);
     bounds.x += 3;
     DrawOffensive(bounds.x, bounds.y);
     DrawDefensive(bounds.x, bounds.y);
@@ -76,7 +74,7 @@ struct CharacterStats final : public Content {
         if (IsPercentile(stat)) {
           val *= 100.0F;
         }
-        if (Util::ArrayContains(NON_PERCENT_STATS.data(), stat, 4)) {
+        if (!IsPercentStat(stat)) {
           snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f", val);
         } else {
           snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%+.2f%%", val);

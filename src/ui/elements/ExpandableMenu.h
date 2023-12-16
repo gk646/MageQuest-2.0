@@ -96,7 +96,7 @@ struct ExpandableQuestMenu final : public Content {
     //normalize values to Left Top corner of info box
     x += INFO_BOX_OFFSET / 2;
     DrawRectangleRounded({x, y, bounds.width - INFO_BOX_OFFSET, INFO_BOX_HEIGHT}, 0.1,
-                         ROUND_SEGMENTS, Colors::mediumLightGrey);
+                         GAME_SETTINGS.roundSegments, Colors::mediumLightGrey);
 
     auto desc =
         Util::WrapText(quest.description, INFO_BOX_WIDTH - 10, MINECRAFT_BOLD, 15);

@@ -356,8 +356,8 @@ void HealthBar::DrawNormal(const Monster* self) const noexcept {
   float x = self->pos.x_ + DRAW_X;
   float y = self->pos.y_ + DRAW_Y;
 
-  const float scaledWidth = 50 * UI_SCALE;
-  const float scaledHeight = height * UI_SCALE;
+  const float scaledWidth = 50 ;
+  const float scaledHeight = height ;
 
   const float startX = x - (scaledWidth - width) / 2;
   const float startY = y - scaledHeight * 1.2F;
@@ -369,7 +369,7 @@ void HealthBar::DrawNormal(const Monster* self) const noexcept {
   DrawTexturePro(textures::ui::HEALTH_BAR, {0, 0, 50, 10},
                  {startX, startY, scaledWidth, scaledHeight}, {0, 0}, 0, WHITE);
   self->effectHandler.DrawEntity(self);
-  if (SHOW_HEALTH_NUMBERS) {
+  if (GAME_SETTINGS.showHealthNumbers) {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f/%.0f", self->stats.health,
              self->stats.GetMaxHealth());
     Util::DrawCenteredText(MINECRAFT_BOLD, 12, TEXT_BUFFER, x + width / 2,
@@ -387,7 +387,7 @@ void HealthBar::DrawBossBar(const Monster* self, int i) {
                        stats.health / stats.GetMaxHealth() * 319, 15, Colors::Red);
   DrawTextureProFast(textures::ui::bossbar, startX, startY, 0, WHITE);
 
-  if (SHOW_HEALTH_NUMBERS) {
+  if (GAME_SETTINGS.showHealthNumbers) {
     snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%.0f/%.0f", stats.health,
              stats.GetMaxHealth());
     Util::DrawCenteredText(EDIT_UNDO, 16, TEXT_BUFFER, startX + 175, startY + 14,

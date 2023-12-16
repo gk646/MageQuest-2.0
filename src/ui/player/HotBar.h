@@ -49,7 +49,7 @@ struct HotBar {
 
     DrawHotbar(startX, startY);
     UpdatePlayerSkills();
-    if (IsKeyPressed(PLAYER_KEYBINDS[(int)Keybind::PLAYER_LIGHT])) {
+    if (IsKeyPressed(GAME_SETTINGS.playerKeybinds[KB_PLAYER_LIGHT])) {
       Lighting::Shaders::lightOn = !Lighting::Shaders::lightOn;
     }
   }
@@ -67,17 +67,18 @@ struct HotBar {
  private:
   //Called on the main thread // if button is pressed activates the skill
   inline static void UpdatePlayerSkills() noexcept {
+    auto& keybinds = GAME_SETTINGS.playerKeybinds;
     if (GAME_STATE != GameState::GameMenu) {
-      if (IsKeyPressed(KEY_ONE) && PLAYER_HOTBAR[0]->skill->IsUsable()) {
+      if (IsKeyPressed(keybinds[KB_ABILITY_1]) && PLAYER_HOTBAR[0]->skill->IsUsable()) {
         PLAYER_HOTBAR[0]->skill->Activate(false);
       }
-      if (IsKeyPressed(KEY_TWO) && PLAYER_HOTBAR[1]->skill->IsUsable()) {
+      if (IsKeyPressed(keybinds[KB_ABILITY_2]) && PLAYER_HOTBAR[1]->skill->IsUsable()) {
         PLAYER_HOTBAR[1]->skill->Activate(false);
       }
-      if (IsKeyPressed(KEY_THREE) && PLAYER_HOTBAR[2]->skill->IsUsable()) {
+      if (IsKeyPressed(keybinds[KB_ABILITY_3]) && PLAYER_HOTBAR[2]->skill->IsUsable()) {
         PLAYER_HOTBAR[2]->skill->Activate(false);
       }
-      if (IsKeyPressed(KEY_FOUR) && PLAYER_HOTBAR[3]->skill->IsUsable()) {
+      if (IsKeyPressed(keybinds[KB_ABILITY_4]) && PLAYER_HOTBAR[3]->skill->IsUsable()) {
         PLAYER_HOTBAR[3]->skill->Activate(false);
       }
       if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
@@ -96,10 +97,12 @@ struct HotBar {
                       {startX, startY, hotBarHitbox.width, hotBarHitbox.height}, 0, false,
                       0, WHITE);
     SkillSlot* toolTip = nullptr;
+    int i = 1;
     for (auto& slot : PLAYER_HOTBAR) {
-      if (slot->Draw(startX, startY)) {
+      if (slot->Draw(startX, startY, GAME_SETTINGS.playerKeybinds[i])) {
         toolTip = slot;
       }
+      i++;
     }
     if (toolTip) {
       toolTip->DrawToolTip();

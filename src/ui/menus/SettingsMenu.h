@@ -3,79 +3,210 @@
 
 struct SettingsMenu {
   int selectedResolution = 0;
-  const char* resolutions = "800x600;1280x720;1920x1080;2560x1440;3840x2160";
+  inline static const char* resolutions =
+      "800x600;1280x720;1920x1080;2560x1440;3840x2160";
+  inline static constexpr int baseWidth = 140;
+  inline static constexpr int baseHeight = 30;
+  inline static constexpr int offsetX = 70;
+  inline static constexpr int offsetY = 40;
+  inline static constexpr int VERTICAL_SPACING = 35;
+  inline static constexpr int KEY_ASSIGN_WIDTH = 350;
+  inline static constexpr int KEY_ASSIGN_HEIGHT = 60;
+  inline static bool keyAssignMode = false;
+  inline static bool wrongAssign = false;
+  inline static int abilityNum = -1;
 
-  int baseWidth = 140;
-  int baseHeight = 30;
-  int offsetX = 70;
-  int offsetY = 40;
   void Draw() noexcept {
-    DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0,
-                     ColorAlpha(GRAY, 0.7));
+    auto& stats = GAME_SETTINGS;
+    DrawBasicBackground();
 
-    float scaledWidth = baseWidth * UI_SCALE;
-    float scaledHeight = baseHeight * UI_SCALE;
-    float startX = SCREEN_WIDTH / 2 - scaledWidth / 2;
-    float startY = SCREEN_HEIGHT / 2 - scaledHeight * 3;
-    float verticalSpacing = 35 * UI_SCALE;
+    float startX = SCREEN_WIDTH / 2 - baseWidth / 2;
+    float startY = SCREEN_HEIGHT / 2 - baseHeight * 14;
 
-    RectangleR resolutionBounds = {startX, startY, scaledWidth, scaledHeight};
-    int newSelectedResolution =
-        GuiComboBox(resolutionBounds, resolutions, selectedResolution,
-                    IsWindowFullscreen() ? STATE_DISABLED : STATE_NORMAL);
+    DrawVideoOptions(stats, startX, startY);
+    DrawPerformanceSettings(stats, startX, startY);
+    DrawAudioSettings(stats, startX, startY);
+    DrawGameplaySettings(stats, startX, startY);
+    DrawKeybindSettings(stats, startX, startY);
+
+    DrawKeyAssignWindow(stats);
+  }
+  static void SetFullScreen() {
+    SetWindowPosition(0, 0);
+    SCREEN_WIDTH = (float)GetMonitorWidth(0);
+    SCREEN_HEIGHT = (float)GetMonitorHeight(0);
+    SetWindowSize((int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+    UnloadRenderTexture(FIRST_LAYER_BUFFER);
+    FIRST_LAYER_BUFFER = LoadRenderTexture((int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+
+    ToggleFullscreen();
+  }
+  void ApplySettings() {
+    //TODO add more resolutions and add scaling
+    // SetResolution(selectedResolution);
+    ToggleFullScreen(GAME_SETTINGS.isFullScreen);
+    SetTargetFPS(GAME_SETTINGS.targetFPS);
+    SetMasterVolume(GAME_SETTINGS.masterVolume);
+    UpdateRoundSegments(GAME_SETTINGS.fastUI);
+  }
+
+ private:
+  inline static void DrawBasicBackground() {
+    DrawRectanglePro(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, {0, 0}, 0, ColorAlpha(GRAY, 0.7));
+  }
+  void DrawVideoOptions(GameSettings& stats, float startX, float& startY) {
+    GuiLabel({startX - 10, startY, baseWidth, baseHeight}, "Video Settings");
+    startY += VERTICAL_SPACING;
+
+    int newSelectedResolution = GuiComboBox(
+        {startX, startY, baseWidth, baseHeight}, resolutions, selectedResolution,
+        IsWindowFullscreen() ? STATE_DISABLED : STATE_NORMAL);
     if (newSelectedResolution != selectedResolution) {
       selectedResolution = newSelectedResolution;
-      setResolution(selectedResolution);
+      SetResolution(selectedResolution);
     }
+    startY += VERTICAL_SPACING;
 
-    startY += verticalSpacing;
-    UI_SCALE = GuiSlider({startX, startY, scaledWidth, scaledHeight},
-                         "UI Scale", nullptr, UI_SCALE, 0.7f, 2.0f);
+    stats.isFullScreen =
+        GuiCheckBox({startX, startY, 20, 20}, "Fullscreen", IsWindowFullscreen());
+    ToggleFullScreen(stats.isFullScreen);
+    startY += VERTICAL_SPACING;
 
-    startY += verticalSpacing;
-    bool full_screen =
-        GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
-                    "Fullscreen", IsWindowFullscreen());
-    if (full_screen != IsWindowFullscreen()) {
-      if (full_screen) {
-        SCREEN_WIDTH = GetMonitorWidth(0);
-        SCREEN_HEIGHT = GetMonitorHeight(0);
-        SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        ToggleFullscreen();
+    stats.showFPS = GuiCheckBox({startX, startY, 20, 20}, "Show FPS", stats.showFPS);
+    startY += VERTICAL_SPACING;
+
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%d", stats.targetFPS);
+    stats.targetFPS = static_cast<int16_t>(
+        GuiSlider({startX, startY, baseWidth, baseHeight}, "FPS Target", TEXT_BUFFER,
+                  static_cast<float>(stats.targetFPS), 60, 240));
+    SetTargetFPS(stats.targetFPS);
+
+    startY += VERTICAL_SPACING;
+    startY += VERTICAL_SPACING;
+  }
+  static void DrawPerformanceSettings(GameSettings& stats, float startX, float& startY) {
+    GuiLabel({startX - 10, startY, baseWidth, baseHeight}, "Graphic Settings");
+    startY += VERTICAL_SPACING;
+
+    GAME_SETTINGS.fastUI =
+        GuiCheckBox({startX, startY, 20, 20}, "Fast UI", GAME_SETTINGS.fastUI);
+    UpdateRoundSegments(GAME_SETTINGS.fastUI);
+    startY += VERTICAL_SPACING;
+
+    stats.disableDynamicLighting =
+        GuiCheckBox({startX, startY, 20, 20}, "Disable Dynamic Lighting",
+                    stats.disableDynamicLighting);
+    startY += VERTICAL_SPACING;
+    startY += VERTICAL_SPACING;
+  }
+  static void DrawAudioSettings(GameSettings& stats, float startX, float& startY) {
+    GuiLabel({startX - 10, startY, baseWidth, baseHeight}, "Audio Settings");
+    startY += VERTICAL_SPACING;
+
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%d", (int)(stats.masterVolume * 100));
+    stats.masterVolume =
+        GuiSlider({startX, startY, baseWidth, baseHeight}, "Master Volume", TEXT_BUFFER,
+                  stats.masterVolume, 0, 1);
+    SetMasterVolume(stats.masterVolume);
+    startY += VERTICAL_SPACING;
+
+    snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%d", (int)(stats.musicVolume * 100));
+    stats.musicVolume = GuiSlider({startX, startY, baseWidth, baseHeight}, "Music Volume",
+                                  TEXT_BUFFER, stats.musicVolume, 0, 1);
+    //TODO adjust music volume
+    startY += VERTICAL_SPACING;
+
+    startY += VERTICAL_SPACING;
+  }
+  static void DrawGameplaySettings(GameSettings& stats, float startX, float& startY) {
+    GuiLabel({startX - 10, startY, baseWidth, baseHeight}, "Gameplay Settings");
+    startY += VERTICAL_SPACING;
+
+    stats.showHealthNumbers = GuiCheckBox(
+        {startX, startY, 20, 20}, "Show Enemy Health Numbers", stats.showHealthNumbers);
+    startY += VERTICAL_SPACING;
+
+    startY += VERTICAL_SPACING;
+  }
+  static void DrawKeybindSettings(GameSettings& stats, float startX, float& startY) {
+    GuiLabel({startX - 10, startY, baseWidth, baseHeight}, "Keybinds");
+    startY += VERTICAL_SPACING;
+
+    for (int i = 1; i < 5; i++) {
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Ability %d: %s", i,
+               Util::GetKeyName(stats.playerKeybinds[i]));
+      GuiLabel({startX - 60, startY, 80, 20}, TEXT_BUFFER);
+
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Assign new key:");
+      if (GuiButton({startX + 35, startY - 5, baseWidth, baseHeight}, TEXT_BUFFER)) {
+        keyAssignMode = true;
+        abilityNum = i;
+      }
+      startY += VERTICAL_SPACING;
+    }
+    startY += VERTICAL_SPACING;
+  }
+
+  //Helper methods
+ private:
+  static inline void DrawKeyAssignWindow(GameSettings& stats) {
+    if (abilityNum == -1) keyAssignMode = false;
+    if (keyAssignMode) {
+      DrawRectangleProFast(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Colors::LightGreyAlpha);
+      DrawRectangleRounded(
+          {(SCREEN_WIDTH - KEY_ASSIGN_WIDTH) / 2, (SCREEN_HEIGHT - KEY_ASSIGN_HEIGHT) / 2,
+           KEY_ASSIGN_WIDTH, KEY_ASSIGN_HEIGHT},
+          0.1F, stats.roundSegments, Colors::LightGrey);
+      DrawRectangleRoundedLines(
+          {(SCREEN_WIDTH - KEY_ASSIGN_WIDTH) / 2, (SCREEN_HEIGHT - KEY_ASSIGN_HEIGHT) / 2,
+           KEY_ASSIGN_WIDTH, KEY_ASSIGN_HEIGHT},
+          0.1F, stats.roundSegments, 2, Colors::darkBackground);
+
+      snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "Press a key to assign to Ability %d...",
+               abilityNum);
+
+      Util::DrawCenteredText(MINECRAFT_BOLD, 17, TEXT_BUFFER, SCREEN_WIDTH / 2,
+                             (SCREEN_HEIGHT - KEY_ASSIGN_HEIGHT) / 2 + 10,
+                             Colors::darkBackground);
+
+      if (wrongAssign) {
+        Util::DrawCenteredText(
+            MINECRAFT_ITALIC, 15, "1-9 or A-Z and unique. Excluded: W,A,S,D,C,M,N,P,J",
+            SCREEN_WIDTH / 2, (SCREEN_HEIGHT - KEY_ASSIGN_HEIGHT) / 2 + 30,
+            Colors::darkBackground);
+      }
+
+      if (IsKeyDown(KEY_ESCAPE)) {
+        keyAssignMode = false;
+        ConsumeKeyPresses();
+        return;
+      }
+      int keyPressed = GetKeyPressed();
+      keyPressed = std::toupper(keyPressed);
+
+      if (keyPressed > 0) {
+        if (CheckValidKey(keyPressed) && Util::GetKeyName(keyPressed) != nullptr) {
+          stats.playerKeybinds[abilityNum] = (int16_t)keyPressed;
+          keyAssignMode = false;
+          wrongAssign = false;
+        } else {
+          wrongAssign = true;
+        }
+      }
+      ConsumeKeyPresses();
+    }
+  }
+  inline void ToggleFullScreen(bool currentButtonVal) const {
+    if (currentButtonVal != IsWindowFullscreen()) {
+      if (currentButtonVal) {
+        SetFullScreen();
       } else {
         ToggleFullscreen();
-        setResolution(selectedResolution);
+        SetResolution(selectedResolution);
       }
     }
-    CAMERA_X = SCREEN_WIDTH / 2;
-    CAMERA_Y = SCREEN_HEIGHT / 2;
-    startY += verticalSpacing;
-
-    //show fps
-    SHOW_FPS = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
-                          "Show FPS", SHOW_FPS);
-    startY += verticalSpacing;
-
-    FAST_UI = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
-                           "Fast UI", FAST_UI);
-    if(FAST_UI){
-      ROUND_SEGMENTS = 15;
-    }else{
-      ROUND_SEGMENTS = 30;
-    }
-    startY += verticalSpacing;
-
-    DISABLE_DYNAMIC_LIGHTING = GuiCheckBox({startX, startY, 20 * UI_SCALE, 20 * UI_SCALE},
-                           "Disable Dynamic Lighting", DISABLE_DYNAMIC_LIGHTING);
-    startY += verticalSpacing;
-
-
-    TARGET_FPS = static_cast<int>(
-        GuiSlider({startX, startY, scaledWidth, scaledHeight}, "FPS Target",
-                  nullptr, static_cast<float>(TARGET_FPS), 60, 3000));
-    SetTargetFPS(TARGET_FPS);
   }
-  static void setResolution(int resolution) noexcept {
+  static void SetResolution(int resolution) noexcept {
     switch (resolution) {
       case 0:
         SetWindowSize(800, 600);
@@ -111,14 +242,25 @@ struct SettingsMenu {
     }
     SetWindowPosition(0, 30);
   }
-  static void set_full_screen() {
-    SCREEN_WIDTH = GetMonitorWidth(0);
-    SCREEN_HEIGHT = GetMonitorHeight(0);
-    SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-    UnloadRenderTexture(FIRST_LAYER_BUFFER);
-    FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+  static void UpdateRoundSegments(bool val) noexcept {
+    if (val) {
+      GAME_SETTINGS.roundSegments = 15;
+    } else {
+      GAME_SETTINGS.roundSegments = 30;
+    }
+  }
+  inline static bool CheckValidKey(int key) noexcept {
+    //Prebound keys not available for assignment
+    if (key == KEY_C || key == KEY_J || key == KEY_B || key == KEY_N || key == KEY_M ||
+        key == KEY_P || key == KEY_W || key == KEY_A || key == KEY_S || key == KEY_D)
+      return false;
 
-    ToggleFullscreen();
+    for (int i = 1; i < 5; i++) {
+      if (key == GAME_SETTINGS.playerKeybinds[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 };
 #endif  //MAGE_QUEST_SRC_UI_SETTINGSMENU_H_

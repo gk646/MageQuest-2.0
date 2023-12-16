@@ -63,16 +63,26 @@ PLAYER_THOUGHT:Soo, the same way back... What does it want with a flower anyway?
 GOTO:6,54:Bring Satiro the flower:Oasis_Cave
 REMOVE_ITEM:12,6:1
 SPEAK:SATIRO:Wait for Satiro to return the favor:WAYPOINT,0,0:MAJOR
-Thank you. Truly a beautiful flower don't you think? It's more than just beautiful however...
+Thank you. Truly a beautiful flower don't you think? *smiles* It's more than just beautiful however...
 *Satiros lips begin to move, muttering undiscernable words casting what appears to be some kind of ritual. You see the flower being consumed by a bright light, that splits up into thousands of golden string slowly wrapping around you.*
 *Before you can even react, all the energy is absorbed by your body - strengthening you?*
-Hmm, this should have awakened something in you - the ability to call on the things between the worlds. You might know it as magic.
+Hmm,... this should have awakened something in you - the ability to call on the things between the worlds. You might know it as magic.
+I felt it when you first walked in - radiating, but waiting for the moment to sprout.
 *
 CHOICE_DIALOGUE_SIMPLE:SATIRO: It's a rare gift not many carry with them. It's up to you now what you make of it.:0
-A favor for a *sigh* - Sure I guess. What do you want?:Its simple enough... Bring me a - flower. A "magnificent" one! You should start your search the hillside across the lake. I felt something there while searching for a hiding spot.
-Who, or what are you? How come your seeking shelter - here of all places?:Not all I can tell is made for mortal ears. Accept my offer, and you will receive what you seek in due time.
+I heard about magic, but never seen it. The worlds between?:"The world between", is merely a phrase in your language used to transport an idea. The idea of a hidden plane of ethereal power, a world with unimaginable size and shape... but real. In you is the key, for your mind to access this new world.
+So, can I shoot fireballs?:You're eager to learn. That's good... But your asking the wrong person. All you need is inside your mind... To answer your question, if you can shoot one, you can. If you cannot, you can't!
 *
-CHOICE_DIALOGUE_SIMPLE:SATIRO:Hmm, this should have awakened something in you - the ability to call on the things between the worlds. You might know it as magic. I felt it when you walked in...:0:MAJOR
-A favor for a *sigh* - Sure I guess. What do you want?:Its simple enough. Bring me a flower. A magnificent one. The hillside across the lake looks like a promising start.
-Who, or what are you? How come your seeking shelter - here of all places?:Not all I can tell is made for mortal ears. Accept my offer, and you will receive what you seek in due time.
+CHOICE_DIALOGUE_SIMPLE:SATIRO:Many creatures draw power from this alternative plane, but all pale to its completeness, its perfection. It's easy to fall into a mindless hunger for more power, just to be consumed by its endless waves. You would call that "Go crazy"...:0
+Can you teach me how to use my mind?:Even better! I will teach how, how to you learn by yourself! It will just give you the little push you need.
+How:Not all I can tell is made for mortal ears. Accept my offer, and you will receive what you seek in due time.
 *
+#choose fireball or energy sphere
+#clearn cave
+
+
+#hedgie quest in hills
+
+START_CHOICE:0
+    #ADD_SPELL
+END_CHOICE

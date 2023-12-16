@@ -123,7 +123,7 @@ struct CharacterItems {
     DrawRectangleRoundedLines(
         {scaledRect.x + SCALE(PADDING_LEFT * 3.2F), scaledRect.y + SCALE(PADDING_TOP),
          scaledRect.width - SCALE(PADDING_LEFT * 6.4F), scaledRect.height - SCALE(240)},
-        0.1F, ROUND_SEGMENTS, 2, Colors::darkBackground);
+        0.1F, GAME_SETTINGS.roundSegments, 2, Colors::darkBackground);
   }
   static void DrawHeaderText(float x, float y, float size) noexcept {
     if (PLAYER_SECOND_STATS.HasAttributePointsToSpend()) {

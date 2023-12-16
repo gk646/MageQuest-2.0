@@ -16,9 +16,22 @@ struct SkillSlot {
         withBackGround(withBackGround),
         skill(skill) {}
   //Draws the icon
-  inline bool Draw(float x, float y) noexcept {
+  inline bool Draw(float x, float y, int keyBind = 0) noexcept {
     hitBox.x = (x + (float)baseX);
     hitBox.y = (y + (float)baseY);
+
+    if (keyBind != 0) {
+      if (keyBind == -1) {
+        DrawTextureProFast(textures::ui::skillbar::mouseleft,hitBox.x+4+25-6,hitBox.y+3+60,0,WHITE);
+      } else if (keyBind == -2) {
+        DrawTextureProFast(textures::ui::skillbar::mouseright,hitBox.x+4+25-6,hitBox.y+3+60,0,WHITE);
+      }else{
+        snprintf(TEXT_BUFFER, TEXT_BUFFER_SIZE, "%s", Util::GetKeyName(keyBind));
+        Util::DrawCenteredText(MINECRAFT_BOLD, 16, TEXT_BUFFER,
+                               hitBox.x + 4 + hitBox.width / 2, hitBox.y + 3 + 60,
+                               Colors::white_smoke);
+      }
+    }
 
     if (withBackGround) {
       DrawTextureProFast(textures::ui::skillbar::slot, hitBox.x, hitBox.y, 0, WHITE);

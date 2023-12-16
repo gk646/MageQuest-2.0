@@ -27,7 +27,7 @@ struct MiniMap {
     DrawRectangleLinesEx({(float)drawX - 3, START_Y - 3, WIDTH + 6, HEIGHT + 6}, 3,
                          Colors::LightGrey);
 
-    if (isRegionMapOpen && FAST_UI) {
+    if (isRegionMapOpen && GAME_SETTINGS.fastUI) {
       return;
     }
 
@@ -57,7 +57,7 @@ struct MiniMap {
       }
     }
 
-    if (FAST_UI) {
+    if (GAME_SETTINGS.fastUI) {
       return;
     }
 

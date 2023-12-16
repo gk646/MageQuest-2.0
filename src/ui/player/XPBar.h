@@ -14,7 +14,7 @@ struct XPBar {
   void Draw(float x, float y) noexcept {
     xpBarBounds.x = x + SCALE(28);
     xpBarBounds.y = y - SCALE(13);
-    DrawRectangleRounded(xpBarBounds, 2.5f, ROUND_SEGMENTS, Colors::questMarkerYellow);
+    DrawRectangleRounded(xpBarBounds, 2.5f, GAME_SETTINGS.roundSegments, Colors::questMarkerYellow);
     DrawTextureProFast(textures::ui::skillbar::xpbar, x - 2, y - HEIGHT, 0, WHITE);
 
     if (collision) {

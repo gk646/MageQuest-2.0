@@ -190,13 +190,15 @@ struct ArrowNormal final : Projectile {
 //Flies normally expect when hitting anything // Does damage for 1 tick and then explodes
 struct ArcaneBolt final : Projectile {
   bool hitTarget = false;
+  float oldDamage;
   ArcaneBolt(const Point& pos, bool isFriendlyToPlayer, float damage,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
              int16_t pov, const Vector2& mvmt, const Entity* sender)
       : Projectile(isFriendlyToPlayer, pos, {DamageType::ARCANE, damage}, effects, mvmt,
                    (int16_t)pov, sound::fireBurst, sender, ARCANE_BOLT) {
-    projectileType = ProjectileType::ARCANE_BOLT;
     isDoingDamage = true;
+    oldDamage = damageStats.damage;
+    damageStats.damage = 0;
   }
   void Draw() final {
     if (!hitTarget) {
@@ -211,7 +213,8 @@ struct ArcaneBolt final : Projectile {
   void Update() noexcept final {
     Projectile::Update();
     if (hitTarget) {
-      isDoingDamage = false;
+      damageStats.damage = oldDamage;
+      isDoingDamage = Projectile::spriteCounter == 82;
     }
   }
   void HitTargetCallback() noexcept final {
@@ -221,6 +224,11 @@ struct ArcaneBolt final : Projectile {
       hitTarget = true;
       spriteCounter = 78;
       lifeSpanTicks = 40;
+
+      pos.x_ -= 10;
+      pos.y_ -= 10;
+      size.x = 60;
+      size.y = 60;
     }
   }
   void HitWallCallback() noexcept final {
@@ -230,6 +238,11 @@ struct ArcaneBolt final : Projectile {
       hitTarget = true;
       spriteCounter = 78;
       lifeSpanTicks = 40;
+
+      pos.x_ -= 10;
+      pos.y_ -= 10;
+      size.x = 60;
+      size.y = 60;
     }
   }
 };

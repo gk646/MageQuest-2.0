@@ -95,8 +95,8 @@ void CharacterBag::RemoveSlots(int n) noexcept {
 }
 
 void ItemSlot::Update() noexcept {
-  hitBox.height = baseWidth * UI_SCALE;
-  hitBox.width = baseHeight * UI_SCALE;
+  hitBox.height = baseWidth;
+  hitBox.width = baseHeight;
   if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
     if (!DRAGGED_ITEM && item && IsKeyDown(KEY_X)) {
       DroppedItem::DropItem(this);
@@ -139,8 +139,8 @@ void ItemSlot::Update() noexcept {
   }
 }
 void ItemSlot::UpdateCharacterSlots() noexcept {
-  hitBox.height = baseWidth * UI_SCALE;
-  hitBox.width = baseHeight * UI_SCALE;
+  hitBox.height = baseWidth;
+  hitBox.width = baseHeight;
   if (CheckCollisionPointRec(MOUSE_POS, hitBox)) {
     if (!DRAGGED_ITEM && item && IsKeyDown(KEY_X)) {
       if (DroppedItem::DropItem(this)) {
