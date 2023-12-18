@@ -6,7 +6,7 @@ struct WorldObject : public Entity {
               Zone zone)
       : Entity(pos, size, shape_type, 0, false,zone) {}
 
-  inline static WorldObject* GetNewWorldObject(WorldObjectType type,
+  inline static WorldObject* GetNewInteractableObject(WorldObjectType type,
                                                const cxstructs::PointI& pos, bool isUsed,
                                                Zone zone);
 };
@@ -57,10 +57,11 @@ struct InteractableObject : public WorldObject {
 };
 
 #include "worldobjects/DroppedItem.h"
+#include "worldobjects/AoEIndicator.h"
 #include "worldobjects/Chests.h"
 
 //Returns a ptr to a new WorldObject of the given type at the given position
-WorldObject* WorldObject::GetNewWorldObject(WorldObjectType type,
+WorldObject* WorldObject::GetNewInteractableObject(WorldObjectType type,
                                             const cxstructs::PointI& pos, bool isUsed,
                                             Zone zone) {
   switch (type) {
@@ -74,11 +75,12 @@ WorldObject* WorldObject::GetNewWorldObject(WorldObjectType type,
 }
 
 //Does a lookup in the database table if the object was already used
-void Map::RegisterWorldObject(WorldObjectType type, const cxstructs::PointI& pos,
+void Map::RegisterInteractableObject(WorldObjectType type, const cxstructs::PointI& pos,
                               Zone zone) {
   bool isUsed = DataBaseHandler::StateExistsInTable("OBJECT_STATES", (int)type, pos.x,
                                                     pos.y, (int)zone);
-  WORLD_OBJECTS.emplace_back(WorldObject::GetNewWorldObject(type, pos, isUsed, zone));
+  WORLD_OBJECTS.emplace_back(
+      WorldObject::GetNewInteractableObject(type, pos, isUsed, zone));
 }
 
 void ItemDropHandler::DropItem(float x, float y, Item* item) noexcept {

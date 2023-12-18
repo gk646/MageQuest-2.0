@@ -56,7 +56,7 @@ struct Map {
         for (int b = 0; b < mapSize; ++b) {
           auto value = static_cast<int16_t>(std::strtol(start, &endPtr, 10));
           if (worldObjectTable.contains(value)) {
-            RegisterWorldObject(WorldObjectType(value), {b, i}, zone);
+            RegisterInteractableObject(WorldObjectType(value), {b, i}, zone);
             value = -1;
           }
           arr[b][i] = value;
@@ -138,7 +138,8 @@ struct Map {
   }
 
  private:
-  static void RegisterWorldObject(WorldObjectType type, const PointI& pos, Zone zone);
+  static void RegisterInteractableObject(WorldObjectType type,
+                                         const cxstructs::PointI& pos, Zone zone);
   inline static bool ParseTriggerType(const std::string& s, TriggerSpreadType& ts,
                                       MonsterType& mt) noexcept {
     auto it = stringToMonsterID.find(s);

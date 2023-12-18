@@ -1,5 +1,8 @@
 #ifndef MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_MONSTERS_H_
 #define MAGEQUEST_SRC_GAMEOBJECTS_MONSTERS_MONSTERS_H_
+
+#include "MonsterAbilitiesUtil.h"
+
 struct Wolf final : public Monster {
   Wolf(const Point& pos, uint8_t level, MonsterType type, Zone zone) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::WOLF, type,
@@ -1212,9 +1215,10 @@ struct BossStoneGolem final : public Monster {
   }
 };
 //TODO fight ambiance text
-//TODO boss health bar
 struct BossStoneKnight final : public Monster {
   bool isFighting = false;
+  bool shouldUseLightning = false;
+  HealthDropComponent healthDrop{0.9F,0,0,0};
   BossStoneKnight(const Point& pos, int level, MonsterType type, Zone zone) noexcept
       : Monster(pos, monsterIdToScaler[type], level,
                 &textures::monsters::BOSS_STONE_KNIGHT, type, {32, 70}, zone) {
@@ -1270,6 +1274,13 @@ struct BossStoneKnight final : public Monster {
     DRAW_HITBOXES();
   }
   void Update() final {
+    healthDrop.Update(shouldUseLightning, stats);
+    if(shouldUseLightning){
+      MonsterUtil::SpawnAoeCircular(
+          pos, 250, 7,
+          new AoEIndicator(pos, {50, 50}, ShapeType::CIRCLE, currentZone, 100));
+      shouldUseLightning = false;
+    }
     if (!isFighting) {
       effectHandler.AddEffect(new Resistance(100, 2), true);
     }
