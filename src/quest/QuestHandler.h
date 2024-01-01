@@ -49,6 +49,15 @@ struct QuestHandler {
       }
     }
   }
+  //Returns true if the player has the given quest
+  inline bool HasQuest(Quest_ID id){
+    for (const auto& q : quests) {
+      if ( q->id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
   inline void SetAsActiveQuest(Quest* quest) noexcept {
     if (!quest->hidden && quest->state == QuestState::ACTIVE) {
       activeQuest = quest;

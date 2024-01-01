@@ -70,7 +70,7 @@ struct GameLoader {
 #ifdef SPAWN_TESTROOM
     WorldManager::LoadMap(Zone::TestRoom, {24, 34});
 #else
-    WorldManager::LoadMap(Zone::Hillcrest, {75, 95});
+    WorldManager::LoadMap(Zone::Hillcrest, {82, 15 });
 #endif
     //MONSTERS.push_back(Monster::GetNewMonster({75 * 48, 85 * 48}, MonsterType::BOSS_STONE_KNIGHT, 4));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));

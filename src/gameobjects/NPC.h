@@ -114,6 +114,8 @@ void Monster::MonsterDiedCallback() noexcept {
 #include "npcs/Aria.h"
 #include "npcs/Marla.h"
 #include "npcs/Satiro.h"
+#include "npcs/Nietzsche.h"
+
 NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
                     Zone npcZone) noexcept {
   switch (npcID) {
@@ -130,7 +132,7 @@ NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
     case NPC_ID::DYING_MAN:
       break;
     case NPC_ID::NIETZSCHE:
-      break;
+      return new Nietzsche(absoluteX, absoluteY, npcZone);
     case NPC_ID::VILLAGER:
       break;
     case NPC_ID::TRADER:
