@@ -144,7 +144,8 @@ inline static Quest* GetQuest(Quest_ID id) {
       return nullptr;
     case Quest_ID::HILLCREST_PUZZLE:
       return Quests::HILLCREST_PUZZLE;
-      break;
+    case Quest_ID::NIETZSCHE_QUEST:
+      return Quests::NIETZSCHE;
   }
 }
 

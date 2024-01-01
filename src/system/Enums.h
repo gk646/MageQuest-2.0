@@ -309,6 +309,7 @@ inline static bool IsPercentStat(const Stat stat) noexcept {
 
 enum class NodeType : uint8_t {
   GOTO,
+  GOTO_PROXIMITY,
   KILL,
   SPAWN,
   SPEAK,
@@ -340,6 +341,7 @@ enum class NodeType : uint8_t {
 
 inline static std::unordered_map<std::string, NodeType> node_to_type = {
     {"SPAWN", NodeType::SPAWN},
+    {"GOTO_PROXIMITY", NodeType::GOTO_PROXIMITY},
     {"NPC_SAY", NodeType::NPC_SAY},
     {"TILE_ACTION", NodeType::TILE_ACTION},
     {"GOTO", NodeType::GOTO},
@@ -376,12 +378,14 @@ enum class Quest_ID : uint8_t {
   TUTORIAL,
   MARLA_QUEST,
   HILLCREST_PUZZLE,
+  NIETZSCHE_QUEST,
   END
 };
 
 inline static std::unordered_map<std::string, Quest_ID> stringToQuestID = {
     {"TUTORIAL", Quest_ID::TUTORIAL},
     {"MARLA_QUEST", Quest_ID::MARLA_QUEST},
+    {"NIETZSCHE_QUEST", Quest_ID::NIETZSCHE_QUEST},
     {"START_SOMETHING_NEW", Quest_ID::START_SOMETHING_NEW},
     {"HILLCREST_PUZZLE", Quest_ID::HILLCREST_PUZZLE},
 };

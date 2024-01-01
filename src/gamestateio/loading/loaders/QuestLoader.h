@@ -1,6 +1,12 @@
 #ifndef MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_QUESTLOADER_H_
 #define MAGEQUEST_SRC_GAMESTATEIO_LOADING_LOADERS_QUESTLOADER_H_
+
 namespace QuestLoader {
+static void LoadManualQuests() {
+  if (!PLAYER_QUESTS.HasQuest(Quest_ID::NIETZSCHE_QUEST)) {
+    PLAYER_QUESTS.AddQuest(Quests::NIETZSCHE);
+  }
+}
 static void LoadProgress() noexcept {
   sqlite3_stmt* stmt;
   DataBaseHandler::PrepareStmt("SELECT * FROM QUEST_FACTS", DataBaseHandler::gameSave,
@@ -35,7 +41,11 @@ static void Load() noexcept {
   Quests::HILLCREST_PUZZLE =
       ScriptParser::Load("Quests/HillcrestPuzzle.mgqs", Quest_ID::HILLCREST_PUZZLE, true);
 
+  Quests::NIETZSCHE =
+      ScriptParser::Load("Quests/Nietzsche.txt", Quest_ID::NIETZSCHE_QUEST, true);
+
   LoadProgress();
+  LoadManualQuests();
   if (PLAYER_QUESTS.quests.empty()) {
     PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
   } else {

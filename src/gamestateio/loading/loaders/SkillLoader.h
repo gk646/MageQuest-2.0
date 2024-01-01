@@ -47,7 +47,7 @@ static void Load() noexcept {
   }
 
   for (int i = 0; i < 6; i++) {
-    PLAYER_HOTBAR[i] = new SkillSlot(48 + 65 * i, 20, SKILLS[LOCKED], false);
+    PLAYER_HOTBAR[i] = new SkillSlot(48 + 65 * i, 20, SKILLS[DUMMY], false);
   }
 
   LoadLearnedSkills();

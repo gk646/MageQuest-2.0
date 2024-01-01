@@ -24,8 +24,8 @@ Maybe later:I see how it is. You're not willing to help out a fellow traveler in
 SPEAK:MARLA:Listen to Marla's side of the story:WAYPOINT,0,0
 She headed east, so I've marked it on your map. Make sure she doesn't come back here and ruin everything, please!
 *
-GOTO:83,46:Head east and pickup the Aria's trail!:Hillcrest
-SPAWN:ARIA:0,Hillcrest:58,53
+GOTO:83,46:Head east and pickup Aria's trail!:Hillcrest
+SPAWN:ARIA:1,Hillcrest:58,53
 PLAYER_THOUGHT:She has to be close... I should look around:Find and speak to Aria
 GOTO:70,50:Find and speak to Aria:Hillcrest
 CHOICE_DIALOGUE_SIMPLE:ARIA:You came right on time, who ever you might be?! You're not here to rob me or beat me to it?:0
