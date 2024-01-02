@@ -121,4 +121,47 @@ inline static bool IsTileCovered(int x, int y) noexcept {
   return CURRENT_MAP_COVER[x][y];
 }
 
+//Returns manually distributed monster types for each trigger spread type
+inline static MonsterType GetDynamicMonsterTypeFromSpread(TriggerSpreadType ts) {
+  switch (ts) {
+    case TriggerSpreadType::DEFAULT:
+      return MonsterType::ANY;
+    case TriggerSpreadType::MIXED_GOBLIN: {
+      auto num = RANGE_01(RNG_ENGINE);
+      if (num < 0.2F) {
+        return MonsterType::RAT;
+      } else if (num < 0.30F) {
+        return MonsterType::SKEL_SPEAR;
+      } else if (num < 0.40F) {
+        return MonsterType::SKEL_WAR;
+      } else if (num < 0.5F) {
+        return MonsterType::SKEL_ARCHER;
+      } else if (num < 0.6F) {
+        return MonsterType::SKEL_SHIELD;
+      } else if (num < 0.8F) {
+        return MonsterType::GOBLIN;
+      } else {
+        return MonsterType::FLYING_EYE;
+      }
+    }
+    case TriggerSpreadType::DUNGEON_NORMAL: {
+      auto num = RANGE_01(RNG_ENGINE);
+      if (num < 0.2F) {
+        return MonsterType::RAT;
+      } else if (num < 0.30F) {
+        return MonsterType::SKEL_SPEAR;
+      } else if (num < 0.40F) {
+        return MonsterType::SKEL_WAR;
+      } else if (num < 0.5F) {
+        return MonsterType::SKEL_ARCHER;
+      } else if (num < 0.6F) {
+        return MonsterType::SKEL_SHIELD;
+      } else if (num < 0.8F) {
+        return MonsterType::GOBLIN;
+      } else {
+        return MonsterType::FLYING_EYE;
+      }
+    }
+  }
+}
 #endif  //MAGEQUEST_SRC_SYSTEM_GLOBALVARIABLES_H_

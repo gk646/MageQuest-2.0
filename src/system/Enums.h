@@ -117,7 +117,7 @@ inline static std::unordered_map<DamageType, Color> damageTypeToColor{
 };
 enum class HitType : uint8_t { CONTINUOUS, ONE_HIT, ONE_TICK };
 enum class Difficulty : uint8_t { EASY, NORMAL, HARD, TORMENT };
-enum class TriggerSpreadType : uint8_t { MIXED_GOBLIN, MIX_ALL };
+enum class TriggerSpreadType : uint8_t { DEFAULT,MIXED_GOBLIN, DUNGEON_NORMAL };
 enum class Alignment : uint8_t { LEFT, RIGHT, MIDDLE };
 
 enum class ShadowType : uint16_t {
@@ -379,6 +379,7 @@ enum class Quest_ID : uint8_t {
   MARLA_QUEST,
   HILLCREST_PUZZLE,
   NIETZSCHE_QUEST,
+  THE_GROVES_SECRET,
   END
 };
 
@@ -395,7 +396,7 @@ enum class NPC_ID : uint8_t {
   MARLA,
   ARIA,
   HILLCREST_MAYOR,
-  RECEPTIONS,
+  RECEPTION_GROVE,
   DYING_MAN,
   NIETZSCHE,
   VILLAGER,
@@ -419,7 +420,7 @@ std::unordered_map<std::string, NPC_ID> stringToNPCID = {
     {"MARLA", NPC_ID::MARLA},
     {"ARIA", NPC_ID::ARIA},
     {"HILLCREST_MAYOR", NPC_ID::HILLCREST_MAYOR},
-    {"RECEPTIONS", NPC_ID::RECEPTIONS},
+    {"RECEPTION_GROVE", NPC_ID::RECEPTION_GROVE},
     {"DYING_MAN", NPC_ID::DYING_MAN},
     {"NIETZSCHE", NPC_ID::NIETZSCHE},
     {"VILLAGER", NPC_ID::VILLAGER},
@@ -433,9 +434,9 @@ std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
     {NPC_ID::MARLA, "Marla"},
     {NPC_ID::ARIA, "Aria"},
     {NPC_ID::HILLCREST_MAYOR, "Hillcrest Mayor"},
-    {NPC_ID::RECEPTIONS, "Receptionist"},
+    {NPC_ID::RECEPTION_GROVE, "Receptionist"},
     {NPC_ID::DYING_MAN, "Dying Man"},
-    {NPC_ID::NIETZSCHE, "Nietzsche"},
+    {NPC_ID::NIETZSCHE, "Hermit"},
     {NPC_ID::VILLAGER, "Villager"},
     {NPC_ID::TRADER, "Trader"},
     {NPC_ID::RANDOM, "Person"},
@@ -476,7 +477,7 @@ inline static std::unordered_map<std::string, MonsterType> stringToMonsterID = {
 
 inline static std::unordered_map<std::string, TriggerSpreadType> stringToTriggerType = {
     {"mixedGoblin", TriggerSpreadType::MIXED_GOBLIN},
-    {"mixeall", TriggerSpreadType::MIX_ALL},
+    {"mixeall", TriggerSpreadType::DUNGEON_NORMAL},
 };
 
 enum ProjectileType : uint8_t {

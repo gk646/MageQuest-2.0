@@ -72,6 +72,8 @@ struct GameLoader {
 #else
     WorldManager::LoadMap(Zone::Hillcrest, {82, 15 });
 #endif
+    PLAYER_EFFECTS.AddEffect(new Resistance(100,10000));
+    PLAYER_EFFECTS.AddEffect(new Berserk(1.5F,10000));
     //MONSTERS.push_back(Monster::GetNewMonster({75 * 48, 85 * 48}, MonsterType::BOSS_STONE_KNIGHT, 4));
     // MONSTERS.push_back(        Monster::GetNewMonster({50 * 48, 35 * 48}, MonsterType::SKULL_WOLF, 5));
     for (int i = 0; i < 15; i++) {

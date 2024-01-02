@@ -242,8 +242,6 @@ GOTO:40,29:Tie up loose ends:Hillcrest
 
 
 
-
-
 #Starting the walking back to marla choice
 START_CHOICE:0
     CHOICE_DIALOGUE_SIMPLE:ARIA:But now once and for all. Is the necklace fake?:0

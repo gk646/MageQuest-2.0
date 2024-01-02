@@ -145,22 +145,20 @@ struct EntityStats {
  public:
   [[nodiscard]] inline float GetAbilityDmg(float damage,
                                            DamageType dmgType) const noexcept {
-
-    damage *= effects[WEAPON_DAMAGE];
     switch (dmgType) {
       case DamageType::FIRE:
-        return damage * (1 + effects[FIRE_DMG_P]);
+        return damage * (effects[WEAPON_DAMAGE] + effects[FIRE_DMG_P]);
       case DamageType::POISON:
-        return damage * (1 + effects[POISON_DMG_P]);
+        return damage * (effects[WEAPON_DAMAGE] + effects[POISON_DMG_P]);
       case DamageType::ICE:
-        return damage * (1 + effects[ICE_DMG_P]);
+        return damage * (effects[WEAPON_DAMAGE] + effects[ICE_DMG_P]);
       case DamageType::ARCANE:
-        return damage * (1 + effects[ARCANE_DMG_P]);
+        return damage * (effects[WEAPON_DAMAGE] + effects[ARCANE_DMG_P]);
       case DamageType::DARK:
-        return damage * (1 + effects[DARK_DMG_P]);
+        return damage * (effects[WEAPON_DAMAGE] + effects[DARK_DMG_P]);
       case DamageType::PHYSICAL:
       case DamageType::TRUE_DMG:
-        return damage;
+        return damage * effects[WEAPON_DAMAGE];
     }
   }
   [[nodiscard]] inline float GetTotalCD(const SkillStats& stats) const noexcept {

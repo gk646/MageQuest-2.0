@@ -3,9 +3,9 @@
 
 int main() {
   if (!SteamAPI_Init()) {
-    exit(1);
+   // exit(1);
   }
-  SteamNetworkingUtils()->InitRelayNetworkAccess();
+ // SteamNetworkingUtils()->InitRelayNetworkAccess();
   std::ios::sync_with_stdio(false);
   DataBaseHandler::Init();
   auto game = new Game();

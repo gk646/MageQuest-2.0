@@ -6,10 +6,11 @@ struct SpawnTrigger {
   const PointI size;
   bool triggered = false;
   bool isSingular;
-  TriggerSpreadType spread_type;
+  TriggerSpreadType spreadType;
   uint8_t level = 0;
   MonsterType type;
   uint8_t amount = 0;
+
   //Triggers the spawn action
   inline void Trigger() noexcept;
   //Returns true if the player is close to the spawn trigger
