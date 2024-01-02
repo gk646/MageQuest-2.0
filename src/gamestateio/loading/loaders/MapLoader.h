@@ -36,7 +36,6 @@ struct MapLoader {
     }
   }
   static void Load() {
-    cxstructs::now(2);
     MAPS.reserve(15);
     MAPS.emplace_back("hermitCaveHillcrest", 70, Zone::Hillcrest_Hermit_Cave);
     MAPS.emplace_back("goblinCave", 120, Zone::Goblin_Cave);
@@ -51,7 +50,6 @@ struct MapLoader {
     MAPS.emplace_back("DeadPlains", 200, Zone::DeadPlains);
     MAPS.emplace_back("Oasis", 100, Zone::Oasis);
     MAPS.emplace_back("OasisCave", 60, Zone::Oasis_Cave);
-    cxstructs::printTime<std::chrono::milliseconds>("",2);
     LoadMapCovers();
   }
 };

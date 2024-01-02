@@ -20,18 +20,12 @@ struct Root final : public StatusEffect {
   explicit Root(int duration) : StatusEffect(true, 0, duration, EffectType::ROOT) {}
   [[nodiscard]] Root* Clone() const final { return new Root(*this); }
   void ApplyEffect(EntityStats& stats, const Entity* self) noexcept final {
-    preValue = stats.effects[SPEED_MULT_P];
-    stats.effects[SPEED_MULT_P] = -1;
+    preValue = stats.speed;
+    stats.speed = 0;
   }
-  void TickEffect(EntityStats& stats, const Entity* self) final {
-    UpdateDuration();
-    if (stats.effects[SPEED_MULT_P] != -1) {
-      preValue = stats.effects[SPEED_MULT_P];
-      stats.effects[SPEED_MULT_P] = -1;
-    }
-  }
+  void TickEffect(EntityStats& stats, const Entity* self) final { UpdateDuration(); }
   void RemoveEffect(EntityStats& stats, const Entity* self) noexcept final {
-    stats.effects[SPEED_MULT_P] = preValue;
+    stats.speed = preValue;
   }
   void AddStack(EntityStats& stats, const StatusEffect* other,
                 const Entity* self) noexcept final {

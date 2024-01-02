@@ -4,20 +4,20 @@
 #include "../ui/game/HealthBar.h"
 #include "components/HealthDropComponent.h"
 
-#define MONSTER_UPDATE()                                                      \
-  ENTITY_UPDATE()                                                             \
-  spriteCounter++;                                                            \
-  healthBar.Update();                                                         \
-  effectHandler.Update();                                                     \
-  CheckForDeath();                                                            \
-  if (MP_TYPE == MultiplayerType::CLIENT) return;                             \
-  hitFlashDuration = std::max(-12, hitFlashDuration - 1);                     \
-  isFlipped = threatManager.targetCount > 0 &&                                \
-              pos.x_ + size.x / 2.0F >                                        \
+#define MONSTER_UPDATE()                                                       \
+  ENTITY_UPDATE()                                                              \
+  spriteCounter++;                                                             \
+  healthBar.Update();                                                          \
+  effectHandler.Update();                                                      \
+  CheckForDeath();                                                             \
+  if (MP_TYPE == MultiplayerType::CLIENT) return;                              \
+  hitFlashDuration = std::max(-12, hitFlashDuration - 1);                      \
+  isFlipped = threatManager.targetCount > 0 &&                                 \
+              pos.x_ + size.x / 2.0F >                                         \
                   threatManager.GetHighestThreatTarget()->GetMiddlePoint().x_; \
-  attackComponent.Update();                                                   \
-  if (actionState != 0) return;                                               \
-  threatManager.Update();                                                     \
+  attackComponent.Update();                                                    \
+  if (actionState != 0) return;                                                \
+  threatManager.Update();                                                      \
   isMoving = false;
 
 struct Monster : public Entity {
@@ -307,7 +307,13 @@ void SpawnTrigger::Trigger() noexcept {
   if (isSingular) {
     MONSTERS.push_back(Monster::GetNewMonster({(float)pos.x, (float)pos.y}, type, level));
   } else {
-    //TODO area triggers
+    for (int i = 0; i < amount; i++) {
+      auto monsterPos = Point{pos.x + RANGE_01(RNG_ENGINE) * size.x,
+                              pos.y + RANGE_01(RNG_ENGINE) * size.y};
+
+      MONSTERS.emplace_back(Monster::GetNewMonster(
+          monsterPos, GetDynamicMonsterTypeFromSpread(spreadType), level));
+    }
   }
 }
 
@@ -356,8 +362,8 @@ void HealthBar::DrawNormal(const Monster* self) const noexcept {
   float x = self->pos.x_ + DRAW_X;
   float y = self->pos.y_ + DRAW_Y;
 
-  const float scaledWidth = 50 ;
-  const float scaledHeight = height ;
+  const float scaledWidth = 50;
+  const float scaledHeight = height;
 
   const float startX = x - (scaledWidth - width) / 2;
   const float startY = y - scaledHeight * 1.2F;

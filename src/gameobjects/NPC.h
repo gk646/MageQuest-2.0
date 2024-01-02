@@ -103,7 +103,8 @@ void Monster::MonsterDiedCallback() noexcept {
       //TODO drop coins
     }
   } else {
-    ItemDropHandler::RollForItemDrop(pos.x_ + size.x / 2, pos.y_ + size.y / 2, stats.level);
+    ItemDropHandler::RollForItemDrop(pos.x_ + size.x / 2, pos.y_ + size.y / 2,
+                                     stats.level);
     PLAYER_SECOND_STATS.AddPlayerExperience(stats.level);
   }
   PLAYER_QUESTS.MonsterKilled(type);
@@ -114,6 +115,7 @@ void Monster::MonsterDiedCallback() noexcept {
 #include "npcs/Aria.h"
 #include "npcs/Marla.h"
 #include "npcs/Satiro.h"
+#include "npcs/ReceptionGrove.h"
 #include "npcs/Nietzsche.h"
 
 NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
@@ -125,24 +127,20 @@ NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
       return new Marla(absoluteX, absoluteY, npcZone);
     case NPC_ID::ARIA:
       return new Aria(absoluteX, absoluteY, npcZone);
-    case NPC_ID::HILLCREST_MAYOR:
-      break;
-    case NPC_ID::RECEPTIONS:
-      break;
-    case NPC_ID::DYING_MAN:
-      break;
-    case NPC_ID::NIETZSCHE:
-      return new Nietzsche(absoluteX, absoluteY, npcZone);
-    case NPC_ID::VILLAGER:
-      break;
-    case NPC_ID::TRADER:
-      break;
-    case NPC_ID::RANDOM:
-      break;
-    case NPC_ID::NPC_END:
-      break;
     case NPC_ID::SATIRO:
       return new Satiro(absoluteX, absoluteY, npcZone);
+    case NPC_ID::NIETZSCHE:
+      return new Nietzsche(absoluteX, absoluteY, npcZone);
+    case NPC_ID::RECEPTION_GROVE:
+      return new ReceptionGrove(absoluteX, absoluteY, npcZone);
+    case NPC_ID::HILLCREST_MAYOR:
+    case NPC_ID::DYING_MAN:
+    case NPC_ID::VILLAGER:
+    case NPC_ID::TRADER:
+    case NPC_ID::RANDOM:
+    case NPC_ID::NPC_END:
+      break;
   }
+  std::cout << "MISSING NPC ENUM VALUE AT:" << (int)npcID << std::endl;
 }
 #endif  //MAGEQUEST_SRC_GAMEOBJECTS_ENTITIES_TYPES_NPC_H_
