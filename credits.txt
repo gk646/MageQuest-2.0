@@ -18,6 +18,7 @@ TEXTURES
  CTHULU by chierit from itch.io [https://chierit.itch.io/free-cthulu]
  Most spritesheets from itch.io with no credits required:
  impdemon by "sanctumpixel" [ttps://sanctumpixel.itch.io/imp-axe-demon-pixel-art-character]
+ a lot of spritesheets by "LuizMelzo" [https://luizmelo.itch.io/]
 
 SOUNDS 
 [Fantasy Sound Effects Library] by LittleRobotSoundFactory from freesound.org licensed under CC BY 4.0. Source [https://freesound.org/people/LittleRobotSoundFactory/packs/16687/]
