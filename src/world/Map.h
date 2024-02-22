@@ -94,10 +94,11 @@ struct Map {
     bool isSingular = true;
     int amount = 0;
     int level = 0;
-    TriggerSpreadType spread_type = TriggerSpreadType::MIXED_GOBLIN;
+    TriggerSpreadType spread_type = TriggerSpreadType::DEFAULT;
     MonsterType type = MonsterType::ANY;
     std::vector<std::string> parts;
     while (std::getline(file, line)) {
+      if(line.contains("opacity")) return vector;
       if (line.contains("\"height\"")) {
         parts = Util::SplitString(line, ':');
         height = std::stoi(parts[1]);
@@ -126,7 +127,7 @@ struct Map {
         parts = Util::SplitString(line, ':');
         y = std::stoi(parts[1]);
         isSingular = amount == 0;
-        if (type != MonsterType::ANY) {
+        if (type != MonsterType::ANY || spread_type != TriggerSpreadType::DEFAULT) {
           vector->emplace_back(PointI{x * 3, y * 3}, PointI{width * 3, height * 3}, false,
                                isSingular, spread_type, level, type, amount);
         }
@@ -146,8 +147,13 @@ struct Map {
     if (it != stringToMonsterID.end()) {
       mt = it->second;
       return true;
+    } else {
+      auto triggerIt = stringToTriggerType.find(s);
+      if (triggerIt != stringToTriggerType.end()) {
+        ts = triggerIt->second;
+      }
+      return false;
     }
-    return false;
   }
 };
 #endif  //MAGE_QUEST_SRC_GRAPHICS_MAPS_MAP_H_

@@ -340,6 +340,8 @@ inline static RectangleR GetToolTipRect(const float width, const float height) n
 }
 inline static void SelectionSortInventorySlot(ItemSlot* arr, uint_32_cx len,
                                               bool ascending = true);
+
+
 //Key press module / used for detecting key press on update tick rate(60)
 inline static bool e_previous[2] = {false, false};
 inline static void Update() noexcept {
