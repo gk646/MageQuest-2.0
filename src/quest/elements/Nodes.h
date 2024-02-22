@@ -37,6 +37,21 @@ struct GOTO final : public QuestNode {
     return new GOTO(parts[2], Util::ParsePointI(parts[1]), stringToZoneMap[parts[3]]);
   }
 };
+struct GOTO_PROXIMITY final : public QuestNode {
+  PointI target;
+  Zone zone;
+  int distance = 5;
+  explicit GOTO_PROXIMITY(std::string obj_txt, int distance,const PointI& target, Zone zone)
+      : QuestNode(std::move(obj_txt), NodeType::GOTO_PROXIMITY, target),
+        target(target),distance(distance),
+        zone(zone) {}
+  inline bool Progress() noexcept final {
+    return CURRENT_ZONE == zone && PLAYER.tilePos.dist(target) < distance;
+  }
+  static GOTO_PROXIMITY* ParseQuestNode(const std::vector<std::string>& parts) noexcept {
+    return new GOTO_PROXIMITY(parts[3],std::stoi(parts[2]) ,Util::ParsePointI(parts[1]), stringToZoneMap[parts[4]]);
+  }
+};
 struct NPC_MOVE final : public QuestNode {
   std::vector<PointI> waypoints;
   int waypoint = 0;

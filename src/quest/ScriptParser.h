@@ -104,6 +104,7 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       return obj;
     }
     case NodeType::CHOICE_DIALOGUE: {
+
       std::string line;
       auto* obj = CHOICE_DIALOGUE::ParseQuestNode(parts);
       int i = 0;
@@ -133,6 +134,8 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       return new SWITCH_ALTERNATIVE(parts[1]);
     case NodeType::WAIT:
       return new WAIT(parts[1]);
+    case NodeType::GOTO_PROXIMITY:
+      return GOTO_PROXIMITY::ParseQuestNode(parts);
   }
 }
 //Adds the node to the given quest and setting the "isMajor" variable
