@@ -20,7 +20,7 @@ struct SkillPanel final : public Window {
     DrawSkills();
   }
   void Update() noexcept {
-    WINDOW_UPDATE();
+    WINDOW_DRAW_UPDATE();
     for (auto& slot : PLAYER_SKILLS) {
       slot->Update();
     }

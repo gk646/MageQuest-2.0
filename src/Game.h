@@ -114,7 +114,7 @@ class Game {
   static inline void GameTick() noexcept {
     GAME_STATISTICS.Update();
     Lighting::UpdateScreenEffects();
-    SteamAPI_RunCallbacks();
+    //SteamAPI_RunCallbacks();
     Multiplayer::PollPackets();
     std::unique_lock<std::shared_mutex> lock(rwLock);
     switch (GAME_STATE) {
@@ -275,8 +275,8 @@ class Game {
     SetExitKey(0);
     FIRST_LAYER_BUFFER = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
     SetMouseCursorImage((ASSET_PATH + "ui/cursor.png").c_str(), 0, 0);
-    PLAYER_ID = SteamUser()->GetSteamID();
-    PLAYER_NAME = SteamFriends()->GetPersonaName();
+    //PLAYER_ID = SteamUser()->GetSteamID();
+    //PLAYER_NAME = SteamFriends()->GetPersonaName();
     UI_MANAGER.playerUI.charPanel.header_text = PLAYER_NAME.data();
     RNG_RANDOM.seed(std::random_device()());
     RAYLIB_LOGO = new GifDrawer(ASSET_PATH + "ui/titleScreen/raylib.gif");

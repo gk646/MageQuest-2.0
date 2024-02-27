@@ -8,6 +8,55 @@
 #include "TexturedButton.h"
 #include "UIHitbox.h"
 
+
+#define WINDOW_LOGIC()                                     \
+  if (IsKeyPressed(windowOpenKey)) {                       \
+    if (isWindowOpen) {                                    \
+      CloseWindow();                                       \
+    } else {                                               \
+      OpenWindow();                                        \
+    }                                                      \
+  }                                                        \
+                                                           \
+  if (!isWindowOpen) {                                     \
+    return;                                                \
+  }                                                        \
+                                                           \
+  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) { \
+    auto mouse_pos = MOUSE_POS;                            \
+    auto delta_x = (mouse_pos.x - lastMousePos.x);         \
+    auto delta_y = (mouse_pos.y - lastMousePos.y);         \
+    wholeWindow.x += delta_x;                              \
+    wholeWindow.y += delta_y;                              \
+    header_bar.x += delta_x;                               \
+    header_bar.y += delta_y;                               \
+    lastMousePos = mouse_pos;                              \
+  } else {                                                 \
+    isDragged = false;                                     \
+  }
+
+#define WINDOW_DRAW_UPDATE()                                                               \
+  if (!isWindowOpen) {                                                                \
+    return;                                                                           \
+  }                                                                                   \
+  if (WINDOW_FOCUSED) return;                                                         \
+  isHeaderHovered = false;                                                            \
+  if (!WINDOW_FOCUSED && CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && \
+      !DRAGGED_ITEM) {                                                                \
+    isHeaderHovered = true;                                                           \
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                       \
+      if (!isDragged) {                                                               \
+        isDragged = true;                                                             \
+        lastMousePos = MOUSE_POS;                                                     \
+      }                                                                               \
+    }                                                                                 \
+  }                                                                                   \
+                                                                                      \
+  if (!WINDOW_FOCUSED) {                                                              \
+    WINDOW_FOCUSED =                                                                  \
+        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));      \
+  }
+
 struct Window {
   RectangleR wholeWindow;
   RectangleR header_bar;
@@ -33,6 +82,16 @@ struct Window {
         closeSound(closeSound) {}
 
  public:
+  //Draws the window
+  inline void Draw() {
+    WINDOW_DRAW_UPDATE();
+    DrawWindow();
+  }
+  //Updates the window
+  inline void Update() {
+    WINDOW_LOGIC();
+
+  }
   //Opens the window
   inline void OpenWindow() noexcept {
     if (isWindowOpen) return;
@@ -107,52 +166,6 @@ struct Window {
   virtual inline void OnOpen(){};
   virtual inline void OnClose(){};
 
-#define WINDOW_LOGIC()                                     \
-  if (IsKeyPressed(windowOpenKey)) {                       \
-    if (isWindowOpen) {                                    \
-      CloseWindow();                                       \
-    } else {                                               \
-      OpenWindow();                                        \
-    }                                                      \
-  }                                                        \
-                                                           \
-  if (!isWindowOpen) {                                     \
-    return;                                                \
-  }                                                        \
-                                                           \
-  if (isDragged && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) { \
-    auto mouse_pos = MOUSE_POS;                            \
-    auto delta_x = (mouse_pos.x - lastMousePos.x);         \
-    auto delta_y = (mouse_pos.y - lastMousePos.y);         \
-    wholeWindow.x += delta_x;                              \
-    wholeWindow.y += delta_y;                              \
-    header_bar.x += delta_x;                               \
-    header_bar.y += delta_y;                               \
-    lastMousePos = mouse_pos;                              \
-  } else {                                                 \
-    isDragged = false;                                     \
-  }
 
-#define WINDOW_UPDATE()                                                               \
-  if (!isWindowOpen) {                                                                \
-    return;                                                                           \
-  }                                                                                   \
-  if (WINDOW_FOCUSED) return;                                                         \
-  isHeaderHovered = false;                                                            \
-  if (!WINDOW_FOCUSED && CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(header_bar)) && \
-      !DRAGGED_ITEM) {                                                                \
-    isHeaderHovered = true;                                                           \
-    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {                                       \
-      if (!isDragged) {                                                               \
-        isDragged = true;                                                             \
-        lastMousePos = MOUSE_POS;                                                     \
-      }                                                                               \
-    }                                                                                 \
-  }                                                                                   \
-                                                                                      \
-  if (!WINDOW_FOCUSED) {                                                              \
-    WINDOW_FOCUSED =                                                                  \
-        isDragged || CheckCollisionPointRec(MOUSE_POS, SCALE_RECT(wholeWindow));      \
-  }
 };
 #endif  //MAGEQUEST_SRC_UI_WINDOW_H_

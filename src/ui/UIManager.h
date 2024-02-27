@@ -11,6 +11,7 @@ inline void RestUIPosition();
 #include "elements/SoundComponent.h"
 #include "elements/TextField.h"
 #include "elements/TextPanel.h"
+#include "elements/TradeWindow.h"
 
 #include "PlayerUI.h"
 #include "menus/SettingsMenu.h"

@@ -72,6 +72,7 @@ struct GameLoader {
 #else
     WorldManager::LoadMap(Zone::Hillcrest, {82, 15 });
 #endif
+    NPCS.emplace_back(new GroveTickets(82*48,15*48,Zone::Hillcrest));
     PLAYER_EFFECTS.AddEffect(new Resistance(100,10000));
     PLAYER_EFFECTS.AddEffect(new Berserk(1.5F,10000));
     //MONSTERS.push_back(Monster::GetNewMonster({75 * 48, 85 * 48}, MonsterType::BOSS_STONE_KNIGHT, 4));
