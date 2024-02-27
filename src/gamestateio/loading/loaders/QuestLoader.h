@@ -47,6 +47,7 @@ static void Load() noexcept {
       ScriptParser::Load("Quests/TheGrovesSecret.txt", Quest_ID::THE_GROVES_SECRET, true);
   Quests::NIETZSCHE =
       ScriptParser::Load("Quests/Nietzsche.txt", Quest_ID::NIETZSCHE_QUEST, true);
+  Quests::TRADING =   ScriptParser::Load("Quests/Trading.txt", Quest_ID::TRADING, true);
 
   LoadProgress();
   LoadManualQuests();

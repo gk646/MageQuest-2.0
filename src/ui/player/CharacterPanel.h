@@ -25,7 +25,7 @@ struct CharacterPanel : public Window {
     }
   }
   void Update() noexcept {
-    WINDOW_UPDATE();
+    WINDOW_DRAW_UPDATE();
     switch (state) {
       case CHARACTER:
         itemsTab.Update();

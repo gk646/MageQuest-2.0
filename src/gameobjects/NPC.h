@@ -75,6 +75,8 @@ struct NPC : public Entity {
 };
 
 #include "../quest/QuestHandler.h"
+#include "npcs/Trader.h"
+
 #define INTERACT_WITH_PLAYER()                                                       \
   if (Util::EPressed() && currentZone == CURRENT_ZONE && this->Intersects(PLAYER)) { \
     if (!dialogue) {                                                                 \
@@ -111,12 +113,8 @@ void Monster::MonsterDiedCallback() noexcept {
   GAME_STATISTICS.MonsterKilled(type);
   ApplyTalentsToMonsterDeath(this);
 }
-#include "npcs/Deckard.h"
-#include "npcs/Aria.h"
-#include "npcs/Marla.h"
-#include "npcs/Satiro.h"
-#include "npcs/ReceptionGrove.h"
-#include "npcs/Nietzsche.h"
+
+#include "npcs/NPCS.h"
 
 NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
                     Zone npcZone) noexcept {
@@ -131,7 +129,7 @@ NPC* NPC::GetNewNPC(NPC_ID npcID, float absoluteX, float absoluteY,
       return new Satiro(absoluteX, absoluteY, npcZone);
     case NPC_ID::NIETZSCHE:
       return new Nietzsche(absoluteX, absoluteY, npcZone);
-    case NPC_ID::RECEPTION_GROVE:
+    case NPC_ID::GROVE_RECEPTION:
       return new ReceptionGrove(absoluteX, absoluteY, npcZone);
     case NPC_ID::HILLCREST_MAYOR:
     case NPC_ID::DYING_MAN:
