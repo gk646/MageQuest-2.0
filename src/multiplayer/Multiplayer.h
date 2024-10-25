@@ -60,7 +60,9 @@ inline static void CloseMultiplayer() noexcept {
     delete np;
     np = nullptr;
   }
-  SteamMatchmaking()->LeaveLobby(LOBBY_ID);
+  if(MP_TYPE != MultiplayerType::OFFLINE){
+    SteamMatchmaking()->LeaveLobby(LOBBY_ID);
+  }
   MP_TYPE = MultiplayerType::OFFLINE;
   CONNECTED = false;
 }

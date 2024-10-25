@@ -58,7 +58,7 @@ struct CharacterBag final : public Window {
   void Update() noexcept {
     float bagSlots = PLAYER_STATS.GetBagSlots();
     wholeWindow.height = 60 + std::ceil(bagSlots / per_row) * spacing_y;
-    WINDOW_UPDATE()
+    WINDOW_DRAW_UPDATE()
     for (int i = 0; i < (int)bagSlots; i++) {
       PLAYER_BAG[i].Update();
     }

@@ -52,7 +52,7 @@ struct QuestPanel final : public Window {
     sidePanel.Update();
     questMenu.Update();
     questText.Update();
-    WINDOW_UPDATE();
+    WINDOW_DRAW_UPDATE();
   }
 };
 

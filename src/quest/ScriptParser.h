@@ -104,7 +104,6 @@ inline QuestNode* ParseNextNode(const std::vector<std::string>& parts,
       return obj;
     }
     case NodeType::CHOICE_DIALOGUE: {
-
       std::string line;
       auto* obj = CHOICE_DIALOGUE::ParseQuestNode(parts);
       int i = 0;
