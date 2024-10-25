@@ -35,12 +35,12 @@ struct WorldRender {
     MIRROR_POINT = playerX + PLAYER.size.x / 2;
   }
   static void DrawBackGround() noexcept {
+    cxstructs::now();
     float x_base, y_base;
     for (uint16_t i = worldCol; i < maxCol; ++i) {
       x_base = static_cast<float>(i) * TILE_SIZE + DRAW_X;
       for (uint16_t b = worldRow; b < maxRow; ++b) {
         y_base = static_cast<float>(b) * TILE_SIZE + DRAW_Y;
-
         DrawTextureProFastUltra(TILES[CURRENT_BACK_GROUND[i][b]], x_base, y_base);
 
 #ifdef DRAW_TILE_BORDER
@@ -52,6 +52,7 @@ struct WorldRender {
         }
       }
     }
+    cxstructs::printTime<std::chrono::nanoseconds>("draw tick: ");
   }
   static void DrawForeGround() noexcept {
     float x_base, y_base;

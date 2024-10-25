@@ -13,6 +13,7 @@ struct MiniMap {
   int update_timer = 500;
   bool& isRegionMapOpen;
   explicit MiniMap(bool& isRegionMapOpen) : isRegionMapOpen(isRegionMapOpen) {}
+
   void Draw() const noexcept {
     auto playerTile = PLAYER.tilePos;
     float drawX = SCREEN_WIDTH - 25 - WIDTH;
@@ -56,7 +57,6 @@ struct MiniMap {
         }
       }
     }
-
     if (GAME_SETTINGS.fastUI) {
       return;
     }

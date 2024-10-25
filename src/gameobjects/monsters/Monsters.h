@@ -67,7 +67,7 @@ struct Wolf final : public Monster {
 struct Snake final : public Monster {
   Snake(const Point& pos, uint8_t level, MonsterType type, Zone zone) noexcept
       : Monster(pos, monsterIdToScaler[type], level, &textures::monsters::SNAKE, type,
-                {29, 19}, zone) {
+                  {29, 19}, zone) {
     attackComponent.RegisterConeAttack(
         1, stats.effects[WEAPON_DAMAGE], monsterIdToScaler[type].attackCD, 15, 30,
         resource->attackSounds[0], 1, 35,

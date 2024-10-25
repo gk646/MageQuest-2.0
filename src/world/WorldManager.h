@@ -8,6 +8,7 @@ struct TransitionPoint {
 namespace WorldManager {
 std::array<std::vector<TransitionPoint>, (int)Zone::ZONE_END> zoneTPoints;
 }  // namespace WorldManager
+
 #include "elements/TransitionParser.h"
 namespace WorldManager {
 //Teleports player into the new map at position "pos * 48"

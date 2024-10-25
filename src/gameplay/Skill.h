@@ -250,6 +250,7 @@ inline static Projectile* GetProjectileInstance(
 
 #include "../gameobjects/components/AttackComponent.h"
 #include "skills/Skills.h"
+
 Skill* Skill::GetNewSkill(ProjectileType type, const SkillStats& stats) noexcept {
   switch (type) {
     case POISON_BALL:

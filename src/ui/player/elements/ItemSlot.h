@@ -22,7 +22,6 @@ struct ItemSlot {
     if (!other.item) return false;
     return *item < *other.item;
   }
-
   inline bool operator>(const ItemSlot& other) const {
     if (!item) return false;
     if (!other.item) return item != nullptr;

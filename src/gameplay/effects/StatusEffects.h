@@ -1,5 +1,6 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_
 #define MAGEQUEST_SRC_GAMEPLAY_EFFECTS_STATUSEFFECTS_H_
+
 struct Stun final : public StatusEffect {
   explicit Stun(int duration) : StatusEffect(true, 0, duration, EffectType::STUN) {}
   [[nodiscard]] Stun* Clone() const final { return new Stun(*this); }
@@ -15,6 +16,7 @@ struct Stun final : public StatusEffect {
     TakeLongestDuration(other);
   }
 };
+
 struct Root final : public StatusEffect {
   float preValue = -1;
   explicit Root(int duration) : StatusEffect(true, 0, duration, EffectType::ROOT) {}

@@ -20,7 +20,6 @@ struct Button {
     return ret;
   }
 
-
  private:
   inline static void DrawNormalButton(const RectangleR& bound) noexcept {
     DrawRectangleRounded(bound, 0.2F, GAME_SETTINGS.roundSegments, Colors::mediumVeryLight);

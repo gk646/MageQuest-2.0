@@ -20,6 +20,7 @@ struct UniqueEffect {
     }
   }
 };
+
 inline static void ApplyTalentsToProjectile(Projectile* prj) noexcept {
   for (const auto& te : UNIQUE_EFFECTS) {
     te->OnProjectileCreation(prj);

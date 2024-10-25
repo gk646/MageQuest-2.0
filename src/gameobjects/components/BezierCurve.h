@@ -15,8 +15,8 @@ struct BezierCurve {
     float uu = u * u;
 
     Point p = start * uu;
-    p += control * t * u * 2;
-    p += end * tt;
+//    p += control * t * u * 2;
+  //  p += end * tt;
 
     return p;
   }

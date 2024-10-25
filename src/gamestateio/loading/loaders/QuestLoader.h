@@ -4,10 +4,10 @@
 namespace QuestLoader {
 static void LoadManualQuests() {
   if (!PLAYER_QUESTS.HasQuest(Quest_ID::NIETZSCHE_QUEST)) {
-    PLAYER_QUESTS.AddQuest(Quests::NIETZSCHE);
+    //PLAYER_QUESTS.AddQuest(Quests::NIETZSCHE);
   }
   if (!PLAYER_QUESTS.HasQuest(Quest_ID::THE_GROVES_SECRET)) {
-    PLAYER_QUESTS.AddQuest(Quests::THE_GROVES_SECRET);
+    //PLAYER_QUESTS.AddQuest(Quests::THE_GROVES_SECRET);
   }
 }
 static void LoadProgress() noexcept {
@@ -43,13 +43,12 @@ static void Load() noexcept {
       ScriptParser::Load("Quests/StartSomethingNew.txt", Quest_ID::START_SOMETHING_NEW);
   Quests::HILLCREST_PUZZLE =
       ScriptParser::Load("Quests/HillcrestPuzzle.mgqs", Quest_ID::HILLCREST_PUZZLE, true);
-  Quests::THE_GROVES_SECRET =
-      ScriptParser::Load("Quests/TheGrovesSecret.txt", Quest_ID::THE_GROVES_SECRET, true);
-  Quests::NIETZSCHE =
-      ScriptParser::Load("Quests/Nietzsche.txt", Quest_ID::NIETZSCHE_QUEST, true);
+  //Quests::THE_GROVES_SECRET =      ScriptParser::Load("Quests/TheGrovesSecret.txt", Quest_ID::THE_GROVES_SECRET, true);
+  //Quests::NIETZSCHE =      ScriptParser::Load("Quests/Nietzsche.txt", Quest_ID::NIETZSCHE_QUEST, true);
 
   LoadProgress();
   LoadManualQuests();
+
   if (PLAYER_QUESTS.quests.empty()) {
     PLAYER_QUESTS.AddQuest(Quests::START_SOMETHING_NEW);
   } else {

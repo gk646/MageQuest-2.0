@@ -14,6 +14,11 @@ struct Projectile : public Entity {
   bool isFriendlyToPlayer;
   bool isDoingDamage = true;
   ProjectileType projectileType = ProjectileType::FIRE_BALL;
+  //PVP will be handled on a global context -> either all players pvp or none
+  //position has to be given
+  //Damage stats are given by the projectile itself + by the caster -> calculated upfront with each hit having the +-5% damage and crit chance
+  //effects given by blueprint and by the caster-> at the time of creating snapshotted
+
   Projectile(bool isFriendlyToPlayer, const Point& pos, const DamageStats& damage_stats,
              const std::array<StatusEffect*, MAX_STATUS_EFFECTS_PRJ>& effects,
              const Vector2& move_vector, int16_t pov, const Sound& sourceSound,

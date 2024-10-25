@@ -1,5 +1,6 @@
 #ifndef MAGEQUEST_SRC_UI_ELEMENTS_CONTENT_H_
 #define MAGEQUEST_SRC_UI_ELEMENTS_CONTENT_H_
+
 //Defines something as possible content of another class (e.g. ScrollPane)
 struct Content {
   float lowerLimit = 0, upperLimit = 0;

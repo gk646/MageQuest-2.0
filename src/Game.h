@@ -263,7 +263,6 @@ class Game {
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_ALWAYS_RUN);
     SetConfigFlags(FLAG_WINDOW_TOPMOST);
-    SetConfigFlags(FLAG_WINDOW_TOPMOST);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
     SetTargetFPS(GAME_SETTINGS.targetFPS);
