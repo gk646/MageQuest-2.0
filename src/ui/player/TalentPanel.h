@@ -20,7 +20,7 @@ struct TalentPanel final : public Window {
     DrawToolTipNode();
   }
   void Update() noexcept {
-    WINDOW_UPDATE();
+    WINDOW_DRAW_UPDATE();
     for (auto& node : TALENTS) {
       node.Update();
     }

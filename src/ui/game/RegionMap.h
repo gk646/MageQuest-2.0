@@ -16,7 +16,7 @@ struct RegionMap final : public Window {
     DrawMap();
   }
   void Update() {
-    WINDOW_UPDATE()
+    WINDOW_DRAW_UPDATE()
     if (wholeWindow.width < SCREEN_WIDTH * 0.9) {
       wholeWindow.width = SCREEN_WIDTH * 0.9;
       header_bar.width = SCREEN_WIDTH * 0.9;

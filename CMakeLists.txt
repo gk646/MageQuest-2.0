@@ -13,9 +13,9 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 set(OPENGL_VERSION "4.3" CACHE STRING "OpenGL Version to build raylib with")
 
-add_subdirectory(C:/Users/gk646/Documents/Libaries/raylib-4.5.0 raylib)
-add_library(sqlite3 STATIC C:/Users/gk646/Documents/Libaries/SQLiteCpp-3.3.1/sqlite3/sqlite3.c)
-include_directories(C:/Users/gk646/Documents/Libaries/sdk/public)
+add_subdirectory(C:/Users/Lukas/Documents/Libaries/raylib-4.5.0 raylib)
+add_library(sqlite3 STATIC C:/Users/Lukas/Documents/Libaries/SQLiteCpp-3.3.1/sqlite3/sqlite3.c)
+include_directories(C:/Users/Lukas/Documents/Libaries/sdk/public)
 
 file(GLOB_RECURSE PROJECT_SOURCES
         "src/*.cpp"
@@ -25,14 +25,14 @@ file(GLOB_RECURSE PROJECT_SOURCES
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 include_directories(${PROJECT_NAME} PUBLIC
-        C:/Users/gk646/Documents/Libaries/raygui-3.6/src
-        C:/Users/gk646/Documents/CodingProjects/C++/cxstructs/src
-        C:/Users/gk646/Documents/Libaries/SQLiteCpp-3.3.1/sqlite3
+        C:/Users/Lukas/Documents/Libaries/raygui-3.6/src
+        C:/Users/Lukas/Documents/CodingProjects/C++/cxstructs/src
+        C:/Users/Lukas/Documents/Libaries/SQLiteCpp-3.3.1/sqlite3
 )
 
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-        C:/Users/gk646/Documents/Libaries/sdk/redistributable_bin/win64/steam_api64.lib
+        C:/Users/Lukas/Documents/Libaries/sdk/redistributable_bin/win64/steam_api64.lib
         raylib
         sqlite3
         ws2_32

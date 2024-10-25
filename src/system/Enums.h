@@ -380,6 +380,7 @@ enum class Quest_ID : uint8_t {
   HILLCREST_PUZZLE,
   NIETZSCHE_QUEST,
   THE_GROVES_SECRET,
+  TRADING,
   END
 };
 
@@ -396,13 +397,14 @@ enum class NPC_ID : uint8_t {
   MARLA,
   ARIA,
   HILLCREST_MAYOR,
-  RECEPTION_GROVE,
+  GROVE_RECEPTION,
   DYING_MAN,
   NIETZSCHE,
   VILLAGER,
   TRADER,
   RANDOM,
   SATIRO,
+  GROVE_TICKET,
   NPC_END
 };
 enum class WorldObjectType : int16_t {
@@ -420,7 +422,8 @@ std::unordered_map<std::string, NPC_ID> stringToNPCID = {
     {"MARLA", NPC_ID::MARLA},
     {"ARIA", NPC_ID::ARIA},
     {"HILLCREST_MAYOR", NPC_ID::HILLCREST_MAYOR},
-    {"RECEPTION_GROVE", NPC_ID::RECEPTION_GROVE},
+    {"GROVE_RECEPTION", NPC_ID::GROVE_RECEPTION},
+    {"GROVE_TICKET", NPC_ID::GROVE_TICKET},
     {"DYING_MAN", NPC_ID::DYING_MAN},
     {"NIETZSCHE", NPC_ID::NIETZSCHE},
     {"VILLAGER", NPC_ID::VILLAGER},
@@ -434,7 +437,7 @@ std::unordered_map<NPC_ID, std::string> npcIdToStringMap = {
     {NPC_ID::MARLA, "Marla"},
     {NPC_ID::ARIA, "Aria"},
     {NPC_ID::HILLCREST_MAYOR, "Hillcrest Mayor"},
-    {NPC_ID::RECEPTION_GROVE, "Receptionist"},
+    {NPC_ID::GROVE_RECEPTION, "Receptionist"},
     {NPC_ID::DYING_MAN, "Dying Man"},
     {NPC_ID::NIETZSCHE, "Hermit"},
     {NPC_ID::VILLAGER, "Villager"},
