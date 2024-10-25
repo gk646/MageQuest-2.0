@@ -1,4 +1,4 @@
-#### Disclaimer: This is my old private game project made public so others can learn from it and copy interesting ideas.
+### Disclaimer: This is my old private game project made public so others can learn from it and copy interesting ideas.
 
 It was my first big C++ and suffered many code quality issues the biggest one:
 
@@ -6,15 +6,21 @@ It was my first big C++ and suffered many code quality issues the biggest one:
 
 I stopped developing it at some point cause it got too cumbersome to work with.
 
-Feel free to learn from any ideas.
-
-Looking back these are its coolest features:
+Looking back these are its **coolest features**:
 
 - Many UI Components (ScrollPane, TextField, ToolTip, ExpandableMenu, Inventory, TalentPanel ...)
-- Custom node-based questscript with parser (GOTO, KILL, SPEAK)
-- Fully fledged RPG system with attributes (40+), skills, talents, status effects and items
-- Save system with a sqlite database
-- Multiplayer support over steam
+- Custom **node-based questscript** with parser (GOTO, KILL, SPEAK)
+- Fully fledged **RPG system** with attributes (40+), skills, talents, status effects and items
+- **Save system** with a sqlite database
+- **Multiplayer support** over steam
+
+Apart from that there are some **resources**:
+- Quest script files with fully **written quests with dialogue and decisions**
+- **Monster stats** tables
+- Skill names, descriptions and attributes
+- Item Sets
+- Status Effects
+
 
 I worked on this project for about 4 months
 
