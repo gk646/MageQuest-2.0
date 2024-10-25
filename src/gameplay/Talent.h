@@ -8,4 +8,5 @@ struct Talent {
   Texture icon;
   UniqueEffect* talentEffect = nullptr;
 };
+
 #endif  //MAGEQUEST_SRC_GAMEPLAY_TALENTS_TALENT_H_

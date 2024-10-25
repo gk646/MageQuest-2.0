@@ -19,6 +19,7 @@ struct Alternative {
     }
   }
 };
+
 struct Quest final {
   std::string name;
   std::string description;

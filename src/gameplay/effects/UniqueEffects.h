@@ -72,10 +72,12 @@ struct DevilsAvatar2 final : public UniqueEffect {
     return this;
   }
 };
+
 std::unordered_map<int16_t, UniqueEffect*> talentIDToEffect{
     {15, new SpellEcho()},
     {96, new ElementalEquilibrium()},
 };
+
 struct ItemSetEffects {
   UniqueEffect* effects[3];
   ItemSetEffects(UniqueEffect* one, UniqueEffect* two, UniqueEffect* three)

@@ -24,10 +24,10 @@ struct DroppedItem final : public WorldObject {
     if (!slot || !slot->item) return false;
 
     auto playerPos = PLAYER.GetMiddlePoint();
-    playerPos.divide(48);
+    playerPos /= 48;
     for (auto& i : PathFinding::cross_movement) {
       if (!CheckTileCollision((int)playerPos.x() + i.x, (int)playerPos.y() + i.y)) {
-        playerPos.scale(48);
+        playerPos *= 48;
         playerPos.x() += 44.0F * i.x;
         playerPos.y() += 44.0F * i.y;
         playerPos.x() -= 20;
@@ -54,6 +54,7 @@ struct DroppedItem final : public WorldObject {
     WORLD_OBJECTS.emplace_back(new DroppedItem(playerPos, item));
   }
 };
+
 //Same as "DroppedItem" but is animated in a Bézier curve once
 struct AnimatedDroppedItem final : public WorldObject {
   Item* item;
@@ -82,6 +83,7 @@ struct AnimatedDroppedItem final : public WorldObject {
     DRAW_HITBOXES();
   }
 };
+
 //Clears the previously owned slots and drops their items
 void CharacterBag::RemoveSlots(int n) noexcept {
   int playerSlots = (int)PLAYER_STATS.GetBagSlots();

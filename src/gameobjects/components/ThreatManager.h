@@ -56,6 +56,7 @@ struct ThreatManager {
       }
     }
   }
+
   inline void AddTarget(Entity* NewEnt, const float threat) noexcept {
     for (auto& te : targets) {
       if (!te.entity) {

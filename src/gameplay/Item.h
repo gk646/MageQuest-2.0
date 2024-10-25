@@ -1,6 +1,7 @@
 #ifndef MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
 #define MAGEQUEST_SRC_GAMEPLAY_ITEM_H_
 
+
 struct Item {
   static constexpr int TOOL_TIP_WIDTH = 260;
   static constexpr int TOOL_TIP_HEIGHT = 276;

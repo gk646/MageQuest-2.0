@@ -400,17 +400,25 @@ void DrawRectOutlineMiddleRotation(const RectangleR& rect, float rotation, Color
   float sinRotation = sinf(rotation * DEG2RAD);
   float cosRotation = cosf(rotation * DEG2RAD);
 
-  float topLeftX = rect.x + halfWidth - halfWidth * cosRotation + halfHeight * sinRotation;
-  float topLeftY = rect.y + halfHeight - halfWidth * sinRotation - halfHeight * cosRotation;
+  float topLeftX =
+      rect.x + halfWidth - halfWidth * cosRotation + halfHeight * sinRotation;
+  float topLeftY =
+      rect.y + halfHeight - halfWidth * sinRotation - halfHeight * cosRotation;
 
-  float topRightX = rect.x + halfWidth + halfWidth * cosRotation + halfHeight * sinRotation;
-  float topRightY = rect.y + halfHeight + halfWidth * sinRotation - halfHeight * cosRotation;
+  float topRightX =
+      rect.x + halfWidth + halfWidth * cosRotation + halfHeight * sinRotation;
+  float topRightY =
+      rect.y + halfHeight + halfWidth * sinRotation - halfHeight * cosRotation;
 
-  float bottomLeftX = rect.x + halfWidth - halfWidth * cosRotation - halfHeight * sinRotation;
-  float bottomLeftY = rect.y + halfHeight - halfWidth * sinRotation + halfHeight * cosRotation;
+  float bottomLeftX =
+      rect.x + halfWidth - halfWidth * cosRotation - halfHeight * sinRotation;
+  float bottomLeftY =
+      rect.y + halfHeight - halfWidth * sinRotation + halfHeight * cosRotation;
 
-  float bottomRightX = rect.x + halfWidth + halfWidth * cosRotation - halfHeight * sinRotation;
-  float bottomRightY = rect.y + halfHeight + halfWidth * sinRotation + halfHeight * cosRotation;
+  float bottomRightX =
+      rect.x + halfWidth + halfWidth * cosRotation - halfHeight * sinRotation;
+  float bottomRightY =
+      rect.y + halfHeight + halfWidth * sinRotation + halfHeight * cosRotation;
 
   rlBegin(RL_LINES);
   rlColor4ub(color.r, color.g, color.b, color.a);

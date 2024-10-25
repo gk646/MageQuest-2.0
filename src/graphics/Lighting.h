@@ -29,6 +29,7 @@ inline static std::unordered_map<ProjectileType, SpotLightInfo> typeToLight{
     {FROST_NOVA, {170, {0.12f, 0.301f, 0.913f}}},
     {GLACIAL_BURST, {90, {0.12f, 0.301f, 0.913f}}},
     {ENERGY_SPHERE, {160, {0.3804f, 0.6588f, 0.8902f}}}};
+
 inline static constexpr uint16_t FULL_DAY_TICKS = UINT16_MAX;
 inline static uint16_t dayTicks = 15000;
 inline static float currentNightAlpha = 0;
@@ -68,7 +69,7 @@ inline static void DrawAmbientOcclusion() noexcept {
                                 0);
   }
 }
-inline static Vector2 CalculateShadowDirection() noexcept {
+ static Vector2 CalculateShadowDirection() noexcept {
   float phaseOfDay = (2 * PI * (float)dayTicks) / FULL_DAY_TICKS;
 
   float shadowX = cos(phaseOfDay);
@@ -114,7 +115,7 @@ inline static void UpdateDynamicLights() noexcept {
 
   spotLightCount = i;
 }
-inline static void StartDynamicLights() noexcept {
+ static void StartDynamicLights() noexcept {
   spotLightTime += 0.0083;
   if (lightOn) {
     cameraVec->x = CAMERA_X + 14;
@@ -136,6 +137,7 @@ inline static void StartDynamicLights() noexcept {
   SetShaderValue(spotLight, SPOT_LIGHT_PLAYER, cameraVec, SHADER_UNIFORM_VEC2);
   BeginShaderMode(spotLight);
 }
+
 inline static void StartNightShader() noexcept {
   SetShaderValue(nightShader, NIGHT_SHADER_ALPHA, &currentNightAlpha,
                  SHADER_UNIFORM_FLOAT);

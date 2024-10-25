@@ -156,7 +156,7 @@ Quest* Load(const std::string& path, Quest_ID id, bool hidden = false) {
   std::ifstream file(ASSET_PATH + path);
   std::string line;
   if (!file.is_open()) {
-    std::cerr << "Failed to open quest file." << std::endl;
+    std::cerr << "Failed to open quest file."  << path << std::endl;
     return nullptr;
   }
 
