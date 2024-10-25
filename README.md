@@ -5,6 +5,7 @@ It was my first big C++ and suffered many code quality issues the biggest one:
 - its completely header only! (coming from Java it felt natural)
 
 I stopped developing it at some point cause it got too cumbersome to work with.
+It hurts to see it not being completed but at least it can be useful for someone.
 
 Looking back these are its **coolest features**:
 
@@ -21,7 +22,6 @@ Apart from that there are some **resources**:
 - Item Sets
 - Status Effects
 
-
 I worked on this project for about 4 months
 
 ---
@@ -33,7 +33,7 @@ the [raylib](https://github.com/raysan5/raylib) library.**
 To see the base features head over to the page of the first game.
 
 Showcasing a bossfight:  
-[![IMAGE ALT TEXT](src/bossFight.png)](https://youtu.be/akTZhesGFCI)
+[![IMAGE ALT TEXT](src/bossFight.png)](https://youtu.be/6yjuaGRPW6k?feature=shared)
 
 Showcasing UI, characters and abilities:  
 [![IMAGE ALT TEXT](src/img.png)](https://youtu.be/1S3ASF9-2Wc?feature=shared)
